@@ -1,0 +1,76 @@
+{
+  "case": "electron_gun",
+  "I_CL_uA": 507.7788271262047,
+  "scenarios": [
+    {
+      "scenario": "A_low_current_small_hole",
+      "I_emit_uA": 10.0,
+      "hole_radius_mm": 0.7,
+      "pct_of_child_langmuir": 1.969361356911121,
+      "weights": {
+        "collector": 305214.2830439763,
+        "anode": 9056.029999270064,
+        "cathode": 0.0,
+        "radial": 0.0
+      },
+      "emitted_weight": 374490.5444676458,
+      "closure_pct": 0.0007510320701823394,
+      "ke_expect_eV": 97.92884551134662,
+      "ke_coll_eV": 97.9042179605155,
+      "ke_err_eV": -0.02462755083112711,
+      "frac": {
+        "collector": 0.9728311399493464,
+        "anode": 0.027087162789083446,
+        "cathode": 0.0,
+        "radial": 0.0
+      }
+    },
+    {
+      "scenario": "B_high_current_small_hole",
+      "I_emit_uA": 400.0,
+      "hole_radius_mm": 0.7,
+      "pct_of_child_langmuir": 78.77445427644484,
+      "weights": {
+        "collector": 11256935.704724025,
+        "anode": 1327793.008387749,
+        "cathode": 0.0,
+        "radial": 0.0
+      },
+      "emitted_weight": 14979621.778705833,
+      "closure_pct": 0.000751032070185448,
+      "ke_expect_eV": 98.52839632121666,
+      "ke_coll_eV": 98.50337551790984,
+      "ke_err_eV": -0.02502080330681622,
+      "frac": {
+        "collector": 0.8998039601361119,
+        "anode": 0.10040879515785373,
+        "cathode": 0.0,
+        "radial": 0.0
+      }
+    },
+    {
+      "scenario": "C_high_current_big_hole",
+      "I_emit_uA": 400.0,
+      "hole_radius_mm": 1.4,
+      "pct_of_child_langmuir": 78.77445427644484,
+      "weights": {
+        "collector": 12371588.784000635,
+        "anode": 4.547680642938544,
+        "cathode": 0.0,
+        "radial": 18.223605819002707
+      },
+      "emitted_weight": 14979621.778705833,
+      "closure_pct": 0.000751032070210317,
+      "ke_expect_eV": 98.80285301829657,
+      "ke_coll_eV": 98.8245688630645,
+      "ke_err_eV": 0.02171584476792532,
+      "frac": {
+        "collector": 1.000098057606657,
+        "anode": 8.433087575243324e-07,
+        "cathode": 0.0,
+        "radial": 0.0
+      }
+    }
+  ],
+  "gates_pass": true
+}

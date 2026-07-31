@@ -1,0 +1,61 @@
+# ----------------------------------------------------------------------
+# current_collection / 3_biased_10v: sphere at +10 V (chi = eV/kTe = 88.0)
+#
+# Strong attracting bias:
+#     I_OML = I_th * (1 + chi) = 0.10393 uA * 89.0 = 9.249 uA
+# The demonstration here is SHEATH GROWTH: the perturbed region expands to
+# several Debye lengths (watch sheath_3_biased_10v.png), and the collected
+# current sits BELOW the +3 V case's fraction of the OML ceiling --
+# barrier deepening grows with chi (the contactor study saw 38% -> 16%
+# from 10 V -> 100 V at a fat probe).  The domain is the largest of the
+# three cases (11 lambda_De) because a clipped sheath fakes extra current:
+# this case is the expected stressor of the edge-containment gate.
+#
+# Same plasma/grid/ppc as the chipsat capstone (dx = 0.15 mm).
+#
+# NOTE on floats: PyYAML 1.1 -- decimal point AND signed exponent.
+# ----------------------------------------------------------------------
+probe:
+  radius: 7.5e-4         # [m] a/lambda_De = 0.38, 5 cells per radius
+  bias: 10.0             # [V]
+
+plasma:                  # electron_contactor capstone "PLASMA_MAX" row
+  n0: 1.627e12           # [m^-3]
+  Te_K: 1318.8           # [K]
+  Ti_K: 936.2            # [K]
+  ion_mass_me: 400.0     # [-] chipsat's reduced ion mass
+
+geometry:                # lambda_De = 1.965 mm
+  r_max: 21.6e-3         # [m] 11.0 lambda_De: the +10 V sheath needs room
+  z_half: 21.6e-3
+  n_r: 144               # dx = 0.15 mm
+  n_z: 288
+
+numerics:
+  time_step: 2.0e-11     # [s] CFL ~0.33 for a 10 eV infall + 4*vth tail
+  max_steps: 150000      # 3.0 us
+  ppc: 16
+  random_seed: 42
+
+diagnostics:
+  field_period: 3750     # 40 field frames
+  scrape_period: 1500    # 100 collected-current samples
+  reduced_period: 100
+  steady_window_frac: 0.4
+
+validation:
+  i_e_over_oml_min: 0.80    # deeper barrier than +3 V -> slightly wider floor
+  i_e_over_oml_max: 1.05
+  far_density_rel_tol: 0.06
+  quasineutrality_tol: 0.02
+  edge_phi_max: 0.5      # [V] sheath containment -- THE gate to watch here
+
+compute:
+  gpu_arena_bytes: 2000000000
+
+paths:
+  diags: outputs/diags
+  results: results
+
+video:
+  fps: 10.0

@@ -1,0 +1,67 @@
+# ----------------------------------------------------------------------
+# negative_cathode validation case (two-plate RZ plane diode)
+#
+# A -100 V full-width cathode on the LEFT boundary (z = -2 mm) emits a
+# 10 uA electron beam toward a grounded collector on the RIGHT boundary
+# (z = +2 mm).  Electrostatic, axisymmetric (RZ), self-consistent space
+# charge.  The emitted current is prescribed (no thermionic model).
+#
+# Expected steady state: ~100% of the beam lands on the collector with
+# kinetic energy ~ e*|v_cathode| ~ 100 eV (electrons fall through the
+# full interelectrode potential); cathode and radial wall collect ~0.
+#
+# NOTE on floats: PyYAML implements YAML 1.1 -- write floats with a
+# decimal point AND a signed exponent (5.0e-4, not 5e-4 or 1e19).  The
+# loader coerces every numeric anyway.
+# ----------------------------------------------------------------------
+case_name: negative_cathode
+
+geometry:
+  r_max: 2.0e-3          # radial extent [m]
+  z_min: -2.0e-3         # left boundary  [m] -- the cathode plane
+  z_max: 2.0e-3          # right boundary [m] -- the collector plane
+  n_r: 40                # radial cells  (dr = 0.05 mm)
+  n_z: 80                # axial cells   (dz = 0.05 mm)
+
+electrodes:
+  v_cathode: -100.0      # left  (z_min) Dirichlet boundary [V] -- the emitting plate
+  v_collector: 0.0       # right (z_max) Dirichlet boundary [V]
+
+emission:                # disc source one cell inside the cathode, firing +z
+  radius: 5.0e-4         # source spot r < radius [m] (10 radial cells)
+  current: 1.0e-5        # emitted beam current [A]
+  u_th: 7.0e-4           # cold launch: normalized rms momentum (gamma*beta)
+
+numerics:
+  time_step: 1.5e-12     # [s]  (v_max*dt ~ 0.18 dz)
+  max_steps: 4000        # 6.0 ns total
+  beam_ppc: 128          # emission macroparticles per source cell per step
+  random_seed: 42
+
+diagnostics:
+  field_period: 80       # phi/rho + particle dumps every N steps (50 frames)
+  reduced_period: 20     # ParticleNumber / ParticleEnergy cadence
+  scrape_period: 80      # boundary-scraping dump cadence
+  ke_max_ev: 120.0       # energy-axis / colour-scale ceiling for plots & video [eV]
+
+compute:
+  # AMReX pre-allocates ~3/4 of TOTAL GPU memory by default; cap the arena so
+  # this small deck coexists with other GPU users (it peaks well under 1 GB).
+  gpu_arena_bytes: 1000000000
+
+validation:              # analytic gate tolerances (evaluated by the analyze script)
+  collector_current_rel_tol: 5.0e-3   # |I_coll/I_emit - 1| <= 0.5%
+  ke_tol_ev: 0.5                      # collector mean KE vs analytic 99.25 eV
+  stray_fraction_max: 1.0e-4          # cathode/radial-wall weight, fraction of emitted
+  vacuum_phi_abs_tol: 1.0e-2          # [V] max |phi_t0 - analytic ramp| on axis
+  depression_v: 0.092                 # [V] beam space-charge dip at z~0 (REGRESSION
+  depression_tol_v: 0.04              #     value from the validated run; 1D estimate
+                                      #     brackets it at 0.04-0.09 V)
+  closure_pct_max: 0.1                # particle-budget closure [%]
+
+paths:                   # relative to this case directory
+  diags: outputs/diags
+  results: results
+
+video:
+  fps: 10.0

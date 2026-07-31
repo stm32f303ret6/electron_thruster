@@ -1,0 +1,13 @@
+# Raw, regenerable simulation output stays out of git (the sibling
+# electron_thruster repo once tracked 95 GB of dumps).  Small provenance
+# files remain tracked: outputs/**/config_used.yaml + used_inputs.txt,
+# results/ PNGs, summary JSONs and small CSVs.
+**/outputs/**/*.h5
+**/outputs/**/*.bp
+**/outputs/**/chk*/
+**/outputs/**/reducedfiles/
+**/__pycache__/
+*.log
+# Large binary media (regenerable via the animate scripts)
+**/results/*.mp4
+**/results/*.gif
