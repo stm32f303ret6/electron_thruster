@@ -1,0 +1,71 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for capstone.floating_body (the chipsat capstone).
+#
+# SYSTEM-INTEGRATION REGRESSION, disclosed as such (plan section 9.3): the
+# escape/F_beam/phi_body gate values were read off the validated float200
+# capstone run itself -- they are calibration anchors, not independent
+# analytic predictions.  The theory-anchored gates in this policy are the
+# steady-state current balance (the floating equilibrium IS a current
+# balance), the momentum sanity bound |F_net| <= F_beam, sheath/plume
+# containment, and the ledger-vs-dump charge-consistency cross-check
+# (VALIDATION_GAPS.md G5).  The analytic anchors for every underlying
+# mechanism live in the lower rungs; see VALIDATION_GAPS.md for what they
+# do and do not cover.
+#
+# Changing any tolerance requires a new policy_id; every verdict records
+# this file's SHA-256.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: capstone.floating_body.v1
+stage_id: capstone.floating_body
+evidence_kind: system_integration_regression
+
+gates:
+  # float200 regression anchors (validated run: 98.5 %, 13.6 nN, +16 V).
+  - id: beam_escapes
+    required: true
+    metric: escape_fraction_pct
+    comparison: at_least
+    minimum: 95.0
+
+  - id: thrust_matches_float200
+    required: true
+    metric: f_beam_nN
+    comparison: abs_within
+    target: 13.6
+    tolerance: 2.04          # +-15 %
+
+  - id: body_floats_to_float200_potential
+    required: true
+    metric: phi_body_V
+    comparison: abs_within
+    target: 16.0
+    tolerance: 4.0
+
+  # The floating equilibrium is a current balance: I_escape == I_amb_e - I_amb_i.
+  - id: steady_current_balance
+    required: true
+    metric: current_balance
+    comparison: at_most
+    maximum: 0.05
+
+  # Momentum sanity: the craft cannot catch more z-momentum than the beam carries.
+  - id: momentum_sanity_bound
+    required: true
+    metric: f_net_over_f_beam
+    comparison: at_most
+    maximum: 1.0
+
+  # Sheath/plume containment (collector-rung style; a clipped plume fakes escape).
+  - id: sheath_and_plume_contained
+    required: true
+    metric: edge_phi_max_V
+    comparison: at_most
+    maximum: 1.0
+
+  # Per-step scrape-buffer ledger vs post-hoc openPMD dumps (closes gap G5).
+  - id: scrape_ledger_consistent_with_dumps
+    required: true
+    metric: scrape_charge_consistency
+    comparison: at_most
+    maximum: 0.02
