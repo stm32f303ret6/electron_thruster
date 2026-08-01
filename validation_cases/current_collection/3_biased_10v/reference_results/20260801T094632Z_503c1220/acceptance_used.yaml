@@ -1,0 +1,48 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for collector.biased_10v (sphere at +10 V).
+#
+# NUMERICAL-SANITY / SHEATH-CONTAINMENT policy.  Deeper barrier than +3 V
+# (the contactor study saw the OML fraction fall with chi), so the
+# electron-current floor is relaxed slightly to [0.80, 1.05].  This is the
+# largest domain of the three because a sheath clipped by the boundary
+# fakes extra current -- the edge-containment gate is THE gate to watch
+# here.  Ions are Boltzmann-repelled and NOT gated.
+#
+# Changing any tolerance requires a new policy_id; every verdict records
+# this file's SHA-256.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: collector.biased_10v.v1
+stage_id: collector.biased_10v
+evidence_kind: numerical_sanity
+
+gates:
+  # I_e vs the OML ceiling (deeper barrier -> slightly wider floor than +3 V).
+  - id: electron_current_vs_oml
+    required: true
+    metric: electron_current_over_oml
+    comparison: within_range
+    minimum: 0.80
+    maximum: 1.05
+
+  # Far-shell density == n0 (flux reservoir intact; looser at this domain size).
+  - id: far_density_matches_n0
+    required: true
+    metric: far_density_e_over_n0
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.06
+
+  # Far-shell quasineutrality.
+  - id: far_field_quasineutral
+    required: true
+    metric: quasineutrality
+    comparison: at_most
+    maximum: 0.02
+
+  # THE gate to watch: the thick +10 V sheath must stay inside the domain.
+  - id: sheath_contained
+    required: true
+    metric: edge_phi_max_V
+    comparison: at_most
+    maximum: 0.5
