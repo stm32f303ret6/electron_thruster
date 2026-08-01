@@ -89,12 +89,10 @@ def read_eb_scraped(cfg: Config, diags: str):
 
 def current_history(cfg: Config, scraped):
     """(dump_steps, {species: I[A]}).  A dump holds the weight collected since
-    the previous dump; steps come from the union of both species so zero-
-    collection dumps stay as zeros."""
-    steps = np.unique(np.concatenate(
-        [scraped[n][0] for n in scraped if scraped[n][0].size]
-    )) if scraped else np.array([])
-    steps = steps[steps > 0]
+    the previous dump; steps are the complete configured scrape grid (plan
+    section 10 rule 1), not just iterations that happened to catch a hit, so
+    a genuinely empty interval is a recorded zero rather than a missing bin."""
+    steps = np.arange(cfg.scrape_period, cfg.max_steps + 1, cfg.scrape_period)
     hist = {}
     for name, (it, w, _ke) in scraped.items():
         hist[name] = np.array([

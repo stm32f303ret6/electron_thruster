@@ -83,7 +83,8 @@ def test_csv_charge_handles_final_partial_window():
 def _metrics(**over):
     base = dict(escape_fraction_pct=98.5, f_beam_nN=13.6, phi_body_V=16.0,
                 current_balance=0.01, f_net_over_f_beam=0.1,
-                edge_phi_max_V=0.2, scrape_charge_consistency=0.001)
+                edge_phi_max_V=0.2, scrape_charge_consistency=0.001,
+                scrape_charge_consistency_beam_escape=0.001)
     base.update(over)
     return {k: lc.Metric.measure(k, v, "-") for k, v in base.items()}
 
@@ -114,6 +115,13 @@ def test_clipped_plume_fails_containment():
 def test_ledger_dump_disagreement_fails():
     verdict = lc.evaluate_gates(_metrics(scrape_charge_consistency=0.10),
                                 lc.load_policy(POLICY))
+    assert verdict.status == lc.V_FAIL
+
+
+def test_beam_escape_ledger_dump_disagreement_fails():
+    verdict = lc.evaluate_gates(
+        _metrics(scrape_charge_consistency_beam_escape=0.10),
+        lc.load_policy(POLICY))
     assert verdict.status == lc.V_FAIL
 
 

@@ -4,6 +4,7 @@ The most valuable check here is that the metric IDs analyze.py emits line up
 with the metric names acceptance.yaml references -- a realistic synthetic cohort
 must evaluate to PASS, and a broken demonstration must not."""
 
+import dataclasses
 from pathlib import Path
 
 import numpy as np
@@ -31,16 +32,20 @@ def test_ke_eV_roundtrip():
 def test_steady_currents_zero_bins_and_value():
     cfg = load_config(CONFIG, scenario="A_low_current_small_hole")
     sp, dt = cfg.scrape_period, cfg.time_step
-    # collector hits at both dumps; anode only at the 2nd.
+    cfg = dataclasses.replace(cfg, max_steps=3 * sp)
+    # collector hits at the first two dumps; anode only at the 2nd; the 3rd
+    # dump has no hits from any boundary and must still survive as a
+    # recorded zero row (plan section 10 rule 1).
     it = np.array([sp, sp, 2 * sp])
     bnd = np.array(["zhi", "zhi", "eb"])
     w = np.array([1.0, 1.0, 0.5])
     s = {"it": it, "bnd": bnd, "w": w,
          "px": np.zeros(3), "py": np.zeros(3), "pz": np.zeros(3)}
     steps, hist, steady = analyze.steady_currents(s, cfg)
-    assert list(steps) == [sp, 2 * sp]
+    assert list(steps) == [sp, 2 * sp, 3 * sp]
     assert hist["anode"][0] == 0.0  # zero bin present, not dropped
     assert hist["collector"][0] == pytest.approx(2.0 * scc.e / (sp * dt))
+    assert hist["collector"][2] == 0.0 and hist["anode"][2] == 0.0  # wholly silent dump kept, not dropped
 
 
 def _meas(coll, anode, ke_err=0.0, closure=0.0):
