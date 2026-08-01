@@ -1,0 +1,130 @@
+# Validation gaps: what the ladder does and does not prove about the chipsat
+
+The premise of the ladder is that by the time `capstone.floating_body` runs,
+every numerical choice it rides on has already passed a gate somewhere cheaper.
+This document audits that claim against the actual capstone deck
+(`electron_contactor` float200 baseline). First what genuinely carries over,
+then the gaps, ordered by how much they matter.
+
+## What the lower rungs DO validate for the capstone (verified matches)
+
+| capstone ingredient | value | validated by | match |
+|---|---|---|---|
+| plasma row n0/Te/Ti/mi | 1.627e12 m⁻³ / 1318.8 K / 936.2 K / 400 mₑ | `collector.*` (all three) | identical |
+| cell size dx | 0.15 mm = 13.1 cells/λ_De | `collector.*` far-density gates | identical |
+| ambient ppc | 16/species (bulk + flux) | `collector.*` shot noise inside 5 % gate | identical |
+| flux-reservoir injection | bulk + 3 one-sided Maxwellian faces, Γ = n·vth/√2π, ν-matched layouts | `collector.*` far-density + quasineutrality | identical construction |
+| EB collection + scraping | conducting EB absorbs, per-species accounting | `collector.*` current gates | same mechanism |
+| domain-sizing vs sheath | edge-\|φ\| watchdog a few cells inside open boundaries | `collector.biased_10v` (THE gate there) | same metric, capstone gates it too |
+| prescribed-current z-flux emission | expression-gated disc spot, Gaussian flux momentum | `emitter.negative_cathode` (calibrates to ~1.0) | same mechanism |
+| aperture transmission vs space charge | hole clips thermal tail / space-charge blowup | `emitter.holed_anode` A/B/C | same mechanism |
+| energy conservation through a holed plate | arrival KE = drop from emission plane | both emitter rungs | same bookkeeping |
+| RZ ES solver + particle_shape=1 + seed 42 | Multigrid, 1e-6 | every rung | identical |
+
+## Gaps
+
+### G1 — The two-node piecewise EB potential is validated nowhere in the ladder
+**The biggest one.** Every ladder rung uses a single-potential EB (or none).
+The capstone's EB carries TWO potentials on one embedded boundary — BODY at
+`phi_body`, CATHODE at `phi_body − 200 V` — via boolean-mask expression
+strings, separated by a ≥ 2-cell insulation gap, rewritten every step with
+`set_potential_on_eb`. That mechanism (and its cut-cell behavior at the
+node boundary) is validated only inside the contactor lineage (float200),
+never by an independent ladder rung.
+*Mitigation now:* geometry unit tests assert mask disjointness and gap width.
+*Recommended rung:* a two-node pinned can (no plasma, no float): Laplace-only
+check of the piecewise EB against an axisymmetric FEM/analytic reference.
+
+### G2 — The floating-potential charge pump has no analytic rung
+No ladder stage floats anything: collectors pin the sphere bias. The pump
+(C from a Gauss-law measurement at init; Q integrated from per-step scrape
+buffers; φ = φ0 + Q/C) is the capstone's defining mechanism and enters the
+ladder only inside the full system stage, gated by regression numbers.
+*Recommended rung* (cheap, strong): a **floating passive sphere** in the
+capstone plasma — no gun, one EB node. The analytic anchor is the kinetic
+floating potential from thermal-current balance,
+φ_f ≈ −(kTe/e)·ln√(mi·Te/(me·Ti)) ≈ **−0.36 V** for this plasma — an
+exact-style target in the ladder's own tradition, validating C calibration,
+dQ accounting, and `set_potential_on_eb` with one node before two.
+
+### G3 — Gun operating point differs from the validated emitter rungs
+| quantity | emitter rungs | capstone | status |
+|---|---|---|---|
+| accelerating voltage | 100 V | 200 V | not bracketed in the ladder (the contactor's own E-sweep 78–300 V exists but outside the ladder) |
+| accel gap | 1.9 mm planar, flat mid-plate | 4.7 mm inside a closed can | different geometry class; I_CL scale differs |
+| beam current | 10 µA (A) / 400 µA (B,C) | 342 µA | bracketed ✓ |
+| aperture radius | 0.7 / 1.4 mm | 2.0 mm | larger than C's restored-transmission hole → favorable side ✓ |
+| launch temperature (per-axis rms) | 2.10e5 m/s (0.25 eV) | 2.60e5 m/s (0.39 eV) | capstone beam is hotter; thermal-tail clip σ_r ~24 % larger — not covered by A's calibrated bound |
+| emission ppc | 128/cell/step | 16/cell/step | emission graininess at 16 ppc unvalidated by the emitter rungs |
+
+### G4 — Reservoir recycling (add_particles re-injection) is unvalidated
+Collectors validate the *flux* reservoir; the capstone additionally *recycles*
+every EB-collected ambient particle back into the outer shell (banked weight →
+Maxwellian at n∞, every 25 steps, its own RNG). Injection-weight calibration
+and the isotropic re-injection are not gated anywhere below the capstone.
+*Mitigation:* report far-shell density in capstone analysis (not gated — the
+recycle shell confounds it); current-balance gate catches gross errors.
+
+### G5 — Per-step scrape-buffer accounting vs post-hoc dumps
+The pump trusts `get_particle_scraped_this_step` (buffer-cleared-per-step
+semantics) every step; the ladder only ever reads accumulated openPMD scrape
+dumps after the run. No rung checks the two agree.
+*Closed in migration:* `analyze.py` adds a `scrape_charge_consistency` gate —
+cumulative CSV ledger charge vs openPMD scrape totals must agree to ≤ 2 %.
+
+### G6 — Beam + ambient plasma never coexist below the capstone
+Emitter rungs are vacuum; collector rungs are beamless. Beam–plasma coupling
+(neutralization dynamics, plume potential structure, beam-driven sheath
+asymmetry) first appears at the top. This is inherent to the ladder topology —
+it is exactly why the capstone's evidence kind is *system integration
+regression*, not analytic verification. No cheaper rung can close it.
+
+### G7 — Sheath containment is an extrapolation, not a repeat
+`collector.biased_10v` gates containment for a +10 V pinned sphere in an
+11 λ_De box. The capstone floats to ~+17 V body (cathode −183 V, but enclosed)
+in a 15 λ_De box with an exhaust plume crossing z_hi. Same metric, new regime.
+*Mitigation:* the capstone gates edge-\|φ\| itself (≤ 1 V).
+
+### G8 — Steady state is a finite-time equilibrium on the ion clock
+The capstone's 800 ns plateau still has non-zero late dφ/dt (the analysis
+prints it honestly); collectors showed ion-clock relaxation takes ~2 µs for
+this plasma. The float200 regression numbers are therefore an 800 ns snapshot,
+not a demonstrated stationary state. Ties to refactor-plan **C6** — a
+stationarity gate is Phase 5 work, and the capstone tail metrics inherit that
+caveat.
+
+### G9 — Acceptance gates are self-referential regression values
+escape ≥ 95 %, F_beam = 13.6 nN ± 15 %, φ_body = 16 ± 4 V were read off the
+validated float200 run — they are calibration, per plan §9.3, and are
+disclosed as such in `acceptance.yaml` and the stage README. The only
+theory-anchored gates in the capstone are current balance, \|F_net\| ≤ F_beam,
+and edge containment.
+
+### G10 — Shared numerics that are *consistently unvalidated*
+- **Reduced ion mass 400 mₑ** everywhere (ladder + capstone): internally
+  consistent, but every real-O⁺ conclusion is an unvalidated extrapolation
+  (the contactor flags this too).
+- **dt regime**: capstone dt ≈ 5.0e-12 s (beam CFL) differs from every rung's
+  dt; each rung validated its own CFL/ωpe·dt, and the capstone's satisfies the
+  same invariants, but no rung ran ambient plasma at beam-scale dt.
+- **Single grid/PPC/seed** across the whole ladder — convergence evidence is
+  the refactor plan's **C12** (Phase 5); the capstone inherits it.
+
+### G11 — Dropped machinery (accepted trade-offs, not oversights)
+- Checkpoint/restart is not migrated (plan defers it): an interrupted capstone
+  run is FAILED and rerun (~GPU-hours at stake per interruption).
+- Probe/pinned mode, shroud, ram drift, Bz: research configs stay in
+  `electron_contactor`; the migrated stage is the float200 baseline only.
+
+## Priority summary
+
+1. **G1/G2** deserve a new intermediate rung (floating passive sphere,
+   analytic φ_f ≈ −0.36 V, plus a two-node Laplace check) — cheap runs that
+   would convert the capstone's two core mechanisms from lineage-validated to
+   ladder-validated. Proposed IDs: `collector.floating` and
+   `emitter.two_node_eb`.
+2. **G3** would be closed by one extra `emitter.holed_anode` scenario at
+   200 V / 4.7 mm-gap-equivalent / rms 2.6e5 / ppc_beam 16.
+3. **G5** is closed by the new consistency gate in this migration.
+4. **G6–G10** are inherent or Phase 5 items; they are documented in the stage
+   README so the capstone's PASS is never over-claimed.
