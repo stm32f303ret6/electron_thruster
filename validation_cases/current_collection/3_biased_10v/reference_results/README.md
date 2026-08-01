@@ -1,23 +1,12 @@
 # reference results — collector.biased_10v
 
-**None committed yet.** This stage's simulation is GPU-only (~2-4.5 h on an RTX
-3060; the ambient-plasma particle counts make CPU infeasible), so no verified
-run+analysis has been produced in the current refactor.
+`20260801T094632Z_503c1220/` is the curated snapshot of the first verified run
+of the migrated stage: **PASS on all 4 gates** — I_e/I_OML = 0.8090 (the
+pre-refactor GPU baseline measured 0.809), far density 4.6 % low, quasineutral,
+and THE gate to watch here — the thick +10 V sheath contained (edge |φ| =
+3 mV). Produced on the **CPU build** (12 OpenMP threads, ~80 min); GPU baseline
+numbers live in `../../../_baseline_phase0/current_collection/3_biased_10v/`.
 
-To create the reference result once a GPU is available:
-
-```bash
-conda activate warpx-cpu-mpich-dev
-python simulation.py
-python analyze.py --run outputs/<run-id> --policy acceptance.yaml   # must PASS
-```
-
-then copy that analysis's `metrics.json`, `verdict.json`,
-`acceptance_used.yaml`, the run `manifest.json`, and the key figures/CSV here,
-alongside a `REFERENCE.md` recording the run id, case hash, policy id/hash, git
-commit, and WarpX version (see the emitter stages' reference_results for the
-exact shape).
-
-Until then, compare against the **committed baseline** numbers in
-`../../_baseline_phase0/current_collection/3_biased_10v/results/` — those were produced by
-the pre-refactor code and the migrated deck reproduces the physics verbatim.
+The machine-readable record is `metrics.json` + `verdict.json` in the
+snapshot; `REFERENCE.md` there carries the full provenance. A reference result
+is read only for comparison; it never makes `simulation.py` skip a run.
