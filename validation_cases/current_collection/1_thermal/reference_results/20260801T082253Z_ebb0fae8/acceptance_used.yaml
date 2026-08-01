@@ -1,0 +1,63 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for collector.thermal (sphere at 0 V).
+#
+# At plasma potential the collected current of each species is the EXACT
+# one-sided thermal flux law -- no sheath model, no free parameter -- so
+# this stage is an analytic verification.  Metrics are computed by
+# analyze.py from the frozen config of a COMPLETE run; this file supplies
+# only the tolerances.  Tolerance rationale is in README.md.
+#
+# Changing any tolerance requires a new policy_id; every verdict records
+# this file's SHA-256.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: collector.thermal.v1
+stage_id: collector.thermal
+evidence_kind: analytic_verification
+
+gates:
+  # I_e == exact thermal-flux law (shot noise ~2%, EB facet ~1-2%).
+  - id: electron_current_matches_thermal
+    required: true
+    metric: electron_current_over_th
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.05
+
+  # I_i == I_th_i (ions ~24x noisier and ion-clock slow -> looser).
+  - id: ion_current_matches_thermal
+    required: true
+    metric: ion_current_over_th
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.10
+
+  # I_e/I_i == sqrt((mi/me)(Te/Ti)) = 23.74 (area/density-free).
+  - id: species_ratio_matches_theory
+    required: true
+    metric: species_ratio_over_theory
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.08
+
+  # Far-shell density == n0 (checks the flux reservoir; 13.1 cells/lambda_De).
+  - id: far_density_matches_n0
+    required: true
+    metric: far_density_e_over_n0
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.05
+
+  # Far-shell quasineutrality.
+  - id: far_field_quasineutral
+    required: true
+    metric: quasineutrality
+    comparison: at_most
+    maximum: 0.02
+
+  # No spurious wall sheath at the open boundaries.
+  - id: no_spurious_edge_sheath
+    required: true
+    metric: edge_phi_max_V
+    comparison: at_most
+    maximum: 0.2
