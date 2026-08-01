@@ -1,0 +1,120 @@
+{
+  "analysis_id": "20260801T094341Z_fe1c00b4",
+  "metrics": [
+    {
+      "id": "electron_current_A",
+      "status": "OK",
+      "value": 2.4276105880279294e-06,
+      "unit": "A",
+      "uncertainty": 5.239318199234231e-09,
+      "sample_count": 40,
+      "window": {
+        "start_iteration": 61000,
+        "end_iteration": 100000
+      },
+      "source": "scrape/particles_at_eb electrons"
+    },
+    {
+      "id": "ion_current_A",
+      "status": "OK",
+      "value": 0.0,
+      "unit": "A",
+      "uncertainty": 0.0,
+      "sample_count": 40,
+      "window": {
+        "start_iteration": 61000,
+        "end_iteration": 100000
+      },
+      "source": "scrape/particles_at_eb ions"
+    },
+    {
+      "id": "electron_current_over_th",
+      "status": "OK",
+      "value": 23.35887954982446,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 61000,
+        "end_iteration": 100000
+      },
+      "source": "I_e / I_th_e (exact thermal-flux law)"
+    },
+    {
+      "id": "electron_current_over_oml",
+      "status": "OK",
+      "value": 0.8525791051259854,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 61000,
+        "end_iteration": 100000
+      },
+      "source": "I_e / OML ceiling"
+    },
+    {
+      "id": "ion_current_over_th",
+      "status": "OK",
+      "value": 0.0,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 61000,
+        "end_iteration": 100000
+      },
+      "source": "I_i / I_th_i"
+    },
+    {
+      "id": "species_ratio_over_theory",
+      "status": "ERROR",
+      "value": null,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "(I_e/I_i)/sqrt((mi/me)(Te/Ti)); theory=23.738"
+    },
+    {
+      "id": "far_density_e_over_n0",
+      "status": "OK",
+      "value": 0.9698620034015231,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "volume-weighted n_e over the far shell / n0"
+    },
+    {
+      "id": "quasineutrality",
+      "status": "OK",
+      "value": 0.00212988395490361,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "far-shell |n_e - n_i| / n0"
+    },
+    {
+      "id": "edge_phi_max_V",
+      "status": "OK",
+      "value": 0.0026839204040976054,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "max |phi| a few cells inside the open boundaries"
+    },
+    {
+      "id": "sheath_radius_mm",
+      "status": "OK",
+      "value": 4.122795603233774,
+      "unit": "mm",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "outermost r where |phi| = kTe/e at the midplane"
+    }
+  ]
+}
