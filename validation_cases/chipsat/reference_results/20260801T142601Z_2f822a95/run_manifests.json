@@ -1,0 +1,40 @@
+{
+  "20260801T142601Z_2f822a95": {
+    "schema_version": 1,
+    "run_id": "20260801T142601Z_2f822a95",
+    "stage_id": "capstone.floating_body",
+    "scenario": null,
+    "status": "COMPLETE",
+    "created_at_utc": "2026-08-01T14:26:01Z",
+    "completed_at_utc": "2026-08-01T20:46:42Z",
+    "case_sha256": "2f822a959f20e8f53d719f5bd48b39da6f2acd20652508d8c262fc0a7c4e0643",
+    "study_sha256": null,
+    "git_commit": "6de15e8a06a822a9968ce39ba1a3b17d5c6dc70d",
+    "git_dirty": false,
+    "python_version": "3.12.13",
+    "warpx_version": "26.5",
+    "mpi_ranks": 1,
+    "omp_threads": 14,
+    "random_seed": 42,
+    "expected_final_iteration": 159160,
+    "observed_final_iteration": 159160,
+    "artifacts": [
+      {
+        "path": "diags/fields/*.h5",
+        "bytes": 302421576,
+        "files": 41
+      },
+      {
+        "path": "diags/contactor_log.csv",
+        "bytes": 304995,
+        "files": 1
+      },
+      {
+        "path": "diags/reducedfiles/*.txt",
+        "bytes": 311174,
+        "files": 1
+      }
+    ],
+    "error": null
+  }
+}

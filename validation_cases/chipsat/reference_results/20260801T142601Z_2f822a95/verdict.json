@@ -1,0 +1,73 @@
+{
+  "stage_id": "capstone.floating_body",
+  "policy_id": "capstone.floating_body.v1",
+  "status": "PASS",
+  "exit_code": 0,
+  "detail": "all 7 required gate(s) passed",
+  "gates": [
+    {
+      "id": "beam_escapes",
+      "status": "PASS",
+      "required": true,
+      "metric": "escape_fraction_pct",
+      "comparison": "at_least",
+      "value": 98.43638401253918,
+      "detail": "98.4364 >= 95"
+    },
+    {
+      "id": "thrust_matches_float200",
+      "status": "PASS",
+      "required": true,
+      "metric": "f_beam_nN",
+      "comparison": "abs_within",
+      "value": 13.651711504702194,
+      "detail": "13.6517 |x - 13.6| <= 2.04"
+    },
+    {
+      "id": "body_floats_to_float200_potential",
+      "status": "PASS",
+      "required": true,
+      "metric": "phi_body_V",
+      "comparison": "abs_within",
+      "value": 16.976759467084637,
+      "detail": "16.9768 |x - 16| <= 4"
+    },
+    {
+      "id": "steady_current_balance",
+      "status": "PASS",
+      "required": true,
+      "metric": "current_balance",
+      "comparison": "at_most",
+      "value": 0.03165307999527976,
+      "detail": "0.0316531 <= 0.05"
+    },
+    {
+      "id": "momentum_sanity_bound",
+      "status": "PASS",
+      "required": true,
+      "metric": "f_net_over_f_beam",
+      "comparison": "at_most",
+      "value": 0.003546041947587557,
+      "detail": "0.00354604 <= 1"
+    },
+    {
+      "id": "sheath_and_plume_contained",
+      "status": "PASS",
+      "required": true,
+      "metric": "edge_phi_max_V",
+      "comparison": "at_most",
+      "value": 0.03760296249213637,
+      "detail": "0.037603 <= 1"
+    },
+    {
+      "id": "scrape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "scrape_charge_consistency",
+      "comparison": "at_most",
+      "value": 2.7498139461168387e-09,
+      "detail": "2.74981e-09 <= 0.02"
+    }
+  ],
+  "analysis_id": "20260801T204714Z_b3e25892"
+}
