@@ -131,7 +131,10 @@ Phase 5 item (plan C6).
    EB rewrite → reservoir injection → CSV → COMPLETE → analyze (gates will
    correctly FAIL on a non-equilibrated smoke — that is the fail-closed
    machinery working, not a defect).
-4. **Full parity run requires the GPU build** (~160 k steps at 200×440,
-   ≥ 3 M macroparticles): rerun the baseline config, require the acceptance
-   policy to PASS, then populate `reference_results/`. Until then the stage is
-   marked implemented-but-unvalidated in its README.
+4. **Full parity run — DONE** (2026-08-01, run `20260801T142601Z_2f822a95`):
+   the baseline completed in 6.34 h on the **CPU build** (14 threads,
+   0.14 s/step — the deck is callback-bound, so CPU ≈ RTX 3060) and PASSed
+   all 7 acceptance gates, reproducing the float200 anchors (escape 98.44 %,
+   F_beam 13.65 nN, φ_body +16.98 V, exhaust 147.5 eV). `reference_results/`
+   is populated; the 6-stage suite verdict incl. the capstone cross-check is
+   `suite_results/20260801T204741Z`.
