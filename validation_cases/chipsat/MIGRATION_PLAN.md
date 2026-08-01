@@ -1,9 +1,9 @@
 # Migration plan: electron_contactor capstone → `capstone.floating_body`
 
-This documents how the validated **float200 chipsat capstone** from
-`~/Desktop/repos/warpequisd/electron_contactor` is migrated into this repo as
-the top rung of the validation ladder, following the stage contract of
-`../ARCHITECTURE_REFACTOR_PLAN.md`. Companion document:
+This documents how the validated **float200 chipsat capstone** from the
+`electron_contactor` project (external, not part of this repository) is
+migrated into this repo as the top rung of the validation ladder, following
+the stage contract of `../ARCHITECTURE_REFACTOR_PLAN.md`. Companion document:
 `VALIDATION_GAPS.md` — what the lower rungs do and do **not** validate about
 this stage.
 

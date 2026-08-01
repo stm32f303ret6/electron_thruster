@@ -113,12 +113,14 @@ def in_domain_weight(diags: str):
 # ======================================================================
 
 def steady_currents(s, cfg):
-    """(dump_steps, {key: I[A]}, {key: steady_A}) per boundary."""
+    """(dump_steps, {key: I[A]}, {key: steady_A}) per boundary, over the
+    complete configured scrape grid (plan section 10 rule 1), not just dumps
+    that happened to hold a hit -- a genuinely empty interval is a recorded
+    zero rather than a missing bin."""
+    steps = np.arange(cfg.scrape_period, cfg.max_steps + 1, cfg.scrape_period)
     if s["w"].size == 0:
-        z = np.array([])
-        return z, {k: z for k, _ in _TARGETS}, {k: float("nan") for k, _ in _TARGETS}
-    steps = np.unique(s["it"])
-    steps = steps[steps > 0]
+        z = np.zeros_like(steps, dtype=float)
+        return steps, {k: z for k, _ in _TARGETS}, {k: 0.0 for k, _ in _TARGETS}
     hist, steady = {}, {}
     for key, bnd in _TARGETS:
         m = s["bnd"] == bnd

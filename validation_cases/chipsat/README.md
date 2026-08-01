@@ -1,9 +1,10 @@
 # capstone.floating_body — the chipsat capstone
 
 The top rung: emitter + collector physics in one self-consistent system.
-Migrated verbatim from the validated **float200** baseline of
-`~/Desktop/repos/warpequisd/electron_contactor` (see `MIGRATION_PLAN.md`; the
-audit of what the lower rungs do and do not validate is `VALIDATION_GAPS.md`).
+Migrated verbatim from the validated **float200** baseline of the
+`electron_contactor` project (external, not part of this repository; see
+`MIGRATION_PLAN.md`; the audit of what the lower rungs do and do not validate
+is `VALIDATION_GAPS.md`).
 
 ## Physical system
 
@@ -98,7 +99,7 @@ is no checkpoint/restart (an interrupted run is rerun from scratch).
 
 ## Gate definitions and tolerance rationale
 
-`acceptance.yaml` (`policy_id: capstone.floating_body.v1`):
+`acceptance.yaml` (`policy_id: capstone.floating_body.v2`):
 
 | gate (metric) | bound | provenance |
 |---|---|---|
@@ -108,7 +109,8 @@ is no checkpoint/restart (an interrupted run is rerun from scratch).
 | `current_balance` | ≤ 0.05 | steady-state identity (theory) |
 | `f_net_over_f_beam` | ≤ 1.0 | momentum bound (theory) |
 | `edge_phi_max_V` | ≤ 1.0 V | containment (collector-rung style) |
-| `scrape_charge_consistency` | ≤ 0.02 | ledger-vs-dump cross-check (closes gap G5) |
+| `scrape_charge_consistency` | ≤ 0.02 | ambient-e ledger-vs-dump cross-check (closes gap G5) |
+| `scrape_charge_consistency_beam_escape` | ≤ 0.02 | beam-escape ledger-vs-dump cross-check (closes gap G5 for the dominant, most complex charge-pump term) |
 
 Reported, never gated: mean exhaust KE (~146 eV anchor), the energy ledger
 (injection-plane φ reconciliation), late dφ/dt (V/ns), far-shell density

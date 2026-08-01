@@ -208,9 +208,14 @@ def compute_metrics(cfg: Config, evidence: lc.LoadedRun, tail_frac: float):
 
     # ledger-vs-dump charge consistency (closes VALIDATION_GAPS.md G5): the
     # charge pump trusts per-step scrape buffers; the openPMD dumps accumulate
-    # the same scrapes independently.  Compare the largest channel (ambient
-    # electrons on the EB).  The CSV misses at most the final partial window
-    # (< LOG_EVERY steps ~ 0.06% of the run), far inside the gate.
+    # the same scrapes independently.  Check the largest ambient channel
+    # (electrons on the EB) and, separately, the beam-escape channel -- the
+    # dominant term in phi_body's charge budget (~98.5% of the pump signal)
+    # and the most complex telescoping accounting (dW_beam/beam_escape vs.
+    # amb_e_coll/amb_i_coll in FloatingBody.step), so it is the one most
+    # likely to hide a bug if left unchecked.  The CSV misses at most the
+    # final partial window (< LOG_EVERY steps ~ 0.06% of the run), far
+    # inside the gate.
     totals = scraped_weight_totals(diags)
     q_pmd = E * totals.get((AMB_E, "eb"), 0.0)
     q_csv = csv_charge(d, "I_amb_e", cfg.dt)
@@ -218,6 +223,15 @@ def compute_metrics(cfg: Config, evidence: lc.LoadedRun, tail_frac: float):
     metrics["scrape_charge_consistency"] = lc.Metric.measure(
         "scrape_charge_consistency", consistency, "-",
         source="ambient-e EB charge: CSV ledger integral vs openPMD scrape total")
+
+    q_pmd_beam = E * sum(totals.get((BEAM, b), 0.0) for b in ("zhi", "zlo", "xhi"))
+    q_csv_beam = csv_charge(d, "I_escape", cfg.dt)
+    beam_consistency = (abs(q_csv_beam - q_pmd_beam) / q_pmd_beam
+                        if q_pmd_beam > 0 else float("nan"))
+    metrics["scrape_charge_consistency_beam_escape"] = lc.Metric.measure(
+        "scrape_charge_consistency_beam_escape", beam_consistency, "-",
+        source="beam-escape charge: CSV ledger I_escape integral vs "
+               "openPMD zhi+zlo+xhi scrape total")
 
     # ----- reported-only quantities (never gated here) -----
     ledger = energy_ledger(cfg, ts, tail_frac)
@@ -234,7 +248,8 @@ def compute_metrics(cfg: Config, evidence: lc.LoadedRun, tail_frac: float):
         source="-phi(injection plane) from tail field dumps (REPORTED)")
 
     extra = dict(d=d, s=s, ledger=ledger, ke_ideal=ke_ideal, ts=ts,
-                 totals=totals, q_csv=q_csv, q_pmd=q_pmd)
+                 totals=totals, q_csv=q_csv, q_pmd=q_pmd,
+                 q_csv_beam=q_csv_beam, q_pmd_beam=q_pmd_beam)
     return metrics, extra
 
 
@@ -338,6 +353,8 @@ def _print_verdict(verdict: lc.Verdict, extra) -> None:
           f"ideal (V_GAP - phi_body) = {extra['ke_ideal']:.2f} eV")
     print(f"  ledger-vs-dump ambient-e charge: CSV {extra['q_csv']:.4e} C "
           f"vs openPMD {extra['q_pmd']:.4e} C")
+    print(f"  ledger-vs-dump beam-escape charge: CSV {extra['q_csv_beam']:.4e} C "
+          f"vs openPMD {extra['q_pmd_beam']:.4e} C")
     print("=" * 72)
     print(f"VALIDATION GATES  [{verdict.stage_id}]  policy {verdict.policy_id}")
     print("=" * 72)
