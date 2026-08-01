@@ -75,9 +75,12 @@ asserts the frozen capstone plasma/dx/ppc hash-match `collector.thermal`'s.
 
 ## Run cost
 
-**GPU-scale**: 159 160 steps at dt ≈ 5.0 ps (t_end 800 ns), 200×440 grid,
-~3 M ambient macroparticles. Order hours on an RTX 3060 (the GPU build); CPU
-is infeasible for the full run. Run ONE WarpX case at a time.
+159 160 steps at dt ≈ 5.0 ps (t_end 800 ns), 200×440 grid, ~3 M ambient
+macroparticles. **Measured: 6.34 h on the CPU build (14 OpenMP threads,
+0.14 s/step)** — comparable to ~6 h on an RTX 3060 with the GPU build, because
+this deck is *callback-bound*: the per-step Python observer (scrape-buffer
+reads + `set_potential_on_eb` rewrite) forces a host↔device round-trip every
+step, so the GPU never gets to stretch its legs. Run ONE WarpX case at a time.
 
 ## Commands
 
@@ -123,8 +126,13 @@ Reported, never gated: mean exhaust KE (~146 eV anchor), the energy ledger
 
 ## Status
 
-**Implemented and unit-tested; not yet parity-validated.** The full baseline
-run needs the GPU build; until a run PASSes this policy and populates
-`reference_results/`, treat the stage as provisional. The float200 numbers in
-this README come from the electron_contactor lineage, not from a run of this
-migrated deck.
+**Parity-validated.** The full baseline ran on 2026-08-01 (run
+`20260801T142601Z_2f822a95`, 6.34 h CPU) and **PASSed all 7 gates**,
+reproducing the float200 anchors: escape 98.44 % (anchor ~98.5), F_beam
+13.65 nN (13.6), φ_body +16.98 V (+16), exhaust KE 147.5 eV (~146; the
+energy ledger closes to 0.6 eV), current balance 3.2 %, edge |φ| 38 mV,
+ledger-vs-dump consistency 3e-9. The verified snapshot is in
+`reference_results/`; the full-suite verdict (all 6 stages + all cross-stage
+checks PASS) is suite `20260801T204741Z`. Scientific caveats (finite-time
+equilibrium, single grid/PPC/seed, Phase 5 items) still apply as documented
+above and in `VALIDATION_GAPS.md`.

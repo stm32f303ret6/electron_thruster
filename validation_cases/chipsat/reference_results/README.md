@@ -1,23 +1,23 @@
 # reference results — capstone.floating_body
 
-**None committed yet.** The full baseline run is GPU-scale (~159 k steps,
-200×440 grid, ~3 M ambient macroparticles; order hours on an RTX 3060 with the
-GPU build). The migrated deck has passed its unit tests and a reduced CPU
-smoke of the full lifecycle, but no parity run of the float200 baseline has
-been produced by THIS deck yet.
+`20260801T142601Z_2f822a95/` is the curated snapshot of the **float200 parity
+run** of the migrated deck: full baseline (159 160 steps, 800 ns, 200×440,
+~3 M macroparticles), completed in **6.34 h on the CPU build** (14 OpenMP
+threads), **PASS on all 7 gates**:
 
-To create the reference result once the GPU build is available:
+| quantity | float200 anchor | this run |
+|---|---|---|
+| escape fraction | ~98.5 % | 98.44 % |
+| F_beam | ~13.6 nN | 13.65 nN |
+| φ_body | ~+16 V | +16.98 V |
+| exhaust KE (reported) | ~146 eV | 147.5 eV (ledger closes to 0.6 eV) |
+| current balance | ≤ 5 % | 3.2 % |
+| edge \|φ\| | ≤ 1 V | 38 mV |
+| ledger-vs-dump consistency | ≤ 2 % | 2.7e-9 |
 
-```bash
-python simulation.py                                     # baseline config.yaml
-python analyze.py --run outputs/<run-id> --policy acceptance.yaml   # must PASS
-```
-
-then copy that analysis's `metrics.json`, `verdict.json`,
-`acceptance_used.yaml`, the run `manifest.json`, and the four figures here
-with a `REFERENCE.md` recording run id, case hash, policy id/hash, git commit,
-and WarpX version (see the emitter stages' reference_results for the shape).
-
-Until then, the float200 anchors quoted in `README.md` come from the
-electron_contactor lineage (`~/Desktop/repos/warpequisd/electron_contactor`,
-its `results/` and `PAPER_DRAFT.md`), not from a run of this migrated deck.
+The machine-readable record is `metrics.json` + `verdict.json`; `REFERENCE.md`
+carries the full provenance (run id, case hash, policy id/hash, git commit,
+WarpX version). A reference result is read only for comparison; it never makes
+`simulation.py` skip a run. Scientific caveats (finite-time equilibrium on the
+ion clock, single grid/PPC/seed, reduced ion mass) are documented in the stage
+README and `../VALIDATION_GAPS.md`.
