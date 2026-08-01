@@ -15,7 +15,8 @@ current_collection/              COLLECTOR side (ambient plasma)
   1_thermal           collector.thermal          sphere at 0 V, exact    (~25-50 min GPU)
   2_biased_3v         collector.biased_3v        OML ceiling, chi=26.4   (~1-2 h GPU)
   3_biased_10v        collector.biased_10v       sheath growth, chi=88   (~2-4.5 h GPU)
-(future) chipsat      capstone.floating_body     emitter + collector
+chipsat/              CAPSTONE (emitter + collector, floating body)
+  chipsat             capstone.floating_body     float200 regression     (hours, GPU)
 ```
 
 ## Architecture (see `ARCHITECTURE_REFACTOR_PLAN.md`)
@@ -102,9 +103,12 @@ carries its own copies). No automatic garbage collection.
 
 **Milestone A (structural architecture, Phases 0–4): implemented.** The two
 emitter stages run and pass end-to-end on CPU, reproducing the pre-refactor
-baseline numbers bit-for-bit. The three collector stages are fully migrated and
-unit-tested but need a GPU to run (25 min – 4.5 h each). The suite stays
-**scientifically provisional** — Milestone B (Phase 5: stationarity gates,
-zero-bin accounting, consistent ensembles, corrected Child-Langmuir / Poisson /
-OML / sheath narratives, convergence sweeps) is **not yet done**. See
-`ARCHITECTURE_REFACTOR_PLAN.md` §13 (C1–C12) for the open scientific items.
+baseline numbers bit-for-bit; the collector stages are migrated, unit-tested,
+and runnable. The **chipsat capstone** (`capstone.floating_body`) is migrated
+from the validated electron_contactor float200 baseline — see
+`chipsat/MIGRATION_PLAN.md` and `chipsat/VALIDATION_GAPS.md` for what the
+ladder does and does not prove about it; its full parity run needs the GPU
+build. The suite stays **scientifically provisional** — Milestone B (Phase 5:
+stationarity gates, zero-bin accounting, consistent ensembles, corrected
+Child-Langmuir / Poisson / OML / sheath narratives, convergence sweeps) is
+**not yet done**. See `ARCHITECTURE_REFACTOR_PLAN.md` §13 (C1–C12).

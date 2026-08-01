@@ -43,6 +43,9 @@ STAGES: tuple[Stage, ...] = (
     Stage("collector.biased_10v",
           Path("current_collection/3_biased_10v"),
           requires=("collector.biased_3v",)),
+    Stage("capstone.floating_body",
+          Path("chipsat"),
+          requires=("emitter.holed_anode", "collector.biased_10v")),
 )
 
 # Fast lookups used by the runner and the tests.

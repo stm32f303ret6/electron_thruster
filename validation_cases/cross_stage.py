@@ -148,8 +148,35 @@ def _emitter_transmission(results, root) -> dict:
         f"(hole clips only the thermal tail)")
 
 
+def _capstone_config_inheritance(results, root) -> dict:
+    """The chipsat capstone must ride on the exact configuration the collector
+    rungs validated: same plasma row, same cell size, same ambient ppc."""
+    if not (_stage_passed(results, "capstone.floating_body")
+            and _stage_passed(results, "collector.thermal")):
+        return _result("capstone_inherits_validated_configuration", SKIP,
+                       "capstone and collector.thermal not both passed")
+    cap = _run_config(results, "capstone.floating_body")
+    col = _run_config(results, "collector.thermal")
+    if cap is None or col is None:
+        return _result("capstone_inherits_validated_configuration", SKIP,
+                       "frozen configs unavailable")
+    # round dx to nm so a last-ulp division difference cannot break the hash
+    cap_key = lc.config_sha256({"plasma": cap["plasma"],
+                                "dx": round(cap["numerics"]["dx"], 9),
+                                "ppc": cap["numerics"]["ppc"]})
+    col_key = lc.config_sha256({"plasma": col["plasma"],
+                                "dx": round(col["geometry"]["r_max"]
+                                            / col["geometry"]["n_r"], 9),
+                                "ppc": col["numerics"]["ppc"]})
+    ok = cap_key == col_key
+    return _result(
+        "capstone_inherits_validated_configuration", PASS if ok else FAIL,
+        "capstone plasma/dx/ppc " + ("==" if ok else "!=")
+        + " collector.thermal's validated configuration")
+
+
 _CHECKS = (_collector_current_trend, _sheath_radius_ordering, _shared_plasma,
-           _emitter_transmission)
+           _emitter_transmission, _capstone_config_inheritance)
 
 
 def evaluate(results: dict, root: Path) -> list[dict]:

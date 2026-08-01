@@ -1,0 +1,64 @@
+{
+  "stage_id": "collector.thermal",
+  "policy_id": "collector.thermal.v1",
+  "status": "PASS",
+  "exit_code": 0,
+  "detail": "all 6 required gate(s) passed",
+  "gates": [
+    {
+      "id": "electron_current_matches_thermal",
+      "status": "PASS",
+      "required": true,
+      "metric": "electron_current_over_th",
+      "comparison": "abs_within",
+      "value": 0.9921416935593154,
+      "detail": "0.992142 |x - 1| <= 0.05"
+    },
+    {
+      "id": "ion_current_matches_thermal",
+      "status": "PASS",
+      "required": true,
+      "metric": "ion_current_over_th",
+      "comparison": "abs_within",
+      "value": 1.0095522498139144,
+      "detail": "1.00955 |x - 1| <= 0.1"
+    },
+    {
+      "id": "species_ratio_matches_theory",
+      "status": "PASS",
+      "required": true,
+      "metric": "species_ratio_over_theory",
+      "comparison": "abs_within",
+      "value": 0.9827541801250917,
+      "detail": "0.982754 |x - 1| <= 0.08"
+    },
+    {
+      "id": "far_density_matches_n0",
+      "status": "PASS",
+      "required": true,
+      "metric": "far_density_e_over_n0",
+      "comparison": "abs_within",
+      "value": 0.9969991575541438,
+      "detail": "0.996999 |x - 1| <= 0.05"
+    },
+    {
+      "id": "far_field_quasineutral",
+      "status": "PASS",
+      "required": true,
+      "metric": "quasineutrality",
+      "comparison": "at_most",
+      "value": 0.005062645291714134,
+      "detail": "0.00506265 <= 0.02"
+    },
+    {
+      "id": "no_spurious_edge_sheath",
+      "status": "PASS",
+      "required": true,
+      "metric": "edge_phi_max_V",
+      "comparison": "at_most",
+      "value": 0.002157035711005586,
+      "detail": "0.00215704 <= 0.2"
+    }
+  ],
+  "analysis_id": "20260801T083910Z_f38a61c0"
+}

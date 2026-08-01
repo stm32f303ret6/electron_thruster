@@ -1,23 +1,13 @@
 # reference results — collector.thermal
 
-**None committed yet.** This stage's simulation is GPU-only (~25-50 min on an RTX
-3060; the ambient-plasma particle counts make CPU infeasible), so no verified
-run+analysis has been produced in the current refactor.
+`20260801T082253Z_ebb0fae8/` is the curated snapshot of the first verified run
+of the migrated stage: **PASS on all 6 gates** (electron current within 0.8 %
+of the exact thermal-flux law, ion 1.0 %, species ratio 1.7 %, far density
+0.3 %, quasineutral, no edge sheath). Produced on the **CPU build**
+(10 OpenMP threads, ~16 min); the pre-refactor GPU baseline numbers live in
+`../../../_baseline_phase0/current_collection/1_thermal/results/`.
 
-To create the reference result once a GPU is available:
-
-```bash
-conda activate warpx-cpu-mpich-dev
-python simulation.py
-python analyze.py --run outputs/<run-id> --policy acceptance.yaml   # must PASS
-```
-
-then copy that analysis's `metrics.json`, `verdict.json`,
-`acceptance_used.yaml`, the run `manifest.json`, and the key figures/CSV here,
-alongside a `REFERENCE.md` recording the run id, case hash, policy id/hash, git
-commit, and WarpX version (see the emitter stages' reference_results for the
-exact shape).
-
-Until then, compare against the **committed baseline** numbers in
-`../../_baseline_phase0/current_collection/1_thermal/results/` — those were produced by
-the pre-refactor code and the migrated deck reproduces the physics verbatim.
+The machine-readable record is `metrics.json` + `verdict.json` in the
+snapshot; `REFERENCE.md` there carries the full provenance (run id, case hash,
+policy id/hash, git commit, WarpX version). A reference result is read only
+for comparison; its presence never makes `simulation.py` skip a run.
