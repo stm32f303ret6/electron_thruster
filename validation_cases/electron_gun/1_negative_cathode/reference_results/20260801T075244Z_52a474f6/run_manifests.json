@@ -1,0 +1,35 @@
+{
+  "20260801T075244Z_52a474f6": {
+    "schema_version": 1,
+    "run_id": "20260801T075244Z_52a474f6",
+    "stage_id": "emitter.negative_cathode",
+    "scenario": null,
+    "status": "COMPLETE",
+    "created_at_utc": "2026-08-01T07:52:44Z",
+    "completed_at_utc": "2026-08-01T07:55:27Z",
+    "case_sha256": "52a474f69f5d3acbd32f250bf7cfe72b04fbde2f4463acf8b0f723018264ac1e",
+    "study_sha256": null,
+    "git_commit": "444ecb8ee581c1a6016f177b5cd9c253ad92604e",
+    "git_dirty": true,
+    "python_version": "3.12.13",
+    "warpx_version": "26.5",
+    "mpi_ranks": 1,
+    "omp_threads": 4,
+    "random_seed": 42,
+    "expected_final_iteration": 4000,
+    "observed_final_iteration": 4000,
+    "artifacts": [
+      {
+        "path": "diags/fields/*.h5",
+        "bytes": 7405608,
+        "files": 51
+      },
+      {
+        "path": "diags/reducedfiles/beam_n.txt",
+        "bytes": 5712,
+        "files": 1
+      }
+    ],
+    "error": null
+  }
+}

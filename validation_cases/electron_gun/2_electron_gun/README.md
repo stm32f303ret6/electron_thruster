@@ -1,106 +1,124 @@
-# electron_gun validation case
+# emitter.holed_anode
 
-`1_negative_cathode` plus ONE new element: a grounded plate (the "anode")
-across the midplane with a hole on axis, modelled as an **embedded
-boundary** -- this rung is where the EB machinery and aperture-interception
-physics enter the ladder.  The -100 V cathode at z_min emits a prescribed
-beam (spot r < 0.5 mm); whatever clears the hole drifts field-free to the
-grounded collector at z_max.
+Holed-anode RZ gun: `emitter.negative_cathode` plus **one** new element — a
+grounded plate across the midplane with a hole on axis, modelled as an embedded
+boundary (EB). Read this one folder and you have the whole model.
 
-Because the plate is grounded, the full 100 V drop lives in the 1.9 mm
-cathode->anode gap and arrival KE stays ~99 eV in every scenario -- a clean
-energy-conservation gate that survives all current/hole changes.
+## Physical system
 
-This is the same physics as the chipsat capstone's lid aperture: its escape
-fraction was capped at ~30% by a 0.8 mm hole and restored to ~96% by a
-2.0 mm hole.  Here that lever is isolated and gated.
+The -100 V cathode at z_min emits a prescribed beam; a grounded plate
+(z ∈ [-0.1, +0.1] mm, r > hole) intercepts whatever misses the aperture, and the
+rest drifts to the grounded collector at z_max. Three scenarios demonstrate
+aperture transmission vs radial space charge:
 
-## The three scenarios (one YAML, three WarpX processes)
+| Scenario | Current | Hole radius | Expected behaviour |
+|---|---|---|---|
+| `A_low_current_small_hole` | 10 µA | 0.7 mm | stiff beam, ~all transmits; only the transverse **thermal tail** (~2–3%) clips on the plate |
+| `B_high_current_small_hole` | 400 µA | 0.7 mm | radial space charge blows the beam up; loss lands **on the plate** |
+| `C_high_current_big_hole` | 400 µA | 1.4 mm | widening the hole **restores** transmission |
 
-| scenario | current | % of I_CL | hole | demonstrates |
-|---|---|---|---|---|
-| A_low_current_small_hole  |  10 uA | 2.0%  | 0.7 mm | transmission of a stiff beam |
-| B_high_current_small_hole | 400 uA | 78.8% | 0.7 mm | space-charge blowup clips on the plate |
-| C_high_current_big_hole   | 400 uA | 78.8% | 1.4 mm | wider hole restores transmission |
+Each scenario runs in its **own WarpX process** (libwarpx cannot re-initialize),
+and is a **separate immutable run** whose `config_used.yaml` holds only that
+scenario's effective physics. Every run records the SHA-256 of this shared
+source study, so the cohort analysis can reject mixed configuration generations.
 
-Analytic anchors:
+### Included / excluded physics
 
-- **Child-Langmuir** for the 1.9 mm gap at 100 V over the 0.5 mm spot:
-  I_CL = 508 uA.  A is space-charge-free; B/C are at 79% -- strong radial
-  self-fields near the cathode (where the beam is still slow), but below
-  the virtual-cathode threshold, so the loss channel is RADIAL, onto the
-  plate (watch cath% for any reflected current).
-- **Thermal-tail clipping** (the surprise the first run taught us): the
-  launch distribution has kT = 0.25 eV per axis, and over the accelerated
-  transit t = d*sqrt(2m/(eV)) = 0.64 ns an electron drifts sideways
-  sigma_r = 0.135 mm.  The area-weighted Gaussian tail past the
-  (hole - birth radius) margin predicts ~2.6% interception for the 0.7 mm
-  hole at ANY low current -- the analyze script prints this estimate.  A
-  cold-beam ">= 99%" gate FAILED on real data (97.3% measured); the gate
-  was wrong, not the sim, and is now >= 96% with the estimate documented.
-- **Energy conservation**: collector KE = e*[phi(coll) - phi(emit plane)]
-  + 2kT_launch, with phi the self-consistent end-state field INTERPOLATED
-  to the emission plane (it sits exactly between two cell centres; on the
-  53 V/mm gap gradient nearest-cell sampling is off by +-1.3 eV -- the
-  same half-cell lesson as case 1).
+Same as `emitter.negative_cathode` (self-consistent electron space charge,
+prescribed flux emission, RZ electrostatics) plus the **embedded-boundary anode
+plate**. Excluded: emission physics, magnetic fields, collisions, ions.
 
-## Measured results (RTX 3060, 4000 steps each)
+### Boundary conditions
 
-See `results/transmission_electron_gun.png` and
-`results/summary_electron_gun.json`.
+Cathode (Dirichlet -100 V) / collector (Dirichlet 0 V) / radial wall (Neumann),
+all particle-absorbing, plus the **grounded EB anode plate** (`potential = 0 V`,
+particles saved at EB).
 
-| scenario | collector | anode plate | cathode/wall | collector KE (pred) | closure |
-|---|---|---|---|---|---|
-| A  10 uA, hole 0.7 mm | **97.28%** | 2.71% | 0 / 3e-7 | 97.90 eV (97.93) | +0.001% |
-| B 400 uA, hole 0.7 mm | **89.98%** | 10.04% | 0 / ~0 | 98.50 eV (98.53) | +0.001% |
-| C 400 uA, hole 1.4 mm | **100.01%** | 0.00% | 0 / ~0 | 98.82 eV (98.80) | +0.001% |
+## What this stage proves / does not prove
 
-All 12 gates PASS.  Readings:
+**Proves** (as a mechanism regression):
 
-- **A vs the thermal-tail estimate**: measured 2.71% vs the cold estimate
-  1.45% -- right order, and the excess is the physics the estimate ignores
-  (residual space charge at 2% of I_CL plus the diverging aperture-lens
-  field curving grazing electrons into the hole rim).
-- **B**: the 7.3 pp drop is ALL radial interception (cathode row stays
-  zero -- no virtual cathode at 79% of I_CL, as Child-Langmuir predicts).
-- **C**: widening the hole to 1.4 mm recovers 100.0% at the same 400 uA --
-  the same geometric lever that took the chipsat capstone's escape from
-  ~30% to ~96%.
-- **Collector KE rises A -> B -> C** (97.90 -> 98.50 -> 98.82 eV): more
-  beam space charge depresses the potential at the emission plane, so
-  electrons fall through a slightly larger drop.  The interpolated
-  energy-conservation prediction tracks each case to 0.03 eV.
+- The three-scenario transmission story: A transmits (≥96%, plate clip ≤4%); B
+  loses ≥3 pp of collector current with the loss **on the plate** (≥4%); C
+  restores transmission (≥98%) with an anode clip below B's.
+- Per-scenario **energy conservation** from the emission plane, using the
+  self-consistent end-state φ interpolated to emit_z (≤1.5 eV).
+- Per-scenario **particle-budget closure** (≤0.1%).
 
-## Layout
+**Does not prove**: a quantitative aperture-transmission law, virtual-cathode
+onset, or grid convergence. In particular the **planar Child-Langmuir** current
+(≈507 µA for the 1.9 mm gap over the 0.5 mm spot) is printed as a rough **scale
+only** — the geometry is non-planar, so it is *not* gated (plan issue C8; a true
+planar-anode sweep to locate reflection onset is deferred to Phase 5).
 
-```
-2_electron_gun/
-├── inputs/electron_gun.yaml    # ALL parameters incl. the scenario ladder
-├── run_electron_gun.py         # runs all pending scenarios (one process each;
-│                               #   a scenario with a config_used.yaml snapshot
-│                               #   is skipped -> safe to relaunch)
-├── analyze_electron_gun.py     # per-scenario plots + cross-scenario gates
-├── animate_electron_gun.py     # density/KE video per scenario
-├── outputs/diags_<scenario>/   # openPMD fields/particles/scrape + snapshot
-└── results/
-```
+### The thermal-tail story (disclosed calibration)
 
-## Run
+Scenario A's `≤4%` plate-clip bound is not cold-beam-tight: the first run used a
+cold-beam `≥99%` gate, **failed**, and taught us the beam carries a ~0.25 eV
+transverse temperature (σ_r ≈ 0.135 mm at the plate). The gate was then widened
+to admit that analytic thermal tail. This is disclosed calibration, not an
+independent prediction.
+
+## Upstream dependencies
+
+Requires **`emitter.negative_cathode`** (this stage adds only the EB plate to
+that validated diode).
+
+## Run cost
+
+Scenario A ≈ 3 min GPU; B and C are heavier (40× current → many more
+macroparticles). Budget ~10 min GPU for all three; substantially longer on CPU.
+
+## Commands
 
 ```bash
 conda activate warpx-cpu-mpich-dev
-python run_electron_gun.py       # ~3 min per scenario
-python analyze_electron_gun.py   # exit 0 = all gates pass
-python animate_electron_gun.py
+
+# one run per scenario (each prints its RUN_ID=...)
+python simulation.py --scenario A_low_current_small_hole
+python simulation.py --scenario B_high_current_small_hole
+python simulation.py --scenario C_high_current_big_hole
+
+# cohort analysis over the three COMPLETE runs (order does not matter)
+python analyze.py --runs outputs/<A-run> outputs/<B-run> outputs/<C-run> \
+    --policy acceptance.yaml
+#   exit 0 = all gates pass; 1 = a gate failed; 2 = analysis error / mixed cohort
+
+# optional per-scenario movie
+python animate.py --run outputs/<run-id>
+
+# unit tests (no WarpX): config/scenario resolution + policy wiring
+PYTHONNOUSERSITE=1 python -m pytest tests/ -q
 ```
 
-To redo one scenario, delete its `outputs/diags_<scenario>/` and relaunch.
+`analyze.py --runs` verifies all members are COMPLETE, share this stage and this
+study's SHA-256, and cover each scenario exactly once — an incompatible or
+incomplete cohort is exit 2, never a partial PASS.
 
-## Gates
+## Gate definitions and tolerance rationale
 
-Demonstration gates (directional, encode the narrative): A >= 96% collected
-with <= 4% on the plate; B at least 3 pp below A with the loss ON the plate;
-C >= 98% restored with less plate current than B.  Analytic gates (every
-scenario): energy conservation within 1.5 eV, particle-budget closure
-within 0.1%.  Gate tolerances live in the CURRENT `inputs/` YAML (policy),
-while scenario physics is read from each run's frozen snapshot.
+`acceptance.yaml` (`policy_id: emitter.holed_anode.v1`), 12 required gates:
+
+- `A_collector_transmits` ≥ 0.96, `A_anode_clip_is_thermal_tail_only` ≤ 0.04 —
+  stiff beam; the 4% admits the analytic thermal tail (see above).
+- `B_collector_drops_vs_A` ≥ 0.03, `B_loss_lands_on_anode` ≥ 0.04 — space-charge
+  loss shows up on the plate, not as cathode reflection.
+- `C_big_hole_restores_transmission` ≥ 0.98, `C_anode_clip_below_B` ≥ 0 — the
+  aperture, not reflection, was the limiter.
+- `{A,B,C}_collector_ke_conserved` |·| ≤ 1.5 eV — energy conservation.
+- `{A,B,C}_budget_closure` |·| ≤ 0.1% — conservation.
+
+Changing any tolerance requires a new `policy_id`; every verdict records this
+file's SHA-256.
+
+## Known numerical limitations
+
+- Single grid / PPC / seed; no convergence evidence (Phase 5).
+- The plate is a staircased EB at 0.05 mm resolution; sub-cell aperture-edge
+  effects are not resolved.
+- The KE prediction interpolates φ at the emission plane between cell centres
+  (±~1 eV on the gap gradient), inside the 1.5 eV gate.
+
+The machine-readable record for a cohort is its joint
+`results/joint_<hash>/<analysis-id>/` `metrics.json` + `verdict.json`; numbers
+in this README are illustrative.

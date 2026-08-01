@@ -1,0 +1,100 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for emitter.holed_anode (holed-anode gun).
+#
+# This is a MECHANISM-REGRESSION policy: it encodes the three-scenario
+# demonstration (aperture transmission vs radial space charge) as
+# executable gates, plus per-scenario energy conservation and
+# particle-budget closure.  Metrics are computed by analyze.py --runs over
+# a cohort of three COMPLETE runs (one per scenario) that share this
+# stage's source-study hash.
+#
+# The planar Child-Langmuir current is DELIBERATELY not gated here: the
+# geometry is non-planar, so I_CL is a printed scale only (plan C8).  The
+# scenario-A anode clip bound (<= 4%) accommodates the transverse thermal
+# tail; the first cold-beam ">=99%" gate FAILED and taught us the beam has
+# a ~0.25 eV transverse temperature -- documented in README, then re-gated.
+#
+# Changing any tolerance requires a new policy_id; every verdict records
+# this file's SHA-256.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: emitter.holed_anode.v1
+stage_id: emitter.holed_anode
+evidence_kind: mechanism_regression
+
+gates:
+  # A -- stiff low-current beam: nearly all transmits, only the thermal tail clips.
+  - id: A_collector_transmits
+    required: true
+    metric: A_low_current_small_hole__collector_fraction
+    comparison: at_least
+    minimum: 0.96
+  - id: A_anode_clip_is_thermal_tail_only
+    required: true
+    metric: A_low_current_small_hole__anode_fraction
+    comparison: at_most
+    maximum: 0.04
+
+  # B -- 40x current, same small hole: radial space charge drives loss onto the plate.
+  - id: B_collector_drops_vs_A
+    required: true
+    metric: collector_drop_A_to_B
+    comparison: at_least
+    minimum: 0.03
+  - id: B_loss_lands_on_anode
+    required: true
+    metric: B_high_current_small_hole__anode_fraction
+    comparison: at_least
+    minimum: 0.04
+
+  # C -- same current, bigger hole: transmission restored, anode clip below B's.
+  - id: C_big_hole_restores_transmission
+    required: true
+    metric: C_high_current_big_hole__collector_fraction
+    comparison: at_least
+    minimum: 0.98
+  - id: C_anode_clip_below_B
+    required: true
+    metric: anode_reduction_B_to_C
+    comparison: at_least
+    minimum: 0.0
+
+  # Per-scenario energy conservation from the emission plane (self-consistent phi).
+  - id: A_collector_ke_conserved
+    required: true
+    metric: A_low_current_small_hole__ke_error_eV
+    comparison: abs_within
+    target: 0.0
+    tolerance: 1.5
+  - id: B_collector_ke_conserved
+    required: true
+    metric: B_high_current_small_hole__ke_error_eV
+    comparison: abs_within
+    target: 0.0
+    tolerance: 1.5
+  - id: C_collector_ke_conserved
+    required: true
+    metric: C_high_current_big_hole__ke_error_eV
+    comparison: abs_within
+    target: 0.0
+    tolerance: 1.5
+
+  # Per-scenario particle-budget closure.
+  - id: A_budget_closure
+    required: true
+    metric: A_low_current_small_hole__budget_closure_pct
+    comparison: abs_within
+    target: 0.0
+    tolerance: 0.1
+  - id: B_budget_closure
+    required: true
+    metric: B_high_current_small_hole__budget_closure_pct
+    comparison: abs_within
+    target: 0.0
+    tolerance: 0.1
+  - id: C_budget_closure
+    required: true
+    metric: C_high_current_big_hole__budget_closure_pct
+    comparison: abs_within
+    target: 0.0
+    tolerance: 0.1

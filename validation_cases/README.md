@@ -1,55 +1,110 @@
 # validation_cases: the verification ladder to the chipsat
 
 Theory-anchored pre-simulations, in order of increasing physics, each gated
-against closed-form references (executable gates: every `analyze_*.py` exits
-0 only if all gates pass).  The ladder validates the CODE (WarpX RZ
+against closed-form references. The ladder validates the CODE (WarpX RZ
 electrostatics, EB, flux emission, scraping) and, deliberately, the
-CONFIGURATION the final chipsat case will use -- grid resolution, plasma
-row, ppc, emitted current, aperture geometry -- so that by the top rung
-every numerical choice has already passed a gate somewhere cheaper.
+CONFIGURATION the final chipsat case will use — grid resolution, plasma row,
+ppc, emitted current, aperture geometry — so that by the top rung every numerical
+choice has already passed a gate somewhere cheaper.
 
 ```
 electron_gun/                    EMITTER side (prescribed-current beams)
-  1_negative_cathode             plane diode, no EB          (~3 min GPU)
-  2_electron_gun                 + holed-anode plate (EB)    (~10 min GPU)
+  1_negative_cathode  emitter.negative_cathode   plane diode, no EB      (~3 min GPU)
+  2_electron_gun      emitter.holed_anode        + holed-anode plate     (~10 min GPU)
 current_collection/              COLLECTOR side (ambient plasma)
-  1_thermal                      sphere at 0 V, exact law    (~25-50 min GPU)
-  2_biased_3v                    OML ceiling, chi = 26.4     (~1-2 h GPU)
-  3_biased_10v                   sheath growth, chi = 88     (~2-4.5 h GPU)
-(final) chipsat                  emitter + collector, floating body
+  1_thermal           collector.thermal          sphere at 0 V, exact    (~25-50 min GPU)
+  2_biased_3v         collector.biased_3v        OML ceiling, chi=26.4   (~1-2 h GPU)
+  3_biased_10v        collector.biased_10v       sheath growth, chi=88   (~2-4.5 h GPU)
+(future) chipsat      capstone.floating_body     emitter + collector
 ```
 
-## What each rung proves
+## Architecture (see `ARCHITECTURE_REFACTOR_PLAN.md`)
 
-| rung | new physics | analytic gate anchors | chipsat parameter validated |
-|---|---|---|---|
-| 1_negative_cathode | space-charge beam, flux emission | Laplace ramp (35 uV match), energy conservation 99.25 eV, 100% transmission, budget closure | prescribed-current z-normal flux emission (calibrates to ~1.0) |
-| 2_electron_gun | embedded boundary, aperture interception | Child-Langmuir 507 uA scale, thermal-tail clip estimate, energy conservation through a holed plate | emit spot 0.5 mm + lid hole (the capstone's 0.8 -> 2.0 mm escape lever) |
-| 1_thermal | ambient plasma, EB sphere, flux reservoir | I_th exact for any convex probe; species ratio 23.74 | plasma row, dx = 0.15 mm (13.1 cells/lambda_De), ppc = 16 |
-| 2_biased_3v | attracting sheath | OML ceiling 2.847 uA (93% expected at a/lambda = 0.38) | biased-body collection physics |
-| 3_biased_10v | thick sheath | OML ceiling 9.249 uA + containment | domain-sizing rule (sheath inside rmax) |
+Two central decisions:
 
-## Architecture (every case identical)
+1. **Each stage is a self-contained folder** with its own complete PIC
+   simulation, config, physics helpers, analysis, animation, and tests. Physics
+   duplication between stages is deliberate: a reviewer reads one folder and
+   sees the whole model.
+2. **The non-physics plumbing** — run IDs, manifests, immutable directories,
+   strict JSON, gate evaluation — lives in ONE small shared module,
+   `ladder_contract.py`. It contains no physics, no `pywarpx`, no plotting.
 
-- `inputs/<case>.yaml` -- ALL parameters; no CLI arguments anywhere.
-- `run_<case>.py` -- zero-argument PICMI deck; writes `outputs/diags/` and,
-  only after a successful finish, copies the YAML to
-  `outputs/diags/config_used.yaml` (snapshot + finished-run marker).
-- `analyze_<case>.py` -- reads the SNAPSHOT (immune to later edits of
-  `inputs/`), writes plots/CSV/JSON to `results/`, prints the gate table,
-  exit 0/1.  Gate TOLERANCES are read from the current `inputs/` YAML:
-  physics comes from the snapshot, gating policy is analysis-time.
-- `animate_<case>.py` -- video to `results/`.
-- current_collection cases share `cc_common.py`; electron_gun/2 runs its
-  scenarios in separate WarpX processes (libwarpx cannot re-init).
+### Every stage folder
 
-## Ground rules
+```
+<stage>/
+  config.yaml        # physics/numerics (frozen + hashed per run)
+  acceptance.yaml    # gates + tolerances (analysis-time policy)
+  simulation.py      # the complete PIC deck + run lifecycle
+  helpers.py         # stage-local typed config + analytic references
+  analyze.py         # reads COMPLETE evidence -> metrics.json + verdict.json
+  animate.py         # presentation only (optional)
+  README.md          # what it proves / does not prove, gates, limitations
+  tests/             # config + analysis unit tests (no WarpX)
+  outputs/<run-id>/  # generated: immutable runs (git-ignored)
+  results/<run-id>/<analysis-id>/   # generated: immutable analyses (git-ignored)
+  reference_results/ # curated, committed artifacts (provenance + metrics)
+```
 
-- Run ONE WarpX case at a time; every deck caps its AMReX GPU arena so it
-  coexists with other GPU users.
-- Delete `outputs/diags/` before rerunning a case (stale openPMD iterations
-  mix).  electron_gun scenarios skip themselves if their snapshot exists.
-- Gates compare fields AT SAMPLED CELL CENTRES (never nominal coordinates:
-  a half-cell on a steep ramp dwarfs signal), gate stray currents as
-  FRACTIONS of emitted (one tail macroparticle breaks an exact zero), and
-  report SKIPPED gates in the verdict (a NaN must never look like a PASS).
+### Root
+
+```
+ladder_contract.py   # shared plumbing; unit-tested once in tests/
+ladder.py            # the literal stage list (visible membership)
+run_ladder.py        # subprocess orchestration + suite verdict
+cross_stage.py       # cross-stage checks (trends, orderings, shared params)
+tests/               # contract + repository-level tests
+suite_results/       # generated suite verdicts (git-ignored)
+```
+
+## The run / analysis lifecycle (fail closed)
+
+- Every `simulation.py` execution creates a **fresh immutable** `outputs/<run-id>/`
+  and is marked **COMPLETE only after** its artifacts and final iteration are
+  verified. Reruns never mix with old output; there is no marker file.
+- Every `analyze.py` run creates a **fresh immutable**
+  `results/<run-id>/<analysis-id>/`; re-analysis never overwrites. Analysis reads
+  the **frozen** `config_used.yaml`, never the live `config.yaml`.
+- Gates are **fail-closed**: a missing, non-finite, duplicate, or skipped
+  *required* gate is ERROR (exit 2), never a silent PASS; an empty policy is
+  ERROR. Exit codes: `0` all required pass, `1` a gate failed, `2` analysis
+  error / missing evidence / incompatible cohort / invalid policy.
+- JSON is strict (`allow_nan=False`; NaN/Inf rejected on read).
+
+## Commands
+
+```bash
+conda activate warpx-cpu-mpich-dev
+
+# one stage, by hand
+cd electron_gun/1_negative_cathode
+python simulation.py                                       # -> outputs/<run-id>/
+python analyze.py --run outputs/<run-id> --policy acceptance.yaml
+
+# the whole ladder (subprocess per stage; verdict-driven)
+python run_ladder.py --check                               # contract + topology only
+python run_ladder.py                                       # run + analyze every stage
+python run_ladder.py --stages emitter.negative_cathode emitter.holed_anode
+python run_ladder.py --analyze-only --stages collector.thermal  # re-analyze newest runs
+
+# tests (no WarpX). ~/.local has a broken 'dash' pytest plugin, so isolate it:
+PYTHONNOUSERSITE=1 python -m pytest tests/ -q               # root: contract + ladder
+cd electron_gun/1_negative_cathode && PYTHONNOUSERSITE=1 python -m pytest tests/ -q
+```
+
+Run ONE WarpX case at a time; each deck caps its AMReX arena so it coexists with
+other GPU users. Deleting any `outputs/<run-id>/` or `results/` subtree is always
+safe (nothing committed points into them except `reference_results/`, which
+carries its own copies). No automatic garbage collection.
+
+## Status
+
+**Milestone A (structural architecture, Phases 0–4): implemented.** The two
+emitter stages run and pass end-to-end on CPU, reproducing the pre-refactor
+baseline numbers bit-for-bit. The three collector stages are fully migrated and
+unit-tested but need a GPU to run (25 min – 4.5 h each). The suite stays
+**scientifically provisional** — Milestone B (Phase 5: stationarity gates,
+zero-bin accounting, consistent ensembles, corrected Child-Langmuir / Poisson /
+OML / sheath narratives, convergence sweeps) is **not yet done**. See
+`ARCHITECTURE_REFACTOR_PLAN.md` §13 (C1–C12) for the open scientific items.

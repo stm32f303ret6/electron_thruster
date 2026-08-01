@@ -1,57 +1,85 @@
-# 2_biased_3v: sphere at +3 V (chi = eV/kTe = 26.4)
+# collector.biased_3v — sphere at +3 V (χ = eV/kTe = 26.4)
 
-First biased rung.  For a sub-Debye attracting sphere the Orbit-Motion-
-Limited (OML) result bounds the electron current:
+A small attracting bias on the same sphere and plasma as `collector.thermal`.
+Read this one folder and you have the whole model.
 
-    I_OML = I_th * (1 + chi) = 0.10393 uA * 27.398 = 2.847 uA
+## Physical system
 
-OML is a CEILING, exact only as a/lambda_De -> 0.  At this case's
-a/lambda_De = 0.382 the electron_contactor OML study measured 93% of the
-ceiling, so the gate accepts [0.85, 1.05] -- above 1.05 would mean an
-injection bug, well below 0.85 a resolution/containment problem.
-
-Ions are Boltzmann-repelled by exp(-eV/kTi) ~ 7e-17: effectively zero.
-The measured ion trickle is the ion-clock start-up bias (ions already in
-the domain at t = 0 never climbed the barrier) -- reported, not gated.
-
-## Layout
+The 0.75 mm sphere (a/λ_De = 0.38) is held at **+3 V** in the chipsat capstone
+plasma. For a sub-Debye sphere the **Orbit-Motion-Limited (OML)** ceiling
+applies:
 
 ```
-2_biased_3v/
-├── inputs/2_biased_3v.yaml   # ALL parameters (no CLI arguments anywhere)
-├── run_2_biased_3v.py        # thin wrapper -> ../cc_common.py -> outputs/diags/
-├── analyze_2_biased_3v.py    # gates + plots -> results/   (exit 0 = PASS)
-├── animate_2_biased_3v.py    # phi + n_e video -> results/
-└── results/
+I_OML = I_th · (1 + χ) = 0.10393 µA · 27.40 = 2.847 µA
 ```
 
-## Gates
+OML is an **upper bound** approached only as a/λ_De → 0. At 0.38 the
+electron_contactor OML study measured **93%** of the ceiling, so the electron
+gate is a band `[0.85, 1.05]`, not an equality. Ions are Boltzmann-repelled by
+exp(−eV/kTi) ≈ 1e-16; the measured ion trickle is start-up bias (ions already
+inside the domain at t = 0 never had to climb the barrier) — **reported, not
+gated**. The domain is enlarged to 7.3 λ_De to hold the sheath.
 
-| gate | reference | window |
+### Physics / boundary conditions
+
+Same as `collector.thermal` (two-species RZ electrostatics, EB probe, flux
+reservoir) with the probe at +3 V, so a sheath now forms.
+
+## What this stage proves / does not prove
+
+**Proves** (`evidence_kind: numerical_sanity`): the electron current sits within
+`[0.85, 1.05]` of the OML ceiling (a cross-code sanity band, **not** an exact
+analytic validation — above 1 beyond noise = injection bug, well below 0.85 =
+resolution/containment problem), the flux reservoir stays intact (far density,
+quasineutrality), and the sheath is contained inside the domain.
+
+**Does not prove**: an exact collected-current value (OML is a ceiling, not an
+identity here), ion collection physics (repelled, start-up biased), or grid
+convergence (Phase 5).
+
+## Upstream dependencies
+
+Requires **`collector.thermal`** (the 0 V exact-law rung; this stage adds the
+attracting sheath).
+
+## Run cost
+
+~1–2 h on an RTX 3060 GPU (100000 steps × 30 ps = 3.0 µs; the sheath's ion
+response is on the slow ion clock). Infeasible on CPU.
+
+## Commands
+
+```bash
+conda activate warpx-cpu-mpich-dev
+python simulation.py
+python analyze.py --run outputs/<run-id> --policy acceptance.yaml
+python animate.py --run outputs/<run-id>               # optional
+PYTHONNOUSERSITE=1 python -m pytest tests/ -q
+```
+
+## Gate definitions and tolerance rationale
+
+`acceptance.yaml` (`policy_id: collector.biased_3v.v1`):
+
+| Gate (metric) | Bound | Rationale |
 |---|---|---|
-| I_e / I_OML | 2.847 uA ceiling | [0.85, 1.05] |
-| far-field n_e | n0 | 5% |
-| quasineutrality | far shell | 2% of n0 |
-| edge max-phi | sheath contained | 0.5 V |
+| `electron_current_over_oml` | [0.85, 1.05] | contactor cross-ref (93% at a/λ=0.38); OML is a ceiling |
+| `far_density_e_over_n0` | \|·−1\| ≤ 0.05 | flux reservoir intact |
+| `quasineutrality` | ≤ 0.02 | far-shell \|n_e−n_i\|/n0 |
+| `edge_phi_max_V` | ≤ 0.5 V | sheath must not touch the open boundaries |
 
-Compare `results/sheath_2_biased_3v.png` with the 10 V case: the |phi| =
-kTe/e surface should sit at ~2-3 lambda_De here and further out at +10 V.
+Changing any tolerance requires a new `policy_id`; every verdict records this
+file's SHA-256.
 
-## Measured (2026-07-31, RTX 3060, 36.5 min) -- ALL 4 GATES PASS
+## Known numerical limitations
 
-| quantity | measured | reference | ratio |
-|---|---|---|---|
-| I_e | 2.4260 +- 0.0079 uA | I_OML = 2.8474 uA | **0.8520** |
-| far n_e/n0 | 0.9705 | 1 | -- |
-| quasineutrality | 0.0027 | 0 | -- |
-| sheath radius | 4.13 mm = **2.10 lambda_De** | -- | -- |
-| edge max-phi | 0.003 V | < 0.5 V | contained |
+- OML is only a **ceiling**; the band is a numerical-sanity check, not an
+  identity. Distinguishing OML from the exact sub-Debye theory would need a
+  convergence/geometry study (Phase 5).
+- Ion start-up bias decays on the slow ion clock — the ion current is reported,
+  never gated.
+- EB faceting, RZ radial-face flux quirk, and t = 0 spike as in
+  `collector.thermal`; single grid/PPC/seed (Phase 5).
 
-Why 85% and not the contactor study's 93%: (1) the far-field density sits
-3% below n0 -- the flux-only reservoir does not recycle the 2.4 uA the
-sphere eats, and the dip matches the collected/boundary-influx ratio;
-normalizing by the ACTUAL ambient density gives I_e/I_OML(n_local) ~ 0.88.
-(2) EB faceting takes ~1-2%.  (3) The remainder is genuine barrier
-deepening at a/lambda_De = 0.38, which must GROW with chi -- see the
-+10 V case.  All three effects push DOWN, none can push above the
-ceiling, and the ceiling holds.
+The machine-readable record is `results/<run-id>/<analysis-id>/metrics.json` +
+`verdict.json`.

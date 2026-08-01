@@ -1,78 +1,124 @@
-# negative_cathode validation case
+# emitter.negative_cathode
 
-A two-plate axisymmetric (RZ) **plane diode**: a full-width **-100 V cathode**
-on the left boundary (z = -2 mm) emits a prescribed **10 uA** electron beam
-that flies rightward (+z) to a grounded **collector** (z = +2 mm).
-Electrostatic PIC with self-consistent space charge; the emitted current is
-prescribed (no thermionic/field-emission model).
+Two-plate RZ plane diode: the first rung of the emitter branch. Read this one
+folder and you have the whole model — `simulation.py` is the complete PIC deck,
+`helpers.py` the config + closed-form references, `analyze.py` the gated
+interpretation.
 
-The physics this case validates: when the emitting electrode is the device's
-most negative potential, no interior trap can exist (Laplace puts the
-potential minimum on an electrode), so the full current arrives at the
-collector with KE = e*|v_cathode| ~ 100 eV.  At 10 uA the beam is ~9% of the
-Child-Langmuir limit, so no virtual cathode forms.
+## Physical system
 
-Adapted from the `cathode` mode of `electron_two_plate/inputs_two_plate_rz.py`
-with three simplifications: emission direction inverted (left -> right), the
-two 5 uA species merged into one 10 uA species, and the measured RZ flux
-calibration factor (1.00014 -- a 0.014% over-emission, below the run's own
-statistical noise) dropped.
+A **-100 V full-width cathode** on the left boundary (z = -2 mm) emits a
+prescribed **10 µA electron beam** one cell inside the boundary, firing +z
+toward a **grounded collector** on the right boundary (z = +2 mm). The domain is
+axisymmetric (RZ), 2 mm in radius, 40 × 80 cells (dr = dz = 0.05 mm).
 
-## Layout
+### Included physics
 
-```
-electron_gun/1_negative_cathode/
-├── inputs/negative_cathode.yaml   # ALL parameters (no CLI arguments anywhere)
-├── run_negative_cathode.py        # WarpX PICMI deck -> outputs/diags/
-├── analyze_negative_cathode.py    # plots/CSVs/summary -> results/
-├── animate_negative_cathode.py    # density+KE video   -> results/
-├── outputs/diags/                 # openPMD fields/particles/scrape, reducedfiles,
-│                                  #   config_used.yaml (snapshot of the config the
-│                                  #   run actually used; written on successful
-│                                  #   finish -- analysis reads THIS copy)
-└── results/                       # PNG/CSV/JSON/mp4
-```
+- Self-consistent electron space charge (electrostatic Poisson solve each step).
+- Prescribed-current, z-normal flux emission over a 0.5 mm disc spot, with a
+  flux-Maxwellian launch (u_th = 7e-4 · c ≈ 0.25 eV per axis).
 
-## Run
+### Excluded physics
+
+- No thermionic or field-emission model — the current is prescribed. RZ z-normal
+  flux injection reproduces the requested current to ≈0.01% (measured in the
+  parent `electron_two_plate` study), so no calibration factor is applied.
+- No embedded boundaries, no magnetic field, no collisions, no ions.
+
+### Boundary conditions
+
+| Face | Potential | Particles |
+|---|---|---|
+| z = z_min (cathode) | Dirichlet -100 V | absorbing |
+| z = z_max (collector) | Dirichlet 0 V | absorbing |
+| r = r_max (radial wall) | Neumann | absorbing |
+| r = 0 (axis) | none (axis) | none |
+
+## What this stage proves / does not prove
+
+**Proves** (against closed-form or explicitly-labelled references):
+
+- The vacuum (t = 0) on-axis potential is the analytic **Laplace ramp** to
+  ≤ 10 mV, checked at the *sampled cell centres* (a half-cell on this steep ramp
+  dwarfs the signal).
+- Arrival energy equals **energy conservation from the emission plane**:
+  `e·[φ(collector) − φ_ramp(emit_z)] + 2kT_launch ≈ 99.25 eV`.
+- **~100%** of the prescribed beam reaches the collector; cathode and radial
+  wall collect ≈ 0 (gated as fractions of emitted weight — one tail
+  macroparticle must not break an exact zero).
+- **Particle-budget closure**: emitted = absorbed + still-in-domain to ≤ 0.1%.
+
+**Does not prove**: any emission physics (current is prescribed), any aperture or
+sheath physics (later rungs), or grid convergence (single grid/PPC/seed — a
+Phase 5 concern).
+
+The **space-charge depression** gate (φ dip at z ≈ 0) is a **regression anchor**,
+not an independent prediction: its target (0.092 V) was read off the validated
+baseline run. A 1-D estimate only brackets it at 0.04–0.09 V. This is
+calibration, disclosed here per the plan's policy discipline; an independent
+claim would need a fresh run judged under this pre-existing policy.
+
+## Upstream dependencies
+
+None — this is a root stage of the ladder.
+
+## Run cost
+
+~3 min on an RTX 3060 GPU; a few minutes on CPU/OpenMP. 4000 steps × 1.5 ps =
+6.0 ns; beam transit ≈ 1.3 ns, so steady state is reached well before the end.
+
+## Commands
 
 ```bash
 conda activate warpx-cpu-mpich-dev
-python run_negative_cathode.py       # ~3 min (4000 steps, 40x80 grid)
-python analyze_negative_cathode.py
-python animate_negative_cathode.py
+
+# 1. run the PIC model -> a fresh immutable outputs/<run-id>/ (prints RUN_ID=...)
+python simulation.py
+
+# 2. analyze that run under this stage's acceptance policy
+python analyze.py --run outputs/<run-id> --policy acceptance.yaml
+#    exit 0 = all required gates pass; 1 = a gate failed; 2 = analysis error
+
+# 3. (optional) presentation movie -> animations/<run-id>_fields.mp4
+python animate.py --run outputs/<run-id>
+
+# unit tests (no WarpX): config/analytics + contract math
+PYTHONNOUSERSITE=1 python -m pytest tests/ -q
 ```
 
-Edit `inputs/negative_cathode.yaml` to change anything.  Delete
-`outputs/diags/` before rerunning -- stale openPMD iterations mix with new
-ones.
+Each `simulation.py` invocation creates a **new** run directory; reruns never
+mix with old output. A run is COMPLETE only after its artifacts and final
+iteration are verified. `results/<run-id>/<analysis-id>/` holds each analysis;
+re-analysis never overwrites an earlier one.
 
-## Validation gates (evaluated by `analyze_negative_cathode.py`, exit 0/1)
+## Gate definitions and tolerance rationale
 
-| gate | reference | tolerance |
-|------|-----------|-----------|
-| collector steady current   | emitted 10.0 uA (analytic: cathode is the global minimum, so 100% transmission) | 0.5% |
-| collector mean arrival KE  | analytic `e*[phi(coll) - phi_ramp(emit_z)] + 2kT_launch` = 99.25 eV | 0.5 eV |
-| cathode / radial-wall hits | fraction of emitted weight (never "exact 0": one thermal-tail macroparticle breaks that) | <= 1e-4 each |
-| vacuum phi(t=0) on axis    | Laplace linear ramp evaluated **at the sampled cell centres** | 0.01 V |
-| space-charge dip at z~0    | 0.092 V (**regression** value from the validated run; rough 1D estimate brackets 0.04-0.09 V) | 0.04 V |
-| particle-budget closure    | emitted = absorbed + in-domain | <0.1% |
+Defined in `acceptance.yaml` (`policy_id: emitter.negative_cathode.v1`):
 
-Two porting lessons baked into these gates:
+| Gate (metric) | Bound | Rationale |
+|---|---|---|
+| `collector_current_over_emitted` | [0.995, 1.005] | prescribed current; ±0.5% covers scrape-window noise |
+| `collector_ke_error_eV` | \|·\| ≤ 0.5 eV | analytic 99.25 eV; 0.5 eV ≈ the 2kT launch spread |
+| `cathode_return_fraction` | ≤ 1e-4 | no reflection expected; fraction of emitted weight |
+| `radial_wall_fraction` | ≤ 1e-4 | stiff on-axis beam; negligible radial loss |
+| `vacuum_ramp_max_abs_error_V` | ≤ 1e-2 V | Laplace solve accuracy at sampled z |
+| `space_charge_depression_V` | \|· − 0.092\| ≤ 0.04 V | **regression** anchor (see above) |
+| `budget_closure_pct` | \|·\| ≤ 0.1% | conservation check |
 
-1. The openPMD z-axis holds **cell centres**, so there is no sample at z = 0;
-   the nearest is z = +-0.025 mm.  On the 25 V/mm background ramp that
-   half-cell offset is worth 1.25 V -- 13x the space-charge signal.  The parent
-   run (cathode at z_max) reads -50.7 V at its sampled point; this mirrored
-   case reads **-49.4 V** at its own.  Both are the same physics: ramp at the
-   sampled z minus the same 0.09 V beam depression.  Never gate on an absolute
-   mid-gap potential whose reference came from a differently-oriented run;
-   gate on the analytic ramp at the sampled z and on the vacuum-minus-beam
-   difference instead.
-2. The collector KE is below 100 eV for an analytic reason, not an error: the
-   source plane sits one cell inside the gap, so electrons only fall through
-   `phi(coll) - phi_ramp(z_min + dz)` = 98.75 V, plus the flux-weighted
-   Maxwellian launch energy `2*kT_launch` ~ 0.5 eV -> 99.25 eV.
+Changing any tolerance requires a new `policy_id`; every verdict records the
+policy file's SHA-256, and old verdicts are never reinterpreted.
 
-(The parent electron_two_plate reference run measured 9.9966 uA / 99.28 eV /
-closure -0.01%; this case is its mirror with one merged species and no
-calibration factor, so agreement is expected at the ~0.1% level, not bit-exact.)
+## Known numerical limitations
+
+- Single grid resolution, PPC, domain, and seed — no convergence evidence yet
+  (deferred to Phase 5 of the refactor). Quantitative claims here are provisional.
+- The energy prediction interpolates φ at the emission plane, which sits between
+  cell centres; on the ~50 V/mm gap gradient the nearest-cell ambiguity is
+  worth a fraction of an eV, inside the 0.5 eV gate.
+
+## Provenance
+
+The machine-readable record for any run is its `results/<run-id>/<analysis-id>/`
+`metrics.json` + `verdict.json` (and the frozen `outputs/<run-id>/config_used.yaml`
++ `manifest.json`). Numbers quoted in this README are illustrative; the JSON is
+authoritative.

@@ -1,0 +1,145 @@
+{
+  "analysis_id": "20260801T075205Z_8d7328da",
+  "metrics": [
+    {
+      "id": "A_low_current_small_hole__collector_fraction",
+      "status": "OK",
+      "value": 0.9728311399493464,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/zhi steady current / emitted"
+    },
+    {
+      "id": "A_low_current_small_hole__anode_fraction",
+      "status": "OK",
+      "value": 0.027087162789083446,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/eb steady current / emitted"
+    },
+    {
+      "id": "A_low_current_small_hole__ke_error_eV",
+      "status": "OK",
+      "value": -0.02462755083115553,
+      "unit": "eV",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "collector mean KE minus analytic 97.93 eV"
+    },
+    {
+      "id": "A_low_current_small_hole__budget_closure_pct",
+      "status": "OK",
+      "value": 0.0007510320701823394,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "reducedfiles/beam_n.txt + scraped weight"
+    },
+    {
+      "id": "B_high_current_small_hole__collector_fraction",
+      "status": "OK",
+      "value": 0.8998039601361117,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/zhi steady current / emitted"
+    },
+    {
+      "id": "B_high_current_small_hole__anode_fraction",
+      "status": "OK",
+      "value": 0.10040879515785373,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/eb steady current / emitted"
+    },
+    {
+      "id": "B_high_current_small_hole__ke_error_eV",
+      "status": "OK",
+      "value": -0.025020803306858852,
+      "unit": "eV",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "collector mean KE minus analytic 98.53 eV"
+    },
+    {
+      "id": "B_high_current_small_hole__budget_closure_pct",
+      "status": "OK",
+      "value": 0.000751032070185448,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "reducedfiles/beam_n.txt + scraped weight"
+    },
+    {
+      "id": "C_high_current_big_hole__collector_fraction",
+      "status": "OK",
+      "value": 1.000098057606657,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/zhi steady current / emitted"
+    },
+    {
+      "id": "C_high_current_big_hole__anode_fraction",
+      "status": "OK",
+      "value": 8.433087575243324e-07,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/eb steady current / emitted"
+    },
+    {
+      "id": "C_high_current_big_hole__ke_error_eV",
+      "status": "OK",
+      "value": 0.021715844767911108,
+      "unit": "eV",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "collector mean KE minus analytic 98.80 eV"
+    },
+    {
+      "id": "C_high_current_big_hole__budget_closure_pct",
+      "status": "OK",
+      "value": 0.000751032070210317,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "reducedfiles/beam_n.txt + scraped weight"
+    },
+    {
+      "id": "collector_drop_A_to_B",
+      "status": "OK",
+      "value": 0.0730271798132347,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "A collector fraction minus B collector fraction"
+    },
+    {
+      "id": "anode_reduction_B_to_C",
+      "status": "OK",
+      "value": 0.1004079518490962,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "B anode fraction minus C anode fraction"
+    }
+  ]
+}

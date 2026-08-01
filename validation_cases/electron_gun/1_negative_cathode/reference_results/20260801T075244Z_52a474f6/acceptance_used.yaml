@@ -1,0 +1,76 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for emitter.negative_cathode.
+#
+# Every gate here is either closed-form (linear Laplace ramp, energy
+# conservation from the emission plane, particle-budget closure) or an
+# explicitly labelled regression value (the space-charge depression).
+# Metrics are computed by analyze.py from the FROZEN config of a COMPLETE
+# run; this file supplies only the acceptance tolerances (analysis-time
+# policy, never physics).
+#
+# Policy discipline is git + honesty: changing any tolerance requires a
+# new policy_id, and every verdict records this file's SHA-256.  The
+# space-charge depression target (0.092 V) was read off the validated
+# baseline run -- it is a regression anchor, disclosed as such in
+# README.md, not an independent analytic prediction.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: emitter.negative_cathode.v1
+stage_id: emitter.negative_cathode
+evidence_kind: analytic_verification_plus_regression
+
+gates:
+  # ~100% of the prescribed beam must reach the grounded collector.
+  - id: collector_current_matches_emitted
+    required: true
+    metric: collector_current_over_emitted
+    comparison: within_range
+    minimum: 0.995
+    maximum: 1.005
+
+  # Arrival KE == e*[phi(collector) - phi_ramp(emit_z)] + 2kT_launch (99.25 eV).
+  # analyze.py forms the residual (measured - analytic); the policy bounds it.
+  - id: collector_ke_matches_analytic
+    required: true
+    metric: collector_ke_error_eV
+    comparison: abs_within
+    target: 0.0
+    tolerance: 0.5
+
+  # Stray boundaries collect ~nothing (gated as a fraction of emitted weight).
+  - id: cathode_return_fraction_small
+    required: true
+    metric: cathode_return_fraction
+    comparison: at_most
+    maximum: 1.0e-4
+
+  - id: radial_wall_fraction_small
+    required: true
+    metric: radial_wall_fraction
+    comparison: at_most
+    maximum: 1.0e-4
+
+  # Vacuum (t=0) on-axis potential equals the analytic Laplace ramp, compared
+  # at the SAMPLED cell centres (never nominal z).
+  - id: vacuum_phi_matches_laplace_ramp
+    required: true
+    metric: vacuum_ramp_max_abs_error_V
+    comparison: at_most
+    maximum: 1.0e-2
+
+  # Beam space-charge dip at z~0 on axis.  REGRESSION anchor from the validated
+  # baseline (a 1D estimate brackets it at 0.04-0.09 V); see README.
+  - id: space_charge_depression_regression
+    required: true
+    metric: space_charge_depression_V
+    comparison: abs_within
+    target: 0.092
+    tolerance: 0.04
+
+  # Emitted = absorbed + still-in-domain, to <= 0.1%.
+  - id: particle_budget_closure
+    required: true
+    metric: budget_closure_pct
+    comparison: abs_within
+    target: 0.0
+    tolerance: 0.1

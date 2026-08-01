@@ -1,0 +1,78 @@
+{
+  "analysis_id": "20260801T075527Z_82f1d115",
+  "metrics": [
+    {
+      "id": "vacuum_ramp_max_abs_error_V",
+      "status": "OK",
+      "value": 3.510346220991778e-05,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "fields/phi[it0] vs Laplace ramp"
+    },
+    {
+      "id": "space_charge_depression_V",
+      "status": "OK",
+      "value": 0.09208303726781253,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "fields/phi[it0]-phi[itN] on axis at z~0"
+    },
+    {
+      "id": "collector_current_over_emitted",
+      "status": "OK",
+      "value": 1.0001819418908144,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": 17,
+      "window": {
+        "start_iteration": 2720,
+        "end_iteration": 4000
+      },
+      "source": "scrape/particles_at_zhi steady current / emitted"
+    },
+    {
+      "id": "cathode_return_fraction",
+      "status": "OK",
+      "value": 0.0,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/particles_at_zlo weight / emitted"
+    },
+    {
+      "id": "radial_wall_fraction",
+      "status": "OK",
+      "value": 3.0359115270875956e-07,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/particles_at_xhi weight / emitted"
+    },
+    {
+      "id": "collector_ke_error_eV",
+      "status": "OK",
+      "value": 0.027568740958713533,
+      "unit": "eV",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/zhi weighted mean KE minus analytic 99.251 eV"
+    },
+    {
+      "id": "budget_closure_pct",
+      "status": "OK",
+      "value": 0.0007510320701823394,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "reducedfiles/beam_n.txt last row + scraped weight"
+    }
+  ]
+}

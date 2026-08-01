@@ -1,0 +1,101 @@
+{
+  "20260801T073527Z_A_low_current_small_hole_2a105ad7": {
+    "schema_version": 1,
+    "run_id": "20260801T073527Z_A_low_current_small_hole_2a105ad7",
+    "stage_id": "emitter.holed_anode",
+    "scenario": "A_low_current_small_hole",
+    "status": "COMPLETE",
+    "created_at_utc": "2026-08-01T07:35:27Z",
+    "completed_at_utc": "2026-08-01T07:37:57Z",
+    "case_sha256": "2a105ad751e56d9cab3e2b56eabcd2e7bfd7002854ed8ff09536adc784edea22",
+    "study_sha256": "c3f07e2d61be43a6a790a15ef4bd360ebf65406feadb8759ed015a1f84f8dabc",
+    "git_commit": "444ecb8ee581c1a6016f177b5cd9c253ad92604e",
+    "git_dirty": true,
+    "python_version": "3.12.13",
+    "warpx_version": "26.5",
+    "mpi_ranks": 1,
+    "omp_threads": 4,
+    "random_seed": 42,
+    "expected_final_iteration": 4000,
+    "observed_final_iteration": 4000,
+    "artifacts": [
+      {
+        "path": "diags/fields/*.h5",
+        "bytes": 7405608,
+        "files": 51
+      },
+      {
+        "path": "diags/reducedfiles/beam_n.txt",
+        "bytes": 5712,
+        "files": 1
+      }
+    ],
+    "error": null
+  },
+  "20260801T073859Z_B_high_current_small_hole_e7f68b18": {
+    "schema_version": 1,
+    "run_id": "20260801T073859Z_B_high_current_small_hole_e7f68b18",
+    "stage_id": "emitter.holed_anode",
+    "scenario": "B_high_current_small_hole",
+    "status": "COMPLETE",
+    "created_at_utc": "2026-08-01T07:38:59Z",
+    "completed_at_utc": "2026-08-01T07:41:28Z",
+    "case_sha256": "e7f68b18493a387d7417306a2808e2621d267433313b9b7d31a0498d8bdbae54",
+    "study_sha256": "c3f07e2d61be43a6a790a15ef4bd360ebf65406feadb8759ed015a1f84f8dabc",
+    "git_commit": "444ecb8ee581c1a6016f177b5cd9c253ad92604e",
+    "git_dirty": true,
+    "python_version": "3.12.13",
+    "warpx_version": "26.5",
+    "mpi_ranks": 1,
+    "omp_threads": 4,
+    "random_seed": 42,
+    "expected_final_iteration": 4000,
+    "observed_final_iteration": 4000,
+    "artifacts": [
+      {
+        "path": "diags/fields/*.h5",
+        "bytes": 7405608,
+        "files": 51
+      },
+      {
+        "path": "diags/reducedfiles/beam_n.txt",
+        "bytes": 5712,
+        "files": 1
+      }
+    ],
+    "error": null
+  },
+  "20260801T074128Z_C_high_current_big_hole_4eb710e4": {
+    "schema_version": 1,
+    "run_id": "20260801T074128Z_C_high_current_big_hole_4eb710e4",
+    "stage_id": "emitter.holed_anode",
+    "scenario": "C_high_current_big_hole",
+    "status": "COMPLETE",
+    "created_at_utc": "2026-08-01T07:41:28Z",
+    "completed_at_utc": "2026-08-01T07:44:11Z",
+    "case_sha256": "4eb710e4b80efa866917bc369596910f657bad82475027afe7e0718b0e09b440",
+    "study_sha256": "c3f07e2d61be43a6a790a15ef4bd360ebf65406feadb8759ed015a1f84f8dabc",
+    "git_commit": "444ecb8ee581c1a6016f177b5cd9c253ad92604e",
+    "git_dirty": true,
+    "python_version": "3.12.13",
+    "warpx_version": "26.5",
+    "mpi_ranks": 1,
+    "omp_threads": 4,
+    "random_seed": 42,
+    "expected_final_iteration": 4000,
+    "observed_final_iteration": 4000,
+    "artifacts": [
+      {
+        "path": "diags/fields/*.h5",
+        "bytes": 7405608,
+        "files": 51
+      },
+      {
+        "path": "diags/reducedfiles/beam_n.txt",
+        "bytes": 5712,
+        "files": 1
+      }
+    ],
+    "error": null
+  }
+}

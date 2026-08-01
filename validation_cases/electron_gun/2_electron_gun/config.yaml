@@ -1,0 +1,66 @@
+# ----------------------------------------------------------------------
+# emitter.holed_anode -- physics/numerics config (holed-anode RZ gun)
+#
+# emitter.negative_cathode plus ONE new element: a grounded plate (the
+# "anode") across the midplane with a hole on axis, modelled as an
+# embedded boundary.  The -100 V cathode at z_min emits a prescribed beam;
+# whatever clears the hole drifts to the collector at z_max.  Three
+# scenarios demonstrate aperture transmission vs space charge (see
+# README.md).
+#
+# This file is the SOURCE STUDY: it holds the shared physics plus the
+# scenario table.  simulation.py --scenario NAME resolves ONE scenario per
+# process; its frozen config_used.yaml carries only that scenario's
+# effective physics, and its run manifest records this study's SHA-256 so
+# a multi-run analysis can reject mixed configuration generations.
+#
+# NOTE on floats: PyYAML 1.1 -- decimal point AND signed exponent; every
+# numeric leaf is coerced by helpers.py regardless.
+# ----------------------------------------------------------------------
+stage_id: emitter.holed_anode
+
+geometry:
+  r_max: 2.0e-3          # radial extent [m]
+  z_min: -2.0e-3         # left boundary  [m] -- the cathode plane
+  z_max: 2.0e-3          # right boundary [m] -- the collector plane
+  n_r: 40                # radial cells  (dr = 0.05 mm)
+  n_z: 80                # axial cells   (dz = 0.05 mm)
+
+electrodes:
+  v_cathode: -100.0      # left  (z_min) Dirichlet boundary [V] -- the emitting plate
+  v_collector: 0.0       # right (z_max) Dirichlet boundary [V]
+  v_anode: 0.0           # holed mid plate [V]; grounded -> field-free drift region
+
+anode:                   # holed plate: conductor where z_front<z<z_front+thickness AND r>hole
+  z_front: -1.0e-4       # upstream face [m] -> accel gap d = z_front - z_min = 1.9 mm
+  thickness: 2.0e-4      # 4 axial cells
+
+emission:                # disc source one cell inside the cathode, firing +z
+  radius: 5.0e-4         # source spot r < radius [m] (10 radial cells)
+  u_th: 7.0e-4           # cold launch: normalized rms momentum (gamma*beta)
+
+scenarios:               # the demonstration ladder; one run/process each
+  - name: A_low_current_small_hole
+    current: 1.0e-5      # 10 uA (2.0% of planar I_CL); stiff beam
+    hole_radius: 7.0e-4  # 1.4x the emission spot
+  - name: B_high_current_small_hole
+    current: 4.0e-4      # 40x current: 79% of I_CL -> strong radial space charge
+    hole_radius: 7.0e-4
+  - name: C_high_current_big_hole
+    current: 4.0e-4
+    hole_radius: 1.4e-3  # 2x scenario B's hole -> transmission restored
+
+numerics:
+  time_step: 1.5e-12     # [s]  (v_max*dt ~ 0.18 dz)
+  max_steps: 4000        # 6.0 ns total (transit ~1.3 ns; steady well before end)
+  beam_ppc: 128          # emission macroparticles per source cell per step
+  random_seed: 42
+
+diagnostics:
+  field_period: 80       # phi/rho every N steps (50 frames)
+  reduced_period: 80     # ParticleNumber / ParticleEnergy at the scrape cadence
+  scrape_period: 80      # boundary-scraping dump cadence
+  ke_max_ev: 120.0       # energy-axis ceiling for plots [eV]
+
+compute:
+  gpu_arena_bytes: 1000000000

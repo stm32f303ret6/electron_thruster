@@ -1,0 +1,73 @@
+{
+  "stage_id": "emitter.negative_cathode",
+  "policy_id": "emitter.negative_cathode.v1",
+  "status": "PASS",
+  "exit_code": 0,
+  "detail": "all 7 required gate(s) passed",
+  "gates": [
+    {
+      "id": "collector_current_matches_emitted",
+      "status": "PASS",
+      "required": true,
+      "metric": "collector_current_over_emitted",
+      "comparison": "within_range",
+      "value": 1.0001819418908144,
+      "detail": "1.00018 in [0.995, 1.005]"
+    },
+    {
+      "id": "collector_ke_matches_analytic",
+      "status": "PASS",
+      "required": true,
+      "metric": "collector_ke_error_eV",
+      "comparison": "abs_within",
+      "value": 0.027568740958713533,
+      "detail": "0.0275687 |x - 0| <= 0.5"
+    },
+    {
+      "id": "cathode_return_fraction_small",
+      "status": "PASS",
+      "required": true,
+      "metric": "cathode_return_fraction",
+      "comparison": "at_most",
+      "value": 0.0,
+      "detail": "0 <= 0.0001"
+    },
+    {
+      "id": "radial_wall_fraction_small",
+      "status": "PASS",
+      "required": true,
+      "metric": "radial_wall_fraction",
+      "comparison": "at_most",
+      "value": 3.0359115270875956e-07,
+      "detail": "3.03591e-07 <= 0.0001"
+    },
+    {
+      "id": "vacuum_phi_matches_laplace_ramp",
+      "status": "PASS",
+      "required": true,
+      "metric": "vacuum_ramp_max_abs_error_V",
+      "comparison": "at_most",
+      "value": 3.510346220991778e-05,
+      "detail": "3.51035e-05 <= 0.01"
+    },
+    {
+      "id": "space_charge_depression_regression",
+      "status": "PASS",
+      "required": true,
+      "metric": "space_charge_depression_V",
+      "comparison": "abs_within",
+      "value": 0.09208303726781253,
+      "detail": "0.092083 |x - 0.092| <= 0.04"
+    },
+    {
+      "id": "particle_budget_closure",
+      "status": "PASS",
+      "required": true,
+      "metric": "budget_closure_pct",
+      "comparison": "abs_within",
+      "value": 0.0007510320701823394,
+      "detail": "0.000751032 |x - 0| <= 0.1"
+    }
+  ],
+  "analysis_id": "20260801T075527Z_82f1d115"
+}

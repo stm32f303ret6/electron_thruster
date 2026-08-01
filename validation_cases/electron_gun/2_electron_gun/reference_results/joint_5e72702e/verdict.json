@@ -1,0 +1,118 @@
+{
+  "stage_id": "emitter.holed_anode",
+  "policy_id": "emitter.holed_anode.v1",
+  "status": "PASS",
+  "exit_code": 0,
+  "detail": "all 12 required gate(s) passed",
+  "gates": [
+    {
+      "id": "A_collector_transmits",
+      "status": "PASS",
+      "required": true,
+      "metric": "A_low_current_small_hole__collector_fraction",
+      "comparison": "at_least",
+      "value": 0.9728311399493464,
+      "detail": "0.972831 >= 0.96"
+    },
+    {
+      "id": "A_anode_clip_is_thermal_tail_only",
+      "status": "PASS",
+      "required": true,
+      "metric": "A_low_current_small_hole__anode_fraction",
+      "comparison": "at_most",
+      "value": 0.027087162789083446,
+      "detail": "0.0270872 <= 0.04"
+    },
+    {
+      "id": "B_collector_drops_vs_A",
+      "status": "PASS",
+      "required": true,
+      "metric": "collector_drop_A_to_B",
+      "comparison": "at_least",
+      "value": 0.0730271798132347,
+      "detail": "0.0730272 >= 0.03"
+    },
+    {
+      "id": "B_loss_lands_on_anode",
+      "status": "PASS",
+      "required": true,
+      "metric": "B_high_current_small_hole__anode_fraction",
+      "comparison": "at_least",
+      "value": 0.10040879515785373,
+      "detail": "0.100409 >= 0.04"
+    },
+    {
+      "id": "C_big_hole_restores_transmission",
+      "status": "PASS",
+      "required": true,
+      "metric": "C_high_current_big_hole__collector_fraction",
+      "comparison": "at_least",
+      "value": 1.000098057606657,
+      "detail": "1.0001 >= 0.98"
+    },
+    {
+      "id": "C_anode_clip_below_B",
+      "status": "PASS",
+      "required": true,
+      "metric": "anode_reduction_B_to_C",
+      "comparison": "at_least",
+      "value": 0.1004079518490962,
+      "detail": "0.100408 >= 0"
+    },
+    {
+      "id": "A_collector_ke_conserved",
+      "status": "PASS",
+      "required": true,
+      "metric": "A_low_current_small_hole__ke_error_eV",
+      "comparison": "abs_within",
+      "value": -0.02462755083115553,
+      "detail": "-0.0246276 |x - 0| <= 1.5"
+    },
+    {
+      "id": "B_collector_ke_conserved",
+      "status": "PASS",
+      "required": true,
+      "metric": "B_high_current_small_hole__ke_error_eV",
+      "comparison": "abs_within",
+      "value": -0.025020803306858852,
+      "detail": "-0.0250208 |x - 0| <= 1.5"
+    },
+    {
+      "id": "C_collector_ke_conserved",
+      "status": "PASS",
+      "required": true,
+      "metric": "C_high_current_big_hole__ke_error_eV",
+      "comparison": "abs_within",
+      "value": 0.021715844767911108,
+      "detail": "0.0217158 |x - 0| <= 1.5"
+    },
+    {
+      "id": "A_budget_closure",
+      "status": "PASS",
+      "required": true,
+      "metric": "A_low_current_small_hole__budget_closure_pct",
+      "comparison": "abs_within",
+      "value": 0.0007510320701823394,
+      "detail": "0.000751032 |x - 0| <= 0.1"
+    },
+    {
+      "id": "B_budget_closure",
+      "status": "PASS",
+      "required": true,
+      "metric": "B_high_current_small_hole__budget_closure_pct",
+      "comparison": "abs_within",
+      "value": 0.000751032070185448,
+      "detail": "0.000751032 |x - 0| <= 0.1"
+    },
+    {
+      "id": "C_budget_closure",
+      "status": "PASS",
+      "required": true,
+      "metric": "C_high_current_big_hole__budget_closure_pct",
+      "comparison": "abs_within",
+      "value": 0.000751032070210317,
+      "detail": "0.000751032 |x - 0| <= 0.1"
+    }
+  ],
+  "analysis_id": "20260801T075205Z_8d7328da"
+}

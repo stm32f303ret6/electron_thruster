@@ -1,0 +1,48 @@
+# ----------------------------------------------------------------------
+# collector.biased_3v -- sphere at +3 V (chi = eV/kTe = 26.4)
+#
+# Small attracting bias.  For a sub-Debye sphere (a/lambda_De = 0.38) the
+# Orbit-Motion-Limited ceiling applies:
+#     I_OML = I_th * (1 + chi) = 0.10393 uA * 27.40 = 2.847 uA
+# OML is an UPPER bound approached as a/lambda -> 0; at 0.38 the
+# electron_contactor OML study measured 93% of the ceiling, so the gate
+# accepts [0.85, 1.05].  Ions are Boltzmann-repelled (~1e-16); the measured
+# ion trickle is start-up bias, reported not gated.
+#
+# Same plasma/grid/ppc as the chipsat capstone (dx = 0.15 mm).  The domain
+# is larger than the 0 V case to hold the sheath.
+#
+# PyYAML 1.1: decimal point AND signed exponent; helpers.py coerces anyway.
+# ----------------------------------------------------------------------
+stage_id: collector.biased_3v
+
+probe:
+  radius: 7.5e-4         # [m] a/lambda_De = 0.38, 5 cells per radius
+  bias: 3.0              # [V]
+
+plasma:                  # electron_contactor capstone "PLASMA_MAX" row
+  n0: 1.627e12           # [m^-3]
+  Te_K: 1318.8           # [K]
+  Ti_K: 936.2            # [K]
+  ion_mass_me: 400.0     # [-] chipsat's reduced ion mass
+
+geometry:                # lambda_De = 1.965 mm
+  r_max: 14.4e-3         # [m] 7.3 lambda_De: room for the sheath (~2-3 lambda)
+  z_half: 14.4e-3
+  n_r: 96                # dx = 0.15 mm
+  n_z: 192
+
+numerics:
+  time_step: 3.0e-11     # [s] CFL ~0.32 for a 3 eV infall + 4*vth tail
+  max_steps: 100000      # 3.0 us (sheath ion response ~ ion clock, 1-2 us)
+  ppc: 16
+  random_seed: 42
+
+diagnostics:
+  field_period: 2500     # 40 field frames
+  scrape_period: 1000    # 100 collected-current samples
+  reduced_period: 1000   # ParticleNumber heartbeat at the scrape cadence
+  steady_window_frac: 0.4
+
+compute:
+  gpu_arena_bytes: 2000000000
