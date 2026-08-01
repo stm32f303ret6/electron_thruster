@@ -121,11 +121,12 @@ def in_domain_weight(diags: str):
 # ======================================================================
 
 def current_history(s, cfg):
-    """(dump_steps, {key: I[A]}) over the union of dump steps holding hits."""
+    """(dump_steps, {key: I[A]}) over the complete configured scrape grid
+    (plan section 10 rule 1), not just dumps that happened to hold a hit, so
+    a genuinely empty interval is a recorded zero rather than a missing bin."""
+    steps = np.arange(cfg.scrape_period, cfg.max_steps + 1, cfg.scrape_period)
     if s["w"].size == 0:
-        return np.array([]), {k: np.array([]) for k, _ in _TARGETS}
-    steps = np.unique(s["it"])
-    steps = steps[steps > 0]
+        return steps, {k: np.zeros_like(steps, dtype=float) for k, _ in _TARGETS}
     hist = {}
     for key, bnd in _TARGETS:
         m = s["bnd"] == bnd

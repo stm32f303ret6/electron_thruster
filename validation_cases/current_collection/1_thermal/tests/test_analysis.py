@@ -1,5 +1,6 @@
 """Analysis math + policy wiring on synthetic fixtures (no WarpX/openPMD)."""
 
+import dataclasses
 from pathlib import Path
 
 import numpy as np
@@ -18,15 +19,19 @@ POLICY = STAGE_DIR / "acceptance.yaml"
 def test_current_history_zero_bins():
     cfg = load_config(CONFIG)
     sp, dt = cfg.scrape_period, cfg.time_step
-    # electrons hit at both dumps; ions only at the 2nd.
+    cfg = dataclasses.replace(cfg, max_steps=3 * sp)
+    # electrons hit at the 1st and 2nd dumps; ions only at the 2nd; the 3rd
+    # dump has no hits from either species and must still appear as a
+    # recorded zero bin, not disappear from the grid (plan section 10).
     scraped = {
         ELECTRONS: (np.array([sp, 2 * sp]), np.array([2.0, 2.0]), np.array([0., 0.])),
         IONS: (np.array([2 * sp]), np.array([1.0]), np.array([0.])),
     }
     steps, hist = analyze.current_history(cfg, scraped)
-    assert list(steps) == [sp, 2 * sp]
+    assert list(steps) == [sp, 2 * sp, 3 * sp]
     assert hist[IONS][0] == 0.0  # ion zero bin present, not dropped
     assert hist[ELECTRONS][0] == pytest.approx(2.0 * scc.e / (sp * dt))
+    assert hist[ELECTRONS][2] == 0.0 and hist[IONS][2] == 0.0  # wholly silent dump kept, not dropped
 
 
 def test_steady_stats_window():
