@@ -31,7 +31,11 @@ reservoir) with the probe at +3 V, so a sheath now forms.
 `[0.85, 1.05]` of the OML ceiling (a cross-code sanity band, **not** an exact
 analytic validation — above 1 beyond noise = injection bug, well below 0.85 =
 resolution/containment problem), the flux reservoir stays intact (far density,
-quasineutrality), and the sheath is contained inside the domain.
+quasineutrality), and no sheath-scale |φ| reaches the open boundaries.  As in
+the +10 V stage, the containment gate uses the max |φ| a few cells inside the
+boundary — a connected-sheath-edge + clearance metric is a Phase 5 refinement
+(plan §10.5), so "contained" here means the boundary strip stays quiet, not a
+measured sheath-edge clearance.
 
 **Does not prove**: an exact collected-current value (OML is a ceiling, not an
 identity here), ion collection physics (repelled, start-up biased), or grid
