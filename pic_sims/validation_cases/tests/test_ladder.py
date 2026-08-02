@@ -44,11 +44,22 @@ def test_topology_detects_cycle(monkeypatch):
 
 
 def test_declared_scenarios_match_stage_configs():
-    # The holed gun's ladder scenarios must equal its config.yaml scenarios.
-    stage = STAGE_BY_ID["emitter.holed_anode"]
-    raw = yaml.safe_load((stage.path / "config.yaml").read_text())
-    names = tuple(str(s["name"]) for s in raw["scenarios"])
-    assert stage.scenarios == names
+    """EVERY scenario stage's ladder tuple must equal its config.yaml list.
+
+    Generalised from a single hardcoded stage: the ladder is the visible,
+    hand-maintained membership list, so a stage that grew or renamed a scenario
+    without updating it would silently run a cohort the runner does not expect.
+    """
+    checked = 0
+    for stage in STAGES:
+        raw = yaml.safe_load((stage.path / "config.yaml").read_text())
+        declared = tuple(str(s["name"]) for s in (raw.get("scenarios") or []))
+        assert stage.scenarios == declared, (
+            f"{stage.id}: ladder says {stage.scenarios}, config.yaml says "
+            f"{declared}")
+        if declared:
+            checked += 1
+    assert checked >= 2, "expected at least two scenario stages to exist"
 
 
 # ----------------------------------------------------------------------
