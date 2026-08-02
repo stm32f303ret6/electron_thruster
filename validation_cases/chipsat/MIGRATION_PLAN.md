@@ -82,7 +82,7 @@ Per the refactor plan's non-goals and the baseline-only scope:
    ladder contract (immutable `outputs/<run-id>/`, `results/<run-id>/<aid>/`).
 4. `analyze.py` adds one **new cross-check metric**: cumulative charge from
    the CSV ledger vs. the openPMD scrape dumps (`scrape_charge_consistency`),
-   closing the per-step-buffer accounting gap (G8 in VALIDATION_GAPS.md).
+   closing the per-step-buffer accounting gap (G5 in VALIDATION_GAPS.md).
 5. CHOKED (phi_body > ceiling sustained) and a non-finite phi divergence
    mark the run **FAILED** (early abort); EDGE-warn remains a live warning,
    and containment is *gated* in analysis from the field dumps.
@@ -136,5 +136,6 @@ Phase 5 item (plan C6).
    0.14 s/step — the deck is callback-bound, so CPU ≈ RTX 3060) and PASSed
    all 7 acceptance gates, reproducing the float200 anchors (escape 98.44 %,
    F_beam 13.65 nN, φ_body +16.98 V, exhaust 147.5 eV). `reference_results/`
-   is populated; the 6-stage suite verdict incl. the capstone cross-check is
-   `suite_results/20260801T204741Z`.
+   is populated; the suite verdict incl. the capstone cross-check was
+   `suite_results/20260801T204741Z` at migration time (the ladder has since
+   grown to 8 stages — see `../README.md` for the current verdict).

@@ -33,7 +33,7 @@ contained** inside the domain (`edge_phi_max_V ≤ 0.5 V`).
 **Does not prove**: a quantitative sheath-collection law, ion physics (repelled),
 or grid/domain convergence. In particular the containment gate here uses the max
 |φ| a few cells inside the boundary; a **connected-sheath-edge + clearance**
-containment metric is a Phase 5 refinement (plan C5/§10.5).
+containment metric is a Phase 5 refinement (plan §10.5).
 
 ## Upstream dependencies
 
