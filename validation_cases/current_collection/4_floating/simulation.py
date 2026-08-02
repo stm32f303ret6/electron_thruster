@@ -5,7 +5,7 @@ The complete PIC model: the collector rungs' conducting sphere in the ambient
 capstone plasma (bulk fill + one-sided Maxwellian flux from the three open
 faces -- the deck is the thermal stage's, duplicated per the ladder's
 convention), with the sphere's potential computed every step by the chipsat
-capstone's charge-pump mechanism, transcribed from chipsat/simulation.py:
+capstone's charge-pump mechanism, transcribed from capstone/2_floating_body/simulation.py:
 
   - the EB starts at a uniform 1 V so the init solve calibrates the
     self-capacitance C by Gauss' law on the domain faces;
@@ -62,7 +62,7 @@ def _warpx_version() -> str | None:
 
 
 # ======================================================================
-# charge pump (chipsat/simulation.py, transcribed for a one-node sphere)
+# charge pump (capstone/2_floating_body/simulation.py, transcribed for a one-node sphere)
 # ======================================================================
 
 def _asnumpy(a):
@@ -87,7 +87,7 @@ def _get_field(sim, name: str, level: int = 0):
 
 def self_capacitance(sim, rmax: float, nz: int) -> float:
     """Float-node self-capacitance via Gauss' law on the domain faces, valid
-    while the EB is held at a uniform 1 V (chipsat/simulation.py, verbatim)."""
+    while the EB is held at a uniform 1 V (capstone/2_floating_body/simulation.py, verbatim)."""
     warpx = sim.extension.warpx
     rho = np.asarray(_get_field(sim, "rho_fp")[:, :])
     phi = np.asarray(_get_field(sim, "phi_fp")[:, :])
