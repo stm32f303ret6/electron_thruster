@@ -2,7 +2,7 @@
 """Stage-local geometry and configuration for capstone.two_node_laplace.
 
 The chipsat capstone's conducting-can Geometry (transcribed verbatim from
-capstone/2_floating_body/helpers.py, which transcribed electron_contactor geometry.py: the EB
+capstone/2_chipsat_thruster/helpers.py, which transcribed electron_contactor geometry.py: the EB
 implicit function and the piecewise two-node potential string), plus a slim
 config: this stage solves the VACUUM Laplace problem for that geometry with
 BODY and CATHODE pinned at fixed potentials -- no plasma, no beam, no pump.
@@ -77,7 +77,7 @@ def _i(section: Mapping[str, Any], key: str) -> int:
 
 
 # ======================================================================
-# geometry (capstone/2_floating_body/helpers.py, transcribed verbatim)
+# geometry (capstone/2_chipsat_thruster/helpers.py, transcribed verbatim)
 # ======================================================================
 
 def _disk(zlo, zhi, R):
@@ -94,7 +94,7 @@ def _ring(zlo, zhi, rin, rout):
 class Geometry:
     """The conducting can and its two electrical nodes, as WarpX EB expressions.
 
-    Identical to the capstone's Geometry (see capstone/2_floating_body/helpers.py for the full
+    Identical to the capstone's Geometry (see capstone/2_chipsat_thruster/helpers.py for the full
     labelled cross-section).  Two nodes only:
       BODY    = wall + perforated lid + floor annulus
       CATHODE = central disk on the floor

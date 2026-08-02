@@ -36,7 +36,7 @@ F_beam ≈ 13.6 nN, phi_body → ≈ +16 V, exhaust ≈ 146 eV, supply ≈ 0.068
 
 ## Source → stage mapping
 
-| electron_contactor | capstone/2_floating_body/ stage file | Notes |
+| electron_contactor | capstone/2_chipsat_thruster/ stage file | Notes |
 |---|---|---|
 | `config.yaml` + `config.py` DEFAULTS | `config.yaml` | baseline values only, `stage_id` added; dropped groups below |
 | `config.py` derivations (`_derive_plasma`, `finalize`, `_validate_basics/_grid`) | `helpers.py` | fluxes n·vth/√2π, λ_D, ωpe, V_GAP, I_CL, CFL dt = 0.3·dx/(v_beam+4vth_e), grid snap to ×8, R_res, asserts (dx<λ_D, CFL<0.5, ωpe·dt<0.2, lid hole ≥5 dx, gap ≥7 dx) |
