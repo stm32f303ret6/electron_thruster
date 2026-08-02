@@ -18,9 +18,13 @@ cross-check — the dominant charge-pump channel — to the v1 set):
 | ledger-vs-dump (ambient-e) | ≤ 2 % | 2.7e-9 |
 | ledger-vs-dump (beam escape) | ≤ 2 % | 4.9e-9 |
 
-The machine-readable record is `metrics.json` + `verdict.json`; `REFERENCE.md`
-carries the full provenance (run id, case hash, policy id/hash, git commit,
-WarpX version). A reference result is read only for comparison; it never makes
-`simulation.py` skip a run. Scientific caveats (finite-time equilibrium on the
+The machine-readable record is `metrics.json` + `verdict.json` + the frozen
+`config_used.yaml` of the run they describe; `REFERENCE.md` carries the full
+provenance (run id, case hash, policy id/hash, git commit, WarpX version). The
+config is committed alongside because `design_sims/` anchors its calibration
+constants to this bundle, and deriving them needs the exact drive voltage, beam
+current and plasma row that produced the metrics — a number is only checkable
+in a fresh clone if its inputs are too. A reference result is read only for
+comparison; it never makes `simulation.py` skip a run. Scientific caveats (finite-time equilibrium on the
 ion clock, single grid/PPC/seed, reduced ion mass) are documented in the stage
 README and `../VALIDATION_GAPS.md`.
