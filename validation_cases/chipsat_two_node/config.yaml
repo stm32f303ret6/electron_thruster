@@ -1,0 +1,44 @@
+# ----------------------------------------------------------------------
+# capstone.two_node_laplace -- physics/numerics config
+#
+# The chipsat capstone's conducting-can geometry, solved in VACUUM with the
+# two EB nodes pinned: BODY = phi_body, CATHODE = phi_body + cathode_offset.
+# No plasma, no beam, no charge pump -- with zero space charge the solve is
+# Laplace's equation, so exact mathematical properties (assigned surface
+# values, the maximum principle) and an independent finite-difference solve
+# become gates.  The operating point (+16 V body) is the capstone's floating
+# equilibrium; the offset is the capstone's supply.
+#
+# The geometry/domain/dx numbers are IDENTICAL to chipsat/config.yaml; the
+# cross-stage check two_node_matches_capstone_geometry hash-compares the
+# frozen values so this stage always validates exactly what the capstone runs.
+# ----------------------------------------------------------------------
+stage_id: capstone.two_node_laplace
+
+electrical:
+  phi_body: 16.0           # [V] BODY node (the capstone's observed equilibrium).
+  cathode_offset: -200.0   # [V] CATHODE = phi_body + offset = -184 V (the supply).
+
+geometry:                  # all lengths [m]; verbatim from chipsat/config.yaml.
+  r_probe: 5.0e-3
+  wall_thickness: 0.4e-3
+  lid_thickness: 0.4e-3
+  floor_thickness: 0.4e-3
+  z_bot: -5.0e-3
+  z_top: 0.5e-3
+  r_slit: 2.0e-3
+  r_cathode: 1.5e-3
+  emit_radius: 0.5e-3      # unused here (no beam) but kept so the geometry
+                           # section hash-matches the capstone's exactly.
+
+domain:                    # verbatim from chipsat/config.yaml (same 200x440 grid).
+  rmax: 0.030
+  aspect: 1.12
+  zmargin_lo: 25.0e-3
+  zmargin_hi: 35.0e-3
+
+numerics:
+  dx: 0.15e-3              # [m] cell size -- the capstone/collector value.
+  dt: 1.0e-12              # [s] arbitrary (no particles, no CFL constraint).
+  max_steps: 5             # solve + re-impose the EB string 5x: steps 2..5
+                           # gate that the per-step rewrite is idempotent.
