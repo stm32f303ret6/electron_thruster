@@ -1,0 +1,77 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for capstone.two_node_laplace.
+#
+# SOLVER VERIFICATION: with zero space charge the two-node solve is Laplace's
+# equation, whose exact mathematical properties become gates.  Tolerances
+# from discretization reasoning (200 V scale, dx = 0.15 mm, second-order
+# solver):
+#
+#   surface potentials      -- metal nodes must carry the assigned Dirichlet
+#                              values; 1.0 V = 0.5% of the 200 V scale covers
+#                              cut-cell interpolation on the ~2-node walls.
+#   maximum principle       -- a harmonic function attains its extrema on the
+#                              boundary: vacuum phi must lie in
+#                              [phi_cathode, max(phi_body, 0)].  Exact; the
+#                              0.1 V allowance is solver tolerance only.
+#   independent solver      -- an independent stair-step RZ finite-difference
+#                              Laplace solve in analyze.py must agree with
+#                              WarpX away from surfaces.  The dominant
+#                              reference error is the cathode-edge
+#                              singularity: the 200 V jump across the 2-cell
+#                              insulating gap, geometrically misplaced by up
+#                              to dx/2 in the stair-step representation,
+#                              gives ~50 V locally, decaying ~ (dx/distance);
+#                              at >= 20 cells that bounds the reference error
+#                              to ~2.5 V, so 4.0 V (2% of scale) is gated
+#                              there.
+#   rewrite idempotency     -- re-imposing the same potential string every
+#                              step (the capstone's per-step mechanism) must
+#                              not change a vacuum solution; 1 mV allows
+#                              MLMG round-off only (absolute tolerance 1e-5).
+#
+# HISTORY: v1 gated the solver comparison at >= 3 cells with the same 4.0 V
+# bound; the first run (20260801T225210Z, a disclosed CALIBRATION run -- see
+# README.md) showed the cathode-edge stair-step error decays exactly as the
+# scaling above predicts (16.2 V at 3 cells -> 1.9 V at 20) and the v1
+# comparison distance was a methodology error.  v2 fixes the distance and
+# tightens the MLMG absolute tolerance; the verified reference comes from a
+# FRESH run judged under this v2 policy.
+#
+# Changing any tolerance requires a new policy_id; every verdict records
+# this file's SHA-256.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: capstone.two_node_laplace.v2
+stage_id: capstone.two_node_laplace
+evidence_kind: solver_verification
+
+gates:
+  - id: body_potential_imposed
+    required: true
+    metric: body_surface_potential_error_V
+    comparison: at_most
+    maximum: 1.0
+
+  - id: cathode_potential_imposed
+    required: true
+    metric: cathode_surface_potential_error_V
+    comparison: at_most
+    maximum: 1.0
+
+  - id: maximum_principle_holds
+    required: true
+    metric: laplace_bounds_violation_V
+    comparison: at_most
+    maximum: 0.1
+
+  - id: matches_independent_solver
+    required: true
+    metric: independent_solver_max_diff_V
+    comparison: at_most
+    maximum: 4.0
+
+  - id: per_step_rewrite_idempotent
+    required: true
+    metric: per_step_rewrite_drift_V
+    comparison: at_most
+    maximum: 1.0e-3

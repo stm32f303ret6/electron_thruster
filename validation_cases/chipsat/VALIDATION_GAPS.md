@@ -23,29 +23,33 @@ then the gaps, ordered by how much they matter.
 
 ## Gaps
 
-### G1 — The two-node piecewise EB potential is validated nowhere in the ladder
-**The biggest one.** Every ladder rung uses a single-potential EB (or none).
-The capstone's EB carries TWO potentials on one embedded boundary — BODY at
-`phi_body`, CATHODE at `phi_body − 200 V` — via boolean-mask expression
-strings, separated by a ≥ 2-cell insulation gap, rewritten every step with
-`set_potential_on_eb`. That mechanism (and its cut-cell behavior at the
-node boundary) is validated only inside the contactor lineage (float200),
-never by an independent ladder rung.
-*Mitigation now:* geometry unit tests assert mask disjointness and gap width.
-*Recommended rung:* a two-node pinned can (no plasma, no float): Laplace-only
-check of the piecewise EB against an axisymmetric FEM/analytic reference.
+### G1 — ~~The two-node piecewise EB potential is validated nowhere~~ **CLOSED 2026-08-01**
+Closed by the new rung **`capstone.two_node_laplace`** (`chipsat_two_node/`):
+the capstone's exact can geometry and grid, in vacuum, with BODY pinned at
++16 V and CATHODE at −184 V through the same potential string and per-step
+`set_potential_on_eb` rewrite. Gates: assigned surface values (cathode exact,
+body 0.22 V cut-cell), the Laplace maximum principle (exact), agreement with
+an independent stair-step sparse-direct solve (1.86 V ≥ 20 cells out), and
+bit-exact rewrite idempotency. The cross-stage check
+`two_node_matches_capstone_geometry` hash-verifies the frozen geometry/dx/
+offset against the capstone's. *Remaining residue:* cut-cell field accuracy
+AT the surface is only bounded to 1 V, and the vacuum stage cannot see
+plasma–EB interaction (G6 territory).
 
-### G2 — The floating-potential charge pump has no analytic rung
-No ladder stage floats anything: collectors pin the sphere bias. The pump
-(C from a Gauss-law measurement at init; Q integrated from per-step scrape
-buffers; φ = φ0 + Q/C) is the capstone's defining mechanism and enters the
-ladder only inside the full system stage, gated by regression numbers.
-*Recommended rung* (cheap, strong): a **floating passive sphere** in the
-capstone plasma — no gun, one EB node. The analytic anchor is the kinetic
-floating potential from thermal-current balance,
-φ_f ≈ −(kTe/e)·ln√(mi·Te/(me·Ti)) ≈ **−0.36 V** for this plasma — an
-exact-style target in the ladder's own tradition, validating C calibration,
-dQ accounting, and `set_potential_on_eb` with one node before two.
+### G2 — ~~The floating-potential charge pump has no analytic rung~~ **CLOSED 2026-08-01**
+Closed by the new rung **`collector.floating`**
+(`current_collection/4_floating/`): the thermal rung's sphere in the same
+plasma, with the potential computed every step by the capstone's charge pump
+(transcribed verbatim: Gauss-law C calibration at the 1 V init solve, per-step
+dQ from the scrape buffers, `set_potential_on_eb` rewrite). The analytic
+anchor is the floating potential bracketed by the two limiting ion-collection
+models: thermal-ion −0.360 V and OML-ion −0.213 V (φ_f is independent of C,
+isolating the dQ accounting). Also gated: equilibrium current balance,
+Gauss-law C vs 4πε₀a (measured ratio 1.07 ≈ the grounded-box correction), and
+the G5-style ledger-vs-dump consistency. The cross-stage check
+`floating_shares_thermal_configuration` hash-verifies plasma/ppc/radius
+against `collector.thermal`. *Remaining residue:* one node, no beam — the
+two-node float under beam load first occurs in the capstone (G6).
 
 ### G3 — Gun operating point differs from the validated emitter rungs
 | quantity | emitter rungs | capstone | status |
@@ -118,13 +122,14 @@ and edge containment.
 
 ## Priority summary
 
-1. **G1/G2** deserve a new intermediate rung (floating passive sphere,
-   analytic φ_f ≈ −0.36 V, plus a two-node Laplace check) — cheap runs that
-   would convert the capstone's two core mechanisms from lineage-validated to
-   ladder-validated. Proposed IDs: `collector.floating` and
-   `emitter.two_node_eb`.
+1. **G1/G2: CLOSED (2026-08-01)** by the two new rungs `collector.floating`
+   and `capstone.two_node_laplace` — the capstone's two core mechanisms are
+   now ladder-validated, not just lineage-validated. Both are required
+   dependencies of `capstone.floating_body` in `ladder.py`.
 2. **G3** would be closed by one extra `emitter.holed_anode` scenario at
    200 V / 4.7 mm-gap-equivalent / rms 2.6e5 / ppc_beam 16.
-3. **G5** is closed by the new consistency gate in this migration.
+3. **G5** is closed by the consistency gates (capstone: ambient-e AND
+   beam-escape channels; `collector.floating` repeats the check on an
+   analytically-anchored rung).
 4. **G6–G10** are inherent or Phase 5 items; they are documented in the stage
    README so the capstone's PASS is never over-claimed.

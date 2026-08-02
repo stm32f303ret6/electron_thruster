@@ -1,5 +1,8 @@
 # validation_cases: the verification ladder to the chipsat
 
+**Reviewer digest: `LADDER_SUMMARY.md`** — every rung's test, measured
+numbers, and theory comparison on one page.
+
 Theory-anchored pre-simulations, in order of increasing physics, each gated
 against closed-form references. The ladder validates the CODE (WarpX RZ
 electrostatics, EB, flux emission, scraping) and, deliberately, the
@@ -12,12 +15,22 @@ electron_gun/                    EMITTER side (prescribed-current beams)
   1_negative_cathode  emitter.negative_cathode   plane diode, no EB      (~3 min GPU)
   2_electron_gun      emitter.holed_anode        + holed-anode plate     (~10 min GPU)
 current_collection/              COLLECTOR side (ambient plasma)
-  1_thermal           collector.thermal          sphere at 0 V, exact    (~25-50 min GPU)
-  2_biased_3v         collector.biased_3v        OML ceiling, chi=26.4   (~1-2 h GPU)
-  3_biased_10v        collector.biased_10v       sheath growth, chi=88   (~2-4.5 h GPU)
+  1_thermal           collector.thermal          sphere at 0 V, exact    (~16 min CPU)
+  2_biased_3v         collector.biased_3v        OML ceiling, chi=26.4   (~65 min CPU)
+  3_biased_10v        collector.biased_10v       sheath growth, chi=88   (~80 min CPU)
+  4_floating          collector.floating         charge pump -> phi_f    (~35 min CPU)
+chipsat_two_node/     capstone.two_node_laplace  two-node EB in vacuum   (seconds)
 chipsat/              CAPSTONE (emitter + collector, floating body)
   chipsat             capstone.floating_body     float200 regression     (~6.3 h CPU/GPU)
 ```
+
+The two 2026-08-01 rungs close the audit's top gaps
+(`chipsat/VALIDATION_GAPS.md` G1/G2): `collector.floating` runs the
+capstone's floating charge pump on a passive sphere against the analytic
+floating-potential bracket (thermal-ion −0.360 V / OML-ion −0.213 V), and
+`capstone.two_node_laplace` solves the capstone's two-node piecewise EB in
+vacuum where the maximum principle and an independent solver are exact
+checks.  Both are required dependencies of the capstone.
 
 ## Architecture (see `ARCHITECTURE_REFACTOR_PLAN.md`)
 
@@ -102,17 +115,22 @@ carries its own copies). No automatic garbage collection.
 ## Status
 
 **Milestone A (structural architecture, Phases 0–4): implemented, and the
-entire 6-stage ladder has run and PASSED on this machine** (2026-08-01, CPU
+entire 8-stage ladder has run and PASSED on this machine** (2026-08-01, CPU
 build): both emitter stages reproduce the pre-refactor baseline bit-for-bit;
-all three collector stages PASS with striking GPU-baseline parity (e.g.
-I_e/I_OML 0.8090 vs 0.8087 at +10 V); and the **chipsat capstone**
+all three fixed-bias collector stages PASS with striking GPU-baseline parity
+(e.g. I_e/I_OML 0.8090 vs 0.8087 at +10 V); the **chipsat capstone**
 (`capstone.floating_body`, migrated from the electron_contactor float200
 baseline — see `chipsat/MIGRATION_PLAN.md` and `chipsat/VALIDATION_GAPS.md`)
-completed its full parity run in 6.34 h and PASSed all 7 gates (escape
-98.44 %, F_beam 13.65 nN, φ_body +16.98 V). The full-suite verdict with every
-cross-stage check green is `suite_results/20260801T204741Z`. All six stages
-carry verified `reference_results/`. The suite stays **scientifically
-provisional** — Milestone B (Phase 5: stationarity gates, zero-bin accounting,
-consistent ensembles, corrected Child-Langmuir / Poisson / OML / sheath
-narratives, convergence sweeps) is **not yet done**. See
+completed its full parity run in 6.34 h and PASSes all 8 gates (escape
+98.44 %, F_beam 13.65 nN, φ_body +16.98 V); and the two 2026-08-01 rungs
+closing gaps G1/G2 both PASS — `collector.floating` drove the capstone's
+charge pump to φ_f = −0.251 V inside the analytic bracket with 0.9 % current
+balance, and `capstone.two_node_laplace` verified the two-node EB against
+exact Laplace properties and an independent solver. The full-suite verdict
+with all seven cross-stage checks green is `suite_results/20260801T234329Z`.
+All eight stages carry verified `reference_results/`; the per-stage numbers
+are digested in `LADDER_SUMMARY.md`. The suite stays **scientifically
+provisional** — Milestone B (Phase 5: stationarity gates, consistent
+ensembles, corrected Child-Langmuir narratives, convergence sweeps) is **not
+yet done** (zero-bin accounting C7 was fixed 2026-08-01). See
 `ARCHITECTURE_REFACTOR_PLAN.md` §13 (C1–C12).
