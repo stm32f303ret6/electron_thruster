@@ -1,7 +1,7 @@
 """Config parsing, geometry invariants, and derived planes (no WarpX).
 
 The load-bearing check: this stage's transcribed Geometry must derive the
-SAME planes and grid as the capstone's own tests pin (chipsat/tests), because
+SAME planes and grid as the capstone's own tests pin (../2_floating_body/tests), because
 what this stage validates is exactly the geometry the capstone runs."""
 
 from pathlib import Path
@@ -43,7 +43,7 @@ def test_geometry_section_matches_capstone_config():
     """The whole point of this stage: its geometry numbers must be the
     capstone's, byte for byte at the YAML level."""
     here = yaml.safe_load(CONFIG.read_text())["geometry"]
-    cap_path = CONFIG.parents[1] / "chipsat" / "config.yaml"
+    cap_path = CONFIG.parents[1] / "2_floating_body" / "config.yaml"
     cap = yaml.safe_load(cap_path.read_text())["geometry"]
     assert {k: float(v) for k, v in here.items()} == \
            {k: float(v) for k, v in cap.items()}

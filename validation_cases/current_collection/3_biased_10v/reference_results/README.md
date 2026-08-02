@@ -5,7 +5,9 @@ of the migrated stage: **PASS on all 4 gates** — I_e/I_OML = 0.8090 (the
 pre-refactor GPU baseline measured 0.809), far density 4.6 % low, quasineutral,
 and THE gate to watch here — the thick +10 V sheath contained (edge |φ| =
 3 mV). Produced on the **CPU build** (12 OpenMP threads, ~80 min); GPU baseline
-numbers live in `../../../_baseline_phase0/current_collection/3_biased_10v/`.
+numbers live in git history (pre-refactor tree at commit `444ecb8`; the Phase-0
+`_baseline_phase0/` snapshot was retired after Milestone A verified
+reproduction).
 
 The machine-readable record is `metrics.json` + `verdict.json` in the
 snapshot; `REFERENCE.md` there carries the full provenance. A reference result

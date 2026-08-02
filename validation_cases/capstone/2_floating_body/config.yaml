@@ -71,7 +71,7 @@ domain:
                            #     the same bound is GATED in analysis from field dumps.
 
 numerics:
-  dx: 0.15e-3              # [m] cell size (dr = dz) -- chipsat/collector value.
+  dx: 0.15e-3              # [m] cell size (dr = dz) -- chipsat capstone/collector value.
   dt: null                 # [s] null -> CFL-derived: 0.3*dx/(v_beam + 4*vth_e).
   ppc: 16                  # ambient macroparticles per cell per species.
   ppc_beam: 16             # beam macroparticles per surface cell per step

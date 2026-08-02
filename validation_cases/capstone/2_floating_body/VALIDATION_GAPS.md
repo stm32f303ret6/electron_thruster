@@ -24,7 +24,7 @@ then the gaps, ordered by how much they matter.
 ## Gaps
 
 ### G1 — ~~The two-node piecewise EB potential is validated nowhere~~ **CLOSED 2026-08-01**
-Closed by the new rung **`capstone.two_node_laplace`** (`chipsat_two_node/`):
+Closed by the new rung **`capstone.two_node_laplace`** (`capstone/1_two_node_laplace/`):
 the capstone's exact can geometry and grid, in vacuum, with BODY pinned at
 +16 V and CATHODE at −184 V through the same potential string and per-step
 `set_potential_on_eb` rewrite. Gates: assigned surface values (cathode exact,

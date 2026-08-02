@@ -113,7 +113,7 @@ emitter.holed_anode             collector.biased_3v
 | `collector.thermal` | `current_collection/1_thermal` | none | analytic verification |
 | `collector.biased_3v` | `current_collection/2_biased_3v` | `collector.thermal` | numerical sanity |
 | `collector.biased_10v` | `current_collection/3_biased_10v` | `collector.biased_3v` | numerical sanity / sheath containment |
-| `capstone.floating_body` | future `chipsat` folder | branch tips | system integration |
+| `capstone.floating_body` | `capstone/2_floating_body` (was `chipsat`) | branch tips | system integration |
 
 Evidence kinds must be explicit in each `acceptance.yaml`. An OML upper-bound
 sanity check must not be described as an exact analytic validation.

@@ -19,7 +19,7 @@ import numpy as np
 from scipy import constants as scc
 
 CASE_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(CASE_DIR.parents[0]))
+sys.path.insert(0, str(CASE_DIR.parents[1]))
 sys.path.insert(0, str(CASE_DIR))
 
 import ladder_contract as lc  # noqa: E402

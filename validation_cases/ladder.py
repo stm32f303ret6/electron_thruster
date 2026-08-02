@@ -47,9 +47,9 @@ STAGES: tuple[Stage, ...] = (
           Path("current_collection/4_floating"),
           requires=("collector.thermal",)),
     Stage("capstone.two_node_laplace",
-          Path("chipsat_two_node")),
+          Path("capstone/1_two_node_laplace")),
     Stage("capstone.floating_body",
-          Path("chipsat"),
+          Path("capstone/2_floating_body"),
           requires=("emitter.holed_anode", "collector.biased_10v",
                     "collector.floating", "capstone.two_node_laplace")),
 )
