@@ -49,7 +49,7 @@ STAGES: tuple[Stage, ...] = (
     Stage("capstone.two_node_laplace",
           Path("capstone/1_two_node_laplace")),
     Stage("capstone.floating_body",
-          Path("capstone/2_floating_body"),
+          Path("capstone/2_chipsat_thruster"),
           requires=("emitter.holed_anode", "collector.biased_10v",
                     "collector.floating", "capstone.two_node_laplace")),
 )

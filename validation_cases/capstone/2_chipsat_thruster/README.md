@@ -1,6 +1,10 @@
-# capstone.floating_body — the chipsat capstone
+# capstone.floating_body — the chipsat electron-thruster capstone
 
-The top rung: emitter + collector physics in one self-consistent system.
+The top rung — **the thruster test itself**: emitter + collector physics in
+one self-consistent system.  The stage ID names the defining mechanism under
+validation (the body FLOATS while the gun fires — the thruster only works if
+it floats to a benign potential); the thrust is gated directly
+(`f_beam_nN`).
 Migrated verbatim from the validated **float200** baseline of the
 `electron_contactor` project (external, not part of this repository; see
 `MIGRATION_PLAN.md`; the audit of what the lower rungs do and do not validate

@@ -173,7 +173,7 @@ containment, and the ledger-vs-dump consistency checks.
 ## What this ladder does NOT yet establish
 
 Kept visible on purpose (details: `ARCHITECTURE_REFACTOR_PLAN.md` §13,
-`capstone/2_floating_body/VALIDATION_GAPS.md`):
+`capstone/2_chipsat_thruster/VALIDATION_GAPS.md`):
 
 - **Convergence** (C12): every number above is one grid, one ppc, one domain,
   one seed.
