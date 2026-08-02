@@ -1,0 +1,85 @@
+{
+  "analysis_id": "20260801T225646Z_96a85dcc",
+  "metrics": [
+    {
+      "id": "body_surface_potential_error_V",
+      "status": "OK",
+      "value": 0.21997155671818724,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "max |phi - 16| over interior BODY nodes, it 1"
+    },
+    {
+      "id": "cathode_surface_potential_error_V",
+      "status": "OK",
+      "value": 0.0,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "max |phi - -184| over interior CATHODE nodes"
+    },
+    {
+      "id": "laplace_bounds_violation_V",
+      "status": "OK",
+      "value": 0.0,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "vacuum phi outside [-184, 16] (maximum principle)"
+    },
+    {
+      "id": "independent_solver_max_diff_V",
+      "status": "OK",
+      "value": 1.8643815538621809,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "max |phi_warpx - phi_ref| >= 20 cells from metal (past the stair-step cathode-edge error) and >= 3 from domain edges"
+    },
+    {
+      "id": "per_step_rewrite_drift_V",
+      "status": "OK",
+      "value": 0.0,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "max |phi(it 5) - phi(it 4)| (same string re-imposed on a converged field)"
+    },
+    {
+      "id": "first_solve_settling_V",
+      "status": "OK",
+      "value": 0.006421019574588627,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "max |phi(it 5) - phi(it 1)|: the first solve's convergence tail (REPORTED, not gated)"
+    },
+    {
+      "id": "independent_solver_full_max_diff_V",
+      "status": "OK",
+      "value": 36.97400345530602,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "max |phi_warpx - phi_ref| over ALL vacuum nodes (REPORTED)"
+    },
+    {
+      "id": "gap_axis_voltage_V",
+      "status": "OK",
+      "value": 154.8864578872268,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "phi on axis at the lid plane minus the emission plane (REPORTED)"
+    }
+  ]
+}

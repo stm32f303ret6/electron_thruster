@@ -1,0 +1,62 @@
+# ----------------------------------------------------------------------
+# collector.floating -- passive sphere, potential floats via the charge pump
+#
+# The same sphere, plasma, grid, and timestep as collector.thermal, but the
+# EB potential is NOT prescribed: it is computed every step by the chipsat
+# capstone's charge-pump mechanism (Gauss-law C calibration from a 1 V init
+# solve, per-step dQ from the scrape buffers, set_potential_on_eb rewrite).
+# With no beam, the pump must drive the sphere to the analytic floating
+# potential -- the bias where electron and ion collection balance:
+#
+#   thermal-ion model:  phi_f = -kTe/e * ln(sqrt((mi/me)(Te/Ti))) = -0.360 V
+#   OML-ion model:      exp(phi/kTe)*R = 1 - phi/kTi        ->     -0.213 V
+#
+# The truth for this sub-Debye sphere (a/lambda_De = 0.38, deep OML regime)
+# lies between the two models; the gate brackets them.  phi_f is INDEPENDENT
+# of C (C only sets the charging timescale), so this stage validates the
+# pump's dQ accounting and EB rewrite against closed-form physics -- the
+# validation gap G2 the capstone's own regression anchors cannot close.
+#
+# This file holds ONLY the effective physics/numerics (frozen + hashed per
+# run).  Gates live in acceptance.yaml.
+# ----------------------------------------------------------------------
+stage_id: collector.floating
+
+probe:
+  radius: 7.5e-4         # [m] sphere radius: a/lambda_De = 0.38, 5 cells
+                         # (identical to the biased collector rungs)
+
+electrical:
+  phi_init: 0.0          # [V] pump start: the sphere begins uncharged
+  log_every: 500         # [steps] CSV ledger window (= scrape cadence)
+
+plasma:                  # capstone "PLASMA_MAX" row -- IDENTICAL to collector.*
+  n0: 1.627e12           # [m^-3] ambient density (electrons = ions)
+  Te_K: 1318.8           # [K] electron temperature (kTe = 113.6 meV)
+  Ti_K: 936.2            # [K] ion temperature
+  ion_mass_me: 400.0     # [-] chipsat's reduced ion mass (NOT real O+)
+
+geometry:                # lambda_De = 1.965 mm
+  r_max: 12.0e-3         # [m] 6.1 lambda_De (the -0.36 V perturbation is
+  z_half: 12.0e-3        #     Debye-shielded to ~1e-4 V by the boundary)
+  n_r: 80                # dx = 0.15 mm = chipsat capstone cell size
+  n_z: 160
+
+numerics:
+  time_step: 6.0e-11     # [s] CFL ~0.28 for 5*vth_e tail; wpe*dt = 4.3e-3
+  max_steps: 100000      # 6.0 us.  The pump's RC clock SLOWS as it settles:
+                         # near equilibrium tau = C*kTe/(e*I_eq) ~ 89 fF *
+                         # 0.114 V / 6 nA ~ 1.7 us, so a 3 us run would leave
+                         # the tail window still sliding; at 6 us the last-40%
+                         # window (3.6-6 us) sits within a few % of balance.
+  ppc: 16                # chipsat capstone value (bulk, per species)
+  random_seed: 42
+
+diagnostics:
+  field_period: 2500     # 40 field frames
+  scrape_period: 500     # 200 collected-current samples
+  reduced_period: 500    # ParticleNumber heartbeat at the scrape cadence
+  steady_window_frac: 0.4   # average over the last 40% (3.6-6.0 us)
+
+compute:
+  gpu_arena_bytes: 2000000000

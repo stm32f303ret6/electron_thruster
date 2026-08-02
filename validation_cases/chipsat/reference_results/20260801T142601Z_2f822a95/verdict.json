@@ -1,9 +1,9 @@
 {
   "stage_id": "capstone.floating_body",
-  "policy_id": "capstone.floating_body.v1",
+  "policy_id": "capstone.floating_body.v2",
   "status": "PASS",
   "exit_code": 0,
-  "detail": "all 7 required gate(s) passed",
+  "detail": "all 8 required gate(s) passed",
   "gates": [
     {
       "id": "beam_escapes",
@@ -67,7 +67,16 @@
       "comparison": "at_most",
       "value": 2.7498139461168387e-09,
       "detail": "2.74981e-09 <= 0.02"
+    },
+    {
+      "id": "beam_escape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "scrape_charge_consistency_beam_escape",
+      "comparison": "at_most",
+      "value": 4.906783544395919e-09,
+      "detail": "4.90678e-09 <= 0.02"
     }
   ],
-  "analysis_id": "20260801T204714Z_b3e25892"
+  "analysis_id": "20260801T234355Z_769cf7c7"
 }

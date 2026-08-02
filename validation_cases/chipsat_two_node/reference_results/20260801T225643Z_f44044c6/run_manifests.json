@@ -1,0 +1,30 @@
+{
+  "20260801T225643Z_f44044c6": {
+    "schema_version": 1,
+    "run_id": "20260801T225643Z_f44044c6",
+    "stage_id": "capstone.two_node_laplace",
+    "scenario": null,
+    "status": "COMPLETE",
+    "created_at_utc": "2026-08-01T22:56:43Z",
+    "completed_at_utc": "2026-08-01T22:56:45Z",
+    "case_sha256": "f44044c6a4428670942101e7d7bab6af6b2e39d970730b558835676d564fd354",
+    "study_sha256": null,
+    "git_commit": "4d0e4489105f6ce3af872025d2239ab719bbac38",
+    "git_dirty": true,
+    "python_version": "3.12.13",
+    "warpx_version": "26.5",
+    "mpi_ranks": 1,
+    "omp_threads": null,
+    "random_seed": 42,
+    "expected_final_iteration": 5,
+    "observed_final_iteration": 5,
+    "artifacts": [
+      {
+        "path": "diags/fields/*.h5",
+        "bytes": 6350304,
+        "files": 6
+      }
+    ],
+    "error": null
+  }
+}

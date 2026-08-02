@@ -16,7 +16,7 @@
 # this file's SHA-256.
 # ----------------------------------------------------------------------
 schema_version: 1
-policy_id: capstone.floating_body.v1
+policy_id: capstone.floating_body.v2
 stage_id: capstone.floating_body
 evidence_kind: system_integration_regression
 
@@ -67,5 +67,14 @@ gates:
   - id: scrape_ledger_consistent_with_dumps
     required: true
     metric: scrape_charge_consistency
+    comparison: at_most
+    maximum: 0.02
+
+  # Same cross-check for the beam-escape channel: the dominant term in
+  # phi_body's charge budget and the most complex telescoping accounting,
+  # so it must not ride solely on the ambient-electron channel above.
+  - id: beam_escape_ledger_consistent_with_dumps
+    required: true
+    metric: scrape_charge_consistency_beam_escape
     comparison: at_most
     maximum: 0.02

@@ -175,8 +175,61 @@ def _capstone_config_inheritance(results, root) -> dict:
         + " collector.thermal's validated configuration")
 
 
+def _floating_shares_thermal_configuration(results, root) -> dict:
+    """The floating sphere must ride on the exact configuration the thermal
+    rung validated: same plasma row, same probe radius, same ambient ppc --
+    so its floating potential is evidence about the SAME discretized system."""
+    if not (_stage_passed(results, "collector.floating")
+            and _stage_passed(results, "collector.thermal")):
+        return _result("floating_shares_thermal_configuration", SKIP,
+                       "collector.floating and collector.thermal not both passed")
+    flo = _run_config(results, "collector.floating")
+    the = _run_config(results, "collector.thermal")
+    if flo is None or the is None:
+        return _result("floating_shares_thermal_configuration", SKIP,
+                       "frozen configs unavailable")
+    flo_key = lc.config_sha256({"plasma": flo["plasma"],
+                                "ppc": flo["numerics"]["ppc"],
+                                "radius": flo["probe"]["radius"]})
+    the_key = lc.config_sha256({"plasma": the["plasma"],
+                                "ppc": the["numerics"]["ppc"],
+                                "radius": the["probe"]["radius"]})
+    ok = flo_key == the_key
+    return _result(
+        "floating_shares_thermal_configuration", PASS if ok else FAIL,
+        "floating sphere plasma/ppc/radius " + ("==" if ok else "!=")
+        + " collector.thermal's validated configuration")
+
+
+def _two_node_matches_capstone_geometry(results, root) -> dict:
+    """The vacuum two-node stage must solve EXACTLY the geometry the capstone
+    runs: same can dimensions, same cell size, same supply offset."""
+    if not (_stage_passed(results, "capstone.two_node_laplace")
+            and _stage_passed(results, "capstone.floating_body")):
+        return _result("two_node_matches_capstone_geometry", SKIP,
+                       "two-node and capstone stages not both passed")
+    two = _run_config(results, "capstone.two_node_laplace")
+    cap = _run_config(results, "capstone.floating_body")
+    if two is None or cap is None:
+        return _result("two_node_matches_capstone_geometry", SKIP,
+                       "frozen configs unavailable")
+    two_key = lc.config_sha256({"geometry": two["geometry"],
+                                "dx": round(two["numerics"]["dx"], 9),
+                                "offset": two["electrical"]["cathode_offset"]})
+    cap_key = lc.config_sha256({"geometry": cap["geometry"],
+                                "dx": round(cap["numerics"]["dx"], 9),
+                                "offset": cap["electrical"]["cathode_offset"]})
+    ok = two_key == cap_key
+    return _result(
+        "two_node_matches_capstone_geometry", PASS if ok else FAIL,
+        "two-node geometry/dx/offset " + ("==" if ok else "!=")
+        + " the capstone's frozen configuration")
+
+
 _CHECKS = (_collector_current_trend, _sheath_radius_ordering, _shared_plasma,
-           _emitter_transmission, _capstone_config_inheritance)
+           _emitter_transmission, _capstone_config_inheritance,
+           _floating_shares_thermal_configuration,
+           _two_node_matches_capstone_geometry)
 
 
 def evaluate(results: dict, root: Path) -> list[dict]:

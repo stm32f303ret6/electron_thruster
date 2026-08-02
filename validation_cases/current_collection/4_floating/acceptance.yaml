@@ -1,0 +1,86 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for collector.floating (passive sphere, charge pump).
+#
+# ANALYTIC VERIFICATION of the capstone's charge-pump mechanism: with no
+# beam, the pump must drive the sphere to the floating potential -- the bias
+# where electron and ion collection balance.  All tolerances were set BEFORE
+# the first run:
+#
+#   phi bracket        -- the two limiting ion-collection models give
+#                         phi_f = -0.360 V (thermal-ion) and -0.213 V
+#                         (OML-ion); the truth for this sub-Debye sphere
+#                         (a/lambda_De = 0.38) lies between.  The gate
+#                         brackets both models with ~10% margin for PIC
+#                         noise: [-0.40, -0.19].  phi_f is INDEPENDENT of C,
+#                         so this isolates the dQ accounting + EB rewrite.
+#   current balance    -- at equilibrium |I_e - I_i|/I_i ~ 0 by definition;
+#                         15% allows the ion channel's shot noise (~24x
+#                         fewer macro-hits than electrons) over the tail
+#                         window.
+#   capacitance        -- Gauss-law C vs the isolated-sphere scale
+#                         4*pi*eps0*a: the grounded box at ~16 a raises C by
+#                         ~6-7%, the stair-step EB surface and rho-noise
+#                         subtraction add a few % either way; [0.8, 1.4]
+#                         catches a mechanism error (wrong sign, wrong face,
+#                         double count) which shifts C by O(1) factors.
+#   charge consistency -- the per-step scrape-buffer ledger and the openPMD
+#                         scrape dumps count the same electrons; 2% (the
+#                         capstone's G5 gate value; the CSV misses at most
+#                         the final partial window).
+#   plasma health      -- far-shell density/quasineutrality/edge-phi carried
+#                         over from collector.thermal unchanged (identical
+#                         domain, plasma, and injection).
+#
+# Changing any tolerance requires a new policy_id; every verdict records
+# this file's SHA-256.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: collector.floating.v1
+stage_id: collector.floating
+evidence_kind: analytic_verification
+
+gates:
+  - id: floats_to_theory_bracket
+    required: true
+    metric: phi_float_V
+    comparison: within_range
+    minimum: -0.40
+    maximum: -0.19
+
+  - id: floating_current_balance
+    required: true
+    metric: current_balance
+    comparison: at_most
+    maximum: 0.15
+
+  - id: capacitance_calibration_sane
+    required: true
+    metric: capacitance_over_analytic
+    comparison: within_range
+    minimum: 0.8
+    maximum: 1.4
+
+  - id: scrape_ledger_consistent_with_dumps
+    required: true
+    metric: scrape_charge_consistency
+    comparison: at_most
+    maximum: 0.02
+
+  - id: far_density_matches_n0
+    required: true
+    metric: far_density_e_over_n0
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.05
+
+  - id: far_field_quasineutral
+    required: true
+    metric: quasineutrality
+    comparison: at_most
+    maximum: 0.02
+
+  - id: no_spurious_edge_sheath
+    required: true
+    metric: edge_phi_max_V
+    comparison: at_most
+    maximum: 0.2
