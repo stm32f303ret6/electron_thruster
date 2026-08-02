@@ -226,10 +226,110 @@ def _two_node_matches_capstone_geometry(results, root) -> dict:
         + " the capstone's frozen configuration")
 
 
+def _mission_envelope_shares_capstone_geometry(results, root) -> dict:
+    """The mission-envelope rung must be the SAME discretized machine as the
+    capstone it extrapolates from: same can, same cell size, same ambient ppc.
+
+    Note what is deliberately NOT compared: the plasma row, the supply voltage
+    and the beam current all differ BY DESIGN -- differing is the whole point of
+    the stage.  Extending the plasma-inheritance check to this rung would make
+    it permanently fail for the right reason, which is the worst kind of check.
+    """
+    if not (_stage_passed(results, "capstone.mission_envelope")
+            and _stage_passed(results, "capstone.floating_body")):
+        return _result("mission_envelope_shares_capstone_geometry", SKIP,
+                       "mission_envelope and capstone not both passed")
+    cap = _run_config(results, "capstone.floating_body")
+    env = _run_config(results, "capstone.mission_envelope")
+    if cap is None or env is None:
+        return _result("mission_envelope_shares_capstone_geometry", SKIP,
+                       "frozen configs unavailable")
+    cap_key = lc.config_sha256({"geometry": cap["geometry"],
+                                "dx": round(cap["numerics"]["dx"], 9),
+                                "ppc": cap["numerics"]["ppc"]})
+    env_key = lc.config_sha256({"geometry": env["geometry"],
+                                "dx": round(env["numerics"]["dx"], 9),
+                                "ppc": env["numerics"]["ppc"]})
+    ok = cap_key == env_key
+    return _result(
+        "mission_envelope_shares_capstone_geometry", PASS if ok else FAIL,
+        "mission_envelope geometry/dx/ppc " + ("==" if ok else "!=")
+        + " the capstone's (plasma and drive differ by design)")
+
+
+def _mission_envelope_anchor_is_capstone_measurement(results, root) -> dict:
+    """The frozen design constants must be exactly what THIS suite's capstone
+    run measures -- re-derived here, every suite run, from its own metrics.
+
+    This is what stops the design model and its evidence drifting apart. The
+    constants live in design_sims/, which the ladder never imports; the only way
+    they reach a run is by being copied into its config. So the ladder checks
+    the copy against the measurement, algebraically, rather than trusting it.
+    """
+    if not (_stage_passed(results, "capstone.mission_envelope")
+            and _stage_passed(results, "capstone.floating_body")):
+        return _result("mission_envelope_anchor_is_capstone_measurement", SKIP,
+                       "mission_envelope and capstone not both passed")
+    env = _run_config(results, "capstone.mission_envelope")
+    cap = _run_config(results, "capstone.floating_body")
+    if env is None or cap is None:
+        return _result("mission_envelope_anchor_is_capstone_measurement", SKIP,
+                       "frozen configs unavailable")
+    anchor = env.get("law_anchor")
+    if not isinstance(anchor, dict):
+        return _result("mission_envelope_anchor_is_capstone_measurement", FAIL,
+                       "the mission_envelope run carries no law_anchor block")
+    m = _metrics(results, root, "capstone.floating_body")
+    needed = ("f_beam_nN", "phi_body_V", "escape_fraction_pct",
+              "exhaust_ke_mean_eV")
+    if any(k not in m for k in needed):
+        return _result("mission_envelope_anchor_is_capstone_measurement", SKIP,
+                       "capstone metrics incomplete")
+
+    e, me, kb = 1.602176634e-19, 9.1093837015e-31, 1.380649e-23
+    r_p = float(cap["geometry"]["r_probe"])
+    height = float(cap["geometry"]["z_top"]) - float(cap["geometry"]["z_bot"])
+    area = 2.0 * math.pi * r_p * height + 2.0 * math.pi * r_p ** 2
+    v_drive = abs(float(cap["electrical"]["cathode_offset"]))
+    i_beam = float(cap["beam"]["i_beam"])
+    n_e = float(cap["plasma"]["n0"])
+    te = float(cap["plasma"]["Te_K"])
+    kte_ev = kb * te / e
+
+    ke = m["exhaust_ke_mean_eV"]
+    phi = m["phi_body_V"]
+    f_esc = m["escape_fraction_pct"] / 100.0
+    i_the = n_e * e * area * math.sqrt(kb * te / (2.0 * math.pi * me))
+    derived = {
+        "k": m["f_beam_nN"] / (i_beam * 1e3 * math.sqrt(ke)),
+        "ke_ledger": ke / (v_drive - phi),
+        "f_esc": f_esc,
+        "beta": f_esc * i_beam / (i_the * (1.0 + phi / kte_ev)),
+        "area_m2": area,
+    }
+    # laws.yaml stores six significant figures, so compare at that resolution.
+    bad = []
+    for key, want in derived.items():
+        got = float(anchor[key])
+        if want == 0.0 or abs(got - want) / abs(want) > 2e-6:
+            bad.append(f"{key}: frozen {got:.6g} vs measured {want:.6g}")
+    if bad:
+        return _result("mission_envelope_anchor_is_capstone_measurement", FAIL,
+                       "frozen law_anchor does not re-derive from this suite's "
+                       "capstone metrics -- " + "; ".join(bad))
+    return _result(
+        "mission_envelope_anchor_is_capstone_measurement", PASS,
+        f"k={derived['k']:.4f}, ke_ledger={derived['ke_ledger']:.4f}, "
+        f"f_esc={derived['f_esc']:.4f}, beta={derived['beta']:.4f} re-derived "
+        f"from capstone.floating_body's own metrics match the frozen anchor")
+
+
 _CHECKS = (_collector_current_trend, _sheath_radius_ordering, _shared_plasma,
            _emitter_transmission, _capstone_config_inheritance,
            _floating_shares_thermal_configuration,
-           _two_node_matches_capstone_geometry)
+           _two_node_matches_capstone_geometry,
+           _mission_envelope_shares_capstone_geometry,
+           _mission_envelope_anchor_is_capstone_measurement)
 
 
 def evaluate(results: dict, root: Path) -> list[dict]:

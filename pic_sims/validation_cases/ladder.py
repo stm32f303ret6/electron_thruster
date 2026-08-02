@@ -52,6 +52,10 @@ STAGES: tuple[Stage, ...] = (
           Path("capstone/2_chipsat_thruster"),
           requires=("emitter.holed_anode", "collector.biased_10v",
                     "collector.floating", "capstone.two_node_laplace")),
+    Stage("capstone.mission_envelope",
+          Path("capstone/3_mission_envelope"),
+          requires=("capstone.floating_body",),
+          scenarios=("A_day_p95", "B_night_worst")),
 )
 
 # Fast lookups used by the runner and the tests.

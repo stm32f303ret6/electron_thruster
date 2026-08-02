@@ -176,26 +176,49 @@ def select_night_worst(rows: list[Row], laws, cons: om.Constraints,
 def scenario_block(name: str, row: Row, point: om.OperatingPoint, laws,
                    cons: om.Constraints, *, csv_path: Path, csv_sha: str,
                    note: str | None = None) -> dict:
-    """One `scenarios:` entry: the physics, the predictions, and where it came from."""
+    """One `scenarios:` entry: the physics, the predictions, and where it came from.
+
+    THE PREDICTIONS ARE RECOMPUTED FROM THE ROUNDED VALUES, not copied from the
+    solver. Everything the PIC deck consumes is rounded to six significant
+    figures for readability, and the `law_anchor` constants are rounded the same
+    way — so a prediction carried over at full solver precision would disagree
+    with anything the stage could recompute for itself. Recomputing here from
+    exactly the numbers that get frozen is what lets the stage's
+    `prediction_consistency` gate be a real anti-post-hoc check (tolerance 1e-9)
+    rather than a rounding allowance.
+    """
     try:
         orbit_case = str(csv_path.resolve().relative_to(REPO_ROOT))
     except ValueError:
         orbit_case = str(csv_path)
+
+    n0 = float(f"{row.n_e:.6g}")
+    te = float(f"{row.Te_K:.6g}")
+    v_drive = float(f"{point.v_drive_V:.6g}")
+    i_beam = float(f"{point.i_beam_mA*1e-3:.6g}")
+    anchor = law_anchor_block(laws)
+
+    phi_pred = om.phi_for_escape_current_V(anchor["f_esc"] * i_beam, n0, te,
+                                           anchor["beta"], anchor["area_m2"])
+    ke_pred = om.exhaust_ke_eV(v_drive, phi_pred, anchor["ke_ledger"])
+    f_pred = om.thrust_nN(i_beam * 1e3, v_drive, phi_pred, anchor["k"],
+                          anchor["ke_ledger"])
+
     block = {
         "name": name,
         "plasma": {
-            "n0": float(f"{row.n_e:.6g}"),
-            "Te_K": float(f"{row.Te_K:.6g}"),
+            "n0": n0,
+            "Te_K": te,
             "Ti_K": float(f"{row.Ti_K:.6g}"),
             "ion_mass_me": ION_MASS_ME,
         },
-        "cathode_offset": -float(f"{point.v_drive_V:.6g}"),
-        "i_beam": float(f"{point.i_beam_mA*1e-3:.6g}"),
+        "cathode_offset": -v_drive,
+        "i_beam": i_beam,
         "drag_target_N": float(f"{row.drag_N:.6g}"),
         "predicted": {
-            "phi_body_V": float(f"{point.phi_V:.6g}"),
-            "f_beam_nN": float(f"{point.f_nN:.6g}"),
-            "exhaust_ke_eV": float(f"{point.exhaust_ke_eV:.6g}"),
+            "phi_body_V": phi_pred,
+            "f_beam_nN": f_pred,
+            "exhaust_ke_eV": ke_pred,
             "binding": point.binding,
         },
         "provenance": {
