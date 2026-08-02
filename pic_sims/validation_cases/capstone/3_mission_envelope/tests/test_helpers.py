@@ -91,12 +91,37 @@ def test_study_config_is_shared_across_scenarios():
     assert "max_steps" not in a["run"]
 
 
-def test_study_config_changes_when_t_end_changes():
-    """This is what makes a smoke run structurally unable to join a real cohort."""
+@pytest.mark.parametrize("name", ["A_day_p95", "B_night_worst"])
+def test_study_config_changes_when_t_end_changes(name):
+    """This is what makes a smoke run structurally unable to join a real cohort.
+
+    t_end is per-scenario, so a `--t-end` override has to be substituted into
+    THIS run's own entry of the study table -- otherwise the smoke run would
+    keep the committed duration in its study hash and cohort cleanly with a real
+    run of the other scenario.
+    """
     from dataclasses import replace
-    cfg = load_config(CONFIG, "A_day_p95")
-    smoke = replace(cfg, t_end=150e-9)
+    cfg = load_config(CONFIG, name)
+    smoke = replace(cfg, t_end=300e-9)
     assert smoke.study_config() != cfg.study_config()
+    # and only its OWN entry moved
+    entry = {s["name"]: s for s in smoke.study_config()["scenarios"]}
+    orig = {s["name"]: s for s in cfg.study_config()["scenarios"]}
+    assert entry[name]["t_end"] == 300e-9
+    for other in set(orig) - {name}:
+        assert entry[other] == orig[other]
+
+
+def test_a_smoke_run_cannot_cohort_with_a_real_run():
+    """The end-to-end version of the guarantee, at the hash level."""
+    from dataclasses import replace
+    import ladder_contract as lc
+    real_a = load_config(CONFIG, "A_day_p95")
+    real_b = load_config(CONFIG, "B_night_worst")
+    smoke_a = replace(real_a, t_end=300e-9)
+    h = lc.config_sha256
+    assert h(real_a.study_config()) == h(real_b.study_config())
+    assert h(smoke_a.study_config()) != h(real_b.study_config())
 
 
 def test_a_frozen_run_config_has_no_study_hash():
@@ -218,14 +243,15 @@ def test_the_anchor_matches_the_capstone_reference_metrics():
 # derived numerics, pinned per scenario
 # ----------------------------------------------------------------------
 
-@pytest.mark.parametrize("name,dt,steps,lam_mm,chi_lo", [
-    ("A_day_p95", 4.1354e-12, 241800, 1.845, 190.0),
-    ("B_night_worst", 4.1372e-12, 241680, 6.028, 375.0),
+@pytest.mark.parametrize("name,dt,steps,t_end_ns,lam_mm", [
+    ("A_day_p95", 4.1354e-12, 193440, 800.0, 1.845),
+    ("B_night_worst", 4.1372e-12, 314200, 1300.0, 6.028),
 ])
-def test_derived_numerics(name, dt, steps, lam_mm, chi_lo):
+def test_derived_numerics(name, dt, steps, t_end_ns, lam_mm):
     cfg = load_config(CONFIG, name)
     assert cfg.dt == pytest.approx(dt, rel=1e-4)
     assert cfg.max_steps == steps
+    assert cfg.t_end * 1e9 == pytest.approx(t_end_ns)
     assert cfg.lamD * 1e3 == pytest.approx(lam_mm, rel=1e-3)
     assert cfg.nr == 200 and cfg.nz == 440
     assert cfg.V_GAP == 300.0
@@ -236,10 +262,35 @@ def test_derived_numerics(name, dt, steps, lam_mm, chi_lo):
 
 
 def test_the_run_is_long_enough_for_the_float_to_settle():
+    """Each scenario is sized by ITS OWN settle time, not a shared duration."""
+    taus = {}
     for name in scenario_names(CONFIG):
         cfg = load_config(CONFIG, name)
         tau = cfg.predicted_settle_time_s()
+        taus[name] = cfg.t_end / tau
         assert cfg.t_end >= 3.0 * tau, f"{name}: t_end is only {cfg.t_end/tau:.1f} tau"
+    # the two durations differ precisely because the settle times differ by ~11x
+    assert taus["A_day_p95"] > 30.0
+    assert taus["B_night_worst"] > 5.0
+
+
+def test_the_night_run_leaves_current_balance_margin():
+    """t_end for B is set BY the current_balance gate, so pin the reasoning.
+
+    current_balance = C*(dphi/dt)/I_escape, and the tail window is the last 20 %
+    of the record.  Under the model's exponential approach the residual must sit
+    well under the 0.05 gate, or the run fails for a finite-time reason rather
+    than a physical one.
+    """
+    import math
+    cfg = load_config(CONFIG, "B_night_worst")
+    tau = cfg.predicted_settle_time_s()
+    phi_eq = float(cfg.predicted["phi_body_V"])
+    lo, hi = 0.8 * cfg.t_end - cfg.t_on, cfg.t_end - cfg.t_on   # tail window
+    mean_dphidt = phi_eq * (math.exp(-lo / tau) - math.exp(-hi / tau)) / (hi - lo)
+    i_escape = float(cfg.law_anchor["f_esc"]) * cfg.i_beam
+    balance = float(cfg.law_anchor["capacitance_F"]) * mean_dphidt / i_escape
+    assert balance < 0.02, f"predicted current_balance {balance:.4f} is too close to 0.05"
 
 
 def test_a_t_end_that_does_not_settle_is_refused(tmp_path):
