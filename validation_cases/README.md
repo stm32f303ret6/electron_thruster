@@ -19,13 +19,13 @@ current_collection/              COLLECTOR side (ambient plasma)
   2_biased_3v         collector.biased_3v        OML ceiling, chi=26.4   (~65 min CPU)
   3_biased_10v        collector.biased_10v       sheath growth, chi=88   (~80 min CPU)
   4_floating          collector.floating         charge pump -> phi_f    (~35 min CPU)
-chipsat_two_node/     capstone.two_node_laplace  two-node EB in vacuum   (seconds)
-chipsat/              CAPSTONE (emitter + collector, floating body)
-  chipsat             capstone.floating_body     float200 regression     (~6.3 h CPU/GPU)
+capstone/                        CAPSTONE side (the chipsat itself)
+  1_two_node_laplace  capstone.two_node_laplace  two-node EB in vacuum   (seconds)
+  2_floating_body     capstone.floating_body     float200 regression     (~6.3 h CPU/GPU)
 ```
 
 The two 2026-08-01 rungs close the audit's top gaps
-(`chipsat/VALIDATION_GAPS.md` G1/G2): `collector.floating` runs the
+(`capstone/2_floating_body/VALIDATION_GAPS.md` G1/G2): `collector.floating` runs the
 capstone's floating charge pump on a passive sphere against the analytic
 floating-potential bracket (thermal-ion −0.360 V / OML-ion −0.213 V), and
 `capstone.two_node_laplace` solves the capstone's two-node piecewise EB in
@@ -120,7 +120,7 @@ build): both emitter stages reproduce the pre-refactor baseline bit-for-bit;
 all three fixed-bias collector stages PASS with striking GPU-baseline parity
 (e.g. I_e/I_OML 0.8090 vs 0.8087 at +10 V); the **chipsat capstone**
 (`capstone.floating_body`, migrated from the electron_contactor float200
-baseline — see `chipsat/MIGRATION_PLAN.md` and `chipsat/VALIDATION_GAPS.md`)
+baseline — see `capstone/2_floating_body/MIGRATION_PLAN.md` and `capstone/2_floating_body/VALIDATION_GAPS.md`)
 completed its full parity run in 6.34 h and PASSes all 8 gates (escape
 98.44 %, F_beam 13.65 nN, φ_body +16.98 V); and the two 2026-08-01 rungs
 closing gaps G1/G2 both PASS — `collector.floating` drove the capstone's

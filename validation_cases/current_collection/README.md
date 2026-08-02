@@ -25,7 +25,7 @@ any more; `4_floating` adds the charge pump to the same deck.
 `collector.biased_3v` requires `collector.thermal`; `collector.biased_10v`
 requires `collector.biased_3v`; `collector.floating` requires
 `collector.thermal` and runs the chipsat capstone's charge-pump mechanism
-(see `4_floating/README.md` — it closes `chipsat/VALIDATION_GAPS.md` G2).
+(see `4_floating/README.md` — it closes `capstone/2_floating_body/VALIDATION_GAPS.md` G2).
 
 ## Why this branch also validates the chipsat configuration
 

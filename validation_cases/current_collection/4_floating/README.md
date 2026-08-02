@@ -1,11 +1,11 @@
 # collector.floating — passive sphere on the capstone's charge pump
 
-Closes **`chipsat/VALIDATION_GAPS.md` G2** (the floating charge pump had no
+Closes **`capstone/2_floating_body/VALIDATION_GAPS.md` G2** (the floating charge pump had no
 ladder rung with an analytic anchor beneath the capstone): the collector
 rungs' sphere (a = 0.75 mm, a/λ_De = 0.38) in the same capstone plasma, but
 the EB potential is **not prescribed** — it is computed every step by the
 chipsat capstone's charge-pump mechanism, transcribed verbatim from
-`chipsat/simulation.py`:
+`capstone/2_floating_body/simulation.py`:
 
 - the EB starts at a uniform 1 V so the init solve calibrates the
   self-capacitance C by Gauss' law on the domain faces;

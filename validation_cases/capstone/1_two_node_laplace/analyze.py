@@ -30,7 +30,7 @@ from scipy import ndimage, sparse
 from scipy.sparse.linalg import spsolve
 
 CASE_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(CASE_DIR.parents[0]))
+sys.path.insert(0, str(CASE_DIR.parents[1]))
 sys.path.insert(0, str(CASE_DIR))
 
 import ladder_contract as lc  # noqa: E402
