@@ -52,8 +52,13 @@ _SHARED_SCHEMA: dict[str, tuple[str, ...]] = {
     "reservoir": ("enabled", "frac", "every"),
     "domain": ("rmax", "aspect", "zmargin_lo", "zmargin_hi", "edge_phi_max"),
     "numerics": ("dx", "dt", "ppc", "ppc_beam"),
-    "run": ("t_end", "max_steps", "diag_period_frac", "phi_ceiling",
-            "choke_sustain"),
+    # NOTE t_end is NOT here: it is PER SCENARIO.  Each operating point has its
+    # own settle time tau = C*phi/I (22.7 ns for the dense day row, 244 ns for
+    # the thin night one), and the steady-state gates -- current_balance above
+    # all -- measure an equilibrium only if the run is many tau long.  A single
+    # shared duration would either under-run the slow scenario or waste hours on
+    # the fast one, so the schema forces the author to state it per scenario.
+    "run": ("max_steps", "diag_period_frac", "phi_ceiling", "choke_sustain"),
     "compute": ("gpu_arena_bytes",),
 }
 
@@ -63,7 +68,7 @@ _LAW_ANCHOR_KEYS = ("k", "ke_ledger", "f_esc", "beta", "area_m2",
                     "capacitance_F", "anchored_to", "metrics_sha256",
                     "laws_sha256")
 
-_SCENARIO_KEYS = ("name", "plasma", "cathode_offset", "i_beam",
+_SCENARIO_KEYS = ("name", "plasma", "cathode_offset", "i_beam", "t_end",
                   "drag_target_N", "predicted", "provenance", "reported", "note")
 _PLASMA_KEYS = ("n0", "Te_K", "Ti_K", "ion_mass_me")
 _PREDICTED_KEYS = ("phi_body_V", "f_beam_nN", "exhaust_ke_eV", "binding")
@@ -147,8 +152,8 @@ def _check_scenario(sc: Mapping[str, Any]) -> None:
     unknown = set(sc) - set(_SCENARIO_KEYS)
     if unknown:
         raise ConfigError(f"unknown scenario keys: {sorted(unknown)}")
-    for key in ("name", "plasma", "cathode_offset", "i_beam", "drag_target_N",
-                "predicted", "provenance"):
+    for key in ("name", "plasma", "cathode_offset", "i_beam", "t_end",
+                "drag_target_N", "predicted", "provenance"):
         if key not in sc:
             raise ConfigError(f"scenario {sc.get('name', '?')!r} is missing '{key}'")
     plasma = sc["plasma"]
@@ -634,7 +639,15 @@ class Config:
         shared["beam"].pop("i_beam", None)
         shared["numerics"].pop("dt", None)
         shared["run"].pop("max_steps", None)
-        shared["scenarios"] = [_canonical_scenario(s) for s in self._scenarios]
+        shared["run"].pop("t_end", None)      # per scenario; in the list below
+        # THIS run's own resolved t_end overrides the table's entry for its own
+        # scenario.  Without that substitution a `--t-end` smoke run would keep
+        # the table's duration in its study hash and could therefore join a
+        # cohort with a real run -- the exact mixing check_cohort exists to stop.
+        shared["scenarios"] = [
+            _canonical_scenario(s, t_end_override=(
+                self.t_end if str(s["name"]) == self.scenario else None))
+            for s in self._scenarios]
         return shared
 
     def validate_smoke(self) -> None:
@@ -718,7 +731,8 @@ class Config:
                 f"and no gate on it would mean anything")
 
 
-def _canonical_scenario(sc: Mapping[str, Any]) -> dict:
+def _canonical_scenario(sc: Mapping[str, Any],
+                        t_end_override: Optional[float] = None) -> dict:
     """One scenario reduced to the values that define it, for the study hash.
 
     Comments, notes and reported-only diagnostics are excluded: they must be
@@ -730,6 +744,7 @@ def _canonical_scenario(sc: Mapping[str, Any]) -> dict:
         "plasma": {k: float(sc["plasma"][k]) for k in _PLASMA_KEYS},
         "cathode_offset": float(sc["cathode_offset"]),
         "i_beam": float(sc["i_beam"]),
+        "t_end": float(sc["t_end"] if t_end_override is None else t_end_override),
         "drag_target_N": float(sc["drag_target_N"]),
         "predicted": {
             "phi_body_V": float(sc["predicted"]["phi_body_V"]),
@@ -748,7 +763,8 @@ def scenario_names(path: Path | str) -> list[str]:
 
 
 def _build(raw: Mapping[str, Any], sc: Mapping[str, Any],
-           scenarios: tuple[dict, ...]) -> Config:
+           scenarios: tuple[dict, ...],
+           require_settled: bool = True) -> Config:
     ele, bea, geo = raw["electrical"], raw["beam"], raw["geometry"]
     res, dom = raw["reservoir"], raw["domain"]
     num, run, com = raw["numerics"], raw["run"], raw["compute"]
@@ -783,7 +799,7 @@ def _build(raw: Mapping[str, Any], sc: Mapping[str, Any],
         dx=_f(num, "dx"),
         dt_explicit=(None if dt_raw is None else float(dt_raw)),
         ppc=_i(num, "ppc"), ppc_beam=_i(num, "ppc_beam"),
-        t_end=_f(run, "t_end"), max_steps_cap=_i(run, "max_steps"),
+        t_end=_f(sc, "t_end"), max_steps_cap=_i(run, "max_steps"),
         diag_period_frac=_i(run, "diag_period_frac"),
         phi_ceiling=(None if phi_ceiling_raw is None
                      else float(phi_ceiling_raw)),
@@ -798,17 +814,23 @@ def _build(raw: Mapping[str, Any], sc: Mapping[str, Any],
         note=(str(sc["note"]) if sc.get("note") else None),
         _scenarios=scenarios,
     )
-    cfg.validate()
+    cfg.validate(require_settled=require_settled)
     return cfg
 
 
-def load_config(path: Path | str, scenario: str | None = None) -> Config:
+def load_config(path: Path | str, scenario: str | None = None, *,
+                allow_unsettled: bool = False) -> Config:
     """Load the two-scenario study (needs ``scenario``) or a frozen run config.
 
     The study form has a ``scenarios`` list and REQUIRES a selection -- there is
     no default scenario, because a run that silently picked one would be
     unattributable.  A frozen ``config_used.yaml`` carries its resolved scenario
     inline and round-trips to an identical Config.
+
+    ``allow_unsettled=True`` is the ONLY way to read a smoke run's frozen config
+    back: a ``--t-end`` run is deliberately shorter than three settle times, so
+    the default loader refuses it and ``analyze.py`` therefore cannot grade one
+    by accident.  Reading one has to be an explicit act.
     """
     raw = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
     if not isinstance(raw, Mapping):
@@ -831,13 +853,14 @@ def load_config(path: Path | str, scenario: str | None = None) -> Config:
         if scenario not in names:
             raise ConfigError(f"unknown scenario {scenario!r}; choices: {names}")
         sc = next(s for s in table if str(s["name"]) == scenario)
-        return _build(raw, sc, tuple(table))
+        return _build(raw, sc, tuple(table),
+                      require_settled=not allow_unsettled)
 
     # a frozen, single-scenario run config
     _reject_unknown(raw, extra_top={"scenario", "plasma", "drag_target_N",
                                     "predicted", "provenance", "reported", "note"},
                     extra_section={"electrical": ("cathode_offset",),
-                                   "beam": ("i_beam",)})
+                                   "beam": ("i_beam",), "run": ("t_end",)})
     frozen = raw.get("scenario")
     if not frozen:
         raise ConfigError("frozen config carries no 'scenario'")
@@ -854,6 +877,7 @@ def load_config(path: Path | str, scenario: str | None = None) -> Config:
         "plasma": raw["plasma"],
         "cathode_offset": raw["electrical"]["cathode_offset"],
         "i_beam": raw["beam"]["i_beam"],
+        "t_end": raw["run"]["t_end"],
         "drag_target_N": raw.get("drag_target_N", 0.0),
         "predicted": raw.get("predicted"),
         "provenance": raw.get("provenance"),
@@ -861,7 +885,8 @@ def load_config(path: Path | str, scenario: str | None = None) -> Config:
         "note": raw.get("note"),
     }
     _check_scenario(sc)
-    return _build(raw, sc, ())
+    return _build(raw, sc, (),
+                  require_settled=not allow_unsettled)
 
 
 def analytic_capacitance(r_probe: float) -> float:
