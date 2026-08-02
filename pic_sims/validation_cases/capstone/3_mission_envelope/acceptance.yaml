@@ -1,0 +1,246 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for capstone.mission_envelope.
+#
+# MODEL VALIDATION, and it is PRE-REGISTERED: this file and the predictions in
+# config.yaml were both committed BEFORE either run existed.  Unlike
+# capstone.floating_body -- whose escape/F_beam/phi gates were read off the run
+# they describe, and which says so -- the targets here are not numbers from a
+# PIC run at all.  They are ratios against predictions the 0-D design model made
+# in advance, at operating points it was never fitted at:
+#
+#   fitted at   n_e = 1.627e12, Te = 1319 K, V = 200 V, I = 0.342 mA, chi = 149
+#   tested at   n_e = 2.138e12, Te = 1529 K, V = 300 V, I = 0.647 mA, chi ~ 200
+#               n_e = 1.972e11, Te = 1505 K, V = 300 V, I = 0.114 mA, chi ~ 386
+#
+# A FAILURE HERE IS A FINDING, NOT A TOLERANCE TO WIDEN.  If beta moves between
+# the two chi values, the (1 + chi) law form is wrong and needs a chi-dependent
+# beta -- which means a new laws.yaml, a new policy version, and fresh runs.
+# Never retro-tune a gate to match a measurement that has already landed.
+#
+# TOLERANCE PROVENANCE
+#   +-20 % on thrust     the archived thrust law documents a 5-17 % internal
+#                        systematic about whether phi is already absorbed in
+#                        ke_ledger, plus ~4 % of k/ke_ledger drift over 4x in
+#                        voltage (the 800 V record).  20 % covers both with a
+#                        little room; it does NOT cover a wrong law form.
+#   +-25 % on phi        phi is the more extrapolated of the two: it inverts the
+#                        collection law over a 2.6x span in chi, and beta carries
+#                        all the geometry.
+#   escape >= 95 %       f_esc = 0.984 is the flattest constant in the model
+#                        (98.4 % at the anchor); 95 % is a floor, not a fit.
+#   phi <= 75 V          a sanity margin below simulation.py's 100 V choke
+#                        watchdog: if the float gets there the run aborts anyway,
+#                        so this gate exists to fail loudly a little earlier.
+#   consistency <= 1e-9  not a physics tolerance.  The frozen predictions were
+#                        computed from exactly the frozen constants, so this is
+#                        bit-identical arithmetic; anything above round-off means
+#                        this stage's opmodel.py and design_sims/opmodel.py have
+#                        drifted apart and the pre-registration describes a model
+#                        neither side is running.
+#   beta spread <= 0.2231 (= ln 1.25)
+#                        the law-form test.  beta is dimensionless and geometric;
+#                        if (1 + chi) captures the potential dependence, the two
+#                        scenarios must return the same beta.
+#
+#                        THE TOLERANCE IS DERIVED FROM THE LEVERAGE, not picked.
+#                        Inverting a true (1+chi)**p law with the (1+chi) form
+#                        gives beta_meas ~ (1+chi)**(p-1), so the observable
+#                        spread is |p-1| * ln((1+chi_B)/(1+chi_A)).  This
+#                        mission's rows give chi = 200 and 386, a log-lever of
+#                        only 0.654 -- so the gate detects an exponent error of
+#                            |p - 1| > tolerance / 0.654.
+#                        The plan for this stage specified ln(1.5) against a
+#                        hypothetical chi pair of 224/727 (lever 1.174), i.e. it
+#                        intended to detect |p-1| > 0.35.  The real rows have
+#                        half that leverage, so holding ln(1.5) would have
+#                        detected only |p-1| > 0.62 -- too loose to catch even a
+#                        sqrt-like law (p = 0.5, spread 0.327).  The tolerance is
+#                        therefore scaled to preserve the INTENDED discriminating
+#                        power: 0.4055 * 0.654/1.174 = 0.226 ~ ln(1.25), which
+#                        detects |p - 1| > 0.341.
+#
+#                        A 25 % allowance is still generous for a constant that
+#                        is supposed to be constant: beta_meas ~ 1/phi at chi >>
+#                        1, and phi's tail-mean scatter is a few per cent (B runs
+#                        4.1 settle times, so its float is within ~1.7 % of its
+#                        asymptote).  Roughly a five-fold margin over noise.
+#
+#                        HONEST RESIDUAL LIMIT, stated because the README states
+#                        it too: this gate CANNOT see a mild curvature.  p = 0.8
+#                        produces a spread of 0.131 and passes.  Two operating
+#                        points 1.9x apart in (1+chi) cannot prove more than
+#                        that; a third, interior scenario would be the way to
+#                        buy it.
+#
+#                        The failure mode it does hunt: the archived femtosat f1b
+#                        record found the OML-style form off by ~5x at
+#                        r/lambda_D ~ 9, where collection had gone sheath-limited
+#                        and the enhancement was far weaker than linear.  This
+#                        chipsat sits at r/lambda_D = 0.83-2.71, inside OML's
+#                        window, so the form is expected to hold -- which is
+#                        exactly why a FAIL here would be informative.
+#   day - night >= 12 nN roughly half the predicted separation (31.57 - 5.31 =
+#                        26.26 nN).  Two operating points that cannot be told
+#                        apart would make every ratio gate above vacuous.
+#
+# The theory/identity gates are inherited verbatim from
+# capstone.floating_body.v2: they say the RUN is sound, independently of whether
+# the model is right.
+#
+# Changing any tolerance requires a new policy_id; every verdict records this
+# file's SHA-256.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: capstone.mission_envelope.v1
+stage_id: capstone.mission_envelope
+evidence_kind: model_validation
+
+gates:
+  # ==================================================================
+  # A_day_p95 -- dense dayside plasma, emission ceiling binding
+  # ==================================================================
+  # ---- theory / identity: is the run sound? ----
+  - id: A_steady_current_balance
+    required: true
+    metric: A_day_p95__current_balance
+    comparison: at_most
+    maximum: 0.05
+
+  - id: A_momentum_sanity_bound
+    required: true
+    metric: A_day_p95__f_net_over_f_beam
+    comparison: at_most
+    maximum: 1.0
+
+  - id: A_sheath_and_plume_contained
+    required: true
+    metric: A_day_p95__edge_phi_max_V
+    comparison: at_most
+    maximum: 1.0
+
+  - id: A_scrape_ledger_consistent_with_dumps
+    required: true
+    metric: A_day_p95__scrape_charge_consistency
+    comparison: at_most
+    maximum: 0.02
+
+  - id: A_beam_escape_ledger_consistent_with_dumps
+    required: true
+    metric: A_day_p95__scrape_charge_consistency_beam_escape
+    comparison: at_most
+    maximum: 0.02
+
+  # ---- model validation: is the model right? ----
+  - id: A_thrust_matches_prediction
+    required: true
+    metric: A_day_p95__f_beam_over_pred
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.20
+
+  - id: A_float_matches_prediction
+    required: true
+    metric: A_day_p95__phi_body_over_pred
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.25
+
+  - id: A_beam_escapes
+    required: true
+    metric: A_day_p95__escape_fraction_pct
+    comparison: at_least
+    minimum: 95.0
+
+  - id: A_float_below_choke_margin
+    required: true
+    metric: A_day_p95__phi_body_V
+    comparison: at_most
+    maximum: 75.0
+
+  - id: A_prediction_is_not_post_hoc
+    required: true
+    metric: A_day_p95__prediction_consistency
+    comparison: at_most
+    maximum: 1.0e-9
+
+  # ==================================================================
+  # B_night_worst -- thin plasma, float limit binding
+  # ==================================================================
+  # ---- theory / identity ----
+  - id: B_steady_current_balance
+    required: true
+    metric: B_night_worst__current_balance
+    comparison: at_most
+    maximum: 0.05
+
+  - id: B_momentum_sanity_bound
+    required: true
+    metric: B_night_worst__f_net_over_f_beam
+    comparison: at_most
+    maximum: 1.0
+
+  - id: B_sheath_and_plume_contained
+    required: true
+    metric: B_night_worst__edge_phi_max_V
+    comparison: at_most
+    maximum: 1.0
+
+  - id: B_scrape_ledger_consistent_with_dumps
+    required: true
+    metric: B_night_worst__scrape_charge_consistency
+    comparison: at_most
+    maximum: 0.02
+
+  - id: B_beam_escape_ledger_consistent_with_dumps
+    required: true
+    metric: B_night_worst__scrape_charge_consistency_beam_escape
+    comparison: at_most
+    maximum: 0.02
+
+  # ---- model validation ----
+  - id: B_thrust_matches_prediction
+    required: true
+    metric: B_night_worst__f_beam_over_pred
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.20
+
+  - id: B_float_matches_prediction
+    required: true
+    metric: B_night_worst__phi_body_over_pred
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.25
+
+  - id: B_beam_escapes
+    required: true
+    metric: B_night_worst__escape_fraction_pct
+    comparison: at_least
+    minimum: 95.0
+
+  - id: B_float_below_choke_margin
+    required: true
+    metric: B_night_worst__phi_body_V
+    comparison: at_most
+    maximum: 75.0
+
+  - id: B_prediction_is_not_post_hoc
+    required: true
+    metric: B_night_worst__prediction_consistency
+    comparison: at_most
+    maximum: 1.0e-9
+
+  # ==================================================================
+  # cross-scenario -- the law-form test proper
+  # ==================================================================
+  - id: scenarios_are_distinguishable
+    required: true
+    metric: day_minus_night_f_beam_nN
+    comparison: at_least
+    minimum: 12.0
+
+  - id: collection_law_form_holds_across_chi
+    required: true
+    metric: beta_log_spread
+    comparison: at_most
+    maximum: 0.2231        # ln(1.25); see the leverage derivation in the header
