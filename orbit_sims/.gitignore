@@ -1,0 +1,5 @@
+__pycache__/
+
+# The year-long CSV is ~10 MB of regenerable output; the run that produced it is
+# reproducible from results/config_used.yaml, which stays tracked on purpose.
+validation_cases/*/results/*.csv
