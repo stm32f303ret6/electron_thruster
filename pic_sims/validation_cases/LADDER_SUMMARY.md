@@ -8,9 +8,11 @@ version); this file is a human-readable digest, never the authoritative
 record.  Every rung ran on the CPU build (WarpX 26.5, RZ electrostatic,
 seed 42) and PASSed all of its required gates.
 
-The plasma everywhere is the chipsat capstone's ionospheric row:
+The plasma is the chipsat capstone's ionospheric row on rungs 1–8:
 n₀ = 1.627·10¹² m⁻³, kTe = 113.6 meV (1318.8 K), Ti = 936.2 K, reduced ion
-mass 400 mₑ (a ladder-wide caveat: not real O⁺).
+mass 400 mₑ (a ladder-wide caveat: not real O⁺).  Rung 9 deliberately leaves
+that row — it is the rung that tests whether the design model extrapolates —
+and states its own two.
 
 ---
 
@@ -156,6 +158,37 @@ containment, and the ledger-vs-dump consistency checks.
 | exhaust KE | −φ(injection plane) = 148.1 eV | **147.5 eV** |
 | ledger vs dumps (ambient-e / beam-escape) | identical | **3·10⁻⁹ / 5·10⁻⁹** |
 
+### 9. `capstone.mission_envelope` — does the design model predict the particles?  *(new rung)*
+
+**The test:** the same deck as rung 8, run at **two operating points chosen by a
+committed rule from a real year-long 400 km mission**, and gated against
+predictions **committed before the runs existed**.  Every rung above asks "is the
+physics right?"; this one asks "is the cheap 0-D model we design with right,
+away from the single point its constants were fitted at?"
+
+**Evidence kind: `model_validation`, pre-registered.**  The gate targets are not
+numbers from any PIC run — they are ratios against `design_sims/`'s predictions.
+
+| | fitted (rung 8) | A_day_p95 | B_night_worst |
+|---|---|---|---|
+| n_e [m⁻³] | 1.627e12 | 2.138e12 | 1.972e11 |
+| Te [K] | 1318.8 | 1528.5 | 1504.9 |
+| V / I | 200 V / 0.342 mA | 300 V / 0.647 mA | 300 V / 0.114 mA |
+| χ = eφ/kTe | 149 | ~200 | ~386 |
+| binding constraint | — | emission ceiling γ_CL | float limit φ_max |
+| predicted φ_body / F_beam | — | +26.35 V / 31.57 nN | +50.00 V / 5.31 nN |
+
+**Status: runs in progress** (A ≈ 7.7 h, B ≈ 12.5 h on the 14-thread CPU
+build). The pre-registered gates and predictions above are committed; this
+table will carry the measured `φ_body`/`F_beam` ratios and the β-spread once
+the cohort analysis lands.
+
+Three structural guards make the pre-registration more than a promise: the stage
+never imports `design_sims` (constants arrive frozen in its own committed
+config); `analyze.py` recomputes each frozen prediction from the frozen constants
+and gates the agreement at 1e-9; and a cross-stage check re-derives the whole
+anchor from rung 8's *own* metrics every suite run.
+
 ---
 
 ## Cross-stage checks (all green in the suite verdict)
@@ -167,8 +200,14 @@ containment, and the ledger-vs-dump consistency checks.
 - **Emitter transmission consistency:** no-plate 1.000 vs holed-A 0.973.
 - **Capstone inherits the validated configuration:** frozen plasma/dx/ppc
   hash-match `collector.thermal`'s.
-- **Floating rung shares thermal's configuration** (new).
-- **Two-node rung solves the capstone's exact geometry/dx/offset** (new).
+- **Floating rung shares thermal's configuration.**
+- **Two-node rung solves the capstone's exact geometry/dx/offset.**
+- **Mission-envelope shares the capstone's geometry/dx/ppc** (new) — the plasma
+  and drive differ *by design*, so only the discretized machine is compared.
+- **Mission-envelope's frozen design constants re-derive from the capstone's own
+  metrics** (new) — k, ke_ledger, f_esc and β are recomputed from rung 8's
+  `metrics.json` every suite run and compared at 2e-6, so the design model
+  cannot drift away from the measurement it claims to rest on.
 
 ## What this ladder does NOT yet establish
 
@@ -185,4 +224,14 @@ Kept visible on purpose (details: `ARCHITECTURE_REFACTOR_PLAN.md` §13,
 - The **reduced ion mass** (400 mₑ) is internally consistent everywhere but
   makes every real-O⁺ conclusion an extrapolation.
 - The capstone's escape/thrust/φ_body gates are **regression anchors**, not
-  independent theory.
+  independent theory.  (Rung 9's are not — but see its README for what its
+  β-spread gate can and cannot detect: with χ = 200 vs 386 it catches an
+  exponent error of |p−1| > 0.34 in the `(1+χ)` collection law, and would miss
+  a milder curvature.)
+- **Real O⁺ ion dynamics** at the mission rows: rung 9 varies n_e and Te across
+  a factor 11 in density, but the ion mass stays the 400 mₑ surrogate.
+- **Collection physics away from PLASMA_MAX**: every `collector.*` rung sits at
+  n₀ = 1.627e12.  Rung 9 exercises collection at 1.97e11 only through the full
+  capstone system, not against a closed-form law; a cheap `collector.thermal`-
+  style run at the night row (~2–3 h) would anchor `I_the(n, Te)` there
+  directly.

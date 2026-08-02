@@ -1,9 +1,16 @@
 # Credibility roadmap — from concept-grade to publication/design-grade
 
-**Where we are (2026-08-01):** the 8-stage ladder is green
+**Where we are (2026-08-02):** the **9-stage** ladder is green
 (`LADDER_SUMMARY.md`), every capstone mechanism has an independent anchor,
 and the caveats are disclosed. **For presenting a concept, the current state
-suffices.** This document is the ordered backlog for anyone who later needs
+suffices.**
+
+Since 2026-08-01 the repository also gained the two halves the ladder was
+missing at either end: `orbit_sims/` (what the mission demands) and
+`design_sims/` (what to run the thruster at), plus rung 9
+`capstone.mission_envelope`, which is the first rung whose gates are
+*pre-registered predictions* rather than regression anchors. Two items below
+were closed by that work and are struck through. This document is the ordered backlog for anyone who later needs
 more than concept-grade: each item says what claim it unlocks, the coding
 effort, and the simulation cost (CPU-build estimates from measured rates).
 
@@ -21,6 +28,7 @@ evidence* first, promoted to gates only with a policy bump.
 | 1.1 | **PPC doubling on `collector.biased_10v`** (ppc 16→32, config variant) | "the collector fractions and sheath radius are not shot-noise artifacts" — the trend feeding the capstone | none | ~2.5–3 h |
 | 1.2 | **Grid refinement on `collector.thermal`** (dx 0.15→0.075 mm, dt halved) | measured convergence against an *exact* law; validates the 13.1 cells/λ_De choice every stage inherits | none | ~2–3 h |
 | 1.3 | **Seed variation on `collector.floating` + `collector.thermal`** (2 extra seeds each) | error bars on φ_f = −0.251 V and the thermal currents instead of point values | none | ~2 h total |
+| 1.5 | ~~**Collector rung at a second plasma row**~~ → *partly addressed*: rung 9 exercises collection at n_e = 1.97e11 (12× below PLASMA_MAX) inside the full system. A closed-form `collector.thermal`-style rung at that row is still worth ~2–3 h and is the cheapest remaining coverage item. | `I_the(n,Te)` anchored against an exact law away from PLASMA_MAX | ~1 h (config + ladder tuple) | ~2–3 h |
 | 1.4 | **Close gap G3: new `emitter.holed_anode` scenario D** at the capstone's gun operating point (200 V, ~4.7 mm-gap-equivalent, rms 2.6e5 m/s, ppc_beam 16) | the capstone's gun voltage/temperature/graininess is bracketed by a validated rung | ~1–2 h (scenario block + acceptance + ladder tuple + tests) | ~5–10 min |
 
 Report each comparison in the stage README + a small committed table; no
