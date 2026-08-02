@@ -82,22 +82,29 @@ average, and this stage says nothing about it.
 
 ## Numerics per scenario
 
-`run.t_end` is 1.0 µs (up from the capstone's 800 ns) because B needs 4.1 settle
-times; `run.max_steps` is 300 000 (up from 160 000) because the 300 V CFL step
-is ~4.14 ps and 1 µs needs ~242 k steps — the old cap would have silently
-truncated the run to 660 ns. `helpers.validate()` refuses a config where the cap
-truncates `t_end`.
+**`t_end` is per scenario, not shared.** The two operating points settle at very
+different rates — τ = C·φ/I is 22.7 ns for the dense day row but 244 ns for the
+thin night one — and every steady-state gate measures an equilibrium only many τ
+in. A shared duration would either under-run B or waste ~5 h on A, so the schema
+forces the author to state it per scenario. `run.max_steps` is 400 000 (up from
+the capstone's 160 000) because the 300 V CFL step is ~4.14 ps;
+`helpers.validate()` refuses a cap that truncates `t_end`.
 
-| | dt | steps | grid | λ_D | dx/λ_D | r_p/λ_D | rmax/λ_D | CFL | ω_pe·dt | t_end/τ |
-|---|---|---|---|---|---|---|---|---|---|---|
-| A_day_p95 | 4.135 ps | 241 800 | 200×440 | 1.85 mm | 0.081 | 2.71 | 16.3 | 0.30 | 3e-4 | 44.1 |
-| B_night_worst | 4.137 ps | 241 680 | 200×440 | 6.03 mm | 0.025 | 0.83 | 4.98 | 0.30 | 1e-4 | 4.1 |
+| | t_end | t_end/τ | dt | steps | wall | grid | λ_D | dx/λ_D | r_p/λ_D | rmax/λ_D | CFL | ω_pe·dt |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| A_day_p95 | 800 ns | 35.3 | 4.135 ps | 193 440 | ~8.1 h | 200×440 | 1.85 mm | 0.081 | 2.71 | 16.3 | 0.30 | 3e-4 |
+| B_night_worst | 1300 ns | 5.3 | 4.137 ps | 314 200 | ~13.1 h | 200×440 | 6.03 mm | 0.025 | 0.83 | 4.98 | 0.30 | 1e-4 |
 
-**`rmax/λ_D = 5.0` for B is the known risk.** The thin night plasma has a
-6 mm Debye length, so the 30 mm domain holds only five of them and the sheath
-may reach the grounded boundary — which would clip the plume and fake an escape.
-This is what the `S__edge_phi_max_V ≤ 1 V` gate is for, and the **smoke runs
-check it before the real runs commit**: see below.
+A's 800 ns is deliberately the *same* duration as the `capstone.floating_body`
+reference run, so the two are directly comparable at no extra cost.
+
+**B's 1300 ns is set by the `current_balance` gate, not by taste.** That gate
+measures `C·(dφ/dt)/I_escape`, so a run that stops while the float is still
+climbing fails it for a purely finite-time reason. At 1.0 µs the tail window
+would sit at 2.6–3.4 τ and the residual charging current would be ≈5 % of
+`I_escape` — *exactly on* the 0.05 gate. At 1.3 µs it is ≈1.8 %, a 2.8× margin.
+`tests/test_helpers.py::test_the_night_run_leaves_current_balance_margin` pins
+that arithmetic so the duration cannot be trimmed without the reason failing.
 
 Both scenarios stay inside OML's validity window (`r_p/λ_D` = 0.83 and 2.71).
 The archived femtosat record found the OML-style form failing badly at
@@ -108,13 +115,13 @@ The archived femtosat record found the OML-style form failing badly at
 ```bash
 conda activate warpx-cpu-mpich-dev
 
-# smoke first (~1.5 h each): plumbing, early phi trajectory, and the domain decision
-python simulation.py --scenario A_day_p95     --t-end 150e-9
-python simulation.py --scenario B_night_worst --t-end 150e-9
+# smoke first: plumbing, the early phi trajectory, and the domain decision.
+# t_end must exceed beam.t_on = 150 ns or the gun never fires.
+python simulation.py --scenario B_night_worst --t-end 250e-9   # ~2.5 h
 
-# the real runs, ~10 h each -- ONE WarpX case at a time on this machine
-python simulation.py --scenario A_day_p95
-python simulation.py --scenario B_night_worst
+# the real runs -- ONE WarpX case at a time on this machine
+python simulation.py --scenario A_day_p95        # ~8.1 h
+python simulation.py --scenario B_night_worst    # ~13.1 h
 
 # cohort analysis + the suite verdict
 python analyze.py --runs outputs/<A-run> outputs/<B-run> --policy acceptance.yaml
@@ -133,14 +140,41 @@ config hash *and* the study hash, so `lc.check_cohort` structurally refuses to
 analyze a smoke run alongside a real one; and `validate_smoke()` is the only
 path that relaxes the "t_end ≥ 3τ" invariant. Nothing else is relaxed.
 
-### The domain decision point
+### The domain decision point — RESOLVED, `rmax` stays at 30 mm
 
-The smoke runs exist to answer one question before ~20 hours are spent: **does
-B's sheath stay inside the box?** If its edge |φ| trends toward the 1 V gate,
-`domain.rmax` goes 30 → 40 mm for the *whole stage* (grid 200×440 → 272×440,
-cost ×1.36) before either real run starts, and this README records that it
-happened. Changing it afterwards would mean the two scenarios were not the same
-discretized machine.
+The smoke run existed to answer one question before ~21 hours were spent: **does
+B's sheath stay inside the box?** Scenario B was run to 250 ns
+(`20260802T101150Z_B_night_worst_c83ee39c`, declared calibration) and the answer
+is yes, with a wide margin.
+
+Edge |φ| was read from *every* field dump, not just the last, so the trend is
+visible rather than a single frame:
+
+| φ_body [V] | 0.99 | 5.38 | 10.57 | 14.91 |
+|---|---|---|---|---|
+| edge \|φ\| [V] | 0.045 | 0.020 | 0.040 | 0.056 |
+
+Once the cathode-on transient decays (φ_body ≳ 5 V) the response is linear at
+**3.77 mV of edge potential per volt of body potential**, so the predicted edge
+|φ| at the full φ = 50 V float is **0.19 V — a 5× margin under the 1 V gate**.
+The radial profile at the can mid-plane confirms the screening is doing its job:
+|φ| falls 12.0 → 3.89 → 1.72 → 0.70 → 0.17 V across r = 1 → 5 λ_D.
+
+`domain.rmax` therefore **stays at 30 mm**, saving the ×1.36 grid cost (~7 h
+across the two runs). Had it needed to grow, it would have had to grow for the
+*whole stage* before either real run started — changing it afterwards would mean
+the two scenarios were not the same discretized machine.
+
+The same smoke run also exercised the full `analyze.py` evidence path
+(openPMD field and scrape readers, ledger integrals, refit) and confirmed
+`prediction_consistency = 0.0` exactly, so the 1e-9 gate is measuring formula
+drift and nothing else.
+
+**Scenario A was not smoke-run.** Its domain margin is 3× more comfortable
+(rmax/λ_D = 16.3 vs 5.0), it shares the deck byte-for-byte, and its distinct
+risk — a 0.647 mA beam at `I/I_CL = 1.5` choking the body — is one the run's own
+`phi_ceiling` watchdog aborts within 50 ns of onset rather than 8 hours later.
+Its early trajectory was monitored live from `contactor_log.csv` instead.
 
 ## Gates
 
