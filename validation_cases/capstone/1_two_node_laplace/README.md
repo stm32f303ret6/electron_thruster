@@ -10,7 +10,7 @@ charge pump uses.
 
 ## Physical system
 
-The capstone's can (see `../2_floating_body/README.md` for the labelled
+The capstone's can (see `../2_chipsat_thruster/README.md` for the labelled
 cross-section), on the capstone's exact grid (200×440, dx = 0.15 mm), with
 zero particles and zero space charge.  Every solve is then **Laplace's
 equation**, whose exact mathematical properties become gates.
