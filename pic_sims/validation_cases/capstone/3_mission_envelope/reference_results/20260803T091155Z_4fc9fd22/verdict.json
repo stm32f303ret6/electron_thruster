@@ -1,0 +1,208 @@
+{
+  "stage_id": "capstone.mission_envelope",
+  "policy_id": "capstone.mission_envelope.v1",
+  "status": "FAIL",
+  "exit_code": 1,
+  "detail": "2 required gate(s) failed",
+  "gates": [
+    {
+      "id": "A_steady_current_balance",
+      "status": "PASS",
+      "required": true,
+      "metric": "A_day_p95__current_balance",
+      "comparison": "at_most",
+      "value": 0.02853172299199958,
+      "detail": "0.0285317 <= 0.05"
+    },
+    {
+      "id": "A_momentum_sanity_bound",
+      "status": "PASS",
+      "required": true,
+      "metric": "A_day_p95__f_net_over_f_beam",
+      "comparison": "at_most",
+      "value": 0.012776379980130856,
+      "detail": "0.0127764 <= 1"
+    },
+    {
+      "id": "A_sheath_and_plume_contained",
+      "status": "PASS",
+      "required": true,
+      "metric": "A_day_p95__edge_phi_max_V",
+      "comparison": "at_most",
+      "value": 0.0805211284392198,
+      "detail": "0.0805211 <= 1"
+    },
+    {
+      "id": "A_scrape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "A_day_p95__scrape_charge_consistency",
+      "comparison": "at_most",
+      "value": 1.5733249445493604e-10,
+      "detail": "1.57332e-10 <= 0.02"
+    },
+    {
+      "id": "A_beam_escape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "A_day_p95__scrape_charge_consistency_beam_escape",
+      "comparison": "at_most",
+      "value": 1.1462902781492764e-09,
+      "detail": "1.14629e-09 <= 0.02"
+    },
+    {
+      "id": "A_thrust_matches_prediction",
+      "status": "PASS",
+      "required": true,
+      "metric": "A_day_p95__f_beam_over_pred",
+      "comparison": "abs_within",
+      "value": 0.9926342676555553,
+      "detail": "0.992634 |x - 1| <= 0.2"
+    },
+    {
+      "id": "A_float_matches_prediction",
+      "status": "PASS",
+      "required": true,
+      "metric": "A_day_p95__phi_body_over_pred",
+      "comparison": "abs_within",
+      "value": 1.1710576986477421,
+      "detail": "1.17106 |x - 1| <= 0.25"
+    },
+    {
+      "id": "A_beam_escapes",
+      "status": "PASS",
+      "required": true,
+      "metric": "A_day_p95__escape_fraction_pct",
+      "comparison": "at_least",
+      "value": 98.99085917312662,
+      "detail": "98.9909 >= 95"
+    },
+    {
+      "id": "A_float_below_choke_margin",
+      "status": "PASS",
+      "required": true,
+      "metric": "A_day_p95__phi_body_V",
+      "comparison": "at_most",
+      "value": 30.857763953488373,
+      "detail": "30.8578 <= 75"
+    },
+    {
+      "id": "A_prediction_is_not_post_hoc",
+      "status": "PASS",
+      "required": true,
+      "metric": "A_day_p95__prediction_consistency",
+      "comparison": "at_most",
+      "value": 0.0,
+      "detail": "0 <= 1e-09"
+    },
+    {
+      "id": "B_steady_current_balance",
+      "status": "PASS",
+      "required": true,
+      "metric": "B_night_worst__current_balance",
+      "comparison": "at_most",
+      "value": 0.018221273012136018,
+      "detail": "0.0182213 <= 0.05"
+    },
+    {
+      "id": "B_momentum_sanity_bound",
+      "status": "PASS",
+      "required": true,
+      "metric": "B_night_worst__f_net_over_f_beam",
+      "comparison": "at_most",
+      "value": 0.036931476643439126,
+      "detail": "0.0369315 <= 1"
+    },
+    {
+      "id": "B_sheath_and_plume_contained",
+      "status": "PASS",
+      "required": true,
+      "metric": "B_night_worst__edge_phi_max_V",
+      "comparison": "at_most",
+      "value": 0.0579446200940332,
+      "detail": "0.0579446 <= 1"
+    },
+    {
+      "id": "B_scrape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "B_night_worst__scrape_charge_consistency",
+      "comparison": "at_most",
+      "value": 2.0911574403156048e-09,
+      "detail": "2.09116e-09 <= 0.02"
+    },
+    {
+      "id": "B_beam_escape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "B_night_worst__scrape_charge_consistency_beam_escape",
+      "comparison": "at_most",
+      "value": 4.137580377736459e-09,
+      "detail": "4.13758e-09 <= 0.02"
+    },
+    {
+      "id": "B_thrust_matches_prediction",
+      "status": "PASS",
+      "required": true,
+      "metric": "B_night_worst__f_beam_over_pred",
+      "comparison": "abs_within",
+      "value": 1.0617023306070583,
+      "detail": "1.0617 |x - 1| <= 0.2"
+    },
+    {
+      "id": "B_float_matches_prediction",
+      "status": "FAIL",
+      "required": true,
+      "metric": "B_night_worst__phi_body_over_pred",
+      "comparison": "abs_within",
+      "value": 0.46152696234864604,
+      "detail": "0.461527 |x - 1| <= 0.25"
+    },
+    {
+      "id": "B_beam_escapes",
+      "status": "PASS",
+      "required": true,
+      "metric": "B_night_worst__escape_fraction_pct",
+      "comparison": "at_least",
+      "value": 99.48954356120828,
+      "detail": "99.4895 >= 95"
+    },
+    {
+      "id": "B_float_below_choke_margin",
+      "status": "PASS",
+      "required": true,
+      "metric": "B_night_worst__phi_body_V",
+      "comparison": "at_most",
+      "value": 23.076324435612083,
+      "detail": "23.0763 <= 75"
+    },
+    {
+      "id": "B_prediction_is_not_post_hoc",
+      "status": "PASS",
+      "required": true,
+      "metric": "B_night_worst__prediction_consistency",
+      "comparison": "at_most",
+      "value": 0.0,
+      "detail": "0 <= 1e-09"
+    },
+    {
+      "id": "scenarios_are_distinguishable",
+      "status": "PASS",
+      "required": true,
+      "metric": "day_minus_night_f_beam_nN",
+      "comparison": "at_least",
+      "value": 25.697557105877422,
+      "detail": "25.6976 >= 12"
+    },
+    {
+      "id": "collection_law_form_holds_across_chi",
+      "status": "FAIL",
+      "required": true,
+      "metric": "beta_log_spread",
+      "comparison": "at_most",
+      "value": 0.9324067571313392,
+      "detail": "0.932407 <= 0.2231"
+    }
+  ],
+  "analysis_id": "20260803T091155Z_4fc9fd22"
+}

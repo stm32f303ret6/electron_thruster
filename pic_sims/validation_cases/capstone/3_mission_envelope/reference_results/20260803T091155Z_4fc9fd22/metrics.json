@@ -1,0 +1,569 @@
+{
+  "analysis_id": "20260803T091155Z_4fc9fd22",
+  "metrics": [
+    {
+      "id": "A_day_p95__current_balance",
+      "status": "OK",
+      "value": 0.02853172299199958,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 154900,
+        "end_iteration": 193440
+      },
+      "source": "|I_escape - (I_amb_e - I_amb_i)| / I_escape, tail means"
+    },
+    {
+      "id": "A_day_p95__f_net_over_f_beam",
+      "status": "OK",
+      "value": 0.012776379980130856,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 154900,
+        "end_iteration": 193440
+      },
+      "source": "|F_net| / |F_beam| momentum sanity bound"
+    },
+    {
+      "id": "A_day_p95__edge_phi_max_V",
+      "status": "OK",
+      "value": 0.0805211284392198,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "max |phi| a few cells inside the open boundaries, last dump"
+    },
+    {
+      "id": "A_day_p95__scrape_charge_consistency",
+      "status": "OK",
+      "value": 1.5733249445493604e-10,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "ambient-e EB charge: CSV ledger integral vs openPMD scrape total"
+    },
+    {
+      "id": "A_day_p95__scrape_charge_consistency_beam_escape",
+      "status": "OK",
+      "value": 1.1462902781492764e-09,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "beam-escape charge: CSV ledger I_escape integral vs openPMD zhi+zlo+xhi scrape total"
+    },
+    {
+      "id": "A_day_p95__phi_body_V",
+      "status": "OK",
+      "value": 30.857763953488373,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 154900,
+        "end_iteration": 193440
+      },
+      "source": "contactor_log.csv phi_body, tail mean"
+    },
+    {
+      "id": "A_day_p95__f_beam_nN",
+      "status": "OK",
+      "value": 31.336760775193795,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 154900,
+        "end_iteration": 193440
+      },
+      "source": "contactor_log.csv F_beam_N (escaped-beam z-momentum flux)"
+    },
+    {
+      "id": "A_day_p95__escape_fraction_pct",
+      "status": "OK",
+      "value": 98.99085917312662,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": 387,
+      "window": {
+        "start_iteration": 154900,
+        "end_iteration": 193440
+      },
+      "source": "contactor_log.csv pct_escape (cumulative beam fate), tail mean"
+    },
+    {
+      "id": "A_day_p95__f_beam_over_pred",
+      "status": "OK",
+      "value": 0.9926342676555553,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 154900,
+        "end_iteration": 193440
+      },
+      "source": "measured F_beam / pre-registered 31.5693 nN"
+    },
+    {
+      "id": "A_day_p95__phi_body_over_pred",
+      "status": "OK",
+      "value": 1.1710576986477421,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 154900,
+        "end_iteration": 193440
+      },
+      "source": "measured phi_body / pre-registered 26.3503 V"
+    },
+    {
+      "id": "A_day_p95__prediction_consistency",
+      "status": "OK",
+      "value": 0.0,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "frozen predicted: block vs the same block recomputed from the frozen law_anchor constants (anti-post-hoc guard; catches drift between this stage's opmodel and design_sims')"
+    },
+    {
+      "id": "A_day_p95__exhaust_ke_mean_eV",
+      "status": "OK",
+      "value": 215.57258268733847,
+      "unit": "eV",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 154900,
+        "end_iteration": 193440
+      },
+      "source": "contactor_log.csv beam_escape_KE_mean (REPORTED)"
+    },
+    {
+      "id": "A_day_p95__exhaust_ke_over_pred",
+      "status": "OK",
+      "value": 0.9773608596073735,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 154900,
+        "end_iteration": 193440
+      },
+      "source": "measured exhaust KE / pre-registered (REPORTED)"
+    },
+    {
+      "id": "A_day_p95__late_dphidt_V_per_ns",
+      "status": "OK",
+      "value": 0.025415369933286025,
+      "unit": "V/ns",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "phi_body linear slope over the last 50 ns (REPORTED: finite-time-equilibrium honesty line)"
+    },
+    {
+      "id": "A_day_p95__settle_time_observed_ns",
+      "status": "OK",
+      "value": 174.5153,
+      "unit": "ns",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "first time phi_body reached (1-1/e) of its plateau (REPORTED)"
+    },
+    {
+      "id": "A_day_p95__settle_time_predicted_ns",
+      "status": "OK",
+      "value": 22.66498665954295,
+      "unit": "ns",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "tau = C*phi_pred/I from the frozen capacitance (REPORTED)"
+    },
+    {
+      "id": "A_day_p95__p_supply_mW",
+      "status": "OK",
+      "value": 194.0352,
+      "unit": "mW",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "I*V at the frozen operating point (REPORTED)"
+    },
+    {
+      "id": "A_day_p95__i_over_i_cl",
+      "status": "OK",
+      "value": 1.500000181658843,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "beam current / planar Child-Langmuir scale (REPORTED)"
+    },
+    {
+      "id": "A_day_p95__chi_measured",
+      "status": "OK",
+      "value": 234.26896318628934,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "e*phi_body/kTe at the measured float (REPORTED)"
+    },
+    {
+      "id": "A_day_p95__k_meas",
+      "status": "OK",
+      "value": 3.2998794288398887,
+      "unit": "nN/(mA*sqrt(eV))",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "thrust law inverted at this run (REPORTED refit output)"
+    },
+    {
+      "id": "A_day_p95__ke_ledger_meas",
+      "status": "OK",
+      "value": 0.8009615504943803,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "energy ledger inverted at this run (REPORTED refit output)"
+    },
+    {
+      "id": "A_day_p95__beta_meas",
+      "status": "OK",
+      "value": 0.39666484263141916,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "collection law inverted at this run (REPORTED refit output; the cross-scenario spread of these IS the law-form test)"
+    },
+    {
+      "id": "A_day_p95__drag_target_nN",
+      "status": "OK",
+      "value": 61.3313,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "the mission row's drag demand (REPORTED)"
+    },
+    {
+      "id": "A_day_p95__thrust_over_demand",
+      "status": "OK",
+      "value": 0.5109423862724872,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "measured thrust / this row's drag demand (REPORTED)"
+    },
+    {
+      "id": "B_night_worst__current_balance",
+      "status": "OK",
+      "value": 0.018221273012136018,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 251400,
+        "end_iteration": 314200
+      },
+      "source": "|I_escape - (I_amb_e - I_amb_i)| / I_escape, tail means"
+    },
+    {
+      "id": "B_night_worst__f_net_over_f_beam",
+      "status": "OK",
+      "value": 0.036931476643439126,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 251400,
+        "end_iteration": 314200
+      },
+      "source": "|F_net| / |F_beam| momentum sanity bound"
+    },
+    {
+      "id": "B_night_worst__edge_phi_max_V",
+      "status": "OK",
+      "value": 0.0579446200940332,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "max |phi| a few cells inside the open boundaries, last dump"
+    },
+    {
+      "id": "B_night_worst__scrape_charge_consistency",
+      "status": "OK",
+      "value": 2.0911574403156048e-09,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "ambient-e EB charge: CSV ledger integral vs openPMD scrape total"
+    },
+    {
+      "id": "B_night_worst__scrape_charge_consistency_beam_escape",
+      "status": "OK",
+      "value": 4.137580377736459e-09,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "beam-escape charge: CSV ledger I_escape integral vs openPMD zhi+zlo+xhi scrape total"
+    },
+    {
+      "id": "B_night_worst__phi_body_V",
+      "status": "OK",
+      "value": 23.076324435612083,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 251400,
+        "end_iteration": 314200
+      },
+      "source": "contactor_log.csv phi_body, tail mean"
+    },
+    {
+      "id": "B_night_worst__f_beam_nN",
+      "status": "OK",
+      "value": 5.639203669316375,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 251400,
+        "end_iteration": 314200
+      },
+      "source": "contactor_log.csv F_beam_N (escaped-beam z-momentum flux)"
+    },
+    {
+      "id": "B_night_worst__escape_fraction_pct",
+      "status": "OK",
+      "value": 99.48954356120828,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": 629,
+      "window": {
+        "start_iteration": 251400,
+        "end_iteration": 314200
+      },
+      "source": "contactor_log.csv pct_escape (cumulative beam fate), tail mean"
+    },
+    {
+      "id": "B_night_worst__f_beam_over_pred",
+      "status": "OK",
+      "value": 1.0617023306070583,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 251400,
+        "end_iteration": 314200
+      },
+      "source": "measured F_beam / pre-registered 5.3115 nN"
+    },
+    {
+      "id": "B_night_worst__phi_body_over_pred",
+      "status": "OK",
+      "value": 0.46152696234864604,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 251400,
+        "end_iteration": 314200
+      },
+      "source": "measured phi_body / pre-registered 49.9999 V"
+    },
+    {
+      "id": "B_night_worst__prediction_consistency",
+      "status": "OK",
+      "value": 0.0,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "frozen predicted: block vs the same block recomputed from the frozen law_anchor constants (anti-post-hoc guard; catches drift between this stage's opmodel and design_sims')"
+    },
+    {
+      "id": "B_night_worst__exhaust_ke_mean_eV",
+      "status": "OK",
+      "value": 221.87992607313194,
+      "unit": "eV",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 251400,
+        "end_iteration": 314200
+      },
+      "source": "contactor_log.csv beam_escape_KE_mean (REPORTED)"
+    },
+    {
+      "id": "B_night_worst__exhaust_ke_over_pred",
+      "status": "OK",
+      "value": 1.1011189878753218,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 251400,
+        "end_iteration": 314200
+      },
+      "source": "measured exhaust KE / pre-registered (REPORTED)"
+    },
+    {
+      "id": "B_night_worst__late_dphidt_V_per_ns",
+      "status": "OK",
+      "value": 0.002668250073492061,
+      "unit": "V/ns",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "phi_body linear slope over the last 50 ns (REPORTED: finite-time-equilibrium honesty line)"
+    },
+    {
+      "id": "B_night_worst__settle_time_observed_ns",
+      "status": "OK",
+      "value": 246.16529999999997,
+      "unit": "ns",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "first time phi_body reached (1-1/e) of its plateau (REPORTED)"
+    },
+    {
+      "id": "B_night_worst__settle_time_predicted_ns",
+      "status": "OK",
+      "value": 244.32127477065114,
+      "unit": "ns",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "tau = C*phi_pred/I from the frozen capacitance (REPORTED)"
+    },
+    {
+      "id": "B_night_worst__p_supply_mW",
+      "status": "OK",
+      "value": 34.1553,
+      "unit": "mW",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "I*V at the frozen operating point (REPORTED)"
+    },
+    {
+      "id": "B_night_worst__i_over_i_cl",
+      "status": "OK",
+      "value": 0.2640394949195418,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "beam current / planar Child-Langmuir scale (REPORTED)"
+    },
+    {
+      "id": "B_night_worst__chi_measured",
+      "status": "OK",
+      "value": 177.94867669089646,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "e*phi_body/kTe at the measured float (REPORTED)"
+    },
+    {
+      "id": "B_night_worst__k_meas",
+      "status": "OK",
+      "value": 3.3252317940692904,
+      "unit": "nN/(mA*sqrt(eV))",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "thrust law inverted at this run (REPORTED refit output)"
+    },
+    {
+      "id": "B_night_worst__ke_ledger_meas",
+      "status": "OK",
+      "value": 0.8012313343051174,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "energy ledger inverted at this run (REPORTED refit output)"
+    },
+    {
+      "id": "B_night_worst__beta_meas",
+      "status": "OK",
+      "value": 1.0077732330902622,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "collection law inverted at this run (REPORTED refit output; the cross-scenario spread of these IS the law-form test)"
+    },
+    {
+      "id": "B_night_worst__drag_target_nN",
+      "status": "OK",
+      "value": 56.8594,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "the mission row's drag demand (REPORTED)"
+    },
+    {
+      "id": "B_night_worst__thrust_over_demand",
+      "status": "OK",
+      "value": 0.09917803686490492,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "measured thrust / this row's drag demand (REPORTED)"
+    },
+    {
+      "id": "day_minus_night_f_beam_nN",
+      "status": "OK",
+      "value": 25.697557105877422,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "A_day_p95 minus B_night_worst measured thrust: the two operating points must actually be distinguishable"
+    },
+    {
+      "id": "beta_log_spread",
+      "status": "OK",
+      "value": 0.9324067571313392,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "|ln(beta_A_day_p95/beta_B_night_worst)| at chi = 234 vs 178 -- if I_return ~ (1+chi) is the right law form, beta must not move between them"
+    },
+    {
+      "id": "chi_ratio",
+      "status": "OK",
+      "value": 0.7595913443702429,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "how far apart in chi the two scenarios actually are (REPORTED: the leverage the beta_log_spread gate has)"
+    }
+  ]
+}

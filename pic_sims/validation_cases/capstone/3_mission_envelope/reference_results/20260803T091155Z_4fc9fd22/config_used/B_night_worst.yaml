@@ -1,0 +1,89 @@
+stage_id: capstone.mission_envelope
+scenario: B_night_worst
+electrical:
+  cathode_offset: -300.0
+  phi_body_init: 0.0
+  t_supply: 1.0e-07
+beam:
+  i_beam: 0.000113851
+  t_on: 1.5e-07
+  rms_velocity: 260000.0
+  flux_correction: 1.0
+geometry:
+  r_probe: 0.005
+  wall_thickness: 0.0004
+  lid_thickness: 0.0004
+  floor_thickness: 0.0004
+  z_bot: -0.005
+  z_top: 0.0005
+  r_slit: 0.002
+  r_cathode: 0.0015
+  emit_radius: 0.0005
+plasma:
+  n0: 197250000000.0
+  Te_K: 1504.87
+  Ti_K: 1402.69
+  ion_mass_me: 400.0
+reservoir:
+  enabled: true
+  frac: 0.7
+  every: 25
+domain:
+  rmax: 0.03
+  aspect: 1.12
+  zmargin_lo: 0.025
+  zmargin_hi: 0.035
+  edge_phi_max: 1.0
+numerics:
+  dx: 0.00015
+  dt: 4.137231954742386e-12
+  ppc: 16
+  ppc_beam: 16
+run:
+  t_end: 1.3e-06
+  max_steps: 314200
+  diag_period_frac: 40
+  phi_ceiling: 100.0
+  choke_sustain: 5.0e-08
+compute:
+  gpu_arena_bytes: 6000000000
+law_anchor:
+  k: 3.28652
+  ke_ledger: 0.806016
+  f_esc: 0.984364
+  beta: 0.46158
+  area_m2: 0.000329867
+  capacitance_F: 5.56325e-13
+  anchored_to: pic_sims/validation_cases/capstone/2_chipsat_thruster/reference_results/20260801T142601Z_2f822a95/metrics.json
+  metrics_sha256: 6ad62f9c3f88be87997f5f02fcfeef668a39812c0c513551663de4ee25de6cff
+  laws_sha256: af4c1fef40d4c8e4e786c0ef223bad658965e4564c5eba99ee9e6bf52ab59ec4
+drag_target_N: 5.68594e-08
+predicted:
+  phi_body_V: 49.9999486881111
+  f_beam_nN: 5.311473382649543
+  exhaust_ke_eV: 201.50404135820344
+  binding: phi_max
+provenance:
+  orbit_case: orbit_sims/validation_cases/400km_station_keeping_chipsat/results/station_keeping.csv
+  csv_sha256: 5500c9e41ba0ddbdad527465f2fb50b46504bfd9b873fabe2558810fcfab7868
+  timestamp_utc: '2024-10-05T21:05:00+00:00'
+  row_index: 80173
+  altitude_km: 400.467
+  latitude_deg: 0.362447
+  longitude_deg: -32.8172
+  laws_sha256: af4c1fef40d4c8e4e786c0ef223bad658965e4564c5eba99ee9e6bf52ab59ec4
+  tool: design_sims/operating_point.py
+reported:
+  chi: 385.565
+  settle_time_ns: 244.322
+  i_over_i_cl: 0.264039
+  i_the_uA: 0.628091
+  p_supply_mW: 34.1553
+  deficit_nN: 51.5479
+  debye_length_mm: 6.02763
+note: 'DISCLOSED SUBSTITUTION: the true worst-margin row of the mission is row 74419
+  (2024-09-15T21:35:00+00:00, n_e=4.449e+10 m^-3, Te=1270 K, margin 0.0305), but its
+  float would still be settling at t_end (tau=995 ns > 250 ns), so a run there would
+  measure a transient, not an equilibrium. This row is the worst that settles in time.
+  Continuous-thrust validation therefore extends to the guard boundary; below it the
+  mission is duty-cycled on orbit average.'
