@@ -52,6 +52,35 @@ cd pic_sims/validation_cases && python run_ladder.py --check
 See `pic_sims/validation_cases/README.md` for the ladder contract and
 `LADDER_SUMMARY.md` for the current stage-by-stage verdict.
 
+### `lab_experiments/` — the hardware sanity checks
+
+Outside the data flow entirely (reads and writes nothing), one subfolder per
+benchtop experiment. Not validation in the ladder's gated, machine-checkable
+sense — qualitative hardware corroboration. First entry:
+`lab_experiments/electron_gun/` shows the rung-1 electrode topology on real
+hardware — a W5W filament cathode at ≈ −56 V emitting and accelerating
+electrons onto a grounded copper collector at ≈ 5 Pa, measured as a steady
+≈ 87 mA collector current. Photos, video and caveats in
+`lab_experiments/electron_gun/README.md`.
+
+## Current status (2026-08-03)
+
+Rungs 1–8 PASS and all 9 cross-stage checks PASS. **Rung 9
+`capstone.mission_envelope` FAILS**, so the suite verdict is FAIL — and that
+failure is the headline result rather than a regression.
+
+It is the first rung whose gates are *pre-registered predictions* instead of
+regression anchors, and it falsified the design model's collection law: β is
+not a constant and not a function of χ, but the OML-efficiency factor tracking
+`r_p/λ_D`. The thrust law, energy ledger and escape fraction all transferred
+out of sample to ~1 %.
+
+**Practical consequence:** thrust predictions from `design_sims/` are usable;
+**supply-margin and choke-risk numbers are not**, until the collection law is
+revised (`pic_sims/validation_cases/CREDIBILITY_ROADMAP.md`, Tier 0). The error
+is optimistic by day and pessimistic at night — the night-side choke risk is
+overstated by the current model.
+
 ## Why the dependency direction is one-way
 
 The ladder is the *evidence*, so it must not be able to move when the design

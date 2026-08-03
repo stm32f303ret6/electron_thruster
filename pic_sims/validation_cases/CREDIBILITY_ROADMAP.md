@@ -1,16 +1,17 @@
 # Credibility roadmap — from concept-grade to publication/design-grade
 
-**Where we are (2026-08-02):** the **9-stage** ladder is green
-(`LADDER_SUMMARY.md`), every capstone mechanism has an independent anchor,
-and the caveats are disclosed. **For presenting a concept, the current state
-suffices.**
+**Where we are (2026-08-03):** rungs 1-8 are green and all 9 cross-stage
+checks pass, but **rung 9 `capstone.mission_envelope` FAILS**, so the suite
+verdict is FAIL. That failure is a result, not a regression: it is the first
+rung whose gates are *pre-registered predictions*, and it falsified the
+design model's collection law. **For presenting a concept the physics ladder
+still suffices — but the 0-D design model must not be used for supply-margin
+or choke-risk numbers until item 0.1/0.2 below is done.**
 
 Since 2026-08-01 the repository also gained the two halves the ladder was
 missing at either end: `orbit_sims/` (what the mission demands) and
-`design_sims/` (what to run the thruster at), plus rung 9
-`capstone.mission_envelope`, which is the first rung whose gates are
-*pre-registered predictions* rather than regression anchors. Two items below
-were closed by that work and are struck through. This document is the ordered backlog for anyone who later needs
+`design_sims/` (what to run the thruster at). Two items below were closed by
+that work and are struck through. This document is the ordered backlog for anyone who later needs
 more than concept-grade: each item says what claim it unlocks, the coding
 effort, and the simulation cost (CPU-build estimates from measured rates).
 
@@ -20,6 +21,21 @@ a fresh run to count as validation; convergence/seed studies are *reported
 evidence* first, promoted to gates only with a policy bump.
 
 ---
+
+## Tier 0 — NEW, and now the top priority: fix the collection law
+
+Rung 9 measured β at three operating points and found it is **not a constant
+and not a function of χ** — it is the OML-efficiency factor and tracks
+`r_p/λ_D` (full OML at 0.83; barrier-limited to 40–46 % at 2.5–2.7). The
+anchor point itself sits outside OML's validity window. Details:
+`capstone/3_mission_envelope/README.md`.
+
+| # | item | unlocks | coding | sim time |
+|---|---|---|---|---|
+| 0.1 | **Break the n_e / (r_p/λ_D) degeneracy** with 1–2 `collector.thermal`-style rungs at different `(n, Te)`. All three current points sit at Te 1320–1530 K, so `r_p/λ_D ∝ √n_e` and the two readings are indistinguishable. A collector rung measures collection against an **exact** law with no thruster in the loop — by far the cheapest way to map β. | which variable β actually tracks; a defensible revised law form | ~1–2 h per rung | **~2–3 h each** |
+| 0.2 | **Revise the law form** to `β₀·(r_p/λ_D)^−q·I_the·(1+χ)`, refit `laws.yaml`, issue policy `capstone.mission_envelope.v2` with fresh predictions, re-run the pair | a design model usable for supply margin and choke risk | ~0.5 d | ~21 h |
+| 0.3 | **Real-O⁺ sensitivity on the barrier** (one capstone-class run at a realistic ion mass) | the finding is *specifically* about barrier formation, the physics most sensitive to the 400 mₑ surrogate; without this the exponent is provisional | config only | ~10–20 h |
+| 0.4 | **`refit_laws.py` spread guard**: refuse to average a constant whose across-record log-spread exceeds a threshold, instead of silently emitting a meaningless mean | the failure mode rung 9 just demonstrated cannot be re-introduced quietly | ~30 lines + test | none |
 
 ## Tier 1 — cheap convergence & coverage evidence (~1 day, mostly zero code)
 
