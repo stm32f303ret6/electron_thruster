@@ -38,6 +38,7 @@ from tudatpy.astro import time_representation as tr
 from tudatpy.util import result2array
 
 import environment as env_mod
+import spacecraft as sc_mod
 
 OMEGA_E = 7.2921159e-5           # Earth rotation rate [rad/s], for the airspeed direction
 EARTH_J2 = 1.08262668e-3         # zonal J2 (EGM96), for the circular-velocity setup
@@ -51,6 +52,10 @@ CSV_COLUMNS = [
     "electron_temperature_K",    # IRI-2020
     "ion_temperature_K",         # IRI-2020
     "drag_N",                    # = thruster demand, because drag is cancelled
+    "solar_irradiance_W_m2",     # shadow-corrected: 0 in eclipse
+    "shadow_function",           # 0 (umbra) .. 1 (full sun)
+    "sin_alpha_sun_axis",        # |sin| of the Sun line vs the body axis
+    "power_available_mW",        # body-mounted cells, this pose, this row
 ]
 
 
@@ -122,6 +127,9 @@ def dependent_variables():
         dv.altitude("Vehicle", "Earth"),                           # m, ellipsoidal
         dv.single_acceleration_norm(acc.aerodynamic_type,
                                     "Vehicle", "Earth"),           # m/s^2, |a_drag|
+        dv.received_irradiance("Vehicle", "Sun"),                  # W/m^2, shadow-corrected
+        dv.received_irradiance_shadow_function("Vehicle", "Sun"),  # 0..1 occultation
+        dv.relative_position("Sun", "Vehicle"),                    # m, 3 cols
     ]
 
 
@@ -144,6 +152,28 @@ def propagate_arc(cfg, bodies, acceleration_models, state0, t_start, t_end, dep_
             result2array(sim.propagation_results.dependent_variable_history))
 
 
+def sin_alpha_sun_axis(states, deps, idx):
+    """|sin| of the Sun line against the body axis, per exported pose.
+
+    A held cylinder's axis is the wind-free airspeed direction -- computed here
+    from the state history exactly as the drag-cancel thrust computes it
+    (v - omega x r), so the solar ledger and the dynamics cannot disagree about
+    which way the craft points.  States and dependent variables share the
+    integrator grid; that assumption is asserted, not trusted.
+    """
+    if not np.allclose(states[idx, 0], deps[idx, 0], rtol=0.0, atol=1e-3):
+        raise RuntimeError(
+            "state and dependent-variable epochs diverge; cannot derive the "
+            "sun-axis angle from the state history")
+    r = states[idx, 1:4]
+    v = states[idx, 4:7]
+    v_air = v - np.cross(np.broadcast_to([0.0, 0.0, OMEGA_E], r.shape), r)
+    sun = deps[idx, 7:10]
+    cosang = (np.einsum("ij,ij->i", sun, v_air)
+              / (np.linalg.norm(sun, axis=1) * np.linalg.norm(v_air, axis=1)))
+    return np.sqrt(np.clip(1.0 - np.clip(cosang, -1.0, 1.0) ** 2, 0.0, 1.0))
+
+
 def _wrap180(lon_deg):
     return (lon_deg + 180.0) % 360.0 - 180.0
 
@@ -162,13 +192,15 @@ def _append_csv(path, row_dts, block, write_header):
                 f"{row[3]:.6e}",                       # electron_density_m3
                 f"{row[4]:.2f}", f"{row[5]:.2f}",      # Te, Ti
                 f"{row[6]:.6e}",                       # drag_N
+                f"{row[7]:.3f}", f"{row[8]:.6f}",      # irradiance, shadow
+                f"{row[9]:.6f}", f"{row[10]:.6f}",     # sin_alpha, P_avail [mW]
             ])
 
 
 class RunningStats:
     """Streaming min/max/mean across arcs, so a year never sits in memory."""
 
-    FIELDS = ("alt", "drag", "ne", "te", "ti")
+    FIELDS = ("alt", "drag", "ne", "te", "ti", "pav")
 
     def __init__(self):
         self.n = 0
@@ -178,9 +210,9 @@ class RunningStats:
         self.alt_first = None
         self.alt_last = None
 
-    def update(self, alt, drag, ne, te, ti):
+    def update(self, alt, drag, ne, te, ti, pav):
         self.n += len(alt)
-        for f, arr in zip(self.FIELDS, (alt, drag, ne, te, ti)):
+        for f, arr in zip(self.FIELDS, (alt, drag, ne, te, ti, pav)):
             self._sum[f] += float(arr.sum())
             self._min[f] = min(self._min[f], float(arr.min()))
             self._max[f] = max(self._max[f], float(arr.max()))
@@ -241,16 +273,21 @@ def run(cfg, craft, bodies, acceleration_models, mu, start_epoch, csv_path):
         alt_km = deps[idx, 3] / 1.0e3
         drag_acc = deps[idx, 4]
         drag_N = craft.mass_kg * drag_acc
+        irradiance = deps[idx, 5]
+        shadow = deps[idx, 6]
+        sin_alpha = sin_alpha_sun_axis(states, deps, idx)
+        p_avail_mW = sc_mod.available_power_W(craft, irradiance, sin_alpha, cfg) * 1e3
 
         row_dts = [tr.date_time_from_epoch(float(e)).to_python_datetime() for e in epochs]
         ne, te, ti = env_mod.evaluate_iri(row_dts, lat_deg, lon_deg, alt_km)
 
-        block = np.column_stack([alt_km, lat_deg, lon_deg, ne, te, ti, drag_N])
+        block = np.column_stack([alt_km, lat_deg, lon_deg, ne, te, ti, drag_N,
+                                 irradiance, shadow, sin_alpha, p_avail_mW])
         _append_csv(csv_path, row_dts, block, write_header=not wrote_header)
         wrote_header = True
         n_rows += len(idx)
         last_epoch_written = float(epochs[-1])
-        stats.update(alt_km, drag_N, ne, te, ti)
+        stats.update(alt_km, drag_N, ne, te, ti, p_avail_mW)
 
         elapsed_days = (epochs - start_epoch) / 86400.0
         print(f"  arc {arc_i+1}/{n_arcs}: t={elapsed_days[0]:.1f}->{elapsed_days[-1]:.1f} d"
@@ -258,6 +295,7 @@ def run(cfg, craft, bodies, acceleration_models, mu, start_epoch, csv_path):
               f" | drag {drag_N.min()*1e9:.1f}-{drag_N.max()*1e9:.1f} nN"
               f" | n_e {ne.min():.2e}-{ne.max():.2e} m^-3"
               f" | Te {te.min():.0f}-{te.max():.0f} K"
+              f" | P_av {p_avail_mW.mean():.1f} mW"
               f" | {(_wall.time()-t_arc):.1f}s", flush=True)
 
         if arc_final_epoch < arc_end - m.integration_step_s:
