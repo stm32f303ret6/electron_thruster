@@ -26,6 +26,17 @@ def _stage_passed(results: dict, stage_id: str) -> bool:
     return results.get(stage_id, {}).get("verdict_status") == lc.V_PASS
 
 
+def _stage_analyzed(results: dict, stage_id: str) -> bool:
+    """The stage produced an analysis, whatever its verdict.
+
+    Checks that compare frozen CONFIGURATIONS (rather than measured numbers) use
+    this instead of :func:`_stage_passed`: a configuration-integrity check must
+    keep reporting when a stage fails, because "was this a setup mistake?" is
+    exactly the question a failure raises.
+    """
+    return bool(results.get(stage_id, {}).get("run_ids"))
+
+
 def _metrics(results: dict, root: Path, stage_id: str) -> dict[str, float]:
     """id -> value for the OK metrics of a passing stage's analysis."""
     res = results.get(stage_id, {})
@@ -234,11 +245,16 @@ def _mission_envelope_shares_capstone_geometry(results, root) -> dict:
     and the beam current all differ BY DESIGN -- differing is the whole point of
     the stage.  Extending the plasma-inheritance check to this rung would make
     it permanently fail for the right reason, which is the worst kind of check.
+
+    This check does NOT require either stage to have PASSED, unlike the checks
+    above it: it compares frozen CONFIGURATIONS, not measured numbers.  When the
+    mission-envelope rung fails its model gates, "was the failure a
+    configuration mistake?" is precisely the question a reader has, and a check
+    that goes quiet exactly then would be useless.
     """
-    if not (_stage_passed(results, "capstone.mission_envelope")
-            and _stage_passed(results, "capstone.floating_body")):
+    if not _stage_analyzed(results, "capstone.mission_envelope"):
         return _result("mission_envelope_shares_capstone_geometry", SKIP,
-                       "mission_envelope and capstone not both passed")
+                       "mission_envelope was not analyzed")
     cap = _run_config(results, "capstone.floating_body")
     env = _run_config(results, "capstone.mission_envelope")
     if cap is None or env is None:
@@ -265,11 +281,18 @@ def _mission_envelope_anchor_is_capstone_measurement(results, root) -> dict:
     constants live in design_sims/, which the ladder never imports; the only way
     they reach a run is by being copied into its config. So the ladder checks
     the copy against the measurement, algebraically, rather than trusting it.
+
+    Requires capstone.floating_body to have PASSED (its metrics are the
+    reference) but NOT mission_envelope: if the model gates fail, this check is
+    what separates "the model is wrong" from "the constants were copied wrong",
+    and it has to keep speaking to make that distinction.
     """
-    if not (_stage_passed(results, "capstone.mission_envelope")
-            and _stage_passed(results, "capstone.floating_body")):
+    if not _stage_analyzed(results, "capstone.mission_envelope"):
         return _result("mission_envelope_anchor_is_capstone_measurement", SKIP,
-                       "mission_envelope and capstone not both passed")
+                       "mission_envelope was not analyzed")
+    if not _stage_passed(results, "capstone.floating_body"):
+        return _result("mission_envelope_anchor_is_capstone_measurement", SKIP,
+                       "capstone.floating_body did not pass; no reference metrics")
     env = _run_config(results, "capstone.mission_envelope")
     cap = _run_config(results, "capstone.floating_body")
     if env is None or cap is None:

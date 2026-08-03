@@ -230,6 +230,112 @@ Reported, never gated: `late_dphidt_V_per_ns`, exhaust KE and its ratio to
 prediction, observed settle time vs predicted, `k_meas` / `ke_ledger_meas` /
 `beta_meas`, supply power, `I/I_CL`, χ, and thrust vs this row's drag demand.
 
+## RESULTS (2026-08-03) — verdict **FAIL**, and the failure is the finding
+
+Runs `20260802T124722Z_A_day_p95_f715efee` (7.58 h) and
+`20260802T202221Z_B_night_worst_dd0f0e08` (13.0 h); analysis
+`20260803T091155Z_4fc9fd22`, policy `capstone.mission_envelope.v1`.
+**20 of 22 gates PASS. Both failures are the same failure.**
+
+### Every "is the run sound?" gate passed, on both scenarios
+
+| gate | A_day_p95 | B_night_worst | bound |
+|---|---|---|---|
+| `current_balance` | 0.0285 | 0.0182 | ≤ 0.05 ✅ |
+| `f_net_over_f_beam` | 0.0128 | 0.0369 | ≤ 1.0 ✅ |
+| `edge_phi_max_V` | 0.081 V | 0.058 V | ≤ 1.0 ✅ |
+| `scrape_charge_consistency` | 1.6e-10 | 2.1e-9 | ≤ 0.02 ✅ |
+| …`_beam_escape` | 1.1e-9 | 4.1e-9 | ≤ 0.02 ✅ |
+| `prediction_consistency` | 0.0 | 0.0 | ≤ 1e-9 ✅ |
+
+Edge |φ| came in at 0.081 V and 0.058 V against the 1 V gate — the smoke run's
+0.19 V extrapolation was conservative, and `rmax = 30 mm` was the right call.
+
+### Three of the four laws transferred out of sample
+
+| | anchor (200 V, χ=149) | A (300 V, χ=234) | B (300 V, χ=178) |
+|---|---|---|---|
+| `k` | 3.2865 | **3.2999** (+0.4 %) | **3.3252** (+1.2 %) |
+| `ke_ledger` | 0.8060 | **0.8010** (−0.6 %) | **0.8012** (−0.6 %) |
+| `f_esc` | 0.9844 | **0.9899** | **0.9949** |
+| `β` | 0.4616 | **0.3967** (−14 %) | **1.0078** (+118 %) |
+
+Thrust, energy ledger and escape fraction all hold to ~1 % at 1.5× the fitted
+voltage and across 11× in density. `F_beam` ratios: **0.993** and **1.062**,
+both inside the ±0.20 gate. The settle-time model was accurate too — B's
+observed settle was **246 ns against 244 ns predicted**.
+
+### The collection law is wrong, and not in the way the gate expected
+
+| failed gate | value | bound |
+|---|---|---|
+| `B_float_matches_prediction` | 0.4615 | 1.00 ± 0.25 |
+| `collection_law_form_holds_across_chi` | 0.932 | ≤ 0.2231 |
+
+B floated to **+23.08 V against a predicted +50.00 V** — it sheds charge more
+than twice as easily as the law says. β is not merely drifting: it is
+**non-monotonic in χ** (0.4616 at χ=149, 1.0078 at χ=178, 0.3967 at χ=234), so
+`(1+χ)` is not the variable it depends on at all.
+
+Regressing `ln β` against each candidate variable settles it — the right
+variable is the one whose three pairwise exponents *agree*:
+
+| β tracks… | anchor→A | anchor→B | A→B | spread |
+|---|---|---|---|---|
+| `(1+χ)` | −0.338 | +4.490 | −3.407 | **7.90** |
+| `r_p/λ_D` | −2.415 | −0.697 | −0.788 | 1.72 |
+| **`n_e`** | **−0.555** | **−0.370** | **−0.391** | **0.19** |
+
+So **β ∝ n_e^−0.42**, i.e. the true collection is `I_return ∝ n_e^0.58·√Te·(1+χ)`,
+not linear in density. Equivalently — and this is the physically motivated
+reading — β is the **OML-efficiency factor**, and it tracks `r_p/λ_D`:
+
+| | r_p/λ_D | β | interpretation |
+|---|---|---|---|
+| B_night_worst | **0.83** | **1.008** | small-probe limit: **full OML collection** |
+| anchor | 2.54 | 0.462 | large probe: barrier-limited, ~46 % of OML |
+| A_day_p95 | 2.71 | 0.397 | large probe: ~40 % of OML |
+
+That is textbook probe physics, and it is *consistent with the ladder's own
+collector rungs*, which measured `electron_current_over_oml` = 0.99 / 0.85 /
+0.81 for a sphere at a/λ_De = 0.38. Density and `r_p/λ_D` cannot be separated
+from these three points (all sit at Te ≈ 1320–1530 K, so `r_p/λ_D ∝ √n_e`); a
+row at a very different Te would separate them.
+
+### What it changes
+
+The error is **optimistic in the dense day rows and pessimistic at night**, and
+night is where the mission is tight. Re-running the whole 105 121-row mission
+with an indicative `β(n) = 0.4616·(n/1.627e12)^−0.42`:
+
+| | deliverable ⟨F⟩ | duty cycle | rows meeting demand |
+|---|---|---|---|
+| as-validated (β constant) | 25.235 nN | 130.5 % | 28.7 % |
+| indicative β(n) | **28.195 nN** | **116.8 %** | **41.9 %** |
+
+Still short in the axial pose (mean drag is 32.9 nN), but materially less so.
+**This number is indicative only** — it comes from a two-parameter fit to three
+points using a form that has not itself been validated.
+
+### What was deliberately NOT done
+
+- **`laws.yaml` was not refitted.** The form is wrong; averaging a constant that
+  is not constant would replace a visible failure with an invisible one.
+- **Neither scenario was promoted** into `calibration/runs/`. `promote.py`
+  refuses a non-PASS verdict, and the refusal is correct: a measurement that
+  rejected the model must not then calibrate it. The measurements are preserved
+  in `reference_results/20260803T091155Z_4fc9fd22/`.
+- **No tolerance was widened.** See below.
+
+### Recommended next step
+
+Revise the collection law to `I_return = β₀·(r_p/λ_D)^−q·I_the·(1+χ)`, fit `β₀`
+and `q` to the three existing points, bump `laws.yaml`, issue policy
+`capstone.mission_envelope.v2` with fresh predictions, and re-run. A third
+scenario at a **different Te but similar density** would separate the `n_e` and
+`r_p/λ_D` readings, which these three points cannot. Cost: ~21 h to re-run the
+pair, ~10 h for the discriminating third point.
+
 ### A FAIL here is a finding
 
 If `beta_log_spread` fails, `I_return ∝ (1+χ)` is the wrong shape and needs a
