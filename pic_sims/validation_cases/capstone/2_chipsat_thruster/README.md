@@ -72,6 +72,124 @@ validated run — disclosed calibration per plan §9.3); stationarity of the
 audit, including the two mechanisms with **no** ladder rung beneath them
 (the two-node EB and the charge pump itself, G1/G2).
 
+## Reviewer question: do the emitted electrons come back to the craft?
+
+They measurably do not — and the stage *measures* this instead of assuming
+it.  Escape is an energy-headroom condition: every beam electron starts on
+the cathode, which the internal supply holds at `phi_body − 200 V`, so it
+reaches infinity (plasma potential 0) with ≈ e·(200 V − phi_body) of kinetic
+energy.  At the measured float (+16.98 V) that headroom is ~183 eV, and the
+escaped beam indeed leaves with the full injection-plane energy (exhaust KE
+147.5 eV vs −φ(injection plane) = 148.1 eV; ledger closes to 0.6 eV).
+Return is possible only through specific mechanisms, and the per-step
+beam-fate ledger (`FloatingBody.collect` classifies every scraped beam
+macroparticle by electrode region) accounts for each:
+
+| mechanism | ledger column | validated run (tail mean) |
+|---|---|---|
+| virtual-cathode stall (space charge reflects beam back to the cathode) | `pct_cathode` | **0.0000 %** |
+| interception by BODY surfaces (space-charge-widened spot / thermal tail clipping the lid hole) | `pct_body` | **0.53 %** |
+| true escape | `pct_escape` | **98.44 %** (gated ≥ 95 %) |
+
+(the remaining 1.03 % is still in flight in the plume at end of run; both
+return channels are REPORTED metrics, `beam_return_cathode_pct` /
+`beam_return_body_pct`, from analysis runs after 2026-08-02).  Zero cathode
+return at γ = I/I_CL = 1.46 means no virtual cathode forms at this drive;
+that mechanism is exercised deliberately in `emitter.holed_anode` scenario B,
+and the geometric-clipping mechanism in scenario A.
+
+The "low enough spacecraft potential" premise is not left to luck — it is
+enforced in three independent layers:
+
+1. **Measured equilibrium** — the body floats to +16.98 V ≪ 200 V because
+   the ionosphere neutralizes the escaping 0.342 mA (the `current_balance`
+   gate is exactly this identity).
+2. **Design box** — `design_sims/opmodel.py::Constraints.validate` refuses
+   `phi_max ≥ v_min` outright ("else the beam can be fully stalled inside
+   the allowed box"): the float limit is 50 V against a ≥ 100 V supply
+   floor, and rung 9's night case sits exactly on that binding constraint
+   (predicted φ_body = +50 V at a 300 V drive — still 250 V of headroom).
+3. **Runtime watchdog** — `phi_body > 100 V` sustained 50 ns aborts the run
+   CHOKED/FAILED rather than reporting a stalled thruster as data.
+
+Caveat: the 0 % cathode return is a demonstration at this operating point
+(single grid/ppc/seed, γ_CL = 1.46), not a theorem for all drives.
+
+### Once outside, can the +17 V body pull them back? (Debye screening)
+
+No — the body's attraction has finite *range*, not just finite depth,
+because the ambient plasma screens it over the sheath scale (a few
+λ_De = 1.97 mm; rungs 4–5 measure exactly that screening scale growing with
+bias — 4.12 mm at +3 V, 6.89 mm at +10 V — and gate its containment).  An
+electron that has climbed out of the screened well with energy to spare can
+never be called back electrostatically.  The deck makes this measured, not
+assumed:
+
+- the domain is sized so a boundary crossing IS a genuine escape: ≥ 35 mm
+  ≈ 18 λ_De of plasma above the lid, put there precisely so "the +z exhaust
+  plume must reach φ ~ 0 so a z_hi crossing is a genuine escape"
+  (`config.yaml`, `domain.zmargin_hi`);
+- the `edge_phi_max_V` gate measures the leftover attraction where escapes
+  are counted: **37.6 mV** (0.33 kTe/e) against a 1 V gate — the escaping
+  electrons' 147.5 eV is ~3,900× the residual potential that would have to
+  turn them around;
+- the exhaust KE is measured *at the boundary* and matches −φ(injection
+  plane) to 0.6 eV: the full climb out of the +17 V well was already paid
+  inside the domain, and the rest is kept.
+
+So the sharp statement is not "cross one Debye length" but "climb out of
+the Debye-screened sheath well": the crossing is guaranteed by the energy
+headroom above, the permanence by the screening.  One honest exclusion: the
+model is electrostatic — no geomagnetic field (Bz stays a research variant
+in `electron_contactor`).  In orbit a 148 eV electron gyrates with
+r_g ≈ 1.4 m at ~30 µT, two orders above the craft scale, but whether a
+gyrating plume can re-intersect a moving chipsat is beam-propagation
+physics outside this domain and this ladder.
+
+## Reviewer question: where is the neutralizer?
+
+The thruster is its own neutralizer, and the stage verifies the closed
+circuit rather than assuming it.  A conventional ion thruster ejects
+positive charge and needs a separate electron-emitting neutralizer; this
+concept inverts that — ejecting electrons charges the craft *positive*, and
+the neutralizer role is played by the craft's own conducting surface
+immersed in the ionosphere, which collects the ambient-electron return
+current.  There is no neutralizer hardware anywhere in the system.
+
+The floating body IS the closed-circuit measurement: nothing pins
+`phi_body`, so a steady state exists only if the ionosphere resupplies the
+escaping charge at a benign potential.  Validated-run tail means (run
+ledger; reported metrics `i_escape_mA` / `i_amb_e_mA` / `i_amb_i_mA` from
+analyses after 2026-08-02):
+
+| term | value | role |
+|---|---|---|
+| I_escape | **0.340 mA** | beam current leaving to space |
+| I_amb_e | **0.330 mA** | ambient electrons collected by the +17 V body — the return current |
+| I_amb_i | **0.0003 mA** | ambient ions (repelled by the positive body; 0.1 % correction) |
+| \|I_escape − (I_amb_e − I_amb_i)\| / I_escape | **3.2 %** | the gated `current_balance` identity |
+
+Every layer under this claim has its own rung: rungs 3–5 gate the ambient
+**collection physics** (thermal and OML electron collection at the
+capstone's own plasma/dx/ppc), rung 6 gates the **float mechanism** (the
+charge pump drives a conductor to the current-balance potential, checked
+against the closed-form floating potential), and the capstone joins them
+with the gun firing — the equilibrium that rung 6 finds at −0.251 V with no
+emission moves to **+16.98 V** when the beam demands 0.34 mA of
+neutralization.
+
+Two honest qualifiers.  First, the **infinite-reservoir recycle** is
+exactly the "ionosphere as unbounded electron source" assumption — without
+it the finite domain would deplete and the run would measure reservoir
+size, not neutralizer capacity; the real question "can *this* ionosphere
+row supply the current at φ ≤ φ_max?" is the design model's
+`i_ceiling / i_demand` starvation ratio, and rung 9's night case
+(`B_night_worst`) sits exactly where that capacity binds (float limit
+φ_max = 50 V, thrust capped by the thin night-time ionosphere).  Second,
+the ion term uses the reduced 400 mₑ mass ladder-wide — negligible here
+(ions are 0.1 % of the return budget), but a real-O⁺ I_amb_i would be
+~8.6× smaller still.
+
 ## Upstream dependencies
 
 `emitter.holed_anode` and `collector.biased_10v` — the two branch tips. The
