@@ -158,6 +158,56 @@ containment, and the ledger-vs-dump consistency checks.
 | exhaust KE | −φ(injection plane) = 148.1 eV | **147.5 eV** |
 | ledger vs dumps (ambient-e / beam-escape) | identical | **3·10⁻⁹ / 5·10⁻⁹** |
 
+**Do the emitted electrons come back to the craft?**  No — measured, not
+assumed.  The beam-fate ledger classifies every scraped beam macroparticle
+by electrode region; over the tail window: **0.0000 %** returned to the
+cathode (no virtual-cathode stall at γ_CL = 1.46 — the mechanism
+`emitter.holed_anode` B exercises), **0.53 %** intercepted by body surfaces
+(spot edge clipping the lid hole — mechanism of `holed_anode` A), 98.44 %
+escaped, 1.03 % still in flight (run ledger `contactor_log.csv`,
+run 20260801T142601Z; carried as reported metrics `beam_return_*_pct` in
+analyses after 2026-08-02).  Escape is an energy-headroom condition —
+electrons leave the cathode at φ_body − 200 V, so at φ_body = +17 V they
+reach infinity with ~183 eV — and the headroom is protected three ways:
+the floating equilibrium itself (the current-balance gate), the design box
+(`phi_max = 50 V < v_min = 100 V`, hard-enforced in `design_sims/opmodel.py`
+— rung 9's night case sits exactly on this binding constraint), and the
+CHOKED watchdog (abort if φ_body > 100 V sustained 50 ns).  Details:
+`capstone/2_chipsat_thruster/README.md` § "Reviewer question".
+
+**Why escape is permanent (Debye screening).**  The +17 V body's pull has
+finite range, not just finite depth: the plasma screens it over the sheath
+scale (λ_De = 1.97 mm; rungs 4–5 measure that scale growing 4.12 → 6.89 mm
+with bias and gate its containment), so an electron that climbs out of the
+screened well cannot be called back.  The capstone measures this rather
+than assuming it: the domain puts ≥ 18 λ_De of plasma above the lid
+explicitly so a z_hi crossing is a genuine escape (`domain.zmargin_hi`),
+the `edge_phi_max_V` gate finds 37.6 mV (0.33 kTe/e) of residual potential
+where escapes are counted — 3,900× below the 147.5 eV the electrons still
+carry there — and the exhaust KE matches −φ(injection plane) to 0.6 eV,
+i.e. the full climb out of the well was paid inside the domain.  Honest
+exclusion: the model is electrostatic — no geomagnetic field (a 148 eV
+electron gyrates at r_g ≈ 1.4 m in ~30 µT; plume gyration/readmission is
+beam-propagation physics outside this ladder).
+
+**Where is the neutralizer?**  The thruster is its own: ejecting electrons
+charges the craft positive, and the craft's conducting surface in the
+ionosphere collects the ambient-electron return current — no neutralizer
+hardware exists in the system.  The floating body is the closed-circuit
+measurement (nothing pins φ_body): tail-mean I_escape **0.340 mA** is
+resupplied by I_amb_e **0.330 mA** minus I_amb_i **0.0003 mA** — the 3.2 %
+`current_balance` gate — with the return current carried 99.9 % by ambient
+electrons (the +17 V body repels ions).  The layers each have a rung:
+collection physics (rungs 3–5), the float mechanism (rung 6, gun-off
+equilibrium −0.251 V vs closed-form), and the capstone joins them (gun on →
++16.98 V).  Neutralizer *capacity* is the design model's starvation ratio
+`i_ceiling/i_demand`, and rung 9's night case sits exactly where it binds.
+Caveats: the infinite-reservoir recycle is the "unbounded ionosphere"
+assumption made explicit, and the 400 mₑ ion mass is negligible here (ions
+are 0.1 % of the budget).  Currents from the run ledger
+(run 20260801T142601Z); reported metrics `i_*_mA` from analyses after
+2026-08-02.  Details: capstone README § "Where is the neutralizer?".
+
 ### 9. `capstone.mission_envelope` — does the design model predict the particles?  *(new rung)*
 
 **The test:** the same deck as rung 8, run at **two operating points chosen by a

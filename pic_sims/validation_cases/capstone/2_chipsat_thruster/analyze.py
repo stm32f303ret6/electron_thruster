@@ -246,6 +246,34 @@ def compute_metrics(cfg: Config, evidence: lc.LoadedRun, tail_frac: float):
     metrics["ke_predicted_eV"] = lc.Metric.measure(
         "ke_predicted_eV", ledger["ke_pred_eV"], "eV",
         source="-phi(injection plane) from tail field dumps (REPORTED)")
+    # beam-return split: escape_fraction_pct's complement, by electrode region
+    # (the reviewer question "do emitted electrons come back to the craft?")
+    metrics["beam_return_cathode_pct"] = lc.Metric.measure(
+        "beam_return_cathode_pct", s["pct_cathode"], "%", window=window,
+        source="contactor_log.csv pct_cathode (cumulative beam reflected back "
+               "to the CATHODE, i.e. virtual-cathode stall), tail mean "
+               "(REPORTED, not gated)")
+    metrics["beam_return_body_pct"] = lc.Metric.measure(
+        "beam_return_body_pct", s["pct_body"], "%", window=window,
+        source="contactor_log.csv pct_body (cumulative beam intercepted by "
+               "BODY surfaces: wall/lid/floor annulus), tail mean "
+               "(REPORTED, not gated)")
+    # return-current budget: the reviewer question "where is the neutralizer?"
+    # -- the escaping beam current must be resupplied by ambient collection on
+    # the positive floating body (the craft is its own neutralizer); the
+    # current_balance gate checks the identity, these carry the raw terms
+    metrics["i_escape_mA"] = lc.Metric.measure(
+        "i_escape_mA", s["I_escape"] * 1e3, "mA", window=window,
+        source="contactor_log.csv I_escape (escaping beam current), tail mean "
+               "(REPORTED, not gated)")
+    metrics["i_amb_e_mA"] = lc.Metric.measure(
+        "i_amb_e_mA", s["I_amb_e"] * 1e3, "mA", window=window,
+        source="contactor_log.csv I_amb_e (ambient-electron return current "
+               "collected by the craft), tail mean (REPORTED, not gated)")
+    metrics["i_amb_i_mA"] = lc.Metric.measure(
+        "i_amb_i_mA", s["I_amb_i"] * 1e3, "mA", window=window,
+        source="contactor_log.csv I_amb_i (ambient-ion current to the craft), "
+               "tail mean (REPORTED, not gated)")
 
     extra = dict(d=d, s=s, ledger=ledger, ke_ideal=ke_ideal, ts=ts,
                  totals=totals, q_csv=q_csv, q_pmd=q_pmd,
@@ -355,6 +383,13 @@ def _print_verdict(verdict: lc.Verdict, extra) -> None:
           f"vs openPMD {extra['q_pmd']:.4e} C")
     print(f"  ledger-vs-dump beam-escape charge: CSV {extra['q_csv_beam']:.4e} C "
           f"vs openPMD {extra['q_pmd_beam']:.4e} C")
+    print(f"  beam fate (tail): escape {s['pct_escape']:.2f} %   "
+          f"body {s['pct_body']:.2f} %   cathode {s['pct_cathode']:.4f} %   "
+          f"in-flight {s['pct_inflight']:.2f} %")
+    print(f"  neutralization: I_escape {s['I_escape']*1e3:.4f} mA vs net "
+          f"ambient return (I_amb_e - I_amb_i) "
+          f"{(s['I_amb_e'] - s['I_amb_i'])*1e3:.4f} mA "
+          f"(I_amb_i {s['I_amb_i']*1e3:.4f} mA)")
     print("=" * 72)
     print(f"VALIDATION GATES  [{verdict.stage_id}]  policy {verdict.policy_id}")
     print("=" * 72)
