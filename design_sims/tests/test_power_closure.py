@@ -17,7 +17,7 @@ _HEADER = ["timestamp_utc", "altitude_km", "latitude_deg", "longitude_deg",
            "sin_alpha_sun_axis", "power_available_mW"]
 
 
-def _write_csv(tmp_path, rows, header=_HEADER):
+def _write_csv(tmp_path, rows, header=_HEADER, solar=True):
     d = tmp_path / "case" / "results"
     d.mkdir(parents=True)
     p = d / "station_keeping.csv"
@@ -25,6 +25,13 @@ def _write_csv(tmp_path, rows, header=_HEADER):
         w = _csv.writer(fh)
         w.writerow(header)
         w.writerows(rows)
+    # the analyser reads pose and cell assumptions from the frozen config
+    cfg = {"spacecraft": {"rotation": "axial"}}
+    if solar:
+        cfg["solar"] = {"cell_efficiency": 0.30, "packing_factor": 0.70,
+                        "pointing_loss": 0.90}
+    import yaml
+    (d / "config_used.yaml").write_text(yaml.safe_dump(cfg), encoding="utf-8")
     return p
 
 
@@ -123,14 +130,19 @@ def test_default_f_per_p_is_the_measured_mean():
     assert all(p.source.startswith("measured") for p in fom.measured_points())
 
 
+def _mk(alt, margin):
+    return pc.Closure(case=f"{alt}", n_rows=1, altitude_km=alt,
+                      rotation="axial", f_per_p_uN_per_W=0.18,
+                      drag_mean_nN=1.0, drag_p95_nN=1.0, p_req_mean_mW=1.0,
+                      p_req_p95_mW=1.0, p_avail_mean_mW=margin,
+                      p_avail_sunlit_mW=margin, sunlit_fraction=0.6,
+                      margin=margin, instant_closure_frac=0.5,
+                      net_cell_efficiency=0.189,
+                      net_cell_efficiency_needed=0.189 / margin)
+
+
 def test_crossover_reports_each_possible_state():
-    def mk(alt, margin):
-        return pc.Closure(case=f"{alt}", n_rows=1, altitude_km=alt,
-                          rotation="axial", f_per_p_uN_per_W=0.18,
-                          drag_mean_nN=1.0, drag_p95_nN=1.0, p_req_mean_mW=1.0,
-                          p_req_p95_mW=1.0, p_avail_mean_mW=margin,
-                          p_avail_sunlit_mW=margin, sunlit_fraction=0.6,
-                          margin=margin, instant_closure_frac=0.5)
+    mk = _mk
     assert "unconditional on" in pc.crossover([mk(400, 0.5), mk(550, 1.5)])
     assert "No sampled altitude closes" in pc.crossover([mk(400, 0.5), mk(550, 0.9)])
     assert "Every sampled altitude closes" in pc.crossover([mk(400, 1.2), mk(550, 2.0)])
@@ -141,3 +153,32 @@ def test_sweep_finds_the_committed_cases():
     assert paths, "no orbit cases found"
     names = {p.parents[1].name for p in paths}
     assert any("400km" in n for n in names)
+
+
+# ----------------------------------------------------------------------
+# the assumption-independent statement
+# ----------------------------------------------------------------------
+
+def test_needed_efficiency_is_the_used_one_scaled_by_the_shortfall(tmp_path):
+    """net_needed = net_used / margin -- so a reader can judge the conclusion
+    without adopting our cell assumptions."""
+    rows = [_row(50.0, 10.0)] * 4
+    c = pc.analyse(_write_csv(tmp_path, rows), f_per_p=0.2)
+    assert c.net_cell_efficiency == pytest.approx(0.30 * 0.70 * 0.90)
+    assert c.net_cell_efficiency_needed == pytest.approx(
+        c.net_cell_efficiency / c.margin)
+    # a 25x shortfall needs an impossible cell, and must be named as such
+    assert "only more area per unit drag" in c.describe()
+
+
+def test_feasibility_language_escalates_correctly():
+    assert "reachable with better" in pc._feasibility(0.20)
+    assert "above what is reachable" in pc._feasibility(0.28)
+    assert "ABOVE any photovoltaic" in pc._feasibility(0.45)
+
+
+def test_an_impossible_requirement_is_named_as_a_geometry_problem():
+    """The distinction that matters for the thesis: a shortfall a better cell
+    could fix, versus one only more area per unit drag can."""
+    text = pc._feasibility(0.60)
+    assert "only more area per unit drag" in text

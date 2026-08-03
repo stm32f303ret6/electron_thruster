@@ -73,6 +73,8 @@ class Closure:
     sunlit_fraction: float
     margin: float               # <P_avail> / <P_req>; >= 1 closes on orbit average
     instant_closure_frac: float  # fraction of rows where the panel alone suffices
+    net_cell_efficiency: float   # the declared eff x packing x derate this used
+    net_cell_efficiency_needed: float   # what would be needed to reach margin 1
 
     @property
     def closes(self) -> bool:
@@ -89,7 +91,32 @@ class Closure:
             f"   (at F/P = {self.f_per_p_uN_per_W:.3f} uN/W)\n"
             f"  P available mean {self.p_avail_mean_mW:7.2f} mW   "
             f"{self.p_avail_sunlit_mW:7.2f} mW while sunlit\n"
-            f"  energy margin <P_avail>/<P_req> = {self.margin:.2f}  ->  {verdict}")
+            f"  energy margin <P_avail>/<P_req> = {self.margin:.2f}  ->  {verdict}\n"
+            f"  net cell efficiency: used {self.net_cell_efficiency*100:.1f} %, "
+            f"would need {self.net_cell_efficiency_needed*100:.1f} % to close"
+            f"{'' if self.closes else _feasibility(self.net_cell_efficiency_needed)}")
+
+
+#: A triple-junction cell is ~30-32 % BOL.  Multiplied by any realistic packing
+#: factor on a curved body, a NET (efficiency x packing x derate) above ~25 % is
+#: not reachable, and above 32 % is impossible with photovoltaics at all.
+_NET_REACHABLE = 0.25
+_NET_IMPOSSIBLE = 0.32
+
+
+def _feasibility(needed: float) -> str:
+    """State plainly whether the required efficiency is even physical.
+
+    Without this a reader could mistake a shortfall for something better cells
+    would fix.  Beyond ~32 % net it is not a cell problem at all -- it is a
+    geometry problem, and the answer is more sunlit area per unit ram area.
+    """
+    if needed > _NET_IMPOSSIBLE:
+        return ("  <- ABOVE any photovoltaic cell's raw efficiency: no cell "
+                "choice closes this, only more area per unit drag")
+    if needed > _NET_REACHABLE:
+        return "  <- above what is reachable on a curved body-mounted array"
+    return "  <- reachable with better cells/packing"
 
 
 def _nearest_rank(vals: list[float], pct: float) -> float:
@@ -130,10 +157,15 @@ def analyse(csv_path: Path, f_per_p: float) -> Closure:
     n = len(drag_nN)
     sunlit_vals = [p for p in p_avail if p > 0.0]
     cfg = csv_path.parent / "config_used.yaml"
-    rotation = "?"
+    rotation, net_eff = "?", float("nan")
     if cfg.is_file():
         import yaml
-        rotation = yaml.safe_load(cfg.read_text(encoding="utf-8"))["spacecraft"]["rotation"]
+        doc = yaml.safe_load(cfg.read_text(encoding="utf-8"))
+        rotation = doc["spacecraft"]["rotation"]
+        sol = doc.get("solar") or {}
+        if sol:
+            net_eff = (float(sol["cell_efficiency"]) * float(sol["packing_factor"])
+                       * float(sol["pointing_loss"]))
     return Closure(
         case=csv_path.parents[1].name, n_rows=n,
         altitude_km=statistics.fmean(alts), rotation=rotation,
@@ -147,7 +179,11 @@ def analyse(csv_path: Path, f_per_p: float) -> Closure:
         sunlit_fraction=sunlit / n,
         margin=(statistics.fmean(p_avail) / statistics.fmean(p_req)
                 if statistics.fmean(p_req) > 0 else float("inf")),
-        instant_closure_frac=instant_ok / n)
+        instant_closure_frac=instant_ok / n,
+        net_cell_efficiency=net_eff,
+        net_cell_efficiency_needed=(
+            net_eff * statistics.fmean(p_req) / statistics.fmean(p_avail)
+            if statistics.fmean(p_avail) > 0 else float("inf")))
 
 
 def sweep_cases() -> list[Path]:
@@ -160,21 +196,23 @@ def render_table(rows: list[Closure], markdown: bool) -> str:
     out: list[str] = []
     if markdown:
         out.append("| altitude | pose | ⟨drag⟩ | ⟨P required⟩ | ⟨P available⟩ | "
-                   "energy margin | closes? |")
-        out.append("|---|---|---|---|---|---|---|")
+                   "energy margin | net cell eff. needed | closes? |")
+        out.append("|---|---|---|---|---|---|---|---|")
         for r in rows:
             out.append(f"| {r.altitude_km:.0f} km | {r.rotation} | "
                        f"{r.drag_mean_nN:.2f} nN | {r.p_req_mean_mW:.1f} mW | "
                        f"{r.p_avail_mean_mW:.1f} mW | **{r.margin:.2f}** | "
+                       f"{r.net_cell_efficiency_needed*100:.0f} % | "
                        f"{'**yes**' if r.closes else 'no'} |")
     else:
         out.append(f"{'alt':>6s} {'pose':>9s} {'<drag>':>9s} {'<P_req>':>9s} "
-                   f"{'<P_av>':>9s} {'margin':>7s}  closes?")
-        out.append("-" * 62)
+                   f"{'<P_av>':>9s} {'margin':>7s} {'eff.need':>9s}  closes?")
+        out.append("-" * 72)
         for r in rows:
             out.append(f"{r.altitude_km:6.0f} {r.rotation:>9s} "
                        f"{r.drag_mean_nN:8.2f}n {r.p_req_mean_mW:8.1f}m "
-                       f"{r.p_avail_mean_mW:8.1f}m {r.margin:7.2f}  "
+                       f"{r.p_avail_mean_mW:8.1f}m {r.margin:7.2f} "
+                       f"{r.net_cell_efficiency_needed*100:8.1f}%  "
                        f"{'YES' if r.closes else 'no'}")
     return "\n".join(out)
 

@@ -1,0 +1,67 @@
+# 550 km station keeping — chipsat, BROADSIDE pose
+#
+#   conda activate tudat-sk
+#   python3 run_station_keeping.py 550km_lateral_chipsat            # full year, ~13 min CPU
+#   python3 run_station_keeping.py 550km_lateral_chipsat --days 1   # smoke test, ~2 s
+#
+# This file carries OVERRIDES ONLY. Everything not set here comes from
+# orbit_sims/config.py DEFAULTS, and the merge is strict: a key that is not in
+# DEFAULTS aborts the run instead of silently doing nothing. The fully merged
+# config is written to results/config_used.yaml beside the CSV.
+
+mission:
+  # 2024 is a fully observed past year, so NRLMSISE-00 runs on real historical
+  # F10.7/Ap rather than a forecast, and it sits near solar-cycle-25 maximum:
+  # a realistically HIGH drag environment, not a quiet-sun best case.
+  start_utc: "2024-01-01T12:00:00"
+  duration_days: 365.0
+
+orbit:
+  initial_altitude_km: 550.0
+  # Near-equatorial: the ground track stays in the low-latitude ionosphere where
+  # the diurnal n_e/Te contrast is largest, which is exactly the swing the PIC
+  # day/night design points are meant to bracket.
+  inclination_deg: 0.5
+
+spacecraft:
+  mass_kg: 0.1
+  cylinder_radius_m: 0.005      # 5 mm
+  cylinder_height_m: 0.005      # 5 mm — a squat can, r = h
+  cd: 2.2
+
+  # === EDIT ME =============================================================
+  # rotation sets the drag reference area, and it is the single biggest lever
+  # in this file.
+  #
+  #   axial     axis held along the velocity vector. Drag hits the END CAPS
+  #             (ram silhouette pi*r^2); the side wall lies parallel to the
+  #             flow and pays only grazing friction.   S_ref = 8.34e-5 m^2
+  #
+  #   lateral   held BROADSIDE. Drag hits the SIDE WALL (ram silhouette 2*r*h);
+  #             the caps now lie parallel and pay the grazing term.
+  #                                                    S_ref = 5.49e-5 m^2
+  #
+  #   tumbling  uncontrolled. S_ref = the Cauchy mean A_ext/4, the
+  #             orientation-averaged silhouette.       S_ref = 7.85e-5 m^2
+  #
+  # NOTE, because it surprises people: at r = h the cap disc pi*r^2 is BIGGER
+  # than the side rectangle 2*r*h, so for this squat body BROADSIDE IS THE
+  # LOW-DRAG POSE. A slender body (h > 1.571*r) would reverse that.
+  #
+  # `axial` is the default here because it is the pose an attitude-controlled
+  # chipsat would most plausibly hold (thrust along the velocity vector), and
+  # because it is the CONSERVATIVE choice: it demands the most thrust.
+  rotation: lateral
+  # =========================================================================
+
+  # Tangential momentum accommodation for the grazing-friction term. The
+  # flight-derived range is 0.5-0.9 and it falls with altitude; 0.9 is the
+  # conservative (high-drag) end of that range.
+  sigma_t: 0.9
+
+# Altitude sweep member. 550 km is the upper anchor of the claimed band.
+
+# BROADSIDE pose. For a squat r = h can the side rectangle 2rh is SMALLER than
+# the cap disc pi*r^2, so holding the cylinder side-on cuts S_ref from 8.34e-5
+# to 5.48e-5 m^2 -- a 34 % drag reduction for free. This case exists to test
+# whether that lever is enough to close the power budget on body-mounted cells.
