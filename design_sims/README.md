@@ -214,6 +214,47 @@ an invisible one. The next step is a revised *form*
 (`β₀·(r_p/λ_D)^−q`), a new `laws.yaml`, policy `capstone.mission_envelope.v2`
 with fresh predictions, and a re-run — never a widened tolerance.
 
+## POWER CLOSURE (2026-08-03): where the concept is unconditional
+
+`power_closure.py` turns "a power level the spacecraft's own skin can harvest"
+from an estimate into a computed statement, over five full-year missions
+(105 121 rows each, real NRLMSISE-00 + IRI).
+
+`P_required = drag_N / (F/P)` with F/P = 0.1754 µN/W, the mean over the three
+committed **measured** operating points. F/P is the right divisor because it is
+independent of current — both F and P are linear in I — so no operating point is
+smuggled in, and it is independent of β, so this survives the rung-9 finding.
+
+`P_available` is `orbit_sims`' own eclipse-corrected column: 30 % cells × 70 %
+packing × 90 % derate = **18.9 % net**, on the body-mounted skin of a 5 mm can.
+"Closes" means the orbit-**mean** energy balance, i.e. a storage buffer big
+enough to ride out eclipse — stated, not hidden.
+
+| altitude | pose | ⟨drag⟩ | ⟨P req⟩ | ⟨P avail⟩ | margin | net cell eff. needed | closes? |
+|---|---|---|---|---|---|---|---|
+| 400 km | axial | 32.92 nN | 187.7 mW | 13.3 mW | 0.07 | **267 %** — impossible | no |
+| 500 km | axial | 7.59 nN | 43.3 mW | 13.6 mW | 0.31 | **60 %** — impossible | no |
+| 550 km | axial | 3.85 nN | 21.9 mW | 13.7 mW | 0.63 | 30 % — above reachable | no |
+| 550 km | **lateral** | 2.53 nN | 14.4 mW | 12.8 mW | 0.89 | **21 %** — reachable | marginal |
+| 600 km | **lateral** | 1.32 nN | 7.5 mW | 12.9 mW | **1.72** | 11 % | **yes** |
+
+**The two levers, quantified.** Drag falls **25×** from 400 to 600 km while
+available power is flat (~13 mW — it depends on sunlight, not altitude), so
+altitude dominates. The broadside pose is worth a further **34 %** (S_ref
+8.34e-5 → 5.48e-5 m²; for a squat r = h can the side rectangle is *smaller* than
+the cap disc, so broadside is the low-drag pose).
+
+**The claim's band, tightened by measurement.** Unconditional at **≥ 600 km** in
+the broadside pose on conservative cells. **550 km is marginal**: it needs 21 %
+net, which 32 % cells at 75 % packing would reach — real, but no longer
+conservative. **At and below 500 km no cell closes it**: the requirement exceeds
+any photovoltaic's raw efficiency, so it is a *geometry* problem, and the answer
+is a plate (A_solar/A_ram ≳ 10) or duty cycling — not a better cell.
+
+Reporting "what net efficiency would be needed" alongside the margin is
+deliberate: it lets a reader who disagrees with our cell assumptions reach their
+own verdict without re-running anything.
+
 ## Promotion discipline
 
 ```bash
