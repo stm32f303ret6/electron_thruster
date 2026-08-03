@@ -25,3 +25,8 @@ spacecraft:
 gravity:
   sh_degree: 8
   sh_order: 8
+solar:
+  enabled: true
+  cell_efficiency: 0.3
+  packing_factor: 0.7
+  pointing_loss: 0.9
