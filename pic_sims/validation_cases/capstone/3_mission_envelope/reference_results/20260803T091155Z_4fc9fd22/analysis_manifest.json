@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "analysis_id": "20260803T091155Z_4fc9fd22",
+  "stage_id": "capstone.mission_envelope",
+  "status": "COMPLETE",
+  "created_at_utc": "2026-08-03T09:11:55Z",
+  "completed_at_utc": "2026-08-03T09:12:02Z",
+  "policy_id": "capstone.mission_envelope.v1",
+  "policy_sha256": "4fc9fd22f54123923de5dd3eec5f2dd560c82876c67c46184a08c7db71d66f58",
+  "evidence_kind": "model_validation",
+  "members": [
+    {
+      "run_id": "20260802T124722Z_A_day_p95_f715efee",
+      "scenario": "A_day_p95",
+      "manifest_sha256": "3d67d5cecaeedfe1c3f28c042bb4b908cdb1f4b9bfe9a943a5bcd9afc005709c"
+    },
+    {
+      "run_id": "20260802T202221Z_B_night_worst_dd0f0e08",
+      "scenario": "B_night_worst",
+      "manifest_sha256": "6fb6183df7358724d6d89856ab919a260f5a1c58a2e6b8044102195b8b6b715e"
+    }
+  ],
+  "analyzer_git_commit": "f42432aa27d454ec911a38d5ba396f8e346727c9",
+  "analyzer_git_dirty": true,
+  "verdict_status": "FAIL",
+  "exit_code": 1,
+  "error": null
+}

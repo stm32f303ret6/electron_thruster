@@ -165,6 +165,55 @@ true worst-margin row (74419, n_e = 4.4e10, margin 0.031) was excluded by the
 guard at τ = 995 ns; the honest claim is that continuous-thrust validation
 extends to the guard boundary and the mission is duty-cycled below it.
 
+## VALIDATION RESULT (2026-08-03): the collection law is wrong
+
+`pic_sims`'s `capstone.mission_envelope` rung ran both operating points below
+and **failed 2 of 22 pre-registered gates**. The failure is specific and
+useful.
+
+**Three of the four laws transferred out of sample**, at 1.5× the fitted
+voltage and across 11× in density:
+
+| | anchor (fitted) | A_day_p95 | B_night_worst |
+|---|---|---|---|
+| `k` | 3.2865 | 3.2999 (+0.4 %) | 3.3252 (+1.2 %) |
+| `ke_ledger` | 0.8060 | 0.8010 (−0.6 %) | 0.8012 (−0.6 %) |
+| `f_esc` | 0.9844 | 0.9899 | 0.9949 |
+| `β` | 0.4616 | **0.3967** | **1.0078** |
+
+**β is not a constant, and it is not a function of χ.** It is non-monotonic in
+χ (0.462 at χ=149, 1.008 at χ=178, 0.397 at χ=234). Regressing `ln β` against
+each candidate variable, only density gives consistent exponents:
+
+| β tracks… | anchor→A | anchor→B | A→B | spread |
+|---|---|---|---|---|
+| `(1+χ)` | −0.338 | +4.490 | −3.407 | 7.90 |
+| `r_p/λ_D` | −2.415 | −0.697 | −0.788 | 1.72 |
+| **`n_e`** | **−0.555** | **−0.370** | **−0.391** | **0.19** |
+
+So `I_return ∝ n_e^0.58·√Te·(1+χ)`, not linear in density. The physical reading:
+**β is the OML-efficiency factor and tracks `r_p/λ_D`** — at `r_p/λ_D` = 0.83
+the body collects at full OML (β ≈ 1.0), at 2.5–2.7 it is barrier-limited to
+40–46 %. The two readings cannot be separated by these three points, which all
+sit at Te ≈ 1320–1530 K.
+
+**Consequence for the mission.** The error is optimistic in dense day rows and
+pessimistic at night — and night is where the margin is thin. Re-evaluating all
+105 121 rows with an indicative `β(n) = 0.4616·(n/1.627e12)^−0.42`:
+
+| | deliverable ⟨F⟩ | duty cycle | rows meeting demand |
+|---|---|---|---|
+| as-validated | 25.235 nN | 130.5 % | 28.7 % |
+| indicative β(n) | 28.195 nN | 116.8 % | 41.9 % |
+
+Indicative only — that form has not itself been validated.
+
+**`laws.yaml` has deliberately NOT been refitted.** Averaging β across three
+points where it is manifestly not constant would replace a visible failure with
+an invisible one. The next step is a revised *form*
+(`β₀·(r_p/λ_D)^−q`), a new `laws.yaml`, policy `capstone.mission_envelope.v2`
+with fresh predictions, and a re-run — never a widened tolerance.
+
 ## Promotion discipline
 
 ```bash

@@ -32,6 +32,13 @@ arrive with the full gap energy.
 | arrival kinetic energy error | 0 (energy conservation) | **0.028 eV** on ~100 eV |
 | particle budget closure | 0 % | **0.00075 %** |
 
+Hardware counterpart: the same electrode topology (net-negative cathode,
+grounded collector, ammeter to earth) was demonstrated on the bench at −56 V
+and ≈ 5 Pa, collecting ≈ 87 mA —
+[`lab_experiments/electron_gun/`](../../lab_experiments/electron_gun/README.md).
+Qualitative corroboration only, not a ladder rung: no acceptance gate, and at
+rough vacuum part of the current is plausibly gas amplification.
+
 ### 2. `emitter.holed_anode` — beam through a holed anode plate (3 scenarios)
 
 **The test:** the same gun fires through a grounded plate with a hole.  A
@@ -228,10 +235,38 @@ numbers from any PIC run — they are ratios against `design_sims/`'s prediction
 | binding constraint | — | emission ceiling γ_CL | float limit φ_max |
 | predicted φ_body / F_beam | — | +26.35 V / 31.57 nN | +50.00 V / 5.31 nN |
 
-**Status: runs in progress** (A ≈ 7.7 h, B ≈ 12.5 h on the 14-thread CPU
-build). The pre-registered gates and predictions above are committed; this
-table will carry the measured `φ_body`/`F_beam` ratios and the β-spread once
-the cohort analysis lands.
+**Verdict: FAIL — 20 of 22 gates pass, and the two failures are the same
+failure.**  (A 7.58 h, B 13.0 h; analysis `20260803T091155Z_4fc9fd22`.)
+
+| measured | prediction | agreement |
+|---|---|---|
+| A φ_body | +26.35 V | **+30.86 V** (ratio 1.171, gate ±0.25) ✅ |
+| A F_beam | 31.57 nN | **31.34 nN** (ratio 0.993, gate ±0.20) ✅ |
+| B φ_body | +50.00 V | **+23.08 V** (ratio 0.462) ❌ |
+| B F_beam | 5.31 nN | **5.64 nN** (ratio 1.062) ✅ |
+| β across χ | one constant | **0.462 → 1.008 → 0.397**, log-spread 0.932 (gate 0.223) ❌ |
+
+Every *run-soundness* gate passed on both scenarios (current balance ≤ 0.029,
+edge \|φ\| ≤ 0.081 V against a 1 V bound, ledger-vs-dump ≤ 2e-9,
+prediction-consistency exactly 0).  Three of the four laws transferred out of
+sample at ~1 %: `k` 3.2865 → 3.2999/3.3252, `ke_ledger` 0.8060 →
+0.8010/0.8012, `f_esc` 0.984 → 0.990/0.995 — at 1.5× the fitted voltage and
+across 11× in density.
+
+**The finding.** β is *non-monotonic in χ*, so `(1+χ)` is not the variable it
+depends on.  Regressing `ln β` on each candidate, the exponents agree only for
+density (spread 0.19, versus 7.90 for `(1+χ)`): **β ∝ n_e^−0.42**.  Physically
+this is the OML-efficiency factor tracking `r_p/λ_D` — B sits at
+`r_p/λ_D` = 0.83 and collects at **full OML** (β = 1.01), while the anchor and A
+sit at 2.5–2.7 and collect 40–46 % of it.  That is the same barrier-limited
+trend the collector rungs already measured for a sphere (0.99 / 0.85 / 0.81).
+
+Both cross-stage checks confirm the failure is in the *model*, not the setup:
+the geometry hash-matches rung 8's and the frozen constants re-derive exactly
+from rung 8's own metrics.
+
+`laws.yaml` was **not** refitted and neither scenario was promoted — see the
+stage README for why, and for the recommended revised law.
 
 Three structural guards make the pre-registration more than a promise: the stage
 never imports `design_sims` (constants arrive frozen in its own committed

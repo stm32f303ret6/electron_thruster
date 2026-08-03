@@ -1,0 +1,78 @@
+{
+ "A_day_p95": {
+  "schema_version": 1,
+  "run_id": "20260802T124722Z_A_day_p95_f715efee",
+  "stage_id": "capstone.mission_envelope",
+  "scenario": "A_day_p95",
+  "status": "COMPLETE",
+  "created_at_utc": "2026-08-02T12:47:22Z",
+  "completed_at_utc": "2026-08-02T20:22:03Z",
+  "case_sha256": "f715efeebc61a435a4fae44f78e89d4dfb4155fdd53c808552562a8f86a43531",
+  "study_sha256": "15274773cf4fdc18a641cb5a7764116046d593fbf19a429fe957393dcbe4aee4",
+  "git_commit": "4d3a2528d1284e24bc3975a80876f8afc6e71225",
+  "git_dirty": false,
+  "python_version": "3.12.13",
+  "warpx_version": "26.5",
+  "mpi_ranks": 1,
+  "omp_threads": 14,
+  "random_seed": 42,
+  "expected_final_iteration": 193440,
+  "observed_final_iteration": 193440,
+  "artifacts": [
+   {
+    "path": "diags/fields/*.h5",
+    "bytes": 302421576,
+    "files": 41
+   },
+   {
+    "path": "diags/contactor_log.csv",
+    "bytes": 371387,
+    "files": 1
+   },
+   {
+    "path": "diags/reducedfiles/*.txt",
+    "bytes": 378402,
+    "files": 1
+   }
+  ],
+  "error": null
+ },
+ "B_night_worst": {
+  "schema_version": 1,
+  "run_id": "20260802T202221Z_B_night_worst_dd0f0e08",
+  "stage_id": "capstone.mission_envelope",
+  "scenario": "B_night_worst",
+  "status": "COMPLETE",
+  "created_at_utc": "2026-08-02T20:22:21Z",
+  "completed_at_utc": "2026-08-03T09:11:53Z",
+  "case_sha256": "dd0f0e0874cc53e34032bc2d5e14be60ce6bc410832135a786848fe3900d7fc5",
+  "study_sha256": "15274773cf4fdc18a641cb5a7764116046d593fbf19a429fe957393dcbe4aee4",
+  "git_commit": "279eaefaeb1ffaffed8bbe2470b6736cae7a9582",
+  "git_dirty": false,
+  "python_version": "3.12.13",
+  "warpx_version": "26.5",
+  "mpi_ranks": 1,
+  "omp_threads": 14,
+  "random_seed": 42,
+  "expected_final_iteration": 314200,
+  "observed_final_iteration": 314200,
+  "artifacts": [
+   {
+    "path": "diags/fields/*.h5",
+    "bytes": 302421576,
+    "files": 41
+   },
+   {
+    "path": "diags/contactor_log.csv",
+    "bytes": 605686,
+    "files": 1
+   },
+   {
+    "path": "diags/reducedfiles/*.txt",
+    "bytes": 615170,
+    "files": 1
+   }
+  ],
+  "error": null
+ }
+}
