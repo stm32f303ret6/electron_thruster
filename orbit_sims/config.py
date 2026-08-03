@@ -71,6 +71,16 @@ DEFAULTS = {
         "sh_degree": 8,               # EGM96 spherical harmonics
         "sh_order": 8,
     },
+    # --- solar ledger -------------------------------------------------------
+    # Only the AVAILABLE power is computed here.  What the thruster REQUIRES is
+    # a function of its figures of merit, which live in design_sims/ -- and this
+    # tree reads nothing from there.  design_sims closes the loop.
+    "solar": {
+        "enabled": True,
+        "cell_efficiency": 0.30,      # triple-junction PV, end-of-life-ish
+        "packing_factor": 0.70,       # fraction of the wetted surface carrying cells
+        "pointing_loss": 0.90,        # cosine/temperature/wiring derate, lumped
+    },
 }
 
 
@@ -107,6 +117,13 @@ class Config:
             raise SystemExit("mission.duration_days must be positive")
         if self.mission.arc_days <= 0.0:
             raise SystemExit("mission.arc_days must be positive")
+        sol = self.solar
+        if not (0.0 < sol.cell_efficiency <= 1.0):
+            raise SystemExit("solar.cell_efficiency must be in (0, 1]")
+        if not (0.0 < sol.packing_factor <= 1.0):
+            raise SystemExit("solar.packing_factor must be in (0, 1]")
+        if not (0.0 < sol.pointing_loss <= 1.0):
+            raise SystemExit("solar.pointing_loss must be in (0, 1]")
         if self.orbit.decay_floor_km < 120.0:
             print(f"[warn] orbit.decay_floor_km = {self.orbit.decay_floor_km} is below "
                   f"120 km, where IRI electron/ion temperatures stop being valid. "

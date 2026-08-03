@@ -138,12 +138,16 @@ def main(argv=None):
     ne_min, ne_mean, ne_max = stats.triple("ne")
     te_min, te_mean, te_max = stats.triple("te")
     ti_min, ti_mean, ti_max = stats.triple("ti")
+    pav_min, pav_mean, pav_max = stats.triple("pav")
     print(f"  altitude   {alt_min:.2f} / {alt_mean:.2f} / {alt_max:.2f} km "
           f"(drift {stats.alt_drift:+.3f} km)")
     print(f"  drag       {drag_min*1e9:.2f} / {drag_mean*1e9:.2f} / {drag_max*1e9:.2f} nN")
     print(f"  n_e        {ne_min:.3e} / {ne_mean:.3e} / {ne_max:.3e} m^-3")
     print(f"  Te         {te_min:.0f} / {te_mean:.0f} / {te_max:.0f} K")
     print(f"  Ti         {ti_min:.0f} / {ti_mean:.0f} / {ti_max:.0f} K")
+    print(f"  P_avail    {pav_min:.2f} / {pav_mean:.2f} / {pav_max:.2f} mW "
+          f"(body-mounted cells, {cfg.solar.cell_efficiency:.0%} eff x "
+          f"{cfg.solar.packing_factor:.0%} packing x {cfg.solar.pointing_loss:.0%} derate)")
     print("  (min / mean / max)")
     return 0
 

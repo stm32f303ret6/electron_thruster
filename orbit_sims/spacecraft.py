@@ -148,6 +148,46 @@ def from_dims(*, radius_m, height_m, mass_kg, cd, cr, rotation, altitude_km,
         cd_side=cd_side, meta=meta)
 
 
+def projected_solar_area_m2(craft, sin_alpha):
+    """Sunlit projected area [m^2] for an array-like of sin(sun-to-axis angle).
+
+    For a HELD pose the cylinder's silhouette against the Sun is
+
+        A(alpha) = pi*r^2*|cos alpha| + 2*r*h*sin alpha
+
+    (the caps project as a disc, the wall as a rectangle).  Averaged over solid
+    angle this integrates to A_ext/4 exactly -- <|cos|> = 1/2, <sin> = pi/4 --
+    so the held and tumbling models agree in the mean, as they must.
+
+    `tumbling` uses the Cauchy mean directly (no defined axis).  `lateral` also
+    uses it: its axis is perpendicular to the velocity vector but its ROLL is
+    unconstrained, so there is no honest per-row sun angle to compute -- an
+    orientation average is the truthful answer rather than an invented one.
+    """
+    import numpy as np
+    if craft.rotation == "axial":
+        sa = np.clip(np.asarray(sin_alpha, dtype=float), 0.0, 1.0)
+        ca = np.sqrt(np.clip(1.0 - sa * sa, 0.0, 1.0))
+        return (math.pi * craft.radius_m ** 2 * ca
+                + 2.0 * craft.radius_m * craft.height_m * sa)
+    return np.full(np.shape(sin_alpha), craft.cauchy_area_m2, dtype=float)
+
+
+def available_power_W(craft, irradiance_W_m2, sin_alpha, cfg):
+    """Electrical power the body-mounted cells deliver [W], per exported row.
+
+    `irradiance_W_m2` is Tudat's SHADOW-CORRECTED received irradiance, so
+    eclipse is already folded in and an eclipsed row returns 0.
+    """
+    import numpy as np
+    s = cfg.solar
+    if not s.enabled:
+        return np.zeros(np.shape(sin_alpha), dtype=float)
+    area = projected_solar_area_m2(craft, sin_alpha)
+    return (np.asarray(irradiance_W_m2, dtype=float) * area
+            * s.packing_factor * s.cell_efficiency * s.pointing_loss)
+
+
 def build(cfg):
     """Config adapter over `from_dims`."""
     s = cfg.spacecraft
