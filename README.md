@@ -24,6 +24,23 @@ cd orbit_sims && python3 run_station_keeping.py 400km_station_keeping_chipsat
 
 → `orbit_sims/validation_cases/<case>/results/station_keeping.csv`
 
+#### The altitude sweep (2024, real F10.7/Ap, 5 mm chipsat)
+
+Five committed cases bracket the feasibility envelope against the PIC-measured
+thrust of **13.65 nN** (200 V, 0.342 mA, `capstone.floating_body`):
+
+| case | drag mean | drag max | 13.65 nN covers |
+|---|---|---|---|
+| 400 km axial | 32.9 nN | 92.4 nN | — |
+| 400 km lateral | 21.7 nN | 60.7 nN | — |
+| 500 km axial | 7.6 nN | 28.4 nN | mean |
+| 550 km axial | 3.9 nN | 16.3 nN | mean (max barely missed) |
+| 600 km axial | 2.0 nN | 9.6 nN | mean and max |
+
+**600 km closes at the validated operating point; 550 km is the crossover.**
+`capstone.high_thrust` (the 300 V ceiling, ~30 nN predicted) probes whether
+the 500 km worst case and the lower altitudes come into reach.
+
 ### `pic_sims/` — the evidence
 
 The WarpX validation ladder: eight (now nine) stages, each with a committed
