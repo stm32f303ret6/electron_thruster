@@ -163,6 +163,54 @@ ceiling by day (demand-side) and the collection stiffness by night
 (supply-side) — measured at the frontier's ends by `capstone.low_power` and
 `capstone.high_thrust` respectively.
 
+## 8. Plasma scaling — what one plasma row does and does not cover
+
+Every capstone operating-point stage (100 / 200 / 300 V) runs at the **same
+fixed plasma row**, inherited ladder-wide from the collector rungs:
+
+```
+n0 = 1.627e12 m^-3    Te = 1318.8 K (113.6 meV)    Ti = 936.2 K
+```
+
+A dense, dayside-like 400 km value. The 2024 orbit sweep spans
+n_e = 3·10¹⁰ – 3.4·10¹² m⁻³ and Te = 845 – 3500 K — a factor ~100 in density
+that the PIC evidence does **not** yet cover. The split for the paper:
+
+**Plasma-independent (transfers to any row where φ ≪ V):**
+
+- The thrust law `F ∝ I·√(V − φ)` and the emission ceiling `I_CL ∝ V^1.5`
+  are gun physics — beam acceleration and space charge inside the can. The
+  ambient plasma enters only through φ.
+- At the measured row, φ/V = 17/200 ≈ 0.08: the entire voltage frontier of
+  §2 (the `P ∝ F·√V` law, the F/P column) carries a ≲ 10 % plasma correction.
+
+**Plasma-dependent (does not transfer):**
+
+- The plasma enters the operating point through ONE dimensionless ratio,
+  `I_esc/(β·I_the)` with `I_the ∝ A·n_e·√Te`, which sets the float via §4.
+  The float stiffness goes as `1/(n_e·√Te)`: at the night minimum
+  (n_e ≈ 30× below the measured row) the same beam current pushes φ tens of
+  volts higher — toward the 50 V design limit and the 100 V choke — and the
+  φ-correction to thrust stops being small. **The collection-limited night
+  corner is a qualitatively different regime, and nothing in the ladder has
+  measured it.**
+
+**Numerical couplings (why night runs are safe but slow):**
+
+- Grid: `λ_D ∝ √(Te/n)` = 1.965 mm at the measured row, and dx = 0.15 mm was
+  sized for it. Thinner plasma → longer λ_D → *easier* to resolve; the
+  committed row is near the densest the grid was designed for.
+- Time: the settle time of §5 grows as `1/n_e` — a night-density run needs a
+  proportionally longer t_end before its plateau means equilibrium, and the
+  settle check must be applied before trusting any gate.
+
+**The missing measurement:** the three-point frontier of §2 measures the
+*voltage* scaling at fixed dense plasma; a fourth run at a night-row density
+(~2·10¹¹ m⁻³ from the sweep, voltage fixed) would measure the *plasma*
+scaling — the collection-limited corner where the concept is most stressed,
+and the first run a reviewer will ask for. It is the natural next stage
+after the two pending frontier runs.
+
 ---
 
 ## Anchor bookkeeping
