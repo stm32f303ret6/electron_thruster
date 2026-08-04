@@ -211,6 +211,45 @@ scaling — the collection-limited corner where the concept is most stressed,
 and the first run a reviewer will ask for. It is the natural next stage
 after the two pending frontier runs.
 
+## 9. From scaling laws to a model — the plan, and what buys confidence
+
+These sections are algebra applied by hand. Once the two frontier runs land,
+the plan is a **minimal executable model** — one file, on the order of a few
+hundred lines — that:
+
+- derives every law constant from **all committed** `metrics.json` files (by
+  then three points, not one), with the fit residuals printed, not hidden;
+- sweeps any orbit CSV to make mission-level statements (duty cycle,
+  feasibility fraction, closure vs altitude) and the paper figures;
+- **never feeds an acceptance gate** — PIC stages stay self-contained, and
+  the model remains a targeting/analysis tool with no authority over
+  evidence.
+
+No promotion machinery, no calibration registry: with this few points the
+provenance *is* the anchor table below.
+
+**What buys model confidence — placement, not count:**
+
+- **Overdetermination tests the law form.** One anchor point fits constants
+  and can test nothing. Three voltage points overdetermine them for the
+  first time: `k` must fit all three at once, and the float must follow the
+  `(1+χ)` line at χ ≈ 50 / 150 / 270 simultaneously. Every point past the
+  first is a falsification opportunity.
+- **Points along one axis only test that axis.** The three frontier points
+  will make the voltage laws solid and say nothing about the plasma laws
+  (§8). A fourth voltage point adds almost nothing; the first night-density
+  point adds a tested dimension.
+- **Confidence extends over the measured envelope, not beyond it.** Inside
+  the span of measured points the model interpolates; outside it
+  extrapolates, whatever the point count. The mission spans ~100× in
+  density; the measured envelope spans 1×.
+- **Numerical confidence is a separate budget.** Same point, different
+  seed/grid/PPC — currently zero measured everywhere in the ladder
+  (disclosed caveat). One repeat run bounds it.
+
+Priority order per GPU-hour: voltage frontier (running) → night-density
+point → one seed/grid repeat.
+
 ---
 
 ## Anchor bookkeeping
