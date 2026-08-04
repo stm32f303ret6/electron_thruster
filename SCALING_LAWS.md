@@ -205,6 +205,45 @@ The feasibility floor is the emission ceiling by day (demand-side) and the
 collection stiffness by night (supply-side) — measured at the frontier's
 ends by `capstone.low_power` and `capstone.high_thrust` respectively.
 
+### 7b. The flight rule — a two-line servo on the spacecraft's own float
+
+The U-valley collapses into a controller that needs **no model of the
+ionosphere and no lookup table**:
+
+```
+1. V  ≈ 3.2 · φ                                  (servo V to the measured float)
+2. I  = F_required / (c·√(V − φ))                (current from the thrust demand)
+   guards:  I ≤ 1.5·I_CL(V)   and   φ ≤ 50 V
+            infeasible → duty-cycle at the valley; never push V below it
+```
+
+Why this works, and why it is the paper's cleanest claim:
+
+- **φ is the sensor.** Plasma density, electron temperature, day/night, and
+  the vehicle's own current draw all collapse into where the body floats —
+  and the body measures that by existing. Nothing environmental is
+  hardcoded: a different orbit, altitude, or solar cycle just produces
+  different φ readings, and the servo follows. This is the structural
+  answer to the hardcoding trap of §9 — the rule never predicted the
+  environment, so it cannot be wrong about it.
+- **The 3.2 is physics, not tuning:** the marginal-cost balance gives
+  `V_opt = ((2α+1)/α)·φ_eq`, ≈ 3.0–3.25 for α between 1 and 0.82, shifted
+  by the measured injection offset. The only baked-in numbers are this
+  factor and the two guard ceilings (I_CL is analytic; φ_max is a design
+  choice).
+- **The valley is shallow** (measured flat over ~110–160 V on the dayside
+  row), so a 20 % error in the factor costs a few percent in power. Dummy
+  rules work here because the optimum is forgiving.
+- **What simulations are for, under this rule:** not a lookup table — they
+  (a) measure the few constants (offset, α, escape at fixed perveance),
+  (b) validate the rule's form at a stress point per axis (one dayside, one
+  night row), and (c) map the guard edges (the choke boundary, the night
+  stiffness). A handful of runs total; the rule flies itself, the PIC
+  evidence certifies it.
+
+One sentence for the paper: *a propellantless thruster whose optimal
+controller is a two-line servo on its own floating potential.*
+
 ## 8. Plasma scaling — what one plasma row does and does not cover
 
 Every capstone operating-point stage (100 / 200 / 300 V) runs at the **same
