@@ -1,0 +1,27 @@
+mission:
+  start_utc: '2024-01-01T12:00:00'
+  duration_days: 365.0
+  arc_days: 30.0
+  output_step_s: 300.0
+  integration_step_s: 60.0
+orbit:
+  initial_altitude_km: 550.0
+  inclination_deg: 0.5
+  eccentricity: 0.0
+  raan_deg: 0.0
+  argp_deg: 0.0
+  true_anomaly_deg: 0.0
+  decay_floor_km: 120.0
+spacecraft:
+  mass_kg: 0.1
+  cylinder_radius_m: 0.005
+  cylinder_height_m: 0.005
+  cd: 2.2
+  cr: 1.2
+  rotation: axial
+  sigma_t: 0.9
+  exospheric_T_K: 1000.0
+  mean_mass_amu: 16.0
+gravity:
+  sh_degree: 8
+  sh_order: 8

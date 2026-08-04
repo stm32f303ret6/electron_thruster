@@ -1,0 +1,21 @@
+# 500 km station keeping — chipsat (axial)
+#
+# Same spacecraft and orientation as 400km_station_keeping_chipsat, altitude
+# raised to 500 km. Drag falls steeply with altitude; this probes whether the
+# thruster's measured 13.65 nN covers the demand here.
+
+mission:
+  start_utc: "2024-01-01T12:00:00"
+  duration_days: 365.0
+
+orbit:
+  initial_altitude_km: 500.0
+  inclination_deg: 0.5
+
+spacecraft:
+  mass_kg: 0.1
+  cylinder_radius_m: 0.005
+  cylinder_height_m: 0.005
+  cd: 2.2
+  rotation: axial
+  sigma_t: 0.9
