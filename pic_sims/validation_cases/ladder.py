@@ -55,6 +55,9 @@ STAGES: tuple[Stage, ...] = (
     Stage("capstone.high_thrust",
           Path("capstone/3_high_thrust"),
           requires=("capstone.floating_body",)),
+    Stage("capstone.low_power",
+          Path("capstone/4_low_power"),
+          requires=("capstone.floating_body",)),
 )
 
 # Fast lookups used by the runner and the tests.

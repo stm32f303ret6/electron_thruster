@@ -1,0 +1,79 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for capstone.low_power (the 100 V floor run).
+#
+# Like capstone.high_thrust, there is no regression anchor at this
+# operating point, so the REQUIRED gates are only the theory-anchored
+# invariants that hold at any operating point.  The float should settle
+# LOWER than the 200 V reference (+17 V) -- the smaller emitted current
+# needs less return collection -- so the benign-float bound is generous.
+#
+# The MISSION question -- does the cheap end of the throttle curve still
+# hold 600 km mean station keeping (2.01 nN, orbit_sims 600km case)? --
+# is a reported, non-required gate.  The predicted thrust here is ~3.4 nN
+# at 12.1 mW supply.
+#
+# Changing any tolerance requires a new policy_id; every verdict records
+# this file's SHA-256.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: capstone.low_power.v1
+stage_id: capstone.low_power
+evidence_kind: operating_point_extension
+
+gates:
+  - id: beam_escapes
+    required: true
+    metric: escape_fraction_pct
+    comparison: at_least
+    minimum: 95.0
+
+  # The design limit on the float; the deck's own choke watchdog sits at 100 V.
+  - id: body_floats_benign
+    required: true
+    metric: phi_body_V
+    comparison: at_most
+    maximum: 50.0
+
+  # The floating equilibrium is a current balance: I_escape == I_amb_e - I_amb_i.
+  - id: steady_current_balance
+    required: true
+    metric: current_balance
+    comparison: at_most
+    maximum: 0.05
+
+  # Momentum sanity: the craft cannot catch more z-momentum than the beam carries.
+  - id: momentum_sanity_bound
+    required: true
+    metric: f_net_over_f_beam
+    comparison: at_most
+    maximum: 1.0
+
+  # Sheath/plume containment (collector-rung style; a clipped plume fakes escape).
+  - id: sheath_and_plume_contained
+    required: true
+    metric: edge_phi_max_V
+    comparison: at_most
+    maximum: 1.0
+
+  # Per-step scrape-buffer ledger vs post-hoc openPMD dumps.
+  - id: scrape_ledger_consistent_with_dumps
+    required: true
+    metric: scrape_charge_consistency
+    comparison: at_most
+    maximum: 0.02
+
+  - id: beam_escape_ledger_consistent_with_dumps
+    required: true
+    metric: scrape_charge_consistency_beam_escape
+    comparison: at_most
+    maximum: 0.02
+
+  # THE MISSION QUESTION (reported, not required): the power-optimal point
+  # must still hold 600 km mean station keeping (2.01 nN, orbit_sims 2024
+  # sweep).  Scaling the float200 measurement predicts ~3.4 nN; a miss is
+  # a finding about the scaling, not a bad run.
+  - id: covers_600km_mean_drag
+    required: false
+    metric: f_beam_nN
+    comparison: at_least
+    minimum: 2.0
