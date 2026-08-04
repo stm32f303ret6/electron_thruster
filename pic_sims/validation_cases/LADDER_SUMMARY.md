@@ -167,6 +167,17 @@ balance, momentum bound, containment, ledger cross-checks); the mission
 coverage bar (≥ 28.4 nN) is reported, not required.  **No run has been
 promoted yet** — this table gets filled when the reference lands.
 
+### 10. `capstone.low_power` — the 100 V floor (RUNS PENDING)
+
+**The test:** the same deck at the 100 V hardware floor, i_beam = 0.121 mA
+(same I/I_CL = 1.46).  At fixed thrust, supply power grows as ~√V, so this
+is the power-optimal end of the throttle curve: predicted **~3.4 nN at
+12.1 mW** (~0.29 µN/W vs the measured 0.20 µN/W at 200 V).  With rungs 8
+and 9 it completes a three-point measured P–F frontier over the hardware
+voltage range.  Same gate structure as rung 9; the mission bar (600 km
+mean, ≥ 2.0 nN) is reported, not required.  **No run has been promoted
+yet.**
+
 ---
 
 ## Cross-stage checks (all green in the suite verdict)
