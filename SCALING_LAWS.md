@@ -113,19 +113,24 @@ potential is whatever makes that balance close.
 - **Extrapolation caveat for the paper**: the (1+χ) linearity is anchored at
   one point (χ ≈ 150). The 300 V run probes χ ≈ 270; if the measured φ
   deviates, that is a finding about the law form.
-- **PRE-REGISTERED COMPETING HYPOTHESIS** (recorded 2026-08-04, before the
-  300 V run completed). The predecessor gun-in-probe study
-  (`electron_gun_probe/REPORT_gun_probe.md`, same plasma row, similar 5 mm
-  can, converged reservoir run) fitted its measured balance as
-  `I_collect = K·√(1+χ)` — **square root**, not linear. Both forms agree at
-  the shared anchor region (χ ≈ 140–150) and diverge at the 300 V operating
-  point: the linear law predicts **φ ≈ 31 V**; the square-root law needs
-  `(1+χ) ≈ 790`, i.e. **φ ≈ 90 V** — which would fail the benign-float gate
-  (50 V) and approach the 100 V choke. The 300 V run therefore discriminates
-  between the two law forms. A caveat travels with the comparison: the
-  predecessor also showed the high-χ sheath equilibrates on the ion
-  timescale (~1.6 µs there), so an 800 ns plateau at high χ must be checked
-  against its own late slope before either law is declared the winner.
+- **PRE-REGISTERED COMPETING HYPOTHESES** (recorded 2026-08-04, before the
+  300 V run completed). Three candidate forms `I_collect ∝ (1+χ)^α` exist in
+  the project lineage, agreeing at the shared anchor region (χ ≈ 140–150)
+  and diverging at the 300 V operating point:
+
+  | α | source | predicted φ at the 300 V run |
+  |---|---|---|
+  | 1 (linear OML) | this repo's anchor inversion (one point) | ~31 V |
+  | **0.82 ± 0.06** | `electron_contactor` U-curve campaign, **fitted across six equilibria** (φ = +11 to +45 V, plus a choke at ~1.3 mA) | **~36 V** |
+  | 0.5 (square root) | `electron_gun_probe` converged reservoir run (one point + transient) | ~90 V — would fail the 50 V gate and approach the 100 V choke |
+
+  The predecessor's direct price list on the same can geometry (0.43 mA →
+  +21 V, 0.74 mA → +45 V) brackets our 0.62 mA escaping current at roughly
+  +35–40 V, favoring α ≈ 0.82. The 300 V run discriminates. A caveat
+  travels with the comparison: the gun-probe study showed the high-χ sheath
+  equilibrates on the ion timescale (~1.6 µs there), so an 800 ns plateau at
+  high χ must be checked against its own late slope before any α is declared
+  the winner.
 
 ## 5. Settle time — when a PIC run measures an equilibrium
 
@@ -163,18 +168,42 @@ From the committed 2024 orbit sweep (5 mm chipsat, real F10.7/Ap):
 | 550 km axial | 3.9 nN | 16.3 nN |
 | 600 km axial | 2.0 nN | 9.6 nN |
 
-Demand swings ~10× over an orbit (diurnal) and ~15× across 400–600 km. The
-power-optimal flight rule follows from §2 + §3:
+Demand swings ~10× over an orbit (diurnal) and ~15× across 400–600 km.
 
-> **Throttle V to the lowest feasible value for the instantaneous demand.**
-> Energy per unit impulse goes as √V, so continuous low-V thrust strictly
-> beats duty-cycled high-V thrust for the same station-keeping impulse.
-> High V is reserved for the demand peaks that need its `V²` thrust ceiling.
+**The throttle rule — corrected by the predecessor's measured U-curve.**
+The naive rule from §2 alone ("throttle V as low as feasible; P ∝ F·√V")
+assumes escape stays high and current is free. The `electron_contactor`
+campaign (`UCURVE_explained.md`, five converged runs at fixed ~13.6 nN
+demand: 78 / 92.4 / 125 / 200 / 300 V) measured what actually happens at
+fixed thrust when V drops: the required current rises, and two taxes explode
+— the charging tax (φ eats 27.6 % of V at 78 V vs 8.7 % at 200 V) and escape
+collapse (68.6 % at 78 V; space charge blows the beam open at high
+perveance and the can eats its own beam). Specific power P/F is a **U**:
+5.18 / 4.44 / **4.31 (min)** / 5.02 / 5.90 mW/nN — and below ~91 V that
+thrust demand has **no equilibrium at all** (the death spiral is documented
+and was confirmed by a pre-registered counterexample run, which failed by
+beam optics before charging even bound).
 
-The feasibility floor that stops the throttle going lower is the emission
-ceiling by day (demand-side) and the collection stiffness by night
-(supply-side) — measured at the frontier's ends by `capstone.low_power` and
-`capstone.high_thrust` respectively.
+> **Sit at the U-valley for the instantaneous demand — not as low as
+> feasible.** The valley has a closed form, `V_opt ≈ 3.2·φ_eq` (injection
+> offset included), and φ_eq depends on the demanded current and the local
+> plasma — so the *rule* travels across rows and orbits while the *number*
+> (125 V on a dense dayside row at 13.6 nN) does not. Never operate below
+> the no-equilibrium boundary for the current demand.
+
+Two slices of the (V, I) plane, not to be confused:
+
+- **Fixed thrust, varying V** (the contactor U-curve): perveance I/I_CL
+  explodes at low V — this is where the left-arm taxes live.
+- **Fixed I/I_CL = 1.46, varying V** (this repo's frontier stages): the
+  perveance-preserving path — beam optics stay self-similar, escape should
+  stay high at all three points, and thrust varies as ~V² along it. It
+  measures the *envelope boundary*; the U-curve measures the *cost inside
+  it*.
+
+The feasibility floor is the emission ceiling by day (demand-side) and the
+collection stiffness by night (supply-side) — measured at the frontier's
+ends by `capstone.low_power` and `capstone.high_thrust` respectively.
 
 ## 8. Plasma scaling — what one plasma row does and does not cover
 
@@ -234,6 +263,17 @@ hundred lines — that:
   then three points, not one), with the fit residuals printed, not hidden;
 - sweeps any orbit CSV to make mission-level statements (duty cycle,
   feasibility fraction, closure vs altitude) and the paper figures;
+- **flags every row that falls outside the measured envelope** — density,
+  χ, or perveance beyond what any committed run has measured — and splits
+  every mission claim into "measured-envelope rows" and "extrapolated rows,
+  needing a targeted PIC run". This is the guard against the hardcoding
+  trap: a new orbit (inclination, local-time coverage, solar cycle — not
+  just altitude) changes which rows land in which bucket, never the laws
+  themselves, and the flagged bucket says exactly where the next GPU-hours
+  go;
+- evaluates optimization rules **per row** (e.g. the §7 U-valley
+  `V_opt ≈ 3.2·φ_eq`), never as frozen numbers: fitted constants stay home,
+  physics forms travel;
 - **never feeds an acceptance gate** — PIC stages stay self-contained, and
   the model remains a targeting/analysis tool with no authority over
   evidence.
