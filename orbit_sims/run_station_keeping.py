@@ -19,8 +19,8 @@ the PIC side be run at the ionosphere the vehicle actually flies through.
 THE DELIVERABLE IS THE CSV. It is spacecraft-independent in its environment
 columns: because drag is cancelled the altitude holds, so rho(t), v(t), n_e(t),
 Te(t) and Ti(t) do not depend on the vehicle that flew through them. Only
-`drag_N` carries the geometry. Feeding those columns into pic_sims is a
-deliberate, separate step (see design_sims/).
+`drag_N` carries the geometry. PIC scenario conditions are picked from this CSV
+by inspection and frozen into the PIC stage's config.
 
 Output: validation_cases/<case>/results/{station_keeping.csv, config_used.yaml}
 """

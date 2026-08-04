@@ -14,7 +14,7 @@ Renames vs the predecessor (`steps/step0_orbit/core/config.py`):
     spacecraft.attitude          -> spacecraft.rotation  (and 'endon' -> 'axial',
                                     plus the new 'lateral' broadside pose)
 Dropped blocks: propulsion, solar, expect — this half of the repo stops at the
-CSV, and the design/propulsion ledger lives in design_sims/.
+CSV.
 
 Depends on: yamlcfg, spacecraft.
 """
