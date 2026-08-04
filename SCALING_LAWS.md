@@ -113,6 +113,19 @@ potential is whatever makes that balance close.
 - **Extrapolation caveat for the paper**: the (1+χ) linearity is anchored at
   one point (χ ≈ 150). The 300 V run probes χ ≈ 270; if the measured φ
   deviates, that is a finding about the law form.
+- **PRE-REGISTERED COMPETING HYPOTHESIS** (recorded 2026-08-04, before the
+  300 V run completed). The predecessor gun-in-probe study
+  (`electron_gun_probe/REPORT_gun_probe.md`, same plasma row, similar 5 mm
+  can, converged reservoir run) fitted its measured balance as
+  `I_collect = K·√(1+χ)` — **square root**, not linear. Both forms agree at
+  the shared anchor region (χ ≈ 140–150) and diverge at the 300 V operating
+  point: the linear law predicts **φ ≈ 31 V**; the square-root law needs
+  `(1+χ) ≈ 790`, i.e. **φ ≈ 90 V** — which would fail the benign-float gate
+  (50 V) and approach the 100 V choke. The 300 V run therefore discriminates
+  between the two law forms. A caveat travels with the comparison: the
+  predecessor also showed the high-χ sheath equilibrates on the ion
+  timescale (~1.6 µs there), so an 800 ns plateau at high χ must be checked
+  against its own late slope before either law is declared the winner.
 
 ## 5. Settle time — when a PIC run measures an equilibrium
 
