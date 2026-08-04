@@ -156,6 +156,17 @@ containment, and the ledger-vs-dump consistency checks.
 | exhaust KE | −φ(injection plane) = 148.1 eV | **147.5 eV** |
 | ledger vs dumps (ambient-e / beam-escape) | identical | **3·10⁻⁹ / 5·10⁻⁹** |
 
+### 9. `capstone.high_thrust` — the 300 V ceiling (RUNS PENDING)
+
+**The test:** the same deck driven at the 300 V hardware ceiling with
+i_beam = 0.63 mA (the same measured I/I_CL = 1.46 emission ratio).  Scaling
+the float200 measurement predicts **~30 nN** — enough to cover the 500 km
+worst-case drag row (28.4 nN, `orbit_sims` 2024 sweep).  Required gates are
+the theory-anchored invariants only (escape, benign float ≤ 50 V, current
+balance, momentum bound, containment, ledger cross-checks); the mission
+coverage bar (≥ 28.4 nN) is reported, not required.  **No run has been
+promoted yet** — this table gets filled when the reference lands.
+
 ---
 
 ## Cross-stage checks (all green in the suite verdict)
