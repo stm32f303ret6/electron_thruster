@@ -8,9 +8,8 @@ electron/ion temperature, so the ionosphere the vehicle actually flies through
 comes out alongside the demand it creates.
 
 **The deliverable is the CSV.** Nothing here knows about thrusters, voltages or
-particles. Turning `(n_e, Te, Ti, drag_N)` into an operating point is
-`design_sims/`'s job; validating that operating point with particles is
-`pic_sims/`'s.
+particles. Picking scenario conditions from this CSV and validating them with
+particles is `pic_sims/`'s job.
 
 ## Environment
 
