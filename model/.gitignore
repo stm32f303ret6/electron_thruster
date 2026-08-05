@@ -1,0 +1,4 @@
+# Per-row mission sweeps (~12 MB each) are regenerable in seconds from the
+# tracked orbit CSVs' inputs via `python minimal_model.py --all`; only the
+# curated summaries stay in git (same philosophy as pic_sims outputs).
+results/*_model.csv

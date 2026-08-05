@@ -131,6 +131,34 @@ potential is whatever makes that balance close.
   equilibrates on the ion timescale (~1.6 µs there), so an 800 ns plateau at
   high χ must be checked against its own late slope before any α is declared
   the winner.
+- **VERDICT (2026-08-05 — both frontier runs complete, all gates PASS).**
+  Measured φ at 300 V: 36.3 V tail-averaged (policy window), 38.8 V at run
+  end with the late slope still decaying (+44 → +27 mV/ns over the final
+  200 ns); extrapolating the slope decay puts the settled float at ~42–48 V.
+  - **α = 1 (linear) is refuted** — φ passed its 31 V prediction near 650 ns
+    and kept climbing.
+  - **α = 0.5 is refuted** — nothing in the trajectory heads toward 90 V;
+    the extrapolated ceiling stays below 50 V.
+  - **α = 0.82 survives and is favored**: 36 V predicted vs 36.3 V
+    tail-averaged. The pre-registered late-slope caveat applies in full: the
+    true equilibrium is plausibly a few volts above the point prediction
+    (upper half of the ±0.06 band, i.e. α slightly below 0.82), and its
+    extrapolated top edge brushes the 50 V benign gate. A longer-tail 300 V
+    run is the instrument if that band must be closed; not scheduled.
+  - The 100 V run measured φ = 5.4 V (tail) extrapolating to ~6.0 V settled,
+    on the ~6 V prediction — consistent, but at low χ the candidate laws
+    converge, so the 100 V point confirms the anchor rather than
+    discriminating α.
+  - Thrust landed on its pre-registered predictions to <1 % at both
+    endpoints: 30.13 nN vs 30 predicted (300 V), 3.42 nN vs 3.4 (100 V).
+    The beam/exhaust side is clean; law uncertainty lives entirely on the
+    collection/float side.
+  - **F/P ∝ 1/√V confirmed across the full hardware range**: measured
+    0.283 / 0.200 / 0.159 µN/W at 100 / 200 / 300 V vs 0.283 / (anchor) /
+    0.163 predicted from the 200 V anchor — within 2.5 % everywhere.
+  - Escape degrades toward low V exactly as the U-curve tax predicts
+    (96.1 % at 100 V vs 98.4–99.0 % at 200–300 V) but still clears the 95 %
+    gate at the cheap end — the floor operating point is feasible.
 
 ## 5. Settle time — when a PIC run measures an equilibrium
 
@@ -339,8 +367,9 @@ provenance *is* the anchor table below.
   seed/grid/PPC — currently zero measured everywhere in the ladder
   (disclosed caveat). One repeat run bounds it.
 
-Priority order per GPU-hour: voltage frontier (running) → night-density
-point → one seed/grid repeat.
+Priority order per GPU-hour: voltage frontier (**complete 2026-08-05**) →
+convergence repeat at the 200 V anchor → minimal model → night-density
+point only if the model predicts a thin night margin.
 
 ---
 
@@ -351,8 +380,8 @@ point → one seed/grid repeat.
 | F, φ, escape, KE at 200 V | 13.65 nN, +16.98 V, 98.44 %, 147.5 eV | **measured** — `capstone/2_chipsat_thruster/reference_results/20260801T142601Z_2f822a95/metrics.json` |
 | I/I_CL emission ratio | 1.46 | **measured** — same run vs planar CL scale |
 | thermal collection | ±1 % of exact | **measured** — `collector.thermal` reference |
-| 300 V row (30 nN, φ≈31 V) | pre-registered prediction | `capstone.high_thrust` (runs pending) |
-| 100 V row (3.4 nN, φ≈6 V) | pre-registered prediction | `capstone.low_power` (runs pending) |
+| F, φ, escape, KE at 300 V | 30.13 nN, +36.3 V (tail; §4 verdict), 98.99 %, 210.1 eV | **measured** — `capstone/3_high_thrust/reference_results/20260804T154756Z_b854dcbe/metrics.json` |
+| F, φ, escape, KE at 100 V | 3.42 nN, +5.4 V (→ ~6.0 V settled), 96.12 %, 77.2 eV | **measured** — `capstone/4_low_power/reference_results/20260804T230218Z_0adb478f/metrics.json` |
 
 Ladder-wide caveats travel with every number: reduced ion mass (400 mₑ),
 electrostatic (no B, no ram drift), single grid/PPC/seed, finite-time
