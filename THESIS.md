@@ -44,3 +44,47 @@ occupies — exists only in conversation.
   on the can's body-mounted cells (~110–165 mW mean demand vs ~30 mW
   harvest). The unconditional claim lives at ~450–600 km (or 400 km with a
   plate geometry).
+
+## Anticipated reviewer objections (with measured answers)
+
+### "Collected ambient electrons deposit momentum that cancels the gun's thrust."
+
+Raised by an external reader 2026-08-05, before submission. The quantity is
+*measured*, not argued: the per-step ledger separates `F_beam` (reaction
+thrust of the escaping beam) from `F_net` (z-momentum deposited by ALL
+species landing on the craft — collected ambient e⁻, ambient ions, returning
+beam). 300 V run `20260804T154756Z_b854dcbe`, steady tail:
+
+- F_beam = 30.2 nN, all-impact F_net = 0.3 nN → **a 1 % correction**, bounded
+  by the required pre-registered gate `momentum_sanity_bound`
+  (|F_net|/|F_beam| ≤ 1, measured 0.0098); ledger cross-checked against
+  independent openPMD particle dumps at the 1e-9 level.
+- Physics ceiling even *without* isotropy: at current balance the collected
+  current equals the escaping current, but arrivals carry ~eφ ≈ 36 eV vs
+  210 eV exhaust → per-electron momentum ratio √(36/210) ≈ 0.41. Cancellation
+  cannot exceed ~41 % even if every collected electron arrived directly
+  astern; isotropic arrival (the objection's own premise) takes it to the
+  measured 1 %.
+- Charging is emergent, not prescribed: φ_body floats (+36 V at 300 V drive),
+  gated ≤ 50 V with a 100 V choke-abort; collection physics was validated on
+  dedicated ladder rungs (thermal → biased → floating) against OML/sheath
+  theory before any thrust claim.
+- Gaps that travel with this answer (disclose proactively): plasma at rest —
+  no mesothermal ram (electron-influx anisotropy ~v_orb/v_th,e ≈ 5 %;
+  ram-ion pressure belongs to the drag side of the budget); reduced ion mass
+  (400 mₑ); 800 ns tail vs ion-timescale settling.
+- Planned hardening: the **full-return null fixture** (zero escape must read
+  zero net thrust) turns this objection into a figure — the falsification
+  test of the momentum diagnostic itself.
+
+### "An electrodynamic tether does the same thing far more efficiently."
+
+Concede F/P at km scale — Lorentz force pays no exhaust-energy cost. The
+claim breaks at chipsat scale: a 5 mm vehicle vs a deployed, gravity-gradient
+stabilized conductor 4–6 orders of magnitude longer than the spacecraft,
+plus libration control, meteoroid survivability, and thrust constrained to
+the IL×B direction. And a bare EDT's endpoints still require the same
+electron collection/emission contactor physics this device *is*. The thesis
+claims a no-deployables, no-propellant device at a scale where no tether
+closes — the efficiency-indifference boundary (guardrail above) applies to
+tethers exactly as it does to ion thrusters.
