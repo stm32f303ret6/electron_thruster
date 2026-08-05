@@ -1,0 +1,80 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for capstone.high_thrust (the 300 V ceiling run).
+#
+# UNLIKE the floating_body policy, there is no regression anchor at this
+# operating point -- no prior validated run at 300 V / 0.63 mA exists.  The
+# REQUIRED gates are therefore only the theory-anchored invariants that hold
+# at any operating point: the steady-state current balance (the floating
+# equilibrium IS a current balance), the momentum sanity bound, sheath/plume
+# containment, the ledger-vs-dump charge cross-checks, escape >= 95 %, and
+# the benign-float design limit (phi <= 50 V; the run itself aborts at 100 V).
+#
+# The MISSION question -- does full drive cover the 500 km worst-case drag
+# of 28.4 nN (orbit_sims 500km case, 2024, max row)? -- is a reported,
+# non-required gate: measuring 25 nN would be a finding about the scaling,
+# not an invalid run.
+#
+# Changing any tolerance requires a new policy_id; every verdict records
+# this file's SHA-256.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: capstone.high_thrust.v1
+stage_id: capstone.high_thrust
+evidence_kind: operating_point_extension
+
+gates:
+  - id: beam_escapes
+    required: true
+    metric: escape_fraction_pct
+    comparison: at_least
+    minimum: 95.0
+
+  # The design limit on the float; the deck's own choke watchdog sits at 100 V.
+  - id: body_floats_benign
+    required: true
+    metric: phi_body_V
+    comparison: at_most
+    maximum: 50.0
+
+  # The floating equilibrium is a current balance: I_escape == I_amb_e - I_amb_i.
+  - id: steady_current_balance
+    required: true
+    metric: current_balance
+    comparison: at_most
+    maximum: 0.05
+
+  # Momentum sanity: the craft cannot catch more z-momentum than the beam carries.
+  - id: momentum_sanity_bound
+    required: true
+    metric: f_net_over_f_beam
+    comparison: at_most
+    maximum: 1.0
+
+  # Sheath/plume containment (collector-rung style; a clipped plume fakes escape).
+  - id: sheath_and_plume_contained
+    required: true
+    metric: edge_phi_max_V
+    comparison: at_most
+    maximum: 1.0
+
+  # Per-step scrape-buffer ledger vs post-hoc openPMD dumps.
+  - id: scrape_ledger_consistent_with_dumps
+    required: true
+    metric: scrape_charge_consistency
+    comparison: at_most
+    maximum: 0.02
+
+  - id: beam_escape_ledger_consistent_with_dumps
+    required: true
+    metric: scrape_charge_consistency_beam_escape
+    comparison: at_most
+    maximum: 0.02
+
+  # THE MISSION QUESTION (reported, not required): full drive must cover the
+  # worst drag row of the 2024 year at 500 km axial (28.36 nN).  Scaling the
+  # float200 measurement predicts ~30 nN; a miss is a finding, not a bad run.
+  - id: covers_500km_worst_drag
+    required: false
+    metric: f_beam_nN
+    comparison: at_least
+    minimum: 28.4
