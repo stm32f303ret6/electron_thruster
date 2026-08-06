@@ -604,29 +604,50 @@ does not, and 400\,km -- infeasible for the chipsat in
 Table~\ref{tab:missions} -- reopens for slender geometries on the power
 side.
 
-The honesty flag is the same one as the density axis, and sharper: the
-collection exponent is provably geometry-dependent. OML theory gives
-$\alpha = 1$ for a sphere and $\alpha = 0.5$ for a long cylinder; our squat
-can measured 0.82--0.89, between the limits, and a slender body slides
-toward the cylindrical value -- weaker enhancement per volt of float,
-compensated linearly by area -- converging, for radii approaching the Debye
-length, to exactly the bare-tether collection law of
-Sanmart\'in et al.~\cite{san93} that grounds our related work. So the
-fitted law does not transfer to slender bodies unchanged, and slender-body
-numbers here are model extrapolation, flagged as such. Two design trades
-travel with the lever: solar cells and bare collector compete for the same
-wall area (clad dielectric surfaces do not collect), and end-on flight is
-not attitude-free (gravity gradient prefers the long axis nadir-pointed,
-which is side-on to ram). One elongation rule is already fixed by the
-measured gun physics: the emission ceiling scales as $1/d^{2}$
+The concern this raised was that the collection exponent is provably
+geometry-dependent. OML theory gives $\alpha = 1$ for a sphere and
+$\alpha = 0.5$ for a long cylinder; our squat can measured 0.82--0.89,
+between the limits, and a slender body should slide toward the cylindrical
+value -- weaker enhancement per volt of float, so a hidden charging tax that
+the area argument conceals. We therefore pre-registered two competing
+hypotheses and measured them: area-only scaling (the can's fitted $\alpha$
+holds, so tripling the skin drops the enhancement demand and the float lands
+at 4--5\,V) against a cylinder-limit lateral wall (float in the tens of
+volts, possibly past the benign gate).
+
+The measurement settles it. A \O10\,mm\,$\times$\,30.5\,mm can
+($L/r = 6$, skin $3.24\times$ the chipsat's) at the identical 200\,V drive,
+commanded current, plasma row, grid and seed floats to
+$\phi = 4.38$\,V tail-averaged (4.79\,V at run end, still rising at
+$+4.4$\,mV/ns, so $\sim$5--6\,V settled), against the area arithmetic's
+4.14--4.66\,V. Hypothesis A is confirmed and the cylinder-limit hypothesis
+refuted by an order of magnitude: \textbf{the fitted exponent survives a
+$3.24\times$ area change and an aspect-ratio change from $L/r = 0.6$ to 6.}
+All six required gates pass; escape holds at 98.4\,\%.
+
+Better still, elongation is not paid for in thrust. Because
+$\mathrm{KE} = \kappa(V-\phi)$, a body that floats $3.9\times$ lower keeps
+more of its drive: exhaust energy rises from $\sim$147 to 159.7\,eV and beam
+thrust from 13.6 to 14.22\,nN, at the same commanded current and the same
+ram silhouette. Elongation is free on the thrust side and strictly
+favourable on the charging side.
+
+Two design trades still travel with the lever: solar cells and bare
+collector compete for the same wall area (clad dielectric surfaces do not
+collect), and end-on flight is not attitude-free (gravity gradient prefers
+the long axis nadir-pointed, which is side-on to ram). A third rule is fixed
+by the measured gun physics: the emission ceiling scales as $1/d^{2}$
 (Sec.~\ref{sec:frontier}), so a slender body must keep the
 cathode--aperture gap at its short design value and grow the body
 \emph{around} the gun -- an emitter placed at the far end of a long can
-starves and scatters its own beam before the slit. A single slender-body
-run at the 200\,V anchor demand -- pre-registered in the repository,
-discriminating area-only scaling from cylinder-limit collection -- opens
-this axis; it is, with the night-row run, one of the two targeted
-measurements this study identifies.
+starves and scatters its own beam before the slit. We enforced this with a
+cathode standoff that pins the gap while the can grows; the run's
+demand-to-ceiling ratio, 1.457, matches the anchor's 1.46.
+
+What remains extrapolation is aspect ratio \emph{beyond} $L/r = 6$, where
+the cylinder limit must eventually bite, and the $r \lesssim \lambda_D$ end
+that converges to the bare-tether collection law of
+Sanmart\'in et al.~\cite{san93} grounding our related work.
 
 \section{Practical realization}
 \label{sec:practical}
@@ -664,13 +685,14 @@ with flagged extrapolation; full mission validation is future work.
         another density. The model flags every such row
         (Table~\ref{tab:missions}); the night-row run is the single
         highest-value follow-on measurement.
-  \item \textbf{The collection law's geometry axis is unmeasured.} All
-        committed runs share one squat-can geometry. The enhancement
-        exponent is geometry-dependent by theory (sphere 1, long cylinder
-        0.5; measured 0.82--0.89 for the can), so predictions for slender
-        or larger bodies (Sec.~\ref{sec:slender}) rest on the theory-safe
-        thermal-collection floor plus flags, not on the fitted law. The
-        pre-registered slender-body run is the second targeted follow-on.
+  \item \textbf{The collection law's geometry axis is measured at two
+        points, not mapped.} The exponent is geometry-dependent by theory
+        (sphere 1, long cylinder 0.5; measured 0.82--0.89 for the can), and
+        the pre-registered slender run (Sec.~\ref{sec:slender}) confirms it
+        survives to $L/r = 6$ and $3.24\times$ skin area. Aspect ratios
+        beyond that, and bodies whose radius approaches $\lambda_D$, remain
+        extrapolation resting on the theory-safe thermal-collection floor
+        plus flags, not on the fitted law.
   \item \textbf{Grid resolution is the leading numerical uncertainty.}
         Particle count is converged to $\le$0.05\% (this work) and time
         step and seed to $\le$0.5\% (predecessor), but the measured
