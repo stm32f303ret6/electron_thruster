@@ -1,0 +1,15 @@
+name: tudat-sk
+channels:
+  - conda-forge
+dependencies:
+  - scipy[version='>=1.13,<2']
+  - fortran-compiler
+  - pip
+  - python=3.12
+  - pytest[version='>=8,<9']
+  - cmake
+  - numpy[version='>=1.26,<2']
+  - pandas[version='>=2.2,<3']
+  - tudatpy=1.0.0
+  - matplotlib[version='>=3.8,<4']
+  - pandoc
