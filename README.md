@@ -54,6 +54,9 @@ conda activate warpx-cpu-mpich-dev
 cd pic_sims/validation_cases && python run_ladder.py --check
 ```
 
+**Setting this up from scratch — conda environments, the WarpX version and
+build flags, how to run the ladder and the variant runs: `SETUP.md`.**
+
 See `pic_sims/validation_cases/README.md` for the ladder contract and
 `LADDER_SUMMARY.md` for the current stage-by-stage verdict.
 
