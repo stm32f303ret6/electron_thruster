@@ -1,0 +1,46 @@
+{
+  "stage_id": "collector.biased_3v",
+  "policy_id": "collector.biased_3v.v1",
+  "status": "PASS",
+  "exit_code": 0,
+  "detail": "all 4 required gate(s) passed",
+  "gates": [
+    {
+      "id": "electron_current_vs_oml",
+      "status": "PASS",
+      "required": true,
+      "metric": "electron_current_over_oml",
+      "comparison": "within_range",
+      "value": 0.8521997215895435,
+      "detail": "0.8522 in [0.85, 1.05]"
+    },
+    {
+      "id": "far_density_matches_n0",
+      "status": "PASS",
+      "required": true,
+      "metric": "far_density_e_over_n0",
+      "comparison": "abs_within",
+      "value": 0.9696191278162886,
+      "detail": "0.969619 |x - 1| <= 0.05"
+    },
+    {
+      "id": "far_field_quasineutral",
+      "status": "PASS",
+      "required": true,
+      "metric": "quasineutrality",
+      "comparison": "at_most",
+      "value": 0.0019159758768633917,
+      "detail": "0.00191598 <= 0.02"
+    },
+    {
+      "id": "sheath_contained",
+      "status": "PASS",
+      "required": true,
+      "metric": "edge_phi_max_V",
+      "comparison": "at_most",
+      "value": 0.0025185233599883043,
+      "detail": "0.00251852 <= 0.5"
+    }
+  ],
+  "analysis_id": "20260806T150357Z_fe1c00b4"
+}

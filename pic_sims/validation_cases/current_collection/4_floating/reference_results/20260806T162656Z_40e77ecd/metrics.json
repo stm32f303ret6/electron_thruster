@@ -1,0 +1,127 @@
+{
+  "analysis_id": "20260806T170238Z_55d559a8",
+  "metrics": [
+    {
+      "id": "phi_float_V",
+      "status": "OK",
+      "value": -0.25099705875,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": 80,
+      "window": {
+        "start_iteration": 60500,
+        "end_iteration": 100000
+      },
+      "source": "floating_log.csv phi_V tail mean; theory bracket [-0.360, -0.213] V"
+    },
+    {
+      "id": "current_balance",
+      "status": "OK",
+      "value": 0.00888752084515856,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 60500,
+        "end_iteration": 100000
+      },
+      "source": "|I_e - I_i| / I_i, tail means (equilibrium: net current -> 0)"
+    },
+    {
+      "id": "capacitance_over_analytic",
+      "status": "OK",
+      "value": 1.0677745351229724,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "Gauss-law C 89.10 fF / 4*pi*eps0*a 83.45 fF"
+    },
+    {
+      "id": "scrape_charge_consistency",
+      "status": "OK",
+      "value": 2.733388946948906e-09,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "electron EB charge: CSV ledger integral vs openPMD scrape total"
+    },
+    {
+      "id": "far_density_e_over_n0",
+      "status": "OK",
+      "value": 0.9998106041419862,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "volume-weighted n_e over the far shell / n0"
+    },
+    {
+      "id": "quasineutrality",
+      "status": "OK",
+      "value": 0.0012552622842123995,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "far-shell |n_e - n_i| / n0"
+    },
+    {
+      "id": "edge_phi_max_V",
+      "status": "OK",
+      "value": 0.005848888150713804,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "max |phi| a few cells inside the open boundaries"
+    },
+    {
+      "id": "phi_from_retardation_V",
+      "status": "OK",
+      "value": -0.2115643401327775,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "kTe/e * ln(I_e/I_th_e): Boltzmann cross-check of phi_f (REPORTED, not gated)"
+    },
+    {
+      "id": "electron_current_over_th",
+      "status": "OK",
+      "value": 0.15542090850747597,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 60500,
+        "end_iteration": 100000
+      },
+      "source": "I_e / I_th_e (0 V thermal law; retarded here -- REPORTED)"
+    },
+    {
+      "id": "ion_current_over_th",
+      "status": "OK",
+      "value": 3.656805315820254,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 60500,
+        "end_iteration": 100000
+      },
+      "source": "I_i / I_th_i (attracted here, OML-enhanced -- REPORTED)"
+    },
+    {
+      "id": "late_dphidt_V_per_us",
+      "status": "OK",
+      "value": -0.01226156097560975,
+      "unit": "V/us",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "phi linear slope over the last 20% (REPORTED equilibrium check)"
+    }
+  ]
+}
