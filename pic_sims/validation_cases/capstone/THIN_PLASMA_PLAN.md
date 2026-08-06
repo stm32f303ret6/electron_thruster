@@ -116,6 +116,44 @@ bound, sheath containment, ledger-vs-dump cross-checks, thrust floor), plus:
   with the float and the settled value bracketed, exactly as the 300 V run
   did (36.3 V tail → 42–48 V extrapolated).
 
+## AMENDMENT — 2026-08-06: unchained before launch, deferred by scope decision
+
+The run was queued behind the slender-body run and **unchained before it ever
+started** (operator decision; no run directory exists, nothing to discard).
+The pre-registration above stands unchanged and unexecuted.
+
+Why, recorded so the reasoning survives the decision. Re-examining what this
+run actually tests, the value is narrower than the plan implies:
+
+- The law's density dependence is `I ∝ n · (1 + chi)^alpha`. The `n`-linear
+  part is the one-sided thermal flux, **already validated to ±1 % at rung
+  `collector.thermal`**, and `chi = e*phi/kTe` has no density dependence at
+  all. `alpha` is **already discriminated on the voltage axis** (§4 VERDICT:
+  1 refuted, 0.5 refuted, 0.82 favored).
+- So no new fitted parameter is under test. The single assumption being probed
+  is that `alpha` and `beta` do not drift as the body moves toward the OML
+  limit — `r_probe/lambda_D` goes 2.5 -> 1.5 at n0/3.
+- And the settle caveat blunts even that. The 300 V run read 36.3 V at 800 ns
+  against a ~42–48 V settled value, a 15–30 % under-read; the thin row's
+  spring is ~3x stiffer. The pre-registered predictions span 53–68 V, a 27 %
+  spread — the settle uncertainty eats the discrimination.
+
+**Net: a gross-breakdown detector, not a measurement.** It would refute a
+collapse toward `alpha = 0.5` unmistakably (phi heading for 160 V) and
+otherwise return "no breakdown over 3x of a 30x mission swing". Worth ~9.5
+GPU-hours only when the card is otherwise idle, and the first thing to cut.
+
+The plan is left committed and intact: if the density axis is ever challenged
+by a reviewer, this is a ready, pre-registered, un-p-hacked run — the config
+recipe, predictions, domain sizing, and acceptance policy
+(`acceptance_exploratory.yaml`) are all fixed in advance.
+
+Higher-value use of a comparable slot, if one opens: the **full-return null
+fixture** (roadmap item: momentum ledger + null test), which answers the
+reviewer momentum objection in `THESIS.md` head-on — a configuration where
+every beam electron returns to the craft and the measured thrust must be ~0 —
+rather than answering it by computation from existing runs.
+
 ## What it opens
 
 - Mission rows carrying `extrap_density` become interpolated over a 3× band

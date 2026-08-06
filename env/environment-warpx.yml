@@ -1,0 +1,37 @@
+name: warpx-cpu-mpich-dev
+channels:
+  - conda-forge
+dependencies:
+  - blaspp
+  - boost
+  - ccache
+  - cmake
+  - compilers
+  - git
+  - lapackpp
+  - openpmd-api[build=mpi_mpich*]
+  - openpmd-viewer
+  - packaging
+  - pytest
+  - python
+  - python-build
+  - make
+  - numpy
+  - pandas
+  - scipy
+  - setuptools
+  - yt
+  - fftw[build=mpi_mpich*]
+  - pkg-config
+  - matplotlib
+  - mamba
+  - mpich
+  - mpi4py
+  - ninja
+  - pip
+  - virtualenv
+  - wheel
+  - cuda
+  - cuda-nvtx-dev
+  - cupy
+  - libgomp
