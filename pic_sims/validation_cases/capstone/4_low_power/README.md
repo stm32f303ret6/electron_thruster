@@ -26,13 +26,20 @@ voltage range:
 
 | stage | V | I | F (nN) | P (mW) | F/P (µN/W) | status |
 |---|---|---|---|---|---|---|
-| `capstone.low_power` | 100 | 0.121 mA | ~3.4 (pred.) | 12.1 | ~0.29 (pred.) | this stage |
-| `capstone.floating_body` | 200 | 0.342 mA | **13.65** | 68.4 | **0.20** | measured, committed |
-| `capstone.high_thrust` | 300 | 0.63 mA | ~30 (pred.) | 189 | ~0.16 (pred.) | runs pending |
+| `capstone.low_power` | 100 | 0.121 mA | **3.42** | 12.1 | **0.283** | measured, committed |
+| `capstone.floating_body` | 200 | 0.342 mA | **13.65** | 68.4 | **0.200** | measured, committed |
+| `capstone.high_thrust` | 300 | 0.63 mA | **30.13** | 189 | **0.159** | measured, committed |
 
-The predicted float here is **lower** than the 200 V reference (~+6 V vs
-+17 V): the smaller emitted current needs less ambient return collection, so
-the `(1+χ)` balance settles earlier. Exhaust KE ~76 eV.
+**The frontier is complete and all three points are gated PASS.** The
+predicted float here was **lower** than the 200 V reference (~+6 V vs +17 V)
+because the smaller emitted current needs less ambient return collection, so
+the `(1+χ)` balance settles earlier — measured **5.40 V**, exhaust KE
+**77.19 eV** against a 77.10 eV prediction.
+
+F/P ∝ 1/√V is confirmed across the range: 0.283 / 0.200 / 0.159 µN/W. At low
+χ the candidate collection laws converge, so this point confirms the anchor
+rather than discriminating between them; the 300 V run carries the
+discrimination (`SCALING_LAWS.md` §4 VERDICT).
 
 ## What is gated
 
