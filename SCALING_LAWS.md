@@ -314,11 +314,53 @@ that the PIC evidence does **not** yet cover. The split for the paper:
   settle check must be applied before trusting any gate.
 
 **The missing measurement:** the three-point frontier of §2 measures the
-*voltage* scaling at fixed dense plasma; a fourth run at a night-row density
-(~2·10¹¹ m⁻³ from the sweep, voltage fixed) would measure the *plasma*
-scaling — the collection-limited corner where the concept is most stressed,
-and the first run a reviewer will ask for. It is the natural next stage
-after the two pending frontier runs.
+*voltage* scaling at fixed dense plasma; a run at a night-row density
+(voltage fixed) would measure the *plasma* scaling — the collection-limited
+corner where the concept is most stressed.
+
+**Status (2026-08-06): pre-registered, deliberately not run.** Predictions
+were committed (α = 1 → 53.4 V, 0.893 → 60.9 V, 0.82 → 68.0 V, 0.5 →
+160.4 V) in `pic_sims/validation_cases/capstone/THIN_PLASMA_PLAN.md`, then
+the run was cut on re-examination of what it buys. The law's density
+dependence is `I ∝ n·(1+χ)^α`: the `n`-linear term is the one-sided thermal
+flux, **already validated to ±1 % at rung `collector.thermal`**, and χ has no
+density dependence at all. α is already discriminated on the voltage axis
+(§4). What remains under test is one residual assumption — that α and β do
+not drift as `r_probe/λ_D` goes 2.5 → 1.5 — and the settle limit of §5 would
+blur a 53–68 V discrimination anyway. It is a **gross-breakdown detector,
+not a measurement**, and stays ready rather than spent.
+
+## 8b. Geometry scaling — MEASURED (2026-08-06)
+
+Drag charges for the **ram silhouette**; collection and solar harvest buy the
+**total skin**. The two are different areas, so body shape is a free design
+lever — *if* the collection law survives the shape change. Theory says it
+might not: OML gives α = 1 for a sphere and α = 0.5 for a long cylinder, and
+the squat can's fitted 0.82–0.89 sits between the limits, so a slender body
+should slide toward the cylinder value and pay a hidden charging tax.
+
+Pre-registered (`capstone/SLENDER_BODY_PLAN.md`) and then measured, at
+identical drive, commanded current, plasma row, grid and seed:
+
+| hypothesis | predicted φ | measured |
+|---|---|---|
+| **A — area-only** (fitted α holds; demand drops 3.24×) | 4–5 V | **4.38 V** |
+| B — cylinder-limit lateral (α → 0.5 on the wall) | tens of V | refuted ~10× |
+
+Area arithmetic brackets it: 4.66 V at α = 0.893, 4.14 V at α = 0.82.
+**The fitted exponent survives a 3.24× skin-area change and an aspect-ratio
+change from L/r = 0.6 to 6.**
+
+The scaling rule that follows: at fixed demand, **φ falls as skin area rises**,
+as `(1+χ) ∝ A^(−1/α)` — a 3.24× area buys a 3.83× drop in enhancement demand.
+And because `KE = κ(V − φ)`, **a lower float returns thrust**: 13.65 → 14.22 nN
+at the same current and the same drag bill. Growing the collector is a thrust
+*bonus*, not a penalty. This is why the concept scales along the rod, not into
+the cube.
+
+Still extrapolation: L/r beyond 6, where the cylinder limit must eventually
+bite, and radii approaching λ_D, which converge on bare-tether collection
+(Sanmartín 1993).
 
 ## 9. From scaling laws to a model — the plan, and what buys confidence
 

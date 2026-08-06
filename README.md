@@ -54,8 +54,13 @@ conda activate warpx-cpu-mpich-dev
 cd pic_sims/validation_cases && python run_ladder.py --check
 ```
 
-**Setting this up from scratch — conda environments, the WarpX version and
-build flags, how to run the ladder and the variant runs: `SETUP.md`.**
+**Start here:**
+
+- **`CAMPAIGN.md`** — the 2026-08 simulation campaign end to end: what was
+  measured, the three pre-registered hypotheses and how each resolved, the
+  code and contract changes, and what it all implies.
+- **`SETUP.md`** — reproducing it: conda environments, the WarpX version and
+  build flags, how to run the ladder and the variant runs.
 
 See `pic_sims/validation_cases/README.md` for the ladder contract and
 `LADDER_SUMMARY.md` for the current stage-by-stage verdict.
