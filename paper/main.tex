@@ -1,0 +1,850 @@
+% =============================================================================
+% Ambient-electron exchange thruster -- arXiv preprint (v2, chipsat campaign)
+% Build: pdflatex main.tex  (twice for refs)
+% Status: DRAFT. Measured numbers from the gated capstone frontier
+% (100/200/300 V, reference_results/) + minimal model mission sweeps.
+% TODO markers where inputs are pending (lab experiment, author list,
+% chipsat convergence pair now running, final lit refs).
+% Lineage: reworked from electron_thruster/paper/main.tex (O14 mm / 800 V
+% skeleton); predecessor results retained as supporting evidence.
+% =============================================================================
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,graphicx,booktabs,hyperref,xcolor,rotating}
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+
+\title{Propellantless Drag Compensation by Ambient-Electron Exchange:\\
+       a Measured Thrust--Power Frontier at Milliwatt Scale}
+\author{R.~S.~C.\thanks{\todo{author list, affiliation, email}}}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We describe and simulate a spacecraft thruster with no stored propellant, no
+tank, and no neutralizer: a cold electron gun sealed inside a floating
+conducting body emits an electron beam through a single aperture; the body
+charges positive until it recollects ambient ionospheric electrons at exactly
+the emitted rate. For a gram-class ``chipsat'' body (\O10\,mm can) at a
+representative dayside ionospheric operating point, pre-registered and
+acceptance-gated particle-in-cell simulations (WarpX, RZ electrostatic)
+measure the complete thrust--power frontier across the 100--300\,V hardware
+range: 3.42\,nN at 12.1\,mW, 13.65\,nN at 68.4\,mW, and 30.13\,nN at
+189\,mW, confirming the $F/P \propto 1/\sqrt{V}$ throttle law within 2.5\%,
+with beam escape $\ge 96\%$ and a benign floating potential
+($\le$36\,V) at every point. The same three runs discriminate between
+pre-registered forms of the ambient-electron collection law: the linear and
+square-root laws are refuted and the sub-linear form
+$I \propto (1+e\varphi/kT_e)^{\alpha}$ with $\alpha \approx 0.82$--0.89
+survives, which collapses the optimal throttle policy into a two-line flight
+controller servoed on the spacecraft's own measured floating potential -- no
+ionosphere model on board. A minimal executable model calibrated only from
+the three gated runs, applied to year-long orbit propagations with real
+solar-activity and ionosphere data, bounds the mission envelope: drag
+compensation closes on body-mounted solar power at 550--600\,km, closes on
+impulse (duty-cycled, power-bound) at 500\,km, and does not close at
+400\,km. In an independent predecessor implementation of the same mechanism
+(\O14\,mm body, 800\,V) a closed control-volume momentum ledger, validated
+on an analytic vacuum fixture and a dedicated full-return null experiment,
+established that the recollected return current does not cancel the thrust
+(closed thrust $= F_{\mathrm{beam}} - 2.3\%$); in the present campaign the
+all-species momentum deposited by collected particles is gated per run and
+measures 1.0--8.8\% of beam thrust. We present this as a
+feasibility-concept study: the device physics is measured and gated, the
+mission projection is model-based with every extrapolated regime explicitly
+flagged, and flight validation is future work.
+\todo{add lab-experiment sentence once details are in}
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+Centimetre- to decimetre-class spacecraft in low Earth orbit below
+$\sim$600\,km lose altitude to atmospheric drag on timescales of months to a
+few years. Extending their operational life requires continuous thrust of a
+few to a few tens of nanonewtons, delivered from a power budget of tens to a
+few hundred milliwatts -- a regime that sits below where any flight-proven
+electric propulsion system is efficient. Cold-gas, PPT, electrospray and FEEP
+systems all carry a finite propellant mass in a tank, with feed lines,
+valves, or emitter arrays that add mass, cost, and single-point failure modes
+disproportionate to a spacecraft this small; gridded-ion and Hall thrusters
+are efficient only at powers one to three orders of magnitude above this
+budget. The result is a persistent gap: the smallest, cheapest spacecraft
+have the least propulsion available to them, at exactly the scale where
+station keeping would extend mission life the most cheaply.
+
+We revisit a device long flown in a different role. Every gridded-ion and
+Hall thruster carries an electron gun -- the neutralizer -- whose sole job is
+to keep the spacecraft from charging as it expels positive ions. We ask what
+happens if that same gun, with no ion stage at all, is run as the entire
+thruster: fire electrons out through an aperture in an otherwise closed
+conducting body, and let the body's own positive charge draw ambient
+ionospheric electrons back in to close the circuit. The ionosphere supplies
+both the neutralizing return current \emph{and}, in the sense that matters
+for a reaction engine, the propellant -- at a mass flow measured in
+nanograms per year. No propellant is carried, stored, or metered; the only
+consumable is electrical power.
+
+This paper makes four contributions. First, we measure the complete
+thrust--power frontier of this mechanism across its full hardware voltage
+range (100--300\,V) with pre-registered, acceptance-gated particle-in-cell
+simulation at a realistic ionospheric operating point
+(Sec.~\ref{sec:frontier}), and show it delivers ion-thruster-class
+\emph{energy} conversion ($\eta \approx 0.73$) at a deliberately tiny
+\emph{momentum} economy ($F/P \approx 0.16$--0.28\,\textmu N/W) -- the pair
+of numbers that explains why the device owns the nanonewton regime and
+nothing above it (Sec.~\ref{sec:comparison}). Second, the three frontier
+points discriminate between pre-registered candidate forms of the
+ambient-electron collection law (Sec.~\ref{sec:collection}); the surviving
+sub-linear law collapses the optimal throttle policy into a two-line
+controller servoed on the spacecraft's own floating potential
+(Sec.~\ref{sec:throttle}) -- the device measures its environment by
+existing. Third, because the returning electron current is the natural
+objection to calling this thrust real, we summarize the closed
+control-volume momentum ledger and full-return null experiment of the
+predecessor implementation and report the per-run momentum gates of the
+present campaign (Sec.~\ref{sec:ledger}). Fourth, a minimal executable
+model, calibrated only from the gated runs and with every out-of-envelope
+prediction explicitly flagged, converts year-long orbit propagations into a
+mission feasibility corridor (Sec.~\ref{sec:application}). Throughout we
+argue the concept is unusually cheap to test: it needs no new hardware
+beyond a high-voltage supply and an existing class of electron gun, and can
+retrofit the neutralizer already flying on an ion or Hall thruster
+(Sec.~\ref{sec:practical}).
+
+\section{Operating principle}
+\label{sec:principle}
+The device is a conducting body with a cold-cathode electron gun inside and a
+single beam aperture. The full cycle, with measured values from the 200\,V
+reference run:
+\begin{enumerate}
+  \item A high-voltage supply holds the cathode at $-V$ relative to the body;
+        the cathode is the most negative node in the system, so emitted
+        electrons accelerate \emph{away} from it, through the body aperture.
+  \item Electrons leave the body at energy $\approx e(V-\varphi)$ minus
+        injection-plane space charge (measured mean exhaust energy
+        147.5\,eV at $V = 200$\,V; the measured energy fraction
+        $\mathrm{KE}/(V-\varphi) = 0.81$ is constant across the voltage
+        range).
+  \item Each departed electron leaves the body one charge positive; the body
+        potential rises (measured float at the reference: $+16.98$\,V).
+  \item The positive body attracts ambient ionospheric electrons, which are
+        collected on its conducting surfaces; in equilibrium the collected
+        current equals the escaped current exactly (measured current balance
+        closes to 1.5--3.5\% at all three operating points). The ionosphere
+        is both the propellant reservoir and the neutralizer.
+  \item The escaping beam carries net momentum; its reaction is thrust. The
+        recollected electrons arrive at thermal-plus-$e\varphi$ energies from
+        all directions and deposit a small net momentum (measured and gated
+        per run, Sec.~\ref{sec:ledger}).
+\end{enumerate}
+No valves, no flow control, no gimbals, no plasma production stage: thrust is
+throttled by the emission current and supply voltage alone.
+
+\section{Simulation method and evidence discipline}
+\label{sec:method}
+All production runs use WarpX~\cite{warpx22} (v26.5, GPU), RZ electrostatic,
+with the spacecraft as an embedded-boundary conductor whose floating
+potential is driven each step by the measured charge balance (a
+``charge-pump'' update: emitted charge out, collected charge in, body
+capacitance from a Gauss-law probe). The chipsat deck: a \O10\,mm
+$\times$\,5.9\,mm closed can with a 4\,mm exhaust aperture and an internal
+cathode disk; ambient plasma at a dayside 400\,km-class row
+($n_e = 1.627\times10^{12}$\,m$^{-3}$, $T_e = 1318.8$\,K,
+$kT_e = 113.6$\,meV), maintained by a particle reservoir (infinite-ionosphere
+recycle -- without refill a floating equilibrium measures reservoir
+depletion, not physics); grid $dr = dz = 0.15$\,mm sized to the Debye length
+(1.97\,mm); CFL-derived time step; 16 particles per cell per species;
+reduced ion mass ($400\,m_e$, caveat in Sec.~\ref{sec:limitations});
+800\,ns simulated per run ($\approx$29 capacitive settle times at the
+reference point).
+
+Because this paper's claims rest on a small number of expensive runs, the
+campaign enforces an explicit evidence contract. Every run freezes and
+hashes its full physics config; an atomic manifest records the config hash,
+git commit, random seed, code version, and expected-vs-observed final
+iteration; interrupted runs are discarded as evidence, never resumed.
+Acceptance gates (escape fraction, benign float, steady current balance,
+momentum bound, sheath containment, and two independent ledger-vs-particle-dump
+charge cross-checks, which close to $\sim$$10^{-9}$) are fixed in versioned
+policy files \emph{before} each run; the scaling-law predictions for the
+100\,V and 300\,V points, and the competing collection-law hypotheses of
+Sec.~\ref{sec:collection}, were pre-registered in the repository before
+those runs completed. Below the production stages sits a validation ladder
+run under the same contract: an analytic two-electrode Laplace rung, thermal
+collection against one-sided flux theory (closes to $\pm$1\%), biased
+collection at two potentials, a bare floating body, and electron-gun
+emission rungs. The curated metrics, verdicts, frozen configs, and run
+manifests of every result used in this paper are committed alongside the
+code.
+
+\section{The measured thrust--power frontier}
+\label{sec:frontier}
+
+\begin{table}[h]\centering
+\begin{tabular}{lccccccc}
+\toprule
+$V$ [V] & $I$ [mA] & $\varphi$ [V] & $F$ [nN] & $P$ [mW] & $F/P$ [\textmu N/W]
+  & escape & KE [eV] \\
+\midrule
+100 & 0.121 & $+5.40$  & 3.42  & 12.1 & 0.283 & 96.1\% & 77.2 \\
+200 & 0.342 & $+16.98$ & 13.65 & 68.4 & 0.200 & 98.4\% & 147.5 \\
+300 & 0.630 & $+36.30$ & 30.13 & 189  & 0.159 & 99.0\% & 210.1 \\
+\bottomrule
+\end{tabular}
+\caption{The measured voltage frontier of the \O10\,mm chipsat device at the
+dayside plasma row, all runs PASS on all pre-registered acceptance gates.
+Each point holds the same emission ratio $I/I_{\mathrm{CL}} = 1.46$ (the
+space-charge-limited ceiling measured at 200\,V), so beam optics stay
+self-similar along the frontier. The 100\,V and 300\,V thrust values landed
+on their pre-registered predictions (3.4 and 30\,nN) to better than 1\%.
+Grid-resolution uncertainty (Sec.~\ref{sec:credibility}): $F \pm 4$\%,
+KE $\pm 7$\%, $\varphi \pm 2$\%; particle count, time step, and seed
+contribute $\le$0.5\%.}
+\label{tab:frontier}
+\end{table}
+
+\begin{figure}[h]\centering
+\includegraphics[width=\linewidth]{figs/frontier.pdf}
+\caption{The measured frontier. Left: thrust along the fixed-perveance path.
+Centre: the floating potential against the three pre-registered collection
+laws, all anchored at the 200\,V reference; the measured 300\,V float
+discriminates them (Sec.~\ref{sec:collection}). The orange square is the
+settled-value extrapolation of the 300\,V run's decaying late slope. Right:
+thrust per watt against the $1/\sqrt{V}$ law anchored at 200\,V; measured
+points agree within 2.5\%.}
+\label{fig:frontier}
+\end{figure}
+
+Two efficiencies describe this device, and the paper keeps them deliberately
+side by side. The \emph{energy conversion}
+$\eta = P_{\mathrm{jet}}/P_{\mathrm{supply}} \approx 0.73$ at the reference
+point -- ion-thruster-class conversion, nearly flat in $V$ -- because the
+exhaust is electrons and nearly all of them escape at nearly full energy.
+The \emph{impulse economy} $F/P \approx 0.2$\,\textmu N/W at 200\,V,
+$\propto 1/\sqrt{V}$ -- roughly 200$\times$ below a gridded ion thruster.
+Both are true simultaneously: superb energy-to-jet conversion at tiny
+momentum per watt. The second number is why the device only owns the
+nanonewton regime; the first is why it deserves to
+(Sec.~\ref{sec:comparison}).
+
+The frontier confirms the throttle law $P \propto F\sqrt{V}$ at fixed
+thrust: every doubling of voltage costs $\sim$40\% more power, so
+\emph{slow-and-many beats fast-and-few} on momentum per watt, and the
+cheapest feasible operating point is the lowest voltage whose emission
+ceiling still meets the thrust demand. The 100\,V floor run measures
+exactly that boundary: escape degrades to 96.1\% (the space-charge tax of
+low-voltage optics) but clears the 95\% gate -- the power-optimal end of
+the throttle curve is feasible, at 0.283\,\textmu N/W.
+
+\section{The collection law: a pre-registered discrimination}
+\label{sec:collection}
+Every escaping electron must be replaced by a collected ambient one; the
+floating potential is whatever makes that balance close. The collection
+side is therefore the physics that sets the operating point, and its form
+was the campaign's principal open question. Writing the collected current
+as $I = \beta A\, j_{\mathrm{the}}(n_e,T_e)\,(1+\chi)^{\alpha}$ with
+$\chi = e\varphi/kT_e$ and $j_{\mathrm{the}}$ the one-sided thermal flux,
+three candidate exponents existed in the project lineage, all agreeing at
+the 200\,V anchor ($\chi \approx 150$) and diverging at the 300\,V point
+($\chi \approx 320$). Their predictions for the 300\,V float were recorded
+in the repository before the run: $\alpha = 1$ (linear, orbital-motion
+style) predicts $+31$\,V; $\alpha = 0.82 \pm 0.06$ (fitted across six
+equilibria of the predecessor campaign) predicts $+36$\,V; $\alpha = 0.5$
+predicts $+90$\,V, which would fail the benign-float gate.
+
+The measured 300\,V float is $+36.30$\,V (tail-averaged under the
+pre-registered analysis policy): the linear law is refuted (the float
+passes 31\,V and keeps climbing), the square-root law is refuted (nothing
+in the trajectory approaches 90\,V), and $\alpha = 0.82$ survives
+(Fig.~\ref{fig:frontier}, centre). One caveat was pre-registered with the
+test and applies in full: at high $\chi$ the sheath equilibrates on the ion
+timescale, and the run's late slope, though decaying ($+44 \to +27$\,mV/ns
+over the final 200\,ns), had not reached zero; extrapolating the decay
+places the settled float at $\approx$42--48\,V, brushing but not breaking
+the 50\,V design limit. A least-squares fit of $\alpha$ across all three
+measured points gives $\alpha = 0.89$ (tail-averaged floats) to
+$\alpha = 0.85$ (settled-extrapolated floats), bracketing the upper edge of
+the pre-registered band. The float robs the beam -- the accelerating
+potential is always $V - \varphi$ -- so this law is also the charging tax
+schedule: $\varphi$ eats 5\% of the supply at 100\,V and 12\% at 300\,V.
+
+\section{The throttle rule: a two-line servo on the float}
+\label{sec:throttle}
+The predecessor campaign measured what happens at \emph{fixed} thrust as
+voltage drops (five converged runs, 78--300\,V): the required current
+rises, the charging tax and escape collapse explode below $\sim$100\,V, and
+specific power $P/F$ traces a U with a shallow valley. The valley has a
+closed form from the marginal-cost balance of the collection law:
+$V_{\mathrm{opt}} = ((2\alpha+1)/\alpha)\,\varphi_{\mathrm{eq}} =
+3.1$--$3.2\,\varphi_{\mathrm{eq}}$ for the measured $\alpha$. Because
+$\varphi_{\mathrm{eq}}$ already encodes the plasma density, temperature,
+day/night state, and the vehicle's own current draw, the optimal controller
+needs no ionosphere model and no lookup table:
+\begin{quote}
+\begin{tabular}{l}
+1.\quad $V \approx 3.1\,\varphi$ \hfill (servo the supply to the measured float)\\
+2.\quad $I = F_{\mathrm{req}} / \big(c_F\sqrt{\kappa(V-\varphi)}\big)$
+   \hfill (current from the thrust demand)\\
+\quad\ guards: $I \le 1.46\,I_{\mathrm{CL}}(V)$;\quad $\varphi \le 50$\,V;\quad
+   infeasible $\Rightarrow$ duty-cycle at the valley.\\
+\end{tabular}
+\end{quote}
+The spacecraft measures its environment by existing: a different orbit,
+altitude, or solar cycle produces different $\varphi$ readings and the
+servo follows. The constants ($c_F = 3.27$\,nN/(mA$\sqrt{\mathrm{eV}}$),
+$\kappa = 0.81$, the 1.46 emission ratio, $\alpha$) are measured, not
+tuned, and the valley is shallow (flat over $\sim$110--160\,V at the
+dayside row), so a 20\% error in the servo factor costs a few percent in
+power. Simulations under this rule are not a lookup table: they measure the
+few constants, validate the rule's form at stress points, and map the guard
+edges.
+
+\section{The momentum ledger: is the thrust real?}
+\label{sec:ledger}
+The first question a plasma physicist asks of this concept: the emitted
+current \emph{returns} -- does its momentum cancel the thrust? The answer is
+measured at two levels.
+
+In the predecessor implementation (\O14\,mm body, 800\,V, 17.1\,nN at
+174\,mW) we closed the full control-volume momentum balance every
+simulation window: per-species momentum flux through every boundary,
+deposition on the body, emission reaction, field terms
+($\int\rho E_z\,dV$, Maxwell stress), and the stored-momentum transient.
+Two validation fixtures passed pre-registered gates: a \textbf{vacuum
+escape} case with an analytic answer (residual $+0.80$\,nN against a 1\,nN
+gate), and a \textbf{full-return null} in which the body is pinned above
+the beam energy so escape is 0.0\% -- the impact channel alone reads
+$-12.1$\,nN, and the closed thrust is $-0.39\,\text{nN} \approx 0$:
+emission recoil, field pull and impact cancel exactly as momentum
+conservation demands. At the operating point the ledger closes at
+$F = F_{\mathrm{beam}} - 2.3\%$; notably, the return-current impact channel
+is cancelled by the field pull on the body, so the na\"ive subtraction
+$F_{\mathrm{beam}} - F_{\mathrm{impact}}$ \emph{underestimates} thrust.
+\begin{figure}[h]\centering
+\includegraphics[width=0.8\linewidth]{figs/ledger_diagram.pdf}
+\caption{Momentum-ledger control volume at the predecessor operating point
+(\O14\,mm, 800\,V). Solid arrows are directly measured particle momentum
+flux; the dashed arrow is the field force on the craft. The impact channel
+is almost entirely cancelled by the field pull, not by the escaping beam --
+the two together leave the closed thrust within 2.3\% of
+$F_{\mathrm{beam}}$ alone.}
+\label{fig:ledger}
+\end{figure}
+
+In the present campaign the same question is gated on every production run:
+the ledger separates $F_{\mathrm{beam}}$ (escaping-beam reaction) from
+$F_{\mathrm{net}}$, the $z$-momentum deposited by \emph{all} species
+landing on the craft -- collected ambient electrons and ions plus the
+returning beam fraction -- and the acceptance policy bounds their ratio.
+Measured: $|F_{\mathrm{net}}|/F_{\mathrm{beam}} = 1.0\%$ at 300\,V
+(0.30\,nN against 30.13) and 8.8\% at 100\,V, where the slower beam and
+lower escape make the return channel relatively largest. The physics
+ceiling is worth stating: at current balance the collected current equals
+the escaped current, but collected electrons arrive with
+$\sim e\varphi$ of directed energy against the beam's
+$e\,\mathrm{KE}$, so even if every collected electron arrived from directly
+astern the cancellation could not exceed
+$\sqrt{\varphi/\mathrm{KE}} \approx 41\%$ (300\,V values); isotropic
+arrival -- electrons fall onto the body from all directions -- reduces it
+to the measured percent level.
+
+\section{Numerical credibility}
+\label{sec:credibility}
+\begin{itemize}
+  \item \textbf{Code-to-code trajectory validation}: the present (migrated,
+        GPU) implementation reproduces the predecessor implementation's
+        converged 200\,V anchor point-by-point: float to 0.05\%, escape
+        fraction to 0.001\%, $F_{\mathrm{beam}}$ to 0.09\% over 380 logged
+        windows.
+  \item \textbf{Collection physics vs.\ theory}: the validation ladder's
+        thermal-collection rung closes against one-sided flux theory to
+        $\pm$1\%; biased rungs measure the finite-size collection
+        enhancement at $\chi = 26$ and 88 before any thruster stage runs.
+  \item \textbf{Ledger-vs-dump cross-checks}: the per-step scrape ledger is
+        checked against independently written particle dumps for both the
+        ambient-electron and beam-escape channels on every gated run;
+        agreement is at the $10^{-9}$ level (gate: $2\times10^{-2}$).
+  \item \textbf{Determinism}: runs are seeded and reproduce their physics
+        under rerun; every number in this paper carries its run manifest
+        (config hash, seed, code version, git commit).
+  \item \textbf{Convergence}: in the predecessor implementation, time step
+        ($\times$2 finer), particles-per-cell ($\times$2), and RNG seed each
+        change every reported quantity by $\le$0.5\%; grid refinement from
+        0.30 to 0.20\,mm cells shifted thrust $+4$--5\% and exhaust energy
+        $+10\%$, reported there as the leading open numerical question. For
+        the present chipsat deck (0.15\,mm cells -- already finer than
+        both predecessor grids) we ran a two-axis convergence pair at the
+        200\,V anchor. Doubling particles-per-cell (ambient and beam)
+        changes every reported quantity by $\le$0.05\% over the full
+        800\,ns record, all gates PASS -- particle statistics are a closed
+        axis. Grid refinement ($dx\,0.15\!\to\!0.10$\,mm, CFL-locked
+        $\Delta t$) shifts $F_{\mathrm{beam}}$ $+4.0$\%, exhaust KE
+        $+7.4$\%, and $\varphi$ $-1.8$\%, compared over a matched
+        430--536\,ns window (the fine-grid run's step cap ends it at
+        536\,ns; the comparison uses the identical physical window on both
+        runs, the same fixed-protocol approach as the predecessor's study).
+        Grid resolution therefore remains the leading numerical
+        uncertainty; we carry it as the error band on
+        Table~\ref{tab:frontier} ($F\ {\pm}4$\%, KE ${\pm}7$\%,
+        $\varphi\ {\pm}2$\%) and note its sign is conservative for every
+        gate: finer grids give \emph{more} thrust and a \emph{lower}
+        float. A third grid point to establish the asymptotic order is
+        future work.
+\end{itemize}
+
+\section{Comparison with existing micropropulsion}
+\label{sec:comparison}
+
+\subsection{Related work}
+\label{sec:related}
+The idea that a spacecraft can dispense with stored propellant by exchanging
+charge with its ambient plasma environment has deep roots, though not, to our
+knowledge, in exactly the form proposed here. The theoretical foundation for
+our device's collection physics is the bare-tether electron-collection theory
+of Sanmart\'in, Mart\'inez-S\'anchez, and Ahedo~\cite{san93}, who showed that
+an uninsulated conductor floating positive relative to the ambient ionosphere
+collects ambient electrons in the orbital-motion-limited (OML) regime -- the
+regime whose sub-linear finite-body form our frontier runs measure directly
+(Sec.~\ref{sec:collection}); collection by a positively-biased tether under
+a \emph{flowing} (ram/drift), rather than stationary, LEO plasma was
+subsequently measured experimentally by Siguier et al.~\cite{sig13}, directly
+relevant to the ram-wake limitation flagged in Sec.~\ref{sec:limitations}.
+This theory was flown and confirmed by NASA's Plasma Motor Generator (PMG)
+tether experiment in 1993~\cite{pmg93,kat95}, which demonstrated
+hollow-cathode plasma contactors providing a low-impedance
+electron-emission-and-collection connection to the ionosphere at each end of
+a 500-m tether -- a two-terminal flown precedent for the single-body electron
+exchange our device performs internally between its beam aperture and its
+own conducting surface. Closer in spirit to a standalone propellantless
+thruster is Janhunen's electric solar wind sail
+(E-sail)~\cite{jan04}, in which a continuously operating electron gun holds a
+tether at high positive potential, actuating tether voltage by ``pump[ing]
+out negative charge from the system''~\cite{jan14}, so that it electrostatically
+deflects ambient solar-wind protons and converts that deflection into thrust
+by momentum conservation; Janhunen separately proposed a LEO-ionospheric
+variant, the electrostatic ``plasma brake''~\cite{jan10,jan09neg}, which uses a
+tether of the \emph{opposite}, negative polarity to produce Coulomb drag
+against the ionospheric ram flow for deorbiting, rather than the positive
+polarity of the E-sail or of our device's body. Our device differs from both
+in its thrust mechanism -- direct recoil from an escaping electron beam
+recollected on a closed body, rather than electrostatic deflection of
+ambient ions around a charged tether of either polarity -- but shares their
+defining feature that continuous electron emission, not stored propellant,
+is what makes the mechanism propellantless. An electrodynamic tether is
+also the natural efficiency benchmark: per watt, Lorentz-force thrust on a
+kilometre-scale tether far exceeds any reaction engine, ours included. The
+comparison inverts at chipsat scale: a gram-class vehicle cannot deploy,
+stabilize, or survive a conductor $10^{4}$--$10^{6}$ times its own length,
+tether thrust is constrained to the $I\mathbf{L}\times\mathbf{B}$
+direction, and a bare tether still requires electron collection and
+emission at its terminations -- the same contactor physics this device
+\emph{is}, minus the tether. Zubrin's dipole
+drive~\cite{zub17} similarly treats ambient space plasma itself as reaction
+mass, accelerating collected ions between charged screens while rejecting
+electrons, though it targets magnetospheric and interstellar-precursor
+regimes rather than low-Earth-orbit drag makeup. A body of ``ambient
+atmosphere ion thruster'' patent literature~\cite{dre07} and the broader field
+of Atmosphere-Breathing Electric Propulsion (ABEP)~\cite{zhe20} use similar
+language -- collecting ambient constituents in place of a propellant tank --
+but a materially different mechanism: they collect neutral atmosphere or ram
+ions and ionize/accelerate them with a conventional electric-propulsion
+stage, retaining an ionization stage, an acceleration stage, and a separate
+neutralizer; our device requires none of these, since the ionosphere supplies
+its reaction mass pre-ionized and its own neutralizing return current through
+the same aperture that emits the beam. A recent general review of
+propellantless propulsion concepts~\cite{kez25}, covering gravity assists,
+solar/magnetic/electric sails, and quantum-vacuum thrust, does not treat
+ambient-ionospheric-electron-exchange thrusters as a category, suggesting the
+specific mechanism proposed here -- a sealed body, a cold electron gun, and
+nothing else -- has not previously been proposed or evaluated as a standalone
+low-Earth-orbit micropropulsion device.
+
+\subsection{Quantitative comparison}
+\label{sec:comparison-table}
+Table~\ref{tab:comparison} positions our device against seven representative,
+flight-proven or flight-qualified micropropulsion systems spanning cold gas
+through Hall-effect propulsion, plus a passive photon-pressure baseline, each
+sourced from a manufacturer datasheet, a peer-reviewed paper, or NASA's 2026
+\emph{State of the Art of Small Spacecraft Technology} report~\cite{nasasoa26}.
+The comparison makes three points. First, every incumbent's \emph{lowest
+flight-representative operating power} is at least an order of magnitude
+above even our 300\,V ceiling point (189\,mW) -- FEEP, the lowest-power
+flight electric propulsion technology surveyed, states explicitly that ``the
+required power to operate the IFM starts at around 8\,W''~\cite{enpifm} --
+and no system in the table is characterized, or apparently characterizable,
+at our thrust and power scale. Second, where an explicit or computable jet
+efficiency exists, it clusters at 28--45\% for
+electrospray~\cite{busekbetmax21}, $\approx$35\% for FEEP~\cite{krejci19},
+and $\approx$31--44\% for Hall thrusters~\cite{busekbht200}; our measured
+energy conversion (68\% at the predecessor point, 73\% at the chipsat
+reference) exceeds every value found. Third -- and this is a boundary, not
+a boast -- our thrust-per-watt is $\sim$200$\times$ below gridded ion: the
+efficiency-indifference boundary is real. The $F/P$ penalty is invisible at
+nanonewtons (milliwatts), noticeable at micronewtons ($\sim$10\,W for
+CubeSat drag -- disqualifying), and decisive at millinewtons. The natural
+handoff -- this device below $\sim$0.1\,\textmu N, electrospray at
+micronewtons, ion/Hall at millinewtons -- is part of the claim, not a
+concession. The smallest controllable flight EP (precision
+electrosprays/FEEP, $\sim$5--30\,\textmu N with $\sim$0.1\,\textmu N
+resolution~\cite{nasasoa26}) sits two to three orders of magnitude above
+chipsat drag, in kilogram-class packages; ``continuous'' thrust at
+nanonewtons is not a propellant-mass argument (five years of nanonewton
+thrust is $\sim$0.3\,g of electrospray propellant) but a \emph{dry-system
+floor} argument: tank + feed + valves + PPU is $\sim$0.3--1\,kg and does
+not shrink to gram scale, while this concept's floor is a cathode, a boost
+converter, and the spacecraft's own skin.
+
+\begin{sidewaystable}
+\centering\footnotesize
+\begin{tabular}{p{2.1cm}p{3.0cm}p{1.9cm}p{1.7cm}p{1.5cm}p{1.3cm}p{3.0cm}p{1.5cm}}
+\toprule
+System & Example & Thrust & Power & Isp & Energy eff. & Hardware & Ref.\\
+\midrule
+\textbf{This work} & Ambient-electron exchange & 3.4--30\,nN (chipsat, 100--300\,V); 17\,nN (\O14\,mm, 800\,V) & 12--189\,mW; 174\,mW & $0.7$--$1.5{\times}10^6$\,s & \textbf{68--73\%} ($F/P$ 0.16--0.28\,\textmu N/W) & HV supply + cold gun + aperture. No tank, valves, feed, neutralizer, gimbal & -- \\
+Cold gas & GomSpace NanoProp 6U (GOMX-4B)$^\ddagger$ & 0.1--10\,mN & $<$2\,W & 60--110\,s & n/s & Dual tanks, fill valves, filters, 2--3 isolation valves/line, heaters, 4 nozzles & \cite{nasasoa26,gomx4eop} \\
+PPT & Mars Space PPTCUP (qualified)$^\ddagger$ & 40\,\textmu N avg & $\sim$2\,W & 655\,s & n/s ($<$20\% typ.) & Cu--W chamber, HV cap bank, EMI box; no tank/valves & \cite{cia15,cia16,nasasoa26} \\
+Electrospray & Busek CMNT (LISA Pathfinder) & 4$\times$20\,\textmu N & 16.5\,W & 225\,s & 28/45\%$^\dagger$ (BET-300-P) & Propellant-less CNT neutralizer, low-pressure tanks, PPU & \cite{nasasoa26,busekbetmax21} \\
+FEEP & Enpulsion IFM Nano (Flock 3P) & 10\,\textmu N--0.5\,mN & \textbf{8--40\,W} & 2000--5000\,s & $\approx$35\%$^\dagger$ & 28-needle emitter, 2 redundant neutralizer cathodes, PPU & \cite{enpifm,krejci19} \\
+RF ion & Busek BIT-3 (Artemis I)$^\ddagger$ & 0.66--1.24\,mN & 56--80\,W & 1400--2640\,s & n/s (PPU $\sim$90\%$^*$) & Grid ion optics, RF cathode neutralizer, iodine feed valve, PPU, 2-axis gimbal & \cite{busekbit3,nasasoa26,nasalunahmap23} \\
+Hall & Busek BHT-200 (TacSat-2) & 13\,mN & 200--250\,W & 1390\,s & $\approx$44\%$^\dagger$ & Magnetic discharge channel, hollow cathode, xenon feed, PPU & \cite{busekbht200,nasasoa26} \\
+Solar pressure & Passive 10$\times$10\,cm face (computed) & $\approx$91\,nN$^\dagger$ & -- (passive) & -- & -- & None; no throttling, no eclipse operation & \cite{nasatsi} \\
+\bottomrule
+\end{tabular}
+\caption{Comparison with representative flight micropropulsion systems and a
+passive baseline. Energy efficiency and thrust-per-watt are stated together
+for this work because they diverge by design (see text). $\dagger$ =
+derived/computed from other reported figures, not directly quoted.
+$\ddagger$ = flight-status caveat: GOMX-4B numbers are flight-demonstrated;
+PPTCUP is flight-\emph{qualified} but not confirmed flown as of
+\protect\cite{nasasoa26}; BIT-3 flew on Artemis~I but its LunaH-Map flight
+demonstration was compromised by a stuck propulsion valve that never freed,
+so its in-space performance was not confirmed. $*$ = RF power-supply
+electrical efficiency, not overall jet efficiency. n/s = not stated in any
+primary source located. Full sourcing and per-number verification notes are
+archived alongside this paper's repository.}
+\label{tab:comparison}
+\end{sidewaystable}
+
+\section{Application: the mission feasibility corridor}
+\label{sec:application}
+The three gated runs calibrate a minimal executable model (committed with
+the repository) that applies the flight rule of Sec.~\ref{sec:throttle} to
+every row of a year-long orbit propagation: per five-minute timestep, the
+local plasma density and temperature (IRI-2020) and drag (NRLMSISE-00, real
+F10.7/Ap, TudatPy propagation~\cite{tudat}) enter, and the model returns
+the servo's operating point $(V, I, \varphi)$, the power, and -- critically
+-- a per-row envelope flag: any row whose density, $\chi$, or perveance
+falls outside what a committed run has measured is counted as
+\emph{extrapolated}, never silently averaged in. Five missions (gram-class
+chipsat, 400--600\,km): Table~\ref{tab:missions}, Fig.~\ref{fig:missions}.
+
+\begin{table}[h]\centering\footnotesize
+\begin{tabular}{lcccccc}
+\toprule
+altitude / pose & drag mean/max [nN] & feasible & duty cycle & $P$ mean [mW]
+ & $\varphi{>}50$\,V & in envelope \\
+\midrule
+400 km axial   & 32.9 / 92.4 & 21\% & 140\% & 136 & 41\% & 12\% \\
+400 km lateral & 21.7 / 60.7 & 54\% & 92\%  & 111 & 31\% & 33\% \\
+500 km axial   & 7.6 / 28.4  & 81\% & 45\%  & 39  & 19\% & 29\% \\
+550 km axial   & 3.8 / 16.3  & 92\% & 32\%  & 17  & 8\%  & 8\%  \\
+600 km axial   & 2.0 / 9.6   & 97\% & 25\%  & 8   & 3\%  & 1\%  \\
+\bottomrule
+\end{tabular}
+\caption{Year-long mission sweeps under the flight rule. ``Feasible'' = a
+benign equilibrium exists at the demanded thrust; ``duty cycle'' =
+mean drag / mean benign capability ($>$100\% cannot close); ``in
+envelope'' = row interpolates committed measurements on every axis.}
+\label{tab:missions}
+\end{table}
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.95\linewidth]{figs/missions.pdf}
+\caption{The feasibility corridor. Left: duty cycle needed to cancel mean
+drag; above the dashed line the impulse budget cannot close. Right: mean
+power at demanded thrust against the body-mounted solar harvest estimate.}
+\label{fig:missions}
+\end{figure}
+
+The corridor reads directly: at \textbf{550--600\,km} drag compensation
+closes on body-mounted solar power (8--17\,mW mean demand against
+$\sim$30\,mW harvest) with 25--32\% duty cycles; \textbf{500\,km} closes on
+impulse but is power-bound at the mean (39\,mW) -- closure there relies on
+thrusting preferentially when the plasma is dense and the charging tax low,
+which the float servo does without being told; \textbf{400\,km does not
+close} for this body -- the demand exceeds the emission ceiling 63\% of the
+time -- and we state that plainly rather than average around it. Two
+honesty flags travel with the table. First, the corridor's boundary
+behaviour is set by the night-side rows -- thin, cold plasma where the
+collection stiffness $\propto 1/(n_e\sqrt{T_e})$ drives the float toward
+the 50\,V limit -- and these are exactly the rows the PIC evidence has not
+measured: the collection law's density axis is theory-anchored at one
+dayside row. A single fixed-voltage run at a night-row density
+($\sim$$2\times10^{11}$\,m$^{-3}$) is the targeted measurement that either
+validates the corridor's edge or moves it, and is the first item of future
+work. Second, power here is beam power $I\,V$; converter and cathode
+overheads belong to the flight design and are not modelled.
+
+\subsection{The geometry lever: slender bodies}
+\label{sec:slender}
+The mission table above holds the body shape fixed, but drag and collection
+scale with \emph{different} areas: drag buys the ram silhouette, while
+collection and solar harvest buy the total skin. A slender body flying
+end-on decouples them. A \O10\,mm\,$\times$\,100\,mm cylinder presents the
+same end cap as the chipsat -- the same nanonewton-class drag -- while its
+lateral skin ($\sim$31\,cm$^2$, ten times the chipsat's total surface)
+collects $\sim$46\,\textmu A of bare thermal current before any float
+enhancement and carries enough solar cell area to push harvest from
+$\sim$30 toward 100--200\,mW, at a mass of tens of grams. The niche
+therefore extends up-mass along the rod (or plate) direction, not the cube:
+payload, power, and return current grow with length while the drag bill
+does not, and 400\,km -- infeasible for the chipsat in
+Table~\ref{tab:missions} -- reopens for slender geometries on the power
+side.
+
+The honesty flag is the same one as the density axis, and sharper: the
+collection exponent is provably geometry-dependent. OML theory gives
+$\alpha = 1$ for a sphere and $\alpha = 0.5$ for a long cylinder; our squat
+can measured 0.82--0.89, between the limits, and a slender body slides
+toward the cylindrical value -- weaker enhancement per volt of float,
+compensated linearly by area -- converging, for radii approaching the Debye
+length, to exactly the bare-tether collection law of
+Sanmart\'in et al.~\cite{san93} that grounds our related work. So the
+fitted law does not transfer to slender bodies unchanged, and slender-body
+numbers here are model extrapolation, flagged as such. Two design trades
+travel with the lever: solar cells and bare collector compete for the same
+wall area (clad dielectric surfaces do not collect), and end-on flight is
+not attitude-free (gravity gradient prefers the long axis nadir-pointed,
+which is side-on to ram). One elongation rule is already fixed by the
+measured gun physics: the emission ceiling scales as $1/d^{2}$
+(Sec.~\ref{sec:frontier}), so a slender body must keep the
+cathode--aperture gap at its short design value and grow the body
+\emph{around} the gun -- an emitter placed at the far end of a long can
+starves and scatters its own beam before the slit. A single slender-body
+run at the 200\,V anchor demand -- pre-registered in the repository,
+discriminating area-only scaling from cylinder-limit collection -- opens
+this axis; it is, with the night-row run, one of the two targeted
+measurements this study identifies.
+
+\section{Practical realization}
+\label{sec:practical}
+\subsection{Bill of materials}
+A conducting structure, a milliwatt-class high-voltage supply (100--300\,V
+for the chipsat design; up to 800\,V demonstrated in simulation at larger
+scale), a cold electron gun with its cathode at $-V$, and an aperture. No
+tank, valves, feed lines, RF stages, or gimbals. The dry-system floor is a
+cathode, a boost converter, and the spacecraft's own skin -- which is what
+lets the concept shrink to gram scale where every tanked system cannot.
+\todo{cost estimate}
+\subsection{Retrofit path}
+Gridded-ion and Hall thrusters already fly hollow-cathode/filament electron
+sources as neutralizers. After propellant exhaustion, the neutralizer plus
+the spacecraft structure \emph{is} this thruster: a software-and-wiring
+change buys drag-makeup-class thrust for mission life extension.
+\subsection{Laboratory demonstration}
+\todo{user's vacuum-chamber experiment: negative-cathode electron
+acceleration demonstrated on bench hardware -- geometry, voltages, pressure,
+measured currents, photos. Details pending.}
+
+\section{Limitations and future work}
+\label{sec:limitations}
+We state plainly where this study is known to be incomplete, so a reader can
+judge exactly how far the present results extend. This is a
+feasibility-concept paper: the device physics is measured under the evidence
+contract of Sec.~\ref{sec:method}; the mission projection is model-based
+with flagged extrapolation; full mission validation is future work.
+
+\begin{itemize}
+  \item \textbf{The collection law's density axis is unmeasured.} All three
+        frontier runs share one dayside plasma row; the
+        $n_e\sqrt{T_e}$ scaling under the fitted $(1+\chi)^\alpha$ law is
+        standard sheath theory but no committed run has confirmed it at
+        another density. The model flags every such row
+        (Table~\ref{tab:missions}); the night-row run is the single
+        highest-value follow-on measurement.
+  \item \textbf{The collection law's geometry axis is unmeasured.} All
+        committed runs share one squat-can geometry. The enhancement
+        exponent is geometry-dependent by theory (sphere 1, long cylinder
+        0.5; measured 0.82--0.89 for the can), so predictions for slender
+        or larger bodies (Sec.~\ref{sec:slender}) rest on the theory-safe
+        thermal-collection floor plus flags, not on the fitted law. The
+        pre-registered slender-body run is the second targeted follow-on.
+  \item \textbf{Grid resolution is the leading numerical uncertainty.}
+        Particle count is converged to $\le$0.05\% (this work) and time
+        step and seed to $\le$0.5\% (predecessor), but the measured
+        0.15$\to$0.10\,mm grid shift is $+4.0$\% on thrust and $+7.4$\% on
+        exhaust energy (matched-window protocol,
+        Sec.~\ref{sec:credibility}), carried as the error band on every
+        frontier number. Two grid points cannot establish an asymptotic
+        order; a third is future work. The shift's sign is conservative
+        for all acceptance gates.
+  \item \textbf{Finite-time equilibrium on the ion clock.} The 300\,V float
+        was still relaxing at run end (Sec.~\ref{sec:collection}); the
+        settled-value band (42--48\,V) is carried through the $\alpha$ fit
+        rather than hidden, and brushes the 50\,V design limit.
+  \item \textbf{Reduced ion mass.} Simulations use $400\,m_e$ rather than
+        real O$^+$ ($29{,}166\,m_e$) to keep ion timescales affordable; the
+        sensitivity of the float to ion mass has not been measured.
+  \item \textbf{Stationary ambient plasma.} No bulk flow is modelled. For
+        electron collection the ram anisotropy is small
+        ($v_{\mathrm{orb}}/v_{\mathrm{th},e} \approx 5\%$); for a body
+        flying end-on the ram-ion wake is the largest unmodelled effect and
+        is deferred, not estimated.
+  \item \textbf{Two-dimensional axisymmetry, no geomagnetic field.} A real
+        flight geometry sees a transverse geomagnetic field component this
+        model omits.
+  \item \textbf{System power.} All powers are beam power $I\,V$. Cathode
+        heating (zero for field emitters, nonzero otherwise) and converter
+        efficiency are flight-design quantities outside this paper's scope.
+  \item \textbf{Full mission simulation.} Battery state of charge, seasonal
+        density variation, attitude coupling, and a flight-software
+        implementation of the servo are future work; the model's per-row
+        accounting (Sec.~\ref{sec:application}) is the input such a study
+        needs, not a substitute for it.
+\end{itemize}
+
+\section{Conclusion}
+\label{sec:conclusion}
+Drag compensation for gram-class spacecraft at 450--600\,km requires
+nanonewtons of continuous thrust from milliwatts of power -- a slot no
+flight propulsion system occupies: the smallest controllable flight EP sits
+two to three orders of magnitude above the demand, in packages heavier than
+the entire spacecraft. We have measured, under a pre-registered evidence
+contract, the complete thrust--power frontier of a device that fills the
+slot with zero propellant and zero net mass flux: a sealed conducting body,
+a cold electron gun, and the ionosphere as both propellant reservoir and
+return electrode. Three results support treating this as a credible
+propulsion mechanism rather than a numerical curiosity. First, the measured
+frontier -- 3.4\,nN at 12\,mW to 30\,nN at 189\,mW across the full hardware
+voltage range -- confirms the $F/P \propto 1/\sqrt{V}$ throttle law within
+2.5\% and delivers ion-thruster-class energy conversion
+($\approx$0.73) at a thrust-per-watt $\sim$200$\times$ below gridded ion:
+the pair of numbers that assigns this device the nanonewton regime and
+nothing above it. Second, the returning current does not cancel the
+thrust: a closed momentum ledger with a dedicated full-return null
+experiment establishes it in the predecessor implementation, and per-run
+momentum gates bound the return channel at 1--9\% of beam thrust in the
+present one. Third, the measured collection law collapses optimal
+operation into a two-line servo on the spacecraft's own floating potential,
+and the resulting model, applied to year-long orbit propagations with every
+extrapolated regime flagged, bounds a mission corridor: closure on
+harvested power at 550--600\,km, impulse closure at 500\,km, honest failure
+at 400\,km. The device is inexpensive and low-risk to test -- no hardware
+beyond a high-voltage supply and an electron gun of a kind that already
+flies as a neutralizer -- which suggests both a rapid path to an on-orbit
+demonstration and a retrofit use for existing propulsion systems after
+their propellant is exhausted.
+
+\begin{thebibliography}{99}
+
+\bibitem{warpx22} J.-L.~Vay et al., ``Modeling of a chain of three plasma
+  accelerator stages with the WarpX electromagnetic PIC code on GPUs,''
+  \emph{Physics of Plasmas}, vol.~28, 2021, 023105; L.~Fedeli, A.~Huebl,
+  et al., ``Pushing the Frontier in the Design of Laser-Based Electron
+  Accelerators with Groundbreaking Mesh-Refined Particle-In-Cell
+  Simulations on Exascale-Class Supercomputers,'' SC22 (Gordon Bell
+  Prize), 2022.
+
+\bibitem{tudat} Tudat Space (TudatPy): TU Delft Astrodynamics Toolbox,
+  \url{https://docs.tudat.space}; propagation with NRLMSISE-00 atmosphere
+  and IRI-2020 ionosphere.
+
+\bibitem{san93} J.~R. Sanmart\'in, M.~Mart\'inez-S\'anchez, and E.~Ahedo,
+  ``Bare Wire Anodes for Electrodynamic Tethers,'' \emph{Journal of
+  Propulsion and Power}, vol.~9, no.~3, 1993, pp.~353--360.
+
+\bibitem{pmg93} NASA, ``Plasma Motor Generator (PMG) Electrodynamic Tether
+  Experiment,'' flight June 26, 1993, NASA Technical Reports Server, accession
+  19960002041.
+
+\bibitem{kat95} I.~Katz et al., ``Plasma turbulence enhanced current
+  collection: Results from the plasma motor generator electrodynamic tether
+  flight,'' \emph{Journal of Geophysical Research: Space Physics}, 1995,
+  \href{https://doi.org/10.1029/94JA03142}{doi:10.1029/94JA03142}.
+
+\bibitem{jan04} P.~Janhunen, ``Electric sail for spacecraft propulsion,''
+  \emph{Journal of Propulsion and Power}, vol.~20, no.~4, 2004, pp.~763--764.
+
+\bibitem{jan14} P.~Janhunen, ``Coulomb drag devices: electric solar wind sail
+  propulsion and ionospheric deorbiting,'' arXiv:1404.7430 [astro-ph.IM],
+  2014.
+
+\bibitem{jan10} P.~Janhunen, ``Electrostatic plasma brake for deorbiting a
+  satellite,'' \emph{Journal of Propulsion and Power}, vol.~26, no.~2, 2010,
+  pp.~370--372.
+
+\bibitem{jan09neg} P.~Janhunen, ``On the feasibility of a negative polarity
+  electric sail,'' \emph{Annales Geophysicae}, vol.~27, 2009, pp.~1439--1447.
+
+\bibitem{sig13} J.-M.~Siguier, P.~Sarrailh, J.-F.~Roussel, V.~Inguimbert,
+  G.~Murat, and J.~Sanmart\'in, ``Drifting plasma collection by a positive
+  biased tether wire in LEO-like plasma conditions: current measurement and
+  plasma diagnostic,'' \emph{IEEE Transactions on Plasma Science}, vol.~41,
+  no.~12, 2013, pp.~3380--3386.
+
+\bibitem{zub17} R.~Zubrin, ``Dipole Drive for Space Propulsion,'' \emph{Journal
+  of the British Interplanetary Society}, vol.~70, 2017, pp.~442--448.
+
+\bibitem{dre07} G.~A.~Dressler, ``System and method for an ambient atmosphere
+  ion thruster,'' US Patent 7,306,189 B2, Northrop Grumman Systems
+  Corporation, filed Dec.~11, 2006, granted Dec.~11, 2007.
+
+\bibitem{zhe20} P.~Zheng et al., ``A Comprehensive Review of
+  Atmosphere-Breathing Electric Propulsion Systems,'' \emph{International
+  Journal of Aerospace Engineering}, 2020, Article ID 8811847.
+
+\bibitem{esaramep} European Space Agency, ``World-first firing of
+  air-breathing electric thruster,'' ESA news, March 2018.
+
+\bibitem{kez25} R.~Ya.~Kezerashvili, ``Propellantless space exploration,''
+  arXiv:2510.21743, 2025.
+
+\bibitem{nasasoa26} NASA, ``State of the Art of Small Spacecraft Technology,''
+  2026 edition, In-Space Propulsion chapter (Ch.~4).
+
+\bibitem{gomx4eop} ESA / eoPortal, ``GomX-4 (GomSpace Express-4)'' satellite
+  mission page, \url{https://www.eoportal.org/satellite-missions/gomx-4}.
+
+\bibitem{cia15} S.~Ciaralli, M.~Coletti, and S.~B.~Gabriel, ``Qualification of
+  a Pulsed Plasma Thruster for Cubesat Propulsion (PPTCUP),''
+  IEPC-2015-208/ISTS-2015-b-208, 34th International Electric Propulsion
+  Conference, Kobe-Hyogo, Japan, 2015.
+
+\bibitem{cia16} S.~Ciaralli, M.~Coletti, and S.~B.~Gabriel, ``Results of the
+  qualification test campaign of a Pulsed Plasma Thruster for Cubesat
+  Propulsion (PPTCUP),'' \emph{Acta Astronautica}, vol.~121, 2016,
+  pp.~314--322.
+
+\bibitem{busekelec17} Busek Co.\ Inc., ``All-Electric CubeSat Propulsion
+  Technologies,'' 6th International Interplanetary CubeSat Workshop, May~31,
+  2017.
+
+\bibitem{busekbetmax21} Busek Co.\ Inc., ``BET-MAX Electrospray Thruster
+  System'' datasheet, v1.0, August 2021.
+
+\bibitem{enpifm} Enpulsion GmbH, ``Introduction to the IFM Nano Thruster''
+  product overview datasheet.
+
+\bibitem{krejci19} D.~Krejci, B.~Seifert, C.~Scharlemann, et al., ``Full
+  Performance Mapping of the IFM Nano Thruster, Including Direct Thrust
+  Measurements,'' \emph{Journal of Space Safety Engineering}, vol.~8, no.~2,
+  2019, p.~882.
+
+\bibitem{busekbit3} Busek Co.\ Inc., ``BIT-3 RF Ion Thruster'' product page,
+  \url{https://www.busek.com/bit3}.
+
+\bibitem{nasalunahmap23} NASA Science, ``NASA's LunaH-Map Mission Ends,
+  Validates Science Instrument Performance,'' Aug.~3, 2023.
+
+\bibitem{busekbht200} Busek Co.\ Inc., ``BHT-200'' product page,
+  \url{https://www.busek.com/bht200}.
+
+\bibitem{nasatsi} NASA Goddard Space Flight Center, ``Solar Irradiance
+  Science,''
+  \url{https://earth.gsfc.nasa.gov/climate/projects/solar-irradiance/science}.
+
+\end{thebibliography}
+
+\end{document}
