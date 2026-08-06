@@ -1,4 +1,4 @@
-# electron_thruster — chipsat station keeping, end to end
+# electron_thruster — propellantless drag compensation, end to end
 
 Two trees, one direction of flow. Nothing points backwards.
 

@@ -208,6 +208,23 @@ of its drive. The slender run produced **more** thrust than the anchor
 (14.22 vs 13.65 nN) at the same commanded current and the same ram silhouette.
 Growing the collector is not a thrust penalty; it is a thrust bonus.
 
+**Scale invariance — the feasibility condition has no size in it.** Because
+drag charges for the ram silhouette and harvest is paid from the skin, thrust
+demand and power supply are *both* areal, so vehicle size cancels and closure
+depends only on the shape ratio `A_skin/A_ram` and the altitude. (Mass never
+enters either: station-keeping thrust equals drag regardless of mass.)
+`model/scale_analysis.py` computes this from the committed calibration and
+mission CSVs and writes `model/results/SCALE_ANALYSIS.md`; the headline is
+that a slender Ø10 mm can and a 3U CubeSat in end-on flight return
+**identical** power margins, and that nothing closes at 400 km at any size.
+
+For sizing a real spacecraft with this model: scale `betaA` with skin area,
+scale the drag demand with ram silhouette, and read the float off
+`phi_of_Iesc`. **Caveat:** for bodies with `r ≳ 10 λ_D` (any CubeSat) the
+fitted OML-style exponent is the wrong functional form — use the thick-sheath
+estimate in `scale_analysis.py`, and treat the result as an estimate until a
+large-body run exists. See `SCALING_LAWS.md` §8c.
+
 ## 8. Usage
 
 ```bash

@@ -286,6 +286,32 @@ Because `KE = κ(V − φ)`, a body that floats lower keeps more of its drive. T
 slender can makes **more** thrust at the same commanded current and the same
 drag bill. The concept scales *along the rod*, not into the cube.
 
+### 6.5 The result is not about a Ø10 mm can
+
+The campaign measured small bodies, but the geometry result licenses a scaling
+argument in which **size cancels entirely**. Drag charges for the ram
+silhouette, so thrust demand, current and power are all proportional to
+`A_ram`; harvest is paid from the skin, so supply is proportional to
+`A_skin`. Divide, and the closure margin depends only on the **shape ratio**
+`A_skin/A_ram` and the altitude. Mass never enters: holding altitude needs
+thrust = drag whatever the craft weighs.
+
+Computed from committed data (`model/scale_analysis.py` →
+`model/results/SCALE_ANALYSIS.md`), a slender Ø10 mm can and a 3U CubeSat in
+end-on flight return **identical** margins — 1.4× / 2.8× / 5.4× at
+500 / 550 / 600 km — because they share `A_skin/A_ram = 14`. A 3U needs
+**8.8 mA at 0.88 W to hold 600 km**, 17 mA / 1.7 W at 550 km, 34 mA / 3.4 W at
+500 km. The 400 km wall is scale-free too, and closes for nothing.
+
+Larger bodies also need **less** extrapolation. The chipsat frontier runs at
+χ ≈ 150–320, deep in the fitted enhancement regime; a 3U needs only ~4× the
+bare thermal flux, which is the rung validated to ±1 %. The unmeasured piece
+is a *regime* change, not a size problem: CubeSat radii are 25–60 λ_D against
+our 2.5, where collection proceeds through a thin φ-growing sheath rather than
+an orbital-motion fan. A Child-sheath estimate puts a 3U float at ~12 V at
+600 km and ~47 V at 500 km — benign in the corridor. That estimate is the
+campaign's largest un-gated claim and the top candidate for the next run.
+
 ### 6.5 A hardware design rule, bought by a failed run
 
 The killed slender attempt produced something a successful run would not have:
