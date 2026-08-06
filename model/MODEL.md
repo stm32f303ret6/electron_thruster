@@ -176,16 +176,37 @@ perveance path (1.46·I_CL) only; the density axis of the collection law is
 theory-only until the night-row run; supply power is beam power I·V —
 emitter heating and converter losses are system engineering, not modeled.
 
-**Size/geometry axis:** the fitted (α, β·A) pair is valid for the committed
-squat can ONLY. The enhancement exponent is geometry-dependent by theory
-(OML: sphere α = 1, long cylinder α = 0.5; the can's 0.82–0.89 sits between
-the limits), so do not apply the fitted law to slender or larger bodies.
-For any other geometry the theory-safe floor is bare thermal collection
-(α = 0: `I = A_skin · j_the`, validated ±1 % on the ladder), which scales
-linearly with skin area — a 1U CubeSat thermal-collects ~0.9 mA at φ ≈ 0,
-more than the chipsat's entire 300 V demand. The geometry-split law and its
-calibrating run are pre-registered in
-`pic_sims/validation_cases/capstone/SLENDER_BODY_PLAN.md`.
+**Size/geometry axis — MEASURED to L/r = 6 (updated 2026-08-06).** The
+enhancement exponent is geometry-dependent by theory (OML: sphere α = 1, long
+cylinder α = 0.5; the can's 0.82–0.89 sits between the limits), so the fitted
+law's transfer to other shapes was pre-registered and tested rather than
+assumed. The slender-body run
+(`2_chipsat_thruster/reference_results/20260806T011847Z_5670e54c/`) grew total
+skin 3.24× (3.4 → 11.0 cm²) and the aspect ratio from L/r = 0.6 to 6 at
+identical drive and demand:
+
+| | predicted | measured |
+|---|---|---|
+| area-only scaling (fitted α holds) | 4–5 V (arithmetic: 4.14–4.66 V) | **φ = 4.38 V** |
+| cylinder-limit lateral (α → 0.5) | tens of V | refuted by ~10× |
+
+**So the fitted (α, β·A) pair may be applied to bodies up to L/r ≈ 6 by
+scaling β·A with skin area.** The model's `betaA` is a skin-area-proportional
+quantity within that range; `phi_of_Iesc` and `operating_point` take it as a
+parameter, so a geometry sweep is a `betaA` sweep, not a refit.
+
+Beyond L/r ≈ 6, and for radii approaching λ_D, the cylinder limit must
+eventually bite and the fitted law becomes extrapolation again. There, the
+theory-safe floor remains bare thermal collection (α = 0:
+`I = A_skin · j_the`, validated ±1 % on the ladder), which scales linearly
+with skin area — a 1U CubeSat thermal-collects ~0.9 mA at φ ≈ 0, more than the
+chipsat's entire 300 V demand.
+
+Design consequence worth carrying into any sizing exercise: because
+`KE = κ(V − φ)`, a larger-skinned body floats lower and therefore keeps *more*
+of its drive. The slender run produced **more** thrust than the anchor
+(14.22 vs 13.65 nN) at the same commanded current and the same ram silhouette.
+Growing the collector is not a thrust penalty; it is a thrust bonus.
 
 ## 8. Usage
 

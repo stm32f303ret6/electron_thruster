@@ -156,27 +156,60 @@ containment, and the ledger-vs-dump consistency checks.
 | exhaust KE | −φ(injection plane) = 148.1 eV | **147.5 eV** |
 | ledger vs dumps (ambient-e / beam-escape) | identical | **3·10⁻⁹ / 5·10⁻⁹** |
 
-### 9. `capstone.high_thrust` — the 300 V ceiling (RUNS PENDING)
+### 9. `capstone.high_thrust` — the 300 V ceiling (PASS, promoted)
 
 **The test:** the same deck driven at the 300 V hardware ceiling with
 i_beam = 0.63 mA (the same measured I/I_CL = 1.46 emission ratio).  Scaling
-the float200 measurement predicts **~30 nN** — enough to cover the 500 km
-worst-case drag row (28.4 nN, `orbit_sims` 2024 sweep).  Required gates are
-the theory-anchored invariants only (escape, benign float ≤ 50 V, current
-balance, momentum bound, containment, ledger cross-checks); the mission
-coverage bar (≥ 28.4 nN) is reported, not required.  **No run has been
-promoted yet** — this table gets filled when the reference lands.
+the float200 measurement predicted **~30 nN** — enough to cover the 500 km
+worst-case drag row (28.4 nN, `orbit_sims` 2024 sweep).
 
-### 10. `capstone.low_power` — the 100 V floor (RUNS PENDING)
+`reference_results/20260804T154756Z_b854dcbe/` — 192,680 steps, **all 7
+required gates PASS**.
+
+| measured | prediction | value |
+|---|---|---|
+| F_beam | ~30 nN | **30.13 nN** (covers the 28.4 nN bar) |
+| escape fraction | ≥ 95 % | **98.99 %** |
+| φ_body | 36 V (α = 0.82) | **36.30 V** |
+| exhaust KE | 211.4 eV | **210.11 eV** |
+| current balance / momentum / edge φ | bounds 0.05 / 1 / 1 V | 0.0353 / 0.0100 / 0.108 V |
+
+**This run carries the collection-law discrimination:** the pre-registered
+linear (α = 1 → 31 V) and square-root (α = 0.5 → 90 V) laws are refuted;
+α = 0.82 survives.  Late slope +26.8 mV/ns at run end, so the settled float
+extrapolates to ~42–48 V — see `SCALING_LAWS.md` §4 VERDICT.
+
+### 10. `capstone.low_power` — the 100 V floor (PASS, promoted)
 
 **The test:** the same deck at the 100 V hardware floor, i_beam = 0.121 mA
 (same I/I_CL = 1.46).  At fixed thrust, supply power grows as ~√V, so this
-is the power-optimal end of the throttle curve: predicted **~3.4 nN at
-12.1 mW** (~0.29 µN/W vs the measured 0.20 µN/W at 200 V).  With rungs 8
-and 9 it completes a three-point measured P–F frontier over the hardware
-voltage range.  Same gate structure as rung 9; the mission bar (600 km
-mean, ≥ 2.0 nN) is reported, not required.  **No run has been promoted
-yet.**
+is the power-optimal end of the throttle curve.
+
+`reference_results/20260804T230218Z_0adb478f/` — 115,480 steps, **all 7
+required gates PASS**: F_beam **3.42 nN**, escape **96.12 %**,
+φ_body **5.40 V** (prediction ~6 V), exhaust KE **77.19 eV** (predicted
+77.10).  At low χ the candidate collection laws converge, so this point
+**confirms the anchor rather than discriminating**.
+
+With rungs 8 and 9 it completes the three-point measured P–F frontier and
+confirms F/P ∝ 1/√V: **0.283 / 0.200 / 0.159 µN/W** at 100 / 200 / 300 V.
+
+### 11. Slender body — the geometry axis (PASS, promoted)
+
+**The test:** the capstone deck with the can lengthened to Ø10 × 30.5 mm
+(L/r = 6, skin 3.24×) at the anchor's identical drive, current, plasma row,
+grid and seed — the only change is where the return current is collected.
+Required a code change first (`geometry.cathode_standoff`, commit `a7f4106`)
+so the can grows without stretching the gun gap.
+
+`2_chipsat_thruster/reference_results/20260806T011847Z_5670e54c/` — 159,160
+steps, **all 6 required gates PASS** under `capstone.exploratory_axes.v1`.
+
+Pre-registered hypotheses (`capstone/SLENDER_BODY_PLAN.md`): area-only
+scaling predicted φ ≈ 4–5 V, cylinder-limit lateral predicted tens of volts.
+**Measured φ = 4.38 V — hypothesis A confirmed, B refuted by ~10×.**  The
+fitted exponent survives a 3.24× area change.  Thrust *rose* to 14.22 nN
+(from 13.65) because a lower float keeps more of the drive.
 
 ---
 
