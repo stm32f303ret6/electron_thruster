@@ -1,0 +1,55 @@
+{
+  "stage_id": "capstone.two_node_laplace",
+  "policy_id": "capstone.two_node_laplace.v2",
+  "status": "PASS",
+  "exit_code": 0,
+  "detail": "all 5 required gate(s) passed",
+  "gates": [
+    {
+      "id": "body_potential_imposed",
+      "status": "PASS",
+      "required": true,
+      "metric": "body_surface_potential_error_V",
+      "comparison": "at_most",
+      "value": 0.21997155671818724,
+      "detail": "0.219972 <= 1"
+    },
+    {
+      "id": "cathode_potential_imposed",
+      "status": "PASS",
+      "required": true,
+      "metric": "cathode_surface_potential_error_V",
+      "comparison": "at_most",
+      "value": 0.0,
+      "detail": "0 <= 1"
+    },
+    {
+      "id": "maximum_principle_holds",
+      "status": "PASS",
+      "required": true,
+      "metric": "laplace_bounds_violation_V",
+      "comparison": "at_most",
+      "value": 0.0,
+      "detail": "0 <= 0.1"
+    },
+    {
+      "id": "matches_independent_solver",
+      "status": "PASS",
+      "required": true,
+      "metric": "independent_solver_max_diff_V",
+      "comparison": "at_most",
+      "value": 1.8643815538621809,
+      "detail": "1.86438 <= 4"
+    },
+    {
+      "id": "per_step_rewrite_idempotent",
+      "status": "PASS",
+      "required": true,
+      "metric": "per_step_rewrite_drift_V",
+      "comparison": "at_most",
+      "value": 0.0,
+      "detail": "0 <= 0.001"
+    }
+  ],
+  "analysis_id": "20260806T142603Z_96a85dcc"
+}

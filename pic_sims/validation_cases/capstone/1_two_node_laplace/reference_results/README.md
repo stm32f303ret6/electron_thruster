@@ -1,11 +1,13 @@
 # reference results — capstone.two_node_laplace
 
-`20260801T225643Z_f44044c6/` is the curated snapshot of the first verified
-run of the two-node vacuum Laplace stage: **PASS on all 5 gates** (cathode
+`20260806T142600Z_f44044c6/` is the curated snapshot of the 2026-08-06 re-run
+on the free GPU: **PASS on all 5 gates** (cathode
 surface potential exact, body 0.22 V cut-cell interpolation, maximum
 principle exact, independent stair-step solver within 1.86 V at ≥ 20 cells,
 per-step `set_potential_on_eb` rewrite bit-exactly idempotent). Produced on
-the **CPU build** in seconds — five Laplace solves, no particles.
+the **CUDA/GPU build** in seconds — five Laplace solves, no particles; it
+retires and replaces the earlier `20260801T225643Z_f44044c6/` snapshot
+(bit-identical, being a deterministic vacuum solve).
 
 Judged under policy `capstone.two_node_laplace.v2`. The first-ever run
 (`20260801T225210Z_f44044c6`) was a disclosed **calibration run** under v1

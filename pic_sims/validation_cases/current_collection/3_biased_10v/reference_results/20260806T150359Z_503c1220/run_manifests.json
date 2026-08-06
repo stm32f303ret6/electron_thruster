@@ -1,0 +1,35 @@
+{
+  "20260806T150359Z_503c1220": {
+    "schema_version": 1,
+    "run_id": "20260806T150359Z_503c1220",
+    "stage_id": "collector.biased_10v",
+    "scenario": null,
+    "status": "COMPLETE",
+    "created_at_utc": "2026-08-06T15:03:59Z",
+    "completed_at_utc": "2026-08-06T16:26:52Z",
+    "case_sha256": "503c1220b1e6cd5806b17205d70b03449735df32c52ce39701444d2cbec7631a",
+    "study_sha256": null,
+    "git_commit": "664747299729c3febb9f8ce32b02be7ad3ed3382",
+    "git_dirty": false,
+    "python_version": "3.12.13",
+    "warpx_version": "26.5",
+    "mpi_ranks": 1,
+    "omp_threads": null,
+    "random_seed": 42,
+    "expected_final_iteration": 150000,
+    "observed_final_iteration": 150000,
+    "artifacts": [
+      {
+        "path": "diags/fields/*.h5",
+        "bytes": 108413512,
+        "files": 41
+      },
+      {
+        "path": "diags/reducedfiles/*.txt",
+        "bytes": 15637,
+        "files": 1
+      }
+    ],
+    "error": null
+  }
+}
