@@ -1,0 +1,73 @@
+{
+  "stage_id": "collector.floating",
+  "policy_id": "collector.floating.v1",
+  "status": "PASS",
+  "exit_code": 0,
+  "detail": "all 7 required gate(s) passed",
+  "gates": [
+    {
+      "id": "floats_to_theory_bracket",
+      "status": "PASS",
+      "required": true,
+      "metric": "phi_float_V",
+      "comparison": "within_range",
+      "value": -0.25099705875,
+      "detail": "-0.250997 in [-0.4, -0.19]"
+    },
+    {
+      "id": "floating_current_balance",
+      "status": "PASS",
+      "required": true,
+      "metric": "current_balance",
+      "comparison": "at_most",
+      "value": 0.00888752084515856,
+      "detail": "0.00888752 <= 0.15"
+    },
+    {
+      "id": "capacitance_calibration_sane",
+      "status": "PASS",
+      "required": true,
+      "metric": "capacitance_over_analytic",
+      "comparison": "within_range",
+      "value": 1.0677745351229724,
+      "detail": "1.06777 in [0.8, 1.4]"
+    },
+    {
+      "id": "scrape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "scrape_charge_consistency",
+      "comparison": "at_most",
+      "value": 2.733388946948906e-09,
+      "detail": "2.73339e-09 <= 0.02"
+    },
+    {
+      "id": "far_density_matches_n0",
+      "status": "PASS",
+      "required": true,
+      "metric": "far_density_e_over_n0",
+      "comparison": "abs_within",
+      "value": 0.9998106041419862,
+      "detail": "0.999811 |x - 1| <= 0.05"
+    },
+    {
+      "id": "far_field_quasineutral",
+      "status": "PASS",
+      "required": true,
+      "metric": "quasineutrality",
+      "comparison": "at_most",
+      "value": 0.0012552622842123995,
+      "detail": "0.00125526 <= 0.02"
+    },
+    {
+      "id": "no_spurious_edge_sheath",
+      "status": "PASS",
+      "required": true,
+      "metric": "edge_phi_max_V",
+      "comparison": "at_most",
+      "value": 0.005848888150713804,
+      "detail": "0.00584889 <= 0.2"
+    }
+  ],
+  "analysis_id": "20260806T170238Z_55d559a8"
+}
