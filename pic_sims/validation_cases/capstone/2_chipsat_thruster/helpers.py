@@ -46,6 +46,13 @@ _SCHEMA: dict[str, tuple[str, ...]] = {
     "compute": ("gpu_arena_bytes",),
 }
 
+# Optional keys: absent -> a documented default that reproduces the committed
+# baseline byte-for-byte, so frozen config_used.yaml files stay loadable and
+# their case hashes stay valid.
+_OPTIONAL: dict[str, tuple[str, ...]] = {
+    "geometry": ("cathode_standoff",),
+}
+
 # Research knobs that exist in electron_contactor but are NOT migrated (the
 # stage is the float200 baseline only); reject them with a pointer.
 _NOT_MIGRATED = ("probe", "shroud", "fields", "checkpoint")
@@ -72,7 +79,7 @@ def _reject_unknown(raw: Mapping[str, Any]) -> None:
         block = raw[section]
         if not isinstance(block, Mapping):
             raise ConfigError(f"config section '{section}' must be a mapping")
-        unknown = set(block) - set(keys)
+        unknown = set(block) - set(keys) - set(_OPTIONAL.get(section, ()))
         if unknown:
             raise ConfigError(f"unknown keys in '{section}': {sorted(unknown)}")
         missing = set(keys) - set(block)
@@ -125,12 +132,25 @@ class Geometry:
 
     Float and fixed metal are inset by >= 2*dx so no EB cut-cell straddles two
     potentials.
+
+    ELONGATED VARIANT (cathode_standoff set): the floor assembly is lifted onto
+    an internal pedestal so the GUN GAP stays at `cathode_standoff` no matter
+    how long the can is, and a solid BODY cap closes the can bottom:
+
+      z_top    +---hole---+------------------+   <- lid (BODY)
+               |          ^ beam             |      gap = cathode_standoff
+               +--CATHODE-+ gap +------------+   <- raised floor assembly
+               |     (sealed dead cavity)    |   <- can wall (BODY)
+      z_bot    +-----------------------------+   <- bottom cap (BODY)
+
+    Without it, lengthening the can stretches the gun gap instead of the body,
+    and Child-Langmuir (I_CL ~ 1/d^2) chokes the emitter.
     """
 
     def __init__(self, *, dx: float, r_probe: float, wall_thickness: float,
                  lid_thickness: float, floor_thickness: float, z_bot: float,
                  z_top: float, r_slit: float, r_cathode: float,
-                 emit_radius: float):
+                 emit_radius: float, cathode_standoff: Optional[float] = None):
         self.dx = dx
         self.pad = 0.5 * dx
         self.r_p = r_probe
@@ -143,10 +163,17 @@ class Geometry:
         self.r_slit = r_slit
         self.r_cath = r_cathode
 
+        self.standoff = cathode_standoff
+
         # derived
         self.r_in = self.r_p - self.tw                 # inner cavity radius
-        self.zfloort = self.z_bot + self.tfloor        # cathode (floor top) surface
         self.zlidb = self.z_top - self.tlid            # lid bottom
+        if cathode_standoff is None:                   # baseline: floor at the can bottom
+            self.zfloort = self.z_bot + self.tfloor    # cathode (floor top) surface
+            self.z_floorb = self.z_bot                 # (exactly z_bot, no round-off)
+        else:                                          # elongated: floor on a pedestal
+            self.zfloort = self.zlidb - cathode_standoff
+            self.z_floorb = self.zfloort - self.tfloor # floor-assembly underside
         self.r_cath_out = self.r_cath + 2.0 * dx       # BODY floor-annulus inner radius
         # Emit 2 cells ABOVE the cathode top: launching on the EB face itself puts
         # macroparticles in the covered cut-cell, where WarpX scrapes them at once.
@@ -173,15 +200,22 @@ class Geometry:
         req((self.r_cath_out - self.r_cath) >= 2 * dx - 1e-12,
             "cathode/body-floor gap < 2 cells")
         req(self.r_cath_out < self.r_p - 2 * dx, "body floor annulus has no metal")
+        if self.standoff is not None:
+            req(self.standoff > 0, "geometry.cathode_standoff must be positive")
+            req(self.z_floorb >= self.z_bot + self.tfloor + 2 * dx,
+                "raised floor assembly leaves no cavity above the bottom cap: "
+                "shorten cathode_standoff or lengthen the can")
 
     # ---- solid region (implicit function): union (max) of all conductors ----
     def implicit_function(self) -> str:
         regions = [
             _ring(self.z_bot, self.z_top, self.r_in, self.r_p),           # can wall (BODY)
-            _disk(self.z_bot, self.zfloort, self.r_cath),                 # CATHODE disk
-            _ring(self.z_bot, self.zfloort, self.r_cath_out, self.r_p),   # BODY floor annulus
+            _disk(self.z_floorb, self.zfloort, self.r_cath),              # CATHODE disk
+            _ring(self.z_floorb, self.zfloort, self.r_cath_out, self.r_p),# BODY floor annulus
             _ring(self.zlidb, self.z_top, self.r_slit, self.r_p),         # perforated lid (BODY)
         ]
+        if self.standoff is not None:                                     # seal the can bottom
+            regions.append(_disk(self.z_bot, self.z_bot + self.tfloor, self.r_p))
         return functools.reduce(lambda acc, r: f"max({acc}, {r})", regions)
 
     # ---- boolean membership expressions (0/1) for each node ----
@@ -189,15 +223,19 @@ class Geometry:
         p = self.pad
         wall = (f"(z>{self.z_bot-p:.10g})*(z<{self.z_top+p:.10g})"
                 f"*(x>{self.r_in-p:.10g})*(x<{self.r_p+p:.10g})")
-        floor_ann = (f"(z>{self.z_bot-p:.10g})*(z<{self.zfloort+p:.10g})"
+        floor_ann = (f"(z>{self.z_floorb-p:.10g})*(z<{self.zfloort+p:.10g})"
                      f"*(x>{self.r_cath_out-p:.10g})*(x<{self.r_p+p:.10g})")
         lid = (f"(z>{self.zlidb-p:.10g})*(z<{self.z_top+p:.10g})"
                f"*(x>{self.r_slit-p:.10g})*(x<{self.r_p+p:.10g})")
-        return f"({wall}+{floor_ann}+{lid})"
+        terms = [wall, floor_ann, lid]
+        if self.standoff is not None:
+            terms.append(f"(z>{self.z_bot-p:.10g})"
+                         f"*(z<{self.z_bot+self.tfloor+p:.10g})*(x<{self.r_p+p:.10g})")
+        return f"({'+'.join(terms)})"
 
     def _cathode_bools(self) -> str:
         p = self.pad
-        return (f"((z>{self.z_bot-p:.10g})*(z<{self.zfloort+p:.10g})"
+        return (f"((z>{self.z_floorb-p:.10g})*(z<{self.zfloort+p:.10g})"
                 f"*(x<{self.r_cath+p:.10g}))")
 
     def potential_string(self, phi_body: float, phi_cathode: float) -> str:
@@ -213,9 +251,13 @@ class Geometry:
         t = self.dx
         wall = ((z > self.z_bot - t) & (z < self.z_top + t)
                 & (r > self.r_in - t) & (r < self.r_p + t))
-        zfloor = (z > self.z_bot - t) & (z < self.zfloort + t)
+        zfloor = (z > self.z_floorb - t) & (z < self.zfloort + t)
         cathode = zfloor & (r < self.r_cath + t)                             # emitter disk
         floor_ann = zfloor & (r > self.r_cath_out - t) & (r < self.r_p + t)  # BODY annulus
+        if self.standoff is not None:   # the bottom cap is BODY floor metal too
+            floor_ann = floor_ann | ((z > self.z_bot - t)
+                                     & (z < self.z_bot + self.tfloor + t)
+                                     & (r < self.r_p + t))
         lid = ((z > self.zlidb - t) & (z < self.z_top + t)
                & (r > self.r_slit - t) & (r < self.r_p + t))
         return dict(wall=wall, floor_ann=floor_ann, cathode=cathode, lid=lid)
@@ -224,7 +266,10 @@ class Geometry:
         return (f"can r<{self.r_p*1e3:.1f} mm, z in [{self.z_bot*1e3:.1f},"
                 f"{self.z_top*1e3:.1f}] mm; cathode disk r<{self.r_cath*1e3:.2f} mm, "
                 f"lid hole r<{self.r_slit*1e3:.2f} mm; emit r<{self.we*1e3:.2f} mm; "
-                f"accel gap {self.d_gap*1e3:.2f} mm")
+                f"accel gap {self.d_gap*1e3:.2f} mm"
+                + ("" if self.standoff is None else
+                   f"; cathode on a pedestal (floor top at z={self.zfloort*1e3:.2f} mm,"
+                   f" sealed cavity below)"))
 
 
 # ======================================================================
@@ -288,6 +333,9 @@ class Config:
     choke_sustain: float
     # compute
     gpu_arena_bytes: int
+    # optional geometry: None -> cathode disk sits on the can floor (baseline);
+    # set -> cathode on a pedestal holding the gun gap fixed (elongated cans).
+    cathode_standoff: Optional[float] = None
     scenario: Any = None  # single-run stage (uniform stage API)
 
     # ---- plasma derivations (contactor _derive_plasma) ----
@@ -337,7 +385,7 @@ class Config:
             wall_thickness=self.wall_thickness, lid_thickness=self.lid_thickness,
             floor_thickness=self.floor_thickness, z_bot=self.z_bot,
             z_top=self.z_top, r_slit=self.r_slit, r_cathode=self.r_cathode,
-            emit_radius=self.emit_radius)
+            emit_radius=self.emit_radius, cathode_standoff=self.cathode_standoff)
 
     # ---- beam / gun derivations (contactor finalize) ----
     @property
@@ -450,6 +498,9 @@ class Config:
                 "z_bot": self.z_bot, "z_top": self.z_top,
                 "r_slit": self.r_slit, "r_cathode": self.r_cathode,
                 "emit_radius": self.emit_radius,
+                # omitted when unset, so baseline case hashes are unchanged
+                **({} if self.cathode_standoff is None
+                   else {"cathode_standoff": self.cathode_standoff}),
             },
             "plasma": {
                 "n0": self.n0, "Te_K": self.Te_K, "Ti_K": self.Ti_K,
@@ -562,6 +613,8 @@ def load_config(path: Path | str, scenario: str | None = None) -> Config:
         z_bot=_f(geo, "z_bot"), z_top=_f(geo, "z_top"),
         r_slit=_f(geo, "r_slit"), r_cathode=_f(geo, "r_cathode"),
         emit_radius=_f(geo, "emit_radius"),
+        cathode_standoff=(None if geo.get("cathode_standoff") is None
+                          else float(geo["cathode_standoff"])),
         n0=_f(pla, "n0"), Te_K=_f(pla, "Te_K"), Ti_K=_f(pla, "Ti_K"),
         ion_mass_me=_f(pla, "ion_mass_me"),
         reservoir_enabled=bool(res["enabled"]),

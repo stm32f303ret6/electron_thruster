@@ -130,6 +130,66 @@ def test_implicit_function_mentions_all_conductors():
 
 
 # ----------------------------------------------------------------------
+# cathode standoff (elongated cans; optional key, baseline-preserving)
+# ----------------------------------------------------------------------
+
+def _slender(tmp_path, standoff=4.7e-3, z_bot=-30.0e-3):
+    raw = _raw()
+    raw["geometry"]["z_bot"] = z_bot
+    if standoff is not None:
+        raw["geometry"]["cathode_standoff"] = standoff
+    return load_config(_write(tmp_path, raw))
+
+
+def test_absent_standoff_is_exactly_the_baseline(tmp_path):
+    """The optional key must not perturb the committed anchor: same EB strings,
+    same frozen dict (hence same case hash), and no stray key in the freeze."""
+    base = load_config(CONFIG)
+    assert base.cathode_standoff is None
+    assert "cathode_standoff" not in base.effective_config()["geometry"]
+    g = base.geometry()
+    assert g.z_floorb == g.z_bot                      # exact, no round-off
+    assert g.d_gap == pytest.approx(4.7e-3)
+
+
+def test_standoff_pins_the_gun_gap_when_the_can_grows(tmp_path):
+    """Lengthening the can 6x must grow the BODY, not the gun gap: I_CL ~ 1/d^2,
+    so a stretched gap would put the commanded beam far over its ceiling."""
+    stretched = _slender(tmp_path, standoff=None)     # the flawed first attempt
+    assert stretched.d_gap == pytest.approx(29.7e-3)  # gap dragged along: wrong
+    assert stretched.i_beam / stretched.I_CL > 50     # ~60x over the ceiling
+
+    pinned = _slender(tmp_path)
+    assert pinned.d_gap == pytest.approx(4.7e-3)      # gap held at the baseline
+    base = load_config(CONFIG)
+    assert pinned.I_CL == pytest.approx(base.I_CL)    # same emitter ceiling
+    assert pinned.geometry().z_emit == pytest.approx(base.geometry().z_emit)
+
+
+def test_standoff_seals_the_can_bottom(tmp_path):
+    """The pedestal leaves a cavity; a BODY cap closes it so the outer skin is a
+    full cylinder and no plasma path reaches the interior."""
+    g = _slender(tmp_path).geometry()
+    assert g.z_floorb == pytest.approx(-5.0e-3)       # pedestal top assembly
+    f = g.implicit_function()
+    assert f.count("max(") == 4                       # 5 primitives now
+    # cathode centre, bottom cap, sealed-cavity void, lid ring
+    r = np.array([0.0005, 0.0005, 0.0005, 0.003])
+    z = np.array([-0.0047, -0.0298, -0.015, 0.0003])
+    m = g.regions(r, z)
+    assert m["cathode"].tolist() == [True, False, False, False]
+    assert m["floor_ann"].tolist() == [False, True, False, False]
+    assert m["lid"].tolist() == [False, False, False, True]
+    body = m["wall"] | m["lid"] | m["floor_ann"]
+    assert not np.any(m["cathode"] & body)
+
+
+def test_reject_pedestal_that_collides_with_the_bottom_cap(tmp_path):
+    with pytest.raises(ConfigError):
+        _slender(tmp_path, standoff=29.5e-3)
+
+
+# ----------------------------------------------------------------------
 # config rejection
 # ----------------------------------------------------------------------
 
