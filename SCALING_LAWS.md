@@ -362,6 +362,60 @@ Still extrapolation: L/r beyond 6, where the cylinder limit must eventually
 bite, and radii approaching λ_D, which converge on bare-tether collection
 (Sanmartín 1993).
 
+## 8c. Scale invariance — why this is not a chipsat result
+
+The measured bodies are Ø10 mm. The mission table is a 100 g craft. Neither is
+a useful spacecraft, so the question that decides whether any of this matters
+is: **does the feasibility condition contain a size?**
+
+It does not. The argument is two lines of area bookkeeping.
+
+- **Demand is areal.** Drag goes as the ram silhouette `A_ram`. Holding
+  altitude needs `F = F_drag`, so `I = F/(c_F·√KE) ∝ A_ram` and
+  `P = I·V ∝ A_ram`. Power *per unit ram area* is a function of altitude and
+  drive voltage only.
+- **Supply is areal.** Harvest goes as cell area, which is a fraction of the
+  skin `A_skin`. Power available per unit skin area is a property of the cells.
+
+Divide: the closure margin is `(harvest/m² · A_skin) / (demand/m² · A_ram)` —
+**size cancels, and what remains is the shape ratio `A_skin/A_ram` and the
+altitude.** Note also that station-keeping thrust equals drag *regardless of
+mass*, so vehicle mass never enters either.
+
+Computed from the committed mission CSVs (`model/scale_analysis.py`):
+
+| power demand per m² of ram silhouette | 400 km | 500 km | 550 km | 600 km |
+|---|---|---|---|---|
+| at 100 V | 1451 W | 335 W | 170 W | 88 W |
+
+| body | skin/ram | 500 km | 550 km | 600 km |
+|---|---|---|---|---|
+| Ø10 mm can, squat (measured) | 4 | 0.4× | 0.8× | 1.6× |
+| 1U cube, face-on | 6 | 0.6× | 1.2× | 2.3× |
+| **Ø10 mm can, slender (measured)** | **14** | **1.4×** | **2.8×** | **5.4×** |
+| **3U CubeSat, end-on** | **14** | **1.4×** | **2.8×** | **5.4×** |
+| 6U CubeSat, end-on | 12 | 1.2× | 2.4× | 4.6× |
+
+The slender can and the 3U CubeSat return *identical* margins. The 400 km wall
+is scale-free too: nothing closes there. In absolute terms a 3U end-on needs
+**8.8 mA / 0.88 W at 600 km**, 17 mA / 1.7 W at 550 km, 34 mA / 3.4 W at
+500 km.
+
+**Two things get easier with size.** The enhancement demanded over bare
+thermal collection *falls* as skin grows — a 3U needs 4.3× the thermal flux at
+600 km where the chipsat needs 15×, and the chipsat frontier runs at
+χ ≈ 150–320. Since bare thermal collection is the rung validated to ±1 % and
+the enhancement exponent is the fitted quantity, **larger bodies rest on less
+extrapolation, not more.** And lower χ means a lower float, which by
+`KE = κ(V−φ)` returns drive energy to the beam.
+
+**The regime caveat.** Every committed run is at `r/λ_D ≈ 2.5`. CubeSat radii
+are 25–60 λ_D, where OML does not apply: the sheath is thin and grows with φ,
+so enhancement is an area ratio `(r_s/r)²` with `r_s − r ~ λ_D(2χ)^{3/4}`.
+That model — an **estimate, not a calibration** — puts a 3U at ~12 V (600 km),
+~25 V (550 km), ~47 V (500 km): benign in the corridor, tightening below it.
+The areal power balance above does not depend on this; only the floats do.
+
 ## 9. From scaling laws to a model — the plan, and what buys confidence
 
 These sections are algebra applied by hand. Once the two frontier runs land,

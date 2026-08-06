@@ -255,10 +255,10 @@
     \item \textbf{Closes on skin-harvested power at 550--600\,km}; impulse-%
           closes (power-bound) at 500\,km; \textbf{does not close at 400\,km}
           for this body.
-    \item Slender bodies (drag buys silhouette, collection buys skin) reopen
-          400\,km -- \textbf{geometry run done}: 3.24$\times$ skin
-          $\to \varphi$ 16.98 $\to$ 4.38\,V, thrust \emph{up} to
-          14.22\,nN.
+    \item Slender bodies (drag buys silhouette, collection buys skin):
+          \textbf{geometry run done} -- 3.24$\times$ skin $\to \varphi$
+          16.98 $\to$ 4.38\,V, thrust \emph{up} to 14.22\,nN.
+    \item \textbf{And size cancels} -- next slide.
   \end{itemize}
 \end{frame}
 
@@ -288,6 +288,41 @@
               the error band, sign conservative for all gates.
       \end{itemize}
   \end{columns}
+\end{frame}
+
+% 11b -------------------------------------------------------------------------
+\begin{frame}{Size cancels: this is not a chipsat result}
+  \begin{itemize}\small
+    \item Drag charges the \textbf{ram silhouette}; harvest is paid from the
+          \textbf{skin}. Demand \emph{and} supply are areal $\Rightarrow$
+          \textbf{vehicle size cancels}. Mass never enters (thrust = drag).
+    \item What survives: the shape ratio $A_{\rm skin}/A_{\rm ram}$ and the
+          altitude.
+  \end{itemize}
+  \vspace{0.5em}
+  \centering\scriptsize
+  \begin{tabular}{lrrrr}
+    \hline
+    power demand per m$^2$ of ram & 400\,km & 500\,km & 550\,km & 600\,km\\
+    at 100\,V & 1451\,W & 335\,W & 170\,W & 88\,W\\
+    \hline
+    \emph{margin by body} (skin/ram) & & & &\\
+    \O10\,mm can, squat \ (4) & 0.1 & 0.4 & 0.8 & 1.6\\
+    1U cube, face-on \ (6) & 0.1 & 0.6 & 1.2 & 2.3\\
+    \textbf{\O10\,mm can, slender} \ (14) & 0.3 & \textbf{1.4} & \textbf{2.8} & \textbf{5.4}\\
+    \textbf{3U CubeSat, end-on} \ (14) & 0.3 & \textbf{1.4} & \textbf{2.8} & \textbf{5.4}\\
+    \hline
+  \end{tabular}
+  \vspace{0.4em}
+  \begin{itemize}\scriptsize
+    \item Slender chipsat and 3U CubeSat: \textbf{identical margins}.
+          3U needs \textbf{8.8\,mA / 0.88\,W} at 600\,km; 34\,mA / 3.4\,W at 500\,km.
+    \item Bigger is \emph{less} extrapolated: 3U needs $4.3\times$ thermal flux,
+          chipsat runs at $\chi \approx 150$--320.
+    \item Caveat: CubeSat radii are 25--60\,$\lambda_D$ vs our 2.5 --- a
+          different sheath regime. Child-sheath \emph{estimate}: 3U floats
+          $\sim$12\,V @600\,km, $\sim$47\,V @500\,km. \textbf{Top next run.}
+  \end{itemize}
 \end{frame}
 
 % 12 --------------------------------------------------------------------------
