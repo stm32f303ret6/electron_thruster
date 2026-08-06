@@ -176,6 +176,17 @@ perveance path (1.46·I_CL) only; the density axis of the collection law is
 theory-only until the night-row run; supply power is beam power I·V —
 emitter heating and converter losses are system engineering, not modeled.
 
+**Size/geometry axis:** the fitted (α, β·A) pair is valid for the committed
+squat can ONLY. The enhancement exponent is geometry-dependent by theory
+(OML: sphere α = 1, long cylinder α = 0.5; the can's 0.82–0.89 sits between
+the limits), so do not apply the fitted law to slender or larger bodies.
+For any other geometry the theory-safe floor is bare thermal collection
+(α = 0: `I = A_skin · j_the`, validated ±1 % on the ladder), which scales
+linearly with skin area — a 1U CubeSat thermal-collects ~0.9 mA at φ ≈ 0,
+more than the chipsat's entire 300 V demand. The geometry-split law and its
+calibrating run are pre-registered in
+`pic_sims/validation_cases/capstone/SLENDER_BODY_PLAN.md`.
+
 ## 8. Usage
 
 ```bash

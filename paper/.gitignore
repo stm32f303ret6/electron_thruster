@@ -1,0 +1,9 @@
+# LaTeX build artifacts; the PDFs are regenerable with two pdflatex passes.
+*.aux
+*.log
+*.out
+*.toc
+*.nav
+*.snm
+main.pdf
+slides/slides.pdf
