@@ -97,3 +97,42 @@ Corrected stage requirement before rerun: a cathode-standoff parameter in
 the stage geometry (cathode z decoupled from `z_bot`, held 4.7 mm below the
 lid), committed to git before the production run so provenance stays clean.
 The pre-registered hypotheses and acceptance above carry over unchanged.
+
+---
+
+## RESULT — 2026-08-06: hypothesis A confirmed, B refuted
+
+Corrected run `20260806T011847Z_5670e54c` (159,160 steps, 800 ns) is
+**COMPLETE and PASS on all 6 required gates** under
+`capstone.exploratory_axes.v1`. Promoted to
+`2_chipsat_thruster/reference_results/20260806T011847Z_5670e54c/`.
+
+The `geometry.cathode_standoff` fix (committed `a7f4106` before launch) pinned
+the gun gap at 4.70 mm with demand/ceiling 1.457, matching the anchor's 1.46.
+
+| | predicted | measured |
+|---|---|---|
+| **A — area-only scaling** | 4–5 V | **φ = 4.378 V** (tail), 4.789 V at run end |
+| B — cylinder-limit lateral | tens of V | refuted by ~10× |
+
+The area arithmetic brackets it: 4.66 V at α = 0.893, 4.14 V at α = 0.82.
+**The can's fitted collection exponent survives a 3.24× area change and an
+aspect-ratio change from L/r = 0.6 to 6.** The theoretical worry that motivated
+this stage — that a slender body would slide toward the long-cylinder OML limit
+(α → 0.5) and pay a hidden charging tax — did not materialise at L/r = 6.
+
+Settle caveat, as pre-registered: φ still rises at +4.4 mV/ns at run end
+(+3.7/+4.7/+7.3/+4.4 mV/ns over 400–600/600–700/700–750/750–800 ns), so quote
+~5–6 V settled as a band. The discrimination is robust to this; the hypothesis
+separation is an order of magnitude.
+
+**The design consequence, which is the point of the stage:** at identical drive
+and commanded current, the slender can floats 3.9× lower (4.38 vs 16–17.7 V),
+holds escape at 98.42 %, and produces *more* thrust (14.22 vs 13.6 nN,
+KE 159.7 vs ~147 eV) — because less of the 200 V is lost to the float. Drag
+still charges only for the unchanged ram silhouette. Elongation is therefore
+free on the thrust side and strictly favourable on the charging side, which is
+the measured basis for the paper's "geometry lever".
+
+Still open (not measured here): L/r beyond 6, where the OML cylinder limit must
+eventually bite; and the r ≲ λ_D end that connects to bare-tether collection.
