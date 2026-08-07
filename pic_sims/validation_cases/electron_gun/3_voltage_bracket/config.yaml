@@ -1,0 +1,89 @@
+# ----------------------------------------------------------------------
+# emitter.voltage_bracket -- physics/numerics config (holed-anode RZ gun
+# along the VOLTAGE axis)
+#
+# The same holed-anode gun as emitter.holed_anode, with the accelerating
+# voltage promoted to a per-scenario key.  The three scenarios bracket, in
+# the clean isolated-emitter geometry, the drive conditions the capstone
+# stages actually use:
+#
+#   A -- 200 V at the anchor command (0.342 mA):     23.9% of planar I_CL
+#   B -- 300 V at the ceiling command (0.630 mA):    23.9% of planar I_CL
+#   C -- 92.4 V at the ucurve_left_arm command
+#        (0.601 mA):                                133.5% of planar I_CL
+#
+# A and B close the emitter branch's voltage gap (beam formation was
+# previously validated only at 100 V while the capstones gun at 200-300 V
+# -- gap G3 in 2_chipsat_thruster/VALIDATION_GAPS.md); they sit at the
+# same fraction of the gun's planar ceiling because both capstone commands
+# derive from the same measured emission-ceiling ratio.  C drives the gun
+# PAST its planar ceiling on purpose -- the same over-perveance condition
+# the fixed-thrust throttle stages command below the hardware floor
+# (capstone/UCURVE_PLAN.md) -- demonstrating space-charge current limiting
+# in isolation.
+#
+# This file is the SOURCE STUDY: it holds the shared physics plus the
+# scenario table.  simulation.py --scenario NAME resolves ONE scenario per
+# process; its frozen config_used.yaml carries only that scenario's
+# effective physics, and its run manifest records this study's SHA-256 so
+# a multi-run analysis can reject mixed configuration generations.
+#
+# NOTE on floats: PyYAML 1.1 -- decimal point AND signed exponent; every
+# numeric leaf is coerced by helpers.py regardless.
+# ----------------------------------------------------------------------
+stage_id: emitter.voltage_bracket
+
+geometry:
+  r_max: 2.0e-3          # radial extent [m]
+  z_min: -2.0e-3         # left boundary  [m] -- the cathode plane
+  z_max: 2.0e-3          # right boundary [m] -- the collector plane
+  n_r: 40                # radial cells  (dr = 0.05 mm)
+  n_z: 80                # axial cells   (dz = 0.05 mm)
+
+electrodes:
+  v_cathode: -200.0      # left (z_min) Dirichlet boundary [V]; the shared
+                         #     default -- every scenario overrides it below,
+                         #     making the voltage the study axis.
+  v_collector: 0.0       # right (z_max) Dirichlet boundary [V]
+  v_anode: 0.0           # holed mid plate [V]; grounded -> field-free drift region
+
+anode:                   # holed plate: conductor where z_front<z<z_front+thickness AND r>hole
+  z_front: -1.0e-4       # upstream face [m] -> accel gap d = z_front - z_min = 1.9 mm
+  thickness: 2.0e-4      # 4 axial cells
+
+emission:                # disc source one cell inside the cathode, firing +z
+  radius: 5.0e-4         # source spot r < radius [m] (10 radial cells)
+  u_th: 7.0e-4           # cold launch: normalized rms momentum (gamma*beta)
+
+scenarios:               # the voltage bracket; one run/process each.
+                         # hole_radius is the restored-transmission aperture
+                         # (emitter.holed_anode scenario C) throughout: the
+                         # axis under study is V, not the aperture.
+  - name: A_200v_anchor_drive
+    v_cathode: -200.0    # the capstone.floating_body drive
+    current: 3.42e-4     # the anchor command (23.9% of planar I_CL(200 V))
+    hole_radius: 1.4e-3
+  - name: B_300v_ceiling_drive
+    v_cathode: -300.0    # the capstone.high_thrust drive
+    current: 6.30e-4     # the ceiling command (23.9% of planar I_CL(300 V))
+    hole_radius: 1.4e-3
+  - name: C_ucurve_overperveance
+    v_cathode: -92.4     # below the hardware floor: the ucurve_left_arm drive
+    current: 6.01e-4     # the fixed-thrust command -- 133.5% of planar
+                         #     I_CL(92.4 V), past the ceiling on purpose
+    hole_radius: 1.4e-3
+
+numerics:
+  time_step: 1.0e-12     # [s]  (v_max*dt ~ 0.22 dz at 300 V, the fastest scenario)
+  max_steps: 6000        # 6.0 ns total (transit 0.4-0.7 ns; steady well before end)
+  beam_ppc: 128          # emission macroparticles per source cell per step
+  random_seed: 42
+
+diagnostics:
+  field_period: 100      # phi/rho every N steps (60 frames)
+  reduced_period: 100    # ParticleNumber / ParticleEnergy at the scrape cadence
+  scrape_period: 100     # boundary-scraping dump cadence
+  ke_max_ev: 320.0       # energy-axis ceiling for plots [eV] (300 V beam)
+
+compute:
+  gpu_arena_bytes: 1000000000

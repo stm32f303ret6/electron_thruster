@@ -19,7 +19,7 @@ I_OML = I_th · (1 + χ)     where χ = eV/kTe = 26.4
 I_OML = 0.10393 µA × 27.40 = 2.847 µA
 ```
 
-OML is a ceiling approached as a/λ_De → 0. At a/λ_De = 0.38 the contactor OML study measured 93% of this ceiling. The gate is a band [0.85, 1.05], not an equality.
+OML is a ceiling attained only as a/λ_De → 0 (Mott-Smith & Langmuir 1926); at finite radius the collected fraction falls below it, the reduction growing with a/λ_De and χ (Laframboise 1966). At this step's a/λ_De = 0.38 and χ = 26.4 an ~10% reduction is expected physics: the committed run measured 85% of the ceiling. The gate is a band [0.85, 1.05], not an equality.
 
 Ions are Boltzmann-repelled by exp(−eV/kTi) ≈ 1e-16. The measured ion trickle comes from ions already inside the domain at t = 0 — reported, not gated.
 
@@ -64,7 +64,7 @@ From `acceptance.yaml` (policy: `collector.biased_3v.v1`):
 
 | Gate | Bound | Why |
 |---|---|---|
-| `electron_current_over_oml` | [0.85, 1.05] | 93% at a/λ = 0.38; OML is a ceiling |
+| `electron_current_over_oml` | [0.85, 1.05] | OML is a ceiling; finite-radius reduction expected (measured 85%) |
 | `far_density_e_over_n0` | ≤ 5% off | flux reservoir intact |
 | `quasineutrality` | ≤ 0.02 | far-shell check |
 | `edge_phi_max_V` | ≤ 0.5 V | sheath containment |

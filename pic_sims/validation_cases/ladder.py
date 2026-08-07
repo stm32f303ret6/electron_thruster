@@ -35,6 +35,16 @@ STAGES: tuple[Stage, ...] = (
           scenarios=("A_low_current_small_hole",
                      "B_high_current_small_hole",
                      "C_high_current_big_hole")),
+    # The gun along the voltage axis: closes the emitter branch's voltage gap
+    # (beam formation was validated only at 100 V while the capstones drive
+    # 200-300 V -- VALIDATION_GAPS.md G3) and demonstrates over-ceiling
+    # current limiting at the fixed-thrust throttle command (UCURVE_PLAN.md).
+    Stage("emitter.voltage_bracket",
+          Path("electron_gun/3_voltage_bracket"),
+          requires=("emitter.holed_anode",),
+          scenarios=("A_200v_anchor_drive",
+                     "B_300v_ceiling_drive",
+                     "C_ucurve_overperveance")),
     Stage("collector.thermal",
           Path("current_collection/1_thermal")),
     Stage("collector.biased_3v",
@@ -57,6 +67,20 @@ STAGES: tuple[Stage, ...] = (
           requires=("capstone.floating_body",)),
     Stage("capstone.low_power",
           Path("capstone/4_low_power"),
+          requires=("capstone.floating_body",)),
+    # The fixed-thrust throttle curve (pre-registered: capstone/UCURVE_PLAN.md).
+    # The committed frontier holds perveance fixed and measures the envelope
+    # boundary; these three stages hold the DEMAND fixed (the 200 V anchor's
+    # 13.65 nN) and measure the cost surface inside it -- valley location,
+    # left arm, and the no-go wall under the flight rule's voltage floor.
+    Stage("capstone.ucurve_valley",
+          Path("capstone/5_ucurve_valley"),
+          requires=("capstone.floating_body",)),
+    Stage("capstone.ucurve_left_arm",
+          Path("capstone/6_ucurve_left_arm"),
+          requires=("capstone.floating_body",)),
+    Stage("capstone.ucurve_floor",
+          Path("capstone/7_ucurve_floor"),
           requires=("capstone.floating_body",)),
 )
 
