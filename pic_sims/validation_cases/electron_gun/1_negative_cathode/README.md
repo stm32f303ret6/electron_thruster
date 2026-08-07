@@ -1,70 +1,59 @@
-# emitter.negative_cathode
+# emitter.negative_cathode — two-plate diode
 
 ![Schematic](viz/schematic_negative_cathode.png)
 
-Two-plate RZ plane diode: the first rung of the emitter branch.
+First rung of the emitter branch. A simple two-plate RZ diode with no embedded boundaries.
 
-## Physical system
+## Setup
 
-A **-100 V full-width cathode** on the left boundary (z = -2 mm) emits a
-prescribed **10 µA electron beam** one cell inside the boundary, firing +z
-toward a **grounded collector** on the right boundary (z = +2 mm). The domain is
-axisymmetric (RZ), 2 mm in radius, 40 × 80 cells (dr = dz = 0.05 mm).
+- **Cathode** (z = −2 mm): held at −100 V, emits a prescribed 10 µA electron beam
+- **Collector** (z = +2 mm): grounded (0 V), absorbs arriving electrons
+- **Domain**: axisymmetric RZ, radius 2 mm, 40 × 80 cells (dr = dz = 0.05 mm)
+- **Beam**: flux-Maxwellian emission from a 0.5 mm disc, thermal spread ~0.25 eV per axis
 
-### Included physics
-
-- Self-consistent electron space charge (electrostatic Poisson solve each step).
-- Prescribed-current, z-normal flux emission over a 0.5 mm disc spot, with a
-  flux-Maxwellian launch (u_th = 7e-4 · c ≈ 0.25 eV per axis).
-
-### Excluded physics
-
-- No thermionic or field-emission model — the current is prescribed. RZ z-normal
-  flux injection reproduces the requested current to ≈0.01% (measured in the
-  parent `electron_two_plate` study), so no calibration factor is applied.
-- No embedded boundaries, no magnetic field, no collisions, no ions.
-
-### Boundary conditions
-
-| Face | Potential | Particles |
+| Boundary | Potential | Particles |
 |---|---|---|
-| z = z_min (cathode) | Dirichlet -100 V | absorbing |
-| z = z_max (collector) | Dirichlet 0 V | absorbing |
-| r = r_max (radial wall) | Neumann | absorbing |
-| r = 0 (axis) | none (axis) | none |
+| z_min (cathode) | −100 V Dirichlet | absorbing |
+| z_max (collector) | 0 V Dirichlet | absorbing |
+| r_max (wall) | Neumann | absorbing |
+| r = 0 (axis) | — | — |
 
-## What this stage proves / does not prove
+### What's included
 
-**Proves** (against closed-form or explicitly-labelled references):
+- Electrostatic Poisson solve every step (self-consistent space charge)
+- Prescribed-current flux emission (no thermionic/field-emission model)
 
-- The vacuum (t = 0) on-axis potential is the analytic **Laplace ramp** to
-  ≤ 10 mV, checked at the *sampled cell centres* (a half-cell on this steep ramp
-  dwarfs the signal).
-- Arrival energy equals **energy conservation from the emission plane**:
-  `e·[φ(collector) − φ_ramp(emit_z)] + 2kT_launch ≈ 99.25 eV`.
-- **~100%** of the prescribed beam reaches the collector; cathode and radial
-  wall collect ≈ 0 (gated as fractions of emitted weight — one tail
-  macroparticle must not break an exact zero).
-- **Particle-budget closure**: emitted = absorbed + still-in-domain to ≤ 0.1%.
+### What's excluded
 
-**Does not prove**: any emission physics (current is prescribed), any aperture or
-sheath physics (later rungs), or grid convergence (single grid/PPC/seed — a
-Phase 5 concern).
+- Embedded boundaries, magnetic fields, collisions, ions
 
-The **space-charge depression** gate (φ dip at z ≈ 0) is a **regression anchor**,
-not an independent prediction: its target (0.092 V) was read off the validated
-baseline run. A 1-D estimate only brackets it at 0.04–0.09 V. This is
-calibration, disclosed here per the plan's policy discipline; an independent
-claim would need a fresh run judged under this pre-existing policy.
+## What this rung tests
 
-## Upstream dependencies
+| Check | How | Target |
+|---|---|---|
+| Vacuum potential | on-axis φ vs analytic Laplace ramp | ≤ 10 mV error |
+| Arrival energy | energy conservation from emission plane | ~99.25 eV (≤ 0.5 eV error) |
+| Beam transmission | fraction reaching collector | ~100% |
+| Cathode return | fraction reflected back | ~0 |
+| Radial loss | fraction hitting the wall | ~0 |
+| Particle budget | emitted = absorbed + in-domain | ≤ 0.1% |
+| Space-charge dip | φ dip near z ≈ 0 | 0.092 ± 0.04 V (regression*) |
 
-None — this is a root stage of the ladder.
+*The space-charge dip target (0.092 V) was measured from the validated baseline run, not predicted from theory. A 1D estimate only brackets it at 0.04–0.09 V.
 
-## Run cost
+## What this rung does NOT test
 
-~3 min. 4000 steps × 1.5 ps = 6.0 ns; beam transit ≈ 1.3 ns, so steady state
-is reached well before the end.
+- Emission physics (current is prescribed, not self-limiting)
+- Apertures, sheaths, or embedded boundaries (later rungs)
+- Grid convergence (single resolution/PPC/seed — deferred to Phase 5)
+
+## Dependencies
+
+None — this is a root stage.
+
+## Cost
+
+~3 min. 4000 steps × 1.5 ps = 6.0 ns. Beam transit ~1.3 ns, so steady state is reached well before the end.
 
 ## Commands
 
@@ -74,31 +63,27 @@ python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 python animate.py --run outputs/<run-id>
 ```
 
-## Gate definitions and tolerance rationale
+## Gates
 
-Defined in `acceptance.yaml` (`policy_id: emitter.negative_cathode.v1`):
+From `acceptance.yaml` (policy: `emitter.negative_cathode.v1`):
 
-| Gate (metric) | Bound | Rationale |
+| Gate | Bound | Why |
 |---|---|---|
-| `collector_current_over_emitted` | [0.995, 1.005] | prescribed current; ±0.5% covers scrape-window noise |
-| `collector_ke_error_eV` | \|·\| ≤ 0.5 eV | analytic 99.25 eV; 0.5 eV ≈ the 2kT launch spread |
-| `cathode_return_fraction` | ≤ 1e-4 | no reflection expected; fraction of emitted weight |
-| `radial_wall_fraction` | ≤ 1e-4 | stiff on-axis beam; negligible radial loss |
-| `vacuum_ramp_max_abs_error_V` | ≤ 1e-2 V | Laplace solve accuracy at sampled z |
-| `space_charge_depression_V` | \|· − 0.092\| ≤ 0.04 V | **regression** anchor (see above) |
-| `budget_closure_pct` | \|·\| ≤ 0.1% | conservation check |
+| `collector_current_over_emitted` | [0.995, 1.005] | prescribed current; ±0.5% covers scrape noise |
+| `collector_ke_error_eV` | ≤ 0.5 eV | analytic is 99.25 eV; 0.5 eV ≈ the 2kT launch spread |
+| `cathode_return_fraction` | ≤ 1e-4 | no reflection expected |
+| `radial_wall_fraction` | ≤ 1e-4 | beam stays on axis |
+| `vacuum_ramp_max_abs_error_V` | ≤ 0.01 V | Laplace solve accuracy |
+| `space_charge_depression_V` | 0.092 ± 0.04 V | regression anchor (not a prediction) |
+| `budget_closure_pct` | ≤ 0.1% | conservation check |
 
 ## Dashboard
 
 [![Dashboard](viz/20260806T073653Z_52a474f6_dashboard.gif)](viz/20260806T073653Z_52a474f6_dashboard.mp4)
 
-*Animated dashboard of the reference run — click for the full-resolution video.*
+*Animated dashboard — click for the full video.*
 
-## Known numerical limitations
+## Limitations
 
-- Single grid resolution, PPC, domain, and seed — no convergence evidence yet
-  (deferred to Phase 5 of the refactor). Quantitative claims here are provisional.
-- The energy prediction interpolates φ at the emission plane, which sits between
-  cell centres; on the ~50 V/mm gap gradient the nearest-cell ambiguity is
-  worth a fraction of an eV, inside the 0.5 eV gate.
-
+- Single grid resolution, PPC, and seed — no convergence study yet (Phase 5)
+- Energy prediction interpolates φ at the emission plane between cell centers; on the ~50 V/mm gradient this adds a fraction of an eV uncertainty, within the 0.5 eV gate
