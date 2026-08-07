@@ -1,77 +1,59 @@
-# emitter.holed_anode
+# emitter.holed_anode — electron gun with aperture
 
 | Scenario A | Scenario B | Scenario C |
 |---|---|---|
 | ![A](viz/schematic_A_low_current_small_hole.png) | ![B](viz/schematic_B_high_current_small_hole.png) | ![C](viz/schematic_C_high_current_big_hole.png) |
 
-Holed-anode RZ gun: `emitter.negative_cathode` plus **one** new element — a
-grounded plate across the midplane with a hole on axis, modelled as an embedded
-boundary (EB).
+Second rung of the emitter branch. Same diode as `emitter.negative_cathode`, plus a grounded plate with a hole on axis (embedded boundary).
 
-## Physical system
+## Setup
 
-The -100 V cathode at z_min emits a prescribed beam; a grounded plate
-(z ∈ [-0.1, +0.1] mm, r > hole) intercepts whatever misses the aperture, and the
-rest drifts to the grounded collector at z_max. Three scenarios demonstrate
-aperture transmission vs radial space charge:
+- **Cathode** (z_min): −100 V, emits a prescribed beam
+- **Anode plate** (z ∈ [−0.1, +0.1] mm, r > hole radius): grounded EB, catches whatever misses the hole
+- **Collector** (z_max): grounded, absorbs the transmitted beam
+- Three scenarios run as separate WarpX processes (one immutable run each)
 
-| Scenario | Current | Hole radius | Expected behaviour |
+| Scenario | Current | Hole radius | What happens |
 |---|---|---|---|
-| `A_low_current_small_hole` | 10 µA | 0.7 mm | stiff beam, ~all transmits; only the transverse **thermal tail** (~2–3%) clips on the plate |
-| `B_high_current_small_hole` | 400 µA | 0.7 mm | radial space charge blows the beam up; loss lands **on the plate** |
-| `C_high_current_big_hole` | 400 µA | 1.4 mm | widening the hole **restores** transmission |
+| A — low current, small hole | 10 µA | 0.7 mm | beam is narrow, nearly all transmits; only the thermal tail (~2–3%) clips the plate |
+| B — high current, small hole | 400 µA | 0.7 mm | space charge blows the beam up, significant loss on the plate |
+| C — high current, big hole | 400 µA | 1.4 mm | wider hole restores transmission, proving the aperture was the limiter |
 
-Each scenario runs in its **own WarpX process** (libwarpx cannot re-initialize),
-and is a **separate immutable run** whose `config_used.yaml` holds only that
-scenario's effective physics. Every run records the SHA-256 of this shared
-source study, so the cohort analysis can reject mixed configuration generations.
+### What's included
 
-### Included / excluded physics
+Same as `emitter.negative_cathode` (electrostatic Poisson, prescribed flux emission) plus the embedded-boundary anode plate.
 
-Same as `emitter.negative_cathode` (self-consistent electron space charge,
-prescribed flux emission, RZ electrostatics) plus the **embedded-boundary anode
-plate**. Excluded: emission physics, magnetic fields, collisions, ions.
+### What's excluded
 
-### Boundary conditions
+Emission physics, magnetic fields, collisions, ions.
 
-Cathode (Dirichlet -100 V) / collector (Dirichlet 0 V) / radial wall (Neumann),
-all particle-absorbing, plus the **grounded EB anode plate** (`potential = 0 V`,
-particles saved at EB).
+## What this rung tests
 
-## What this stage proves / does not prove
+| Check | Target |
+|---|---|
+| A transmits most of the beam | ≥ 96% to collector, ≤ 4% plate clip |
+| B loses current on the plate | ≥ 3 pp drop vs A, ≥ 4% on anode |
+| C restores transmission | ≥ 98% to collector, plate clip < B's |
+| Energy conservation (each scenario) | ≤ 1.5 eV error from emission-plane φ |
+| Particle budget (each scenario) | ≤ 0.1% |
 
-**Proves** (as a mechanism regression):
+### Note on scenario A's plate clip gate
 
-- The three-scenario transmission story: A transmits (≥96%, plate clip ≤4%); B
-  loses ≥3 pp of collector current with the loss **on the plate** (≥4%); C
-  restores transmission (≥98%) with an anode clip below B's.
-- Per-scenario **energy conservation** from the emission plane, using the
-  self-consistent end-state φ interpolated to emit_z (≤1.5 eV).
-- Per-scenario **particle-budget closure** (≤0.1%).
+The original gate was ≥ 99% transmission (cold beam). The first run failed it — the beam has ~0.25 eV transverse temperature (σ_r ≈ 0.135 mm at the plate), so a thermal tail clips the hole edge. The gate was widened to ≤ 4% to cover that tail. This is calibration, not a prediction.
 
-**Does not prove**: a quantitative aperture-transmission law, virtual-cathode
-onset, or grid convergence. In particular the **planar Child-Langmuir** current
-(≈507 µA for the 1.9 mm gap over the 0.5 mm spot) is printed as a rough **scale
-only** — the geometry is non-planar, so it is *not* gated (plan issue C8; a true
-planar-anode sweep to locate reflection onset is deferred to Phase 5).
+## What this rung does NOT test
 
-### The thermal-tail story (disclosed calibration)
+- A quantitative aperture-transmission law
+- Virtual-cathode onset (Child-Langmuir limit is printed as a rough scale only, not gated)
+- Grid convergence (single resolution/PPC/seed — Phase 5)
 
-Scenario A's `≤4%` plate-clip bound is not cold-beam-tight: the first run used a
-cold-beam `≥99%` gate, **failed**, and taught us the beam carries a ~0.25 eV
-transverse temperature (σ_r ≈ 0.135 mm at the plate). The gate was then widened
-to admit that analytic thermal tail. This is disclosed calibration, not an
-independent prediction.
+## Dependencies
 
-## Upstream dependencies
+Requires `emitter.negative_cathode` (this rung only adds the EB plate).
 
-Requires **`emitter.negative_cathode`** (this stage adds only the EB plate to
-that validated diode).
+## Cost
 
-## Run cost
-
-Scenario A ≈ 3 min; B and C are heavier (40× current → many more
-macroparticles). Budget ~10 min for all three.
+A ~3 min, B and C heavier (40x more particles). Total ~10 min.
 
 ## Commands
 
@@ -84,30 +66,29 @@ python analyze.py --runs outputs/<A-run> outputs/<B-run> outputs/<C-run> \
     --policy acceptance.yaml
 ```
 
-## Gate definitions and tolerance rationale
+## Gates
 
-`acceptance.yaml` (`policy_id: emitter.holed_anode.v1`), 12 required gates:
+From `acceptance.yaml` (policy: `emitter.holed_anode.v1`), 12 required gates:
 
-- `A_collector_transmits` ≥ 0.96, `A_anode_clip_is_thermal_tail_only` ≤ 0.04 —
-  stiff beam; the 4% admits the analytic thermal tail (see above).
-- `B_collector_drops_vs_A` ≥ 0.03, `B_loss_lands_on_anode` ≥ 0.04 — space-charge
-  loss shows up on the plate, not as cathode reflection.
-- `C_big_hole_restores_transmission` ≥ 0.98, `C_anode_clip_below_B` ≥ 0 — the
-  aperture, not reflection, was the limiter.
-- `{A,B,C}_collector_ke_conserved` |·| ≤ 1.5 eV — energy conservation.
-- `{A,B,C}_budget_closure` |·| ≤ 0.1% — conservation.
+| Gate | Bound | Why |
+|---|---|---|
+| `A_collector_transmits` | ≥ 0.96 | narrow beam; 4% admits thermal tail |
+| `A_anode_clip_is_thermal_tail_only` | ≤ 0.04 | see note above |
+| `B_collector_drops_vs_A` | ≥ 0.03 | space-charge blowup must show |
+| `B_loss_lands_on_anode` | ≥ 0.04 | loss is on the plate, not cathode reflection |
+| `C_big_hole_restores_transmission` | ≥ 0.98 | aperture was the limiter |
+| `C_anode_clip_below_B` | ≥ 0 | bigger hole → less clip |
+| `{A,B,C}_collector_ke_conserved` | ≤ 1.5 eV | energy conservation |
+| `{A,B,C}_budget_closure` | ≤ 0.1% | particle conservation |
 
 ## Dashboard
 
 [![Dashboard](viz/20260806_20260806_20260806_dashboard.gif)](viz/20260806_20260806_20260806_dashboard.mp4)
 
-*Animated dashboard of the reference run — click for the full-resolution video.*
+*Animated dashboard — click for the full video.*
 
-## Known numerical limitations
+## Limitations
 
-- Single grid / PPC / seed; no convergence evidence (Phase 5).
-- The plate is a staircased EB at 0.05 mm resolution; sub-cell aperture-edge
-  effects are not resolved.
-- The KE prediction interpolates φ at the emission plane between cell centres
-  (±~1 eV on the gap gradient), inside the 1.5 eV gate.
-
+- Single grid/PPC/seed (Phase 5)
+- The anode plate is a staircased EB at 0.05 mm resolution; sub-cell aperture-edge effects are not resolved
+- KE prediction interpolates φ at the emission plane between cell centers (±~1 eV on the gap gradient), within the 1.5 eV gate

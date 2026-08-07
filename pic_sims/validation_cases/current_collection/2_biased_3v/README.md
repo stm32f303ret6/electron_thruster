@@ -1,56 +1,54 @@
-# collector.biased_3v — sphere at +3 V (χ = eV/kTe = 26.4)
+# collector.biased_3v — sphere at +3 V
 
 ![Schematic](viz/schematic_2_biased_3v.png)
 
-A small attracting bias on the same sphere and plasma as `collector.thermal`.
+Second rung of the collector branch. Same sphere and plasma as `collector.thermal`, now biased to attract electrons.
 
-## Physical system
+## Setup
 
-The 0.75 mm sphere (a/λ_De = 0.38) is held at **+3 V** in the chipsat capstone
-plasma. For a sub-Debye sphere the **Orbit-Motion-Limited (OML)** ceiling
-applies:
+- **Sphere**: 0.75 mm radius (a/λ_De = 0.38), held at +3 V
+- **Plasma**: same capstone plasma as `collector.thermal`
+- **Domain**: enlarged to 7.3 λ_De to hold the sheath
+
+### OML theory
+
+For a sub-Debye sphere, the Orbit-Motion-Limited (OML) current is an upper bound:
 
 ```
-I_OML = I_th · (1 + χ) = 0.10393 µA · 27.40 = 2.847 µA
+I_OML = I_th · (1 + χ)     where χ = eV/kTe = 26.4
+I_OML = 0.10393 µA × 27.40 = 2.847 µA
 ```
 
-OML is an **upper bound** approached only as a/λ_De → 0. At 0.38 the
-electron_contactor OML study measured **93%** of the ceiling, so the electron
-gate is a band `[0.85, 1.05]`, not an equality. Ions are Boltzmann-repelled by
-exp(−eV/kTi) ≈ 1e-16; the measured ion trickle is start-up bias (ions already
-inside the domain at t = 0 never had to climb the barrier) — **reported, not
-gated**. The domain is enlarged to 7.3 λ_De to hold the sheath.
+OML is a ceiling approached as a/λ_De → 0. At a/λ_De = 0.38 the contactor OML study measured 93% of this ceiling. The gate is a band [0.85, 1.05], not an equality.
 
-### Physics / boundary conditions
+Ions are Boltzmann-repelled by exp(−eV/kTi) ≈ 1e-16. The measured ion trickle comes from ions already inside the domain at t = 0 — reported, not gated.
 
-Same as `collector.thermal` (two-species RZ electrostatics, EB probe, flux
-reservoir) with the probe at +3 V, so a sheath now forms.
+### What's included / excluded
 
-## What this stage proves / does not prove
+Same as `collector.thermal` (two-species RZ electrostatics, EB probe, flux reservoir), with the probe at +3 V so a sheath now forms.
 
-**Proves** (`evidence_kind: numerical_sanity`): the electron current sits within
-`[0.85, 1.05]` of the OML ceiling (a cross-code sanity band, **not** an exact
-analytic validation — above 1 beyond noise = injection bug, well below 0.85 =
-resolution/containment problem), the flux reservoir stays intact (far density,
-quasineutrality), and no sheath-scale |φ| reaches the open boundaries.  As in
-the +10 V stage, the containment gate uses the max |φ| a few cells inside the
-boundary — a connected-sheath-edge + clearance metric is a Phase 5 refinement
-(plan §10.5), so "contained" here means the boundary strip stays quiet, not a
-measured sheath-edge clearance.
+## What this rung tests
 
-**Does not prove**: an exact collected-current value (OML is a ceiling, not an
-identity here), ion collection physics (repelled, start-up biased), or grid
-convergence (Phase 5).
+| Check | Target |
+|---|---|
+| Electron current vs OML ceiling | within [0.85, 1.05] of I_OML |
+| Far-field density | ≤ 5% off n0 |
+| Quasineutrality | ≤ 2% |
+| Edge potential | ≤ 0.5 V (sheath must not reach the boundaries) |
 
-## Upstream dependencies
+## What this rung does NOT test
 
-Requires **`collector.thermal`** (the 0 V exact-law rung; this stage adds the
-attracting sheath).
+- An exact collected-current value (OML is a ceiling, not an equality at this a/λ_De)
+- Ion collection (repelled; start-up biased)
+- Grid convergence (Phase 5)
 
-## Run cost
+## Dependencies
 
-~1–2 h on an RTX 3060 GPU (100000 steps × 30 ps = 3.0 µs; the sheath's ion
-response is on the slow ion clock).
+Requires `collector.thermal` (this rung adds the attracting sheath).
+
+## Cost
+
+~1–2 h. 100 000 steps × 30 ps = 3.0 µs (the sheath's ion response is on the slow ion clock).
 
 ## Commands
 
@@ -60,29 +58,25 @@ python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 python animate.py --run outputs/<run-id>               # optional
 ```
 
-## Gate definitions and tolerance rationale
+## Gates
 
-`acceptance.yaml` (`policy_id: collector.biased_3v.v1`):
+From `acceptance.yaml` (policy: `collector.biased_3v.v1`):
 
-| Gate (metric) | Bound | Rationale |
+| Gate | Bound | Why |
 |---|---|---|
-| `electron_current_over_oml` | [0.85, 1.05] | contactor cross-ref (93% at a/λ=0.38); OML is a ceiling |
-| `far_density_e_over_n0` | \|·−1\| ≤ 0.05 | flux reservoir intact |
-| `quasineutrality` | ≤ 0.02 | far-shell \|n_e−n_i\|/n0 |
-| `edge_phi_max_V` | ≤ 0.5 V | sheath must not touch the open boundaries |
+| `electron_current_over_oml` | [0.85, 1.05] | 93% at a/λ = 0.38; OML is a ceiling |
+| `far_density_e_over_n0` | ≤ 5% off | flux reservoir intact |
+| `quasineutrality` | ≤ 0.02 | far-shell check |
+| `edge_phi_max_V` | ≤ 0.5 V | sheath containment |
 
 ## Dashboard
 
 [![Dashboard](viz/20260806T142605Z_1a87cbce_dashboard.gif)](viz/20260806T142605Z_1a87cbce_dashboard.mp4)
 
-*Animated dashboard of the reference run — click for the full-resolution video.*
+*Animated dashboard — click for the full video.*
 
-## Known numerical limitations
+## Limitations
 
-- OML is only a **ceiling**; the band is a numerical-sanity check, not an
-  identity. Distinguishing OML from the exact sub-Debye theory would need a
-  convergence/geometry study (Phase 5).
-- Ion start-up bias decays on the slow ion clock — the ion current is reported,
-  never gated.
-- EB faceting, RZ radial-face flux quirk, and t = 0 spike as in
-  `collector.thermal`; single grid/PPC/seed (Phase 5).
+- OML is a ceiling; the band is a sanity check, not an identity. Distinguishing OML from the exact sub-Debye theory would need a convergence/geometry study (Phase 5)
+- Ion start-up bias decays on the slow ion clock — ion current is reported, never gated
+- EB faceting, RZ radial-face flux quirk, t = 0 spike same as `collector.thermal`; single grid/PPC/seed (Phase 5)
