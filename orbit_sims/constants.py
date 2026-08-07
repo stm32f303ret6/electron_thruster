@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """SI constants and the two geometric helpers the orbit sim needs.
 
-Trimmed port of `electron_thruster/steps/_shared/constants.py`: everything the
+Trimmed port of the pre-refactor shared constants module: everything the
 PIC side used (Debye lengths, thermal currents, electron speeds) is gone,
 because this half of the repo stops at the CSV.
 

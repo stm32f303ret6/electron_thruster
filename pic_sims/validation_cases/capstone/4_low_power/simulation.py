@@ -2,7 +2,7 @@
 """capstone.low_power: the chipsat thruster at the 100 V floor (WarpX PICMI, RZ electrostatic).
 
 The complete PIC model for the top rung, migrated from the validated
-electron_contactor float200 baseline: a conducting can floats electrically in
+validated float200 baseline: a conducting can floats electrically in
 the capstone ionospheric plasma; an enclosed electron gun (cathode held a fixed
 supply offset below the body) fires a prescribed beam through the lid hole.
 Everything that makes this stage what it is lives in this one file:
@@ -89,7 +89,7 @@ def _warpx_version() -> str | None:
 
 
 # ======================================================================
-# floating body (electron_contactor floating_body.py, transcribed)
+# floating body (float200 charge pump, transcribed)
 # ======================================================================
 
 def _get_field(sim, name: str, level: int = 0):
@@ -193,7 +193,7 @@ class FloatingBody:
 
 
 # ======================================================================
-# observer (electron_contactor diagnostics.py, transcribed; no restart)
+# observer (float200 diagnostics, transcribed; no restart)
 # ======================================================================
 
 def _asnumpy(a):
@@ -391,7 +391,7 @@ class Diagnostics:
 
 
 # ======================================================================
-# reservoir (electron_contactor reservoir.py, transcribed)
+# reservoir (float200 reservoir, transcribed)
 # ======================================================================
 
 class Reservoir:
@@ -463,7 +463,7 @@ class Reservoir:
 
 
 # ======================================================================
-# deck assembly (electron_contactor run.py, transcribed)
+# deck assembly (float200 run wiring, transcribed)
 # ======================================================================
 
 def build_species(cfg: Config, geom: Geometry, grid):
@@ -592,7 +592,7 @@ def edge_phi_max(sim) -> float:
 
 
 # ======================================================================
-# per-step orchestration (electron_contactor Coordinator; no restart)
+# per-step orchestration (float200 coordinator, transcribed; no restart)
 # ======================================================================
 
 class Coordinator:

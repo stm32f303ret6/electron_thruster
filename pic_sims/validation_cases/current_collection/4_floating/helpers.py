@@ -2,7 +2,7 @@
 """Stage-local physics and configuration for collector.floating.
 
 A conducting sphere (embedded boundary) whose potential FLOATS via the
-chipsat capstone's charge pump, in the electron_contactor capstone plasma.
+chipsat capstone's charge pump, in the capstone plasma.
 This file holds the typed config, the derived plasma/probe quantities, and
 the closed-form floating-potential references.  It is adapted from the
 biased collector stages' shared-by-copy helpers; the deliberate physics

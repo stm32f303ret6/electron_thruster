@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Stage-local physics and configuration for a current_collection stage.
 
-A conducting sphere (embedded boundary) at fixed bias in the electron_contactor
+A conducting sphere (embedded boundary) at fixed bias in the capstone
 capstone plasma.  This file holds the typed config, the derived plasma/probe
 quantities, and the closed-form references (thermal-flux law, OML ceiling,
 species ratio).  It is duplicated verbatim in each collector stage folder --

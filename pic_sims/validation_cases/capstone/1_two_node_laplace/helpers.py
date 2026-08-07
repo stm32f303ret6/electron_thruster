@@ -2,7 +2,7 @@
 """Stage-local geometry and configuration for capstone.two_node_laplace.
 
 The chipsat capstone's conducting-can Geometry (transcribed verbatim from
-capstone/2_chipsat_thruster/helpers.py, which transcribed electron_contactor geometry.py: the EB
+capstone/2_chipsat_thruster/helpers.py, which transcribed the float200 geometry: the EB
 implicit function and the piecewise two-node potential string), plus a slim
 config: this stage solves the VACUUM Laplace problem for that geometry with
 BODY and CATHODE pinned at fixed potentials -- no plasma, no beam, no pump.

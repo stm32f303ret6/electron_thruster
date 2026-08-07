@@ -1,8 +1,8 @@
-# Migration plan: electron_contactor capstone → `capstone.floating_body`
+# Migration plan: float200 research deck → `capstone.floating_body`
 
-This documents how the validated **float200 chipsat capstone** from the
-`electron_contactor` project (external, not part of this repository) is
-migrated into this repo as the top step of the validation ladder, following
+This documents how the validated **float200 chipsat capstone** — originally a
+monolithic research deck that predates the validation ladder — was restructured
+into the top step of the ladder, following
 the stage contract of `../../ARCHITECTURE_REFACTOR_PLAN.md`. Companion document:
 `VALIDATION_GAPS.md` — what the lower steps do and do **not** validate about
 this stage.
@@ -36,7 +36,7 @@ F_beam ≈ 13.6 nN, phi_body → ≈ +16 V, exhaust ≈ 146 eV, supply ≈ 0.068
 
 ## Source → stage mapping
 
-| electron_contactor | capstone/2_chipsat_thruster/ stage file | Notes |
+| float200 research deck (monolithic) | capstone/2_chipsat_thruster/ stage file | Notes |
 |---|---|---|
 | `config.yaml` + `config.py` DEFAULTS | `config.yaml` | baseline values only, `stage_id` added; dropped groups below |
 | `config.py` derivations (`_derive_plasma`, `finalize`, `_validate_basics/_grid`) | `helpers.py` | fluxes n·vth/√2π, λ_D, ωpe, V_GAP, I_CL, CFL dt = 0.3·dx/(v_beam+4vth_e), grid snap to ×8, R_res, asserts (dx<λ_D, CFL<0.5, ωpe·dt<0.2, lid hole ≥5 dx, gap ≥7 dx) |
@@ -61,8 +61,8 @@ Per the refactor plan's non-goals and the baseline-only scope:
 - **Probe/pinned mode** (`PinnedBody`, `plasma_check.py`, `analysis_oml.py`):
   that physics is exactly what `collector.*` steps validate.
 - **Shroud, `plasma.drift_z`, `fields.Bz_T`** (gap-LX/D experiments): baseline
-  has them off; config validation rejects non-defaults with a pointer to the
-  contactor repo. Research sweeps stay in `electron_contactor`.
+  has them off; config validation rejects non-defaults — research sweeps are
+  deliberately outside the validation ladder.
 - **`auto_stop`**: the validated capstone ran to t_end; the stage always runs
   the full step count (required for the immutable-run final-iteration check).
 - **GPU lock file**: `run_ladder.py` is sequential; the stage README repeats
@@ -122,7 +122,7 @@ Phase 5 item (plan C6).
 
 1. Stage unit tests (no WarpX): config parsing/rejection, geometry invariants
    (spot < hole < wall, insulation gaps ≥ 2 dx, region-mask disjointness),
-   derived quantities vs the contactor's own `run_meta.json` values
+   derived quantities vs the deck's recorded derivation values
    (I_CL, dt = 5.026e-12 s, grid 200×440, R_res = 22.5 mm, V_GAP = 200 V),
    steady/balance math and fail-closed policy wiring on synthetic CSV rows.
 2. `run_ladder.py --check` passes with the stage registered.
