@@ -60,7 +60,9 @@ density.
 
 ## Dashboard
 
-![Dashboard](viz/20260804T154756Z_b854dcbe_dashboard.mp4)
+[![Dashboard](viz/20260804T154756Z_b854dcbe_dashboard.gif)](viz/20260804T154756Z_b854dcbe_dashboard.mp4)
+
+*Animated dashboard of the reference run — click for the full-resolution video.*
 
 ## Usage
 

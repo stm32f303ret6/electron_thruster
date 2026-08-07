@@ -1,5 +1,11 @@
 # validation_cases: the verification ladder to the chipsat
 
+[![Chipsat thruster dashboard](capstone/2_chipsat_thruster/viz/20260806T011847Z_5670e54c_dashboard.gif)](capstone/2_chipsat_thruster/viz/20260806T011847Z_5670e54c_dashboard.mp4)
+
+*The top rung in motion — the chipsat electron thruster capstone
+([`capstone/2_chipsat_thruster`](capstone/2_chipsat_thruster/README.md));
+click for the full-resolution video.*
+
 **Reviewer digest: `LADDER_SUMMARY.md`** — every rung's test, measured
 numbers, and theory comparison on one page.
 
@@ -10,21 +16,21 @@ CONFIGURATION the final chipsat case will use — grid resolution, plasma row,
 ppc, emitted current, aperture geometry — so that by the top rung every numerical
 choice has already passed a gate somewhere cheaper.
 
-```
-electron_gun/                    EMITTER side (prescribed-current beams)
-  1_negative_cathode  emitter.negative_cathode   plane diode, no EB      (~3 min)
-  2_electron_gun      emitter.holed_anode        + holed-anode plate     (~10 min)
-current_collection/              COLLECTOR side (ambient plasma)
-  1_thermal           collector.thermal          sphere at 0 V, exact    (~16 min)
-  2_biased_3v         collector.biased_3v        OML ceiling, chi=26.4   (~1 h)
-  3_biased_10v        collector.biased_10v       sheath growth, chi=88   (~2 h)
-  4_floating          collector.floating         charge pump -> phi_f    (~35 min)
-capstone/                        CAPSTONE side (the chipsat electron thruster)
-  1_two_node_laplace  capstone.two_node_laplace  two-node EB in vacuum   (seconds)
-  2_chipsat_thruster  capstone.floating_body     float200 regression     (~6 h)
-  3_high_thrust       capstone.high_thrust       300 V ceiling run       (~8 h)
-  4_low_power         capstone.low_power         100 V floor run         (~5 h)
-```
+**EMITTER side** (prescribed-current beams), **COLLECTOR side** (ambient
+plasma), then the **CAPSTONE** (the chipsat electron thruster):
+
+| rung | stage ID | what it validates | cost |
+|---|---|---|---|
+| [`electron_gun/1_negative_cathode`](electron_gun/1_negative_cathode/README.md) | `emitter.negative_cathode` | plane diode, no EB | ~3 min |
+| [`electron_gun/2_electron_gun`](electron_gun/2_electron_gun/README.md) | `emitter.holed_anode` | + holed-anode plate | ~10 min |
+| [`current_collection/1_thermal`](current_collection/1_thermal/README.md) | `collector.thermal` | sphere at 0 V, exact | ~16 min |
+| [`current_collection/2_biased_3v`](current_collection/2_biased_3v/README.md) | `collector.biased_3v` | OML ceiling, χ = 26.4 | ~1 h |
+| [`current_collection/3_biased_10v`](current_collection/3_biased_10v/README.md) | `collector.biased_10v` | sheath growth, χ = 88 | ~2 h |
+| [`current_collection/4_floating`](current_collection/4_floating/README.md) | `collector.floating` | charge pump → φ_f | ~35 min |
+| [`capstone/1_two_node_laplace`](capstone/1_two_node_laplace/README.md) | `capstone.two_node_laplace` | two-node EB in vacuum | seconds |
+| [`capstone/2_chipsat_thruster`](capstone/2_chipsat_thruster/README.md) | `capstone.floating_body` | float200 regression | ~6 h |
+| [`capstone/3_high_thrust`](capstone/3_high_thrust/README.md) | `capstone.high_thrust` | 300 V ceiling run | ~8 h |
+| [`capstone/4_low_power`](capstone/4_low_power/README.md) | `capstone.low_power` | 100 V floor run | ~5 h |
 
 The 2026-08-01 rungs close the audit's top gaps
 (`capstone/2_chipsat_thruster/VALIDATION_GAPS.md` G1/G2): `collector.floating` runs the

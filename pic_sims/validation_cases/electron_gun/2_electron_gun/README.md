@@ -99,7 +99,9 @@ python analyze.py --runs outputs/<A-run> outputs/<B-run> outputs/<C-run> \
 
 ## Dashboard
 
-![Dashboard](viz/20260806_20260806_20260806_dashboard.mp4)
+[![Dashboard](viz/20260806_20260806_20260806_dashboard.gif)](viz/20260806_20260806_20260806_dashboard.mp4)
+
+*Animated dashboard of the reference run — click for the full-resolution video.*
 
 ## Known numerical limitations
 

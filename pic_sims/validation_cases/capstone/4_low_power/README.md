@@ -61,7 +61,9 @@ required**.
 
 ## Dashboard
 
-![Dashboard](viz/20260804T230218Z_0adb478f_dashboard.mp4)
+[![Dashboard](viz/20260804T230218Z_0adb478f_dashboard.gif)](viz/20260804T230218Z_0adb478f_dashboard.mp4)
+
+*Animated dashboard of the reference run — click for the full-resolution video.*
 
 ## Usage
 

@@ -67,7 +67,9 @@ python animate.py --run outputs/<run-id>               # optional
 
 ## Dashboard
 
-![Dashboard](viz/20260806T150359Z_503c1220_dashboard.mp4)
+[![Dashboard](viz/20260806T150359Z_503c1220_dashboard.gif)](viz/20260806T150359Z_503c1220_dashboard.mp4)
+
+*Animated dashboard of the reference run — click for the full-resolution video.*
 
 ## Known numerical limitations
 
