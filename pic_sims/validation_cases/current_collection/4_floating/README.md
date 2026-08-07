@@ -95,7 +95,9 @@ python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 
 ## Dashboard
 
-![Dashboard](viz/20260806T162656Z_40e77ecd_dashboard.mp4)
+[![Dashboard](viz/20260806T162656Z_40e77ecd_dashboard.gif)](viz/20260806T162656Z_40e77ecd_dashboard.mp4)
+
+*Animated dashboard of the reference run — click for the full-resolution video.*
 
 ## Known numerical limitations
 
