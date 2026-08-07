@@ -60,7 +60,7 @@ density.
 
 ## Dashboard
 
-<video src="viz/20260804T154756Z_b854dcbe_dashboard.mp4" controls width="100%"></video>
+![Dashboard](viz/20260804T154756Z_b854dcbe_dashboard.mp4)
 
 ## Usage
 

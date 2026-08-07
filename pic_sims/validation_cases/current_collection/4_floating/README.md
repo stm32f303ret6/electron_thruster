@@ -95,7 +95,7 @@ python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 
 ## Dashboard
 
-<video src="viz/20260806T162656Z_40e77ecd_dashboard.mp4" controls width="100%"></video>
+![Dashboard](viz/20260806T162656Z_40e77ecd_dashboard.mp4)
 
 ## Known numerical limitations
 

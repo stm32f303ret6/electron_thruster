@@ -73,7 +73,7 @@ python animate.py --run outputs/<run-id>               # optional
 
 ## Dashboard
 
-<video src="viz/20260806T142605Z_1a87cbce_dashboard.mp4" controls width="100%"></video>
+![Dashboard](viz/20260806T142605Z_1a87cbce_dashboard.mp4)
 
 ## Known numerical limitations
 

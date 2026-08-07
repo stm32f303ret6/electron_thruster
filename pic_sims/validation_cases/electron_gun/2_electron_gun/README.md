@@ -99,7 +99,7 @@ python analyze.py --runs outputs/<A-run> outputs/<B-run> outputs/<C-run> \
 
 ## Dashboard
 
-<video src="viz/20260806_20260806_20260806_dashboard.mp4" controls width="100%"></video>
+![Dashboard](viz/20260806_20260806_20260806_dashboard.mp4)
 
 ## Known numerical limitations
 
