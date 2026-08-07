@@ -262,7 +262,7 @@ setsid nohup conda run --no-capture-output -n warpx-cpu-mpich-dev \
 
 `setsid` detaches from the session; `conda run --no-capture-output` keeps the
 log unbuffered so progress is readable live. Watch with
-`tail -f run.log` or `tail -2 outputs/<run-id>/diags/thruster_log.csv`.
+`tail -f run.log` or `tail -2 outputs/<run-id>/diags/contactor_log.csv`.
 
 ---
 

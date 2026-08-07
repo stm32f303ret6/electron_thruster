@@ -121,8 +121,8 @@ potential is whatever makes that balance close.
   | α | source | predicted φ at the 300 V run |
   |---|---|---|
   | 1 (linear OML) | this repo's anchor inversion (one point) | ~31 V |
-  | **0.82 ± 0.06** | prior U-curve campaign, **fitted across six equilibria** (φ = +11 to +45 V, plus a choke at ~1.3 mA) | **~36 V** |
-  | 0.5 (square root) | prior converged reservoir run (one point + transient) | ~90 V — would fail the 50 V gate and approach the 100 V choke |
+  | **0.82 ± 0.06** | `electron_contactor` U-curve campaign, **fitted across six equilibria** (φ = +11 to +45 V, plus a choke at ~1.3 mA) | **~36 V** |
+  | 0.5 (square root) | `electron_gun_probe` converged reservoir run (one point + transient) | ~90 V — would fail the 50 V gate and approach the 100 V choke |
 
   The predecessor's direct price list on the same can geometry (0.43 mA →
   +21 V, 0.74 mA → +45 V) brackets our 0.62 mA escaping current at roughly
@@ -200,7 +200,7 @@ Demand swings ~10× over an orbit (diurnal) and ~15× across 400–600 km.
 
 **The throttle rule — corrected by the predecessor's measured U-curve.**
 The naive rule from §2 alone ("throttle V as low as feasible; P ∝ F·√V")
-assumes escape stays high and current is free. The prior U-curve
+assumes escape stays high and current is free. The `electron_contactor`
 campaign (`UCURVE_explained.md`, five converged runs at fixed ~13.6 nN
 demand: 78 / 92.4 / 125 / 200 / 300 V) measured what actually happens at
 fixed thrust when V drops: the required current rises, and two taxes explode
@@ -221,7 +221,7 @@ beam optics before charging even bound).
 
 Two slices of the (V, I) plane, not to be confused:
 
-- **Fixed thrust, varying V** (the U-curve): perveance I/I_CL
+- **Fixed thrust, varying V** (the contactor U-curve): perveance I/I_CL
   explodes at low V — this is where the left-arm taxes live.
 - **Fixed I/I_CL = 1.46, varying V** (this repo's frontier stages): the
   perveance-preserving path — beam optics stay self-similar, escape should

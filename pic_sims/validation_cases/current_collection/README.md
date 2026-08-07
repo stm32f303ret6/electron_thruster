@@ -30,7 +30,7 @@ The plasma is maintained by one-sided Maxwellian flux injection from the three o
 
 ## Why this also validates the chipsat configuration
 
-Every numerical choice the chipsat uses is tested here against closed-form theory: plasma parameters, dx = 0.15 mm (13.1 cells/λ_De), ppc = 16, flux-reservoir injection, domain sizing. The sphere is at a/λ_De = 0.382, the sub-Debye point where a prior OML study measured 93% of the ceiling.
+Every numerical choice the chipsat uses is tested here against closed-form theory: plasma parameters, dx = 0.15 mm (13.1 cells/λ_De), ppc = 16, flux-reservoir injection, domain sizing. The sphere is at a/λ_De = 0.382, the sub-Debye point where the contactor OML study measured 93% of the ceiling.
 
 ## Cross-stage checks (run by `cross_stage.py`)
 
