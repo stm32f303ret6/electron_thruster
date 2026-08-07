@@ -1,7 +1,8 @@
 # collector.biased_3v — sphere at +3 V (χ = eV/kTe = 26.4)
 
+![Schematic](viz/schematic_2_biased_3v.png)
+
 A small attracting bias on the same sphere and plasma as `collector.thermal`.
-Read this one folder and you have the whole model.
 
 ## Physical system
 
@@ -49,16 +50,14 @@ attracting sheath).
 ## Run cost
 
 ~1–2 h on an RTX 3060 GPU (100000 steps × 30 ps = 3.0 µs; the sheath's ion
-response is on the slow ion clock). Infeasible on CPU.
+response is on the slow ion clock).
 
 ## Commands
 
 ```bash
-conda activate warpx-cpu-mpich-dev
 python simulation.py
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 python animate.py --run outputs/<run-id>               # optional
-PYTHONNOUSERSITE=1 python -m pytest tests/ -q
 ```
 
 ## Gate definitions and tolerance rationale
@@ -72,8 +71,13 @@ PYTHONNOUSERSITE=1 python -m pytest tests/ -q
 | `quasineutrality` | ≤ 0.02 | far-shell \|n_e−n_i\|/n0 |
 | `edge_phi_max_V` | ≤ 0.5 V | sheath must not touch the open boundaries |
 
-Changing any tolerance requires a new `policy_id`; every verdict records this
-file's SHA-256.
+## Reference figures
+
+| | |
+|---|---|
+| ![Current](reference_results/20260806T142605Z_1a87cbce/figures/current.png) | ![Sheath](reference_results/20260806T142605Z_1a87cbce/figures/sheath.png) |
+
+[Dashboard animation](viz/20260806T142605Z_1a87cbce_dashboard.mp4)
 
 ## Known numerical limitations
 
@@ -84,6 +88,3 @@ file's SHA-256.
   never gated.
 - EB faceting, RZ radial-face flux quirk, and t = 0 spike as in
   `collector.thermal`; single grid/PPC/seed (Phase 5).
-
-The machine-readable record is `results/<run-id>/<analysis-id>/metrics.json` +
-`verdict.json`.

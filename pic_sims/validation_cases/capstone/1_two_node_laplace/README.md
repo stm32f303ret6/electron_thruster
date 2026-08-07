@@ -1,5 +1,7 @@
 # capstone.two_node_laplace — the capstone's two-node EB in vacuum
 
+![Schematic](viz/schematic_1_two_node_laplace.png)
+
 Closes **VALIDATION_GAPS.md G1** (the piecewise two-node embedded boundary had
 no ladder rung beneath the capstone): the chipsat's conducting-can geometry,
 solved in **vacuum** with both electrical nodes pinned — BODY at the
@@ -73,11 +75,15 @@ particles.
 ## Commands
 
 ```bash
-conda activate warpx-cpu-mpich-dev
-python simulation.py                                      # -> outputs/<run-id>
+python simulation.py
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
-PYTHONNOUSERSITE=1 python -m pytest tests/ -q             # unit tests (no WarpX)
 ```
+
+## Reference figures
+
+| | |
+|---|---|
+| ![Fields](reference_results/20260806T142600Z_f44044c6/figures/fields.png) | ![Phi axis](reference_results/20260806T142600Z_f44044c6/figures/phi_axis.png) |
 
 ## Known numerical limitations
 

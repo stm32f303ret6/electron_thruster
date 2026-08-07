@@ -12,25 +12,30 @@ choice has already passed a gate somewhere cheaper.
 
 ```
 electron_gun/                    EMITTER side (prescribed-current beams)
-  1_negative_cathode  emitter.negative_cathode   plane diode, no EB      (~3 min GPU)
-  2_electron_gun      emitter.holed_anode        + holed-anode plate     (~10 min GPU)
+  1_negative_cathode  emitter.negative_cathode   plane diode, no EB      (~3 min)
+  2_electron_gun      emitter.holed_anode        + holed-anode plate     (~10 min)
 current_collection/              COLLECTOR side (ambient plasma)
-  1_thermal           collector.thermal          sphere at 0 V, exact    (~16 min CPU)
-  2_biased_3v         collector.biased_3v        OML ceiling, chi=26.4   (~65 min CPU)
-  3_biased_10v        collector.biased_10v       sheath growth, chi=88   (~80 min CPU)
-  4_floating          collector.floating         charge pump -> phi_f    (~35 min CPU)
+  1_thermal           collector.thermal          sphere at 0 V, exact    (~16 min)
+  2_biased_3v         collector.biased_3v        OML ceiling, chi=26.4   (~1 h)
+  3_biased_10v        collector.biased_10v       sheath growth, chi=88   (~2 h)
+  4_floating          collector.floating         charge pump -> phi_f    (~35 min)
 capstone/                        CAPSTONE side (the chipsat electron thruster)
   1_two_node_laplace  capstone.two_node_laplace  two-node EB in vacuum   (seconds)
-  2_chipsat_thruster  capstone.floating_body     float200 regression     (~6.3 h CPU/GPU)
+  2_chipsat_thruster  capstone.floating_body     float200 regression     (~6 h)
+  3_high_thrust       capstone.high_thrust       300 V ceiling run       (~8 h)
+  4_low_power         capstone.low_power         100 V floor run         (~5 h)
 ```
 
-The two 2026-08-01 rungs close the audit's top gaps
+The 2026-08-01 rungs close the audit's top gaps
 (`capstone/2_chipsat_thruster/VALIDATION_GAPS.md` G1/G2): `collector.floating` runs the
 capstone's floating charge pump on a passive sphere against the analytic
 floating-potential bracket (thermal-ion −0.360 V / OML-ion −0.213 V), and
 `capstone.two_node_laplace` solves the capstone's two-node piecewise EB in
 vacuum where the maximum principle and an independent solver are exact
 checks.  Both are required dependencies of the capstone.
+The 2026-08-04 rungs complete the **three-point P–F frontier** across the
+full hardware voltage range: `capstone.high_thrust` (300 V, 30.13 nN) and
+`capstone.low_power` (100 V, 3.42 nN) bracket the validated 200 V anchor.
 
 ## Architecture (see `ARCHITECTURE_REFACTOR_PLAN.md`)
 
@@ -107,30 +112,18 @@ PYTHONNOUSERSITE=1 python -m pytest tests/ -q               # root: contract + l
 cd electron_gun/1_negative_cathode && PYTHONNOUSERSITE=1 python -m pytest tests/ -q
 ```
 
-Run ONE WarpX case at a time; each deck caps its AMReX arena so it coexists with
-other GPU users. Deleting any `outputs/<run-id>/` or `results/` subtree is always
-safe (nothing committed points into them except `reference_results/`, which
-carries its own copies). No automatic garbage collection.
+Run ONE WarpX case at a time. Deleting any `outputs/<run-id>/` or `results/`
+subtree is always safe (nothing committed points into them except
+`reference_results/`, which carries its own copies).
 
 ## Status
 
 **Milestone A (structural architecture, Phases 0–4): implemented, and the
-entire 8-stage ladder has run and PASSED on this machine** (2026-08-01, CPU
-build): both emitter stages reproduce the pre-refactor baseline bit-for-bit;
-all three fixed-bias collector stages PASS with striking GPU-baseline parity
-(e.g. I_e/I_OML 0.8090 vs 0.8087 at +10 V); the **chipsat capstone**
-(`capstone.floating_body`, migrated from the electron_contactor float200
-baseline — see `capstone/2_chipsat_thruster/MIGRATION_PLAN.md` and `capstone/2_chipsat_thruster/VALIDATION_GAPS.md`)
-completed its full parity run in 6.34 h and PASSes all 8 gates (escape
-98.44 %, F_beam 13.65 nN, φ_body +16.98 V); and the two 2026-08-01 rungs
-closing gaps G1/G2 both PASS — `collector.floating` drove the capstone's
-charge pump to φ_f = −0.251 V inside the analytic bracket with 0.9 % current
-balance, and `capstone.two_node_laplace` verified the two-node EB against
-exact Laplace properties and an independent solver. The full-suite verdict
-with all seven cross-stage checks green is `suite_results/20260801T234329Z`.
-All eight stages carry verified `reference_results/`; the per-stage numbers
-are digested in `LADDER_SUMMARY.md`. The suite stays **scientifically
-provisional** — Milestone B (Phase 5: stationarity gates, consistent
-ensembles, corrected Child-Langmuir narratives, convergence sweeps) is **not
-yet done** (zero-bin accounting C7 was fixed 2026-08-01). See
+full 10-stage ladder has run and PASSED** — all eight original rungs plus the
+two operating-point extensions (`capstone.high_thrust` at 300 V,
+`capstone.low_power` at 100 V).  All ten stages carry verified
+`reference_results/`; the per-stage numbers are digested in
+`LADDER_SUMMARY.md`.  The suite stays **scientifically provisional** —
+Milestone B (Phase 5: stationarity gates, consistent ensembles, corrected
+Child-Langmuir narratives, convergence sweeps) is **not yet done**. See
 `ARCHITECTURE_REFACTOR_PLAN.md` §13 (C1–C12).

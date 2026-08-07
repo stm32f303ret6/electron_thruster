@@ -1,5 +1,7 @@
 # collector.floating — passive sphere on the capstone's charge pump
 
+![Schematic](viz/schematic_4_floating.png)
+
 Closes **`capstone/2_chipsat_thruster/VALIDATION_GAPS.md` G2** (the floating charge pump had no
 ladder rung with an analytic anchor beneath the capstone): the collector
 rungs' sphere (a = 0.75 mm, a/λ_De = 0.38) in the same capstone plasma, but
@@ -87,11 +89,17 @@ Requires `collector.thermal` (same sphere/plasma/grid — the cross-stage check
 ## Commands
 
 ```bash
-conda activate warpx-cpu-mpich-dev
-python simulation.py                                      # -> outputs/<run-id>
+python simulation.py
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
-PYTHONNOUSERSITE=1 python -m pytest tests/ -q             # unit tests (no WarpX)
 ```
+
+## Reference figures
+
+| | |
+|---|---|
+| ![Floating potential](reference_results/20260806T162656Z_40e77ecd/figures/floating.png) | ![Fields](reference_results/20260806T162656Z_40e77ecd/figures/fields.png) |
+
+[Dashboard animation](viz/20260806T162656Z_40e77ecd_dashboard.mp4)
 
 ## Known numerical limitations
 

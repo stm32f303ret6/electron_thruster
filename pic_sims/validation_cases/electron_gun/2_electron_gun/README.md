@@ -1,8 +1,12 @@
 # emitter.holed_anode
 
+| Scenario A | Scenario B | Scenario C |
+|---|---|---|
+| ![A](viz/schematic_A_low_current_small_hole.png) | ![B](viz/schematic_B_high_current_small_hole.png) | ![C](viz/schematic_C_high_current_big_hole.png) |
+
 Holed-anode RZ gun: `emitter.negative_cathode` plus **one** new element — a
 grounded plate across the midplane with a hole on axis, modelled as an embedded
-boundary (EB). Read this one folder and you have the whole model.
+boundary (EB).
 
 ## Physical system
 
@@ -66,34 +70,19 @@ that validated diode).
 
 ## Run cost
 
-Scenario A ≈ 3 min GPU; B and C are heavier (40× current → many more
-macroparticles). Budget ~10 min GPU for all three; substantially longer on CPU.
+Scenario A ≈ 3 min; B and C are heavier (40× current → many more
+macroparticles). Budget ~10 min for all three.
 
 ## Commands
 
 ```bash
-conda activate warpx-cpu-mpich-dev
-
-# one run per scenario (each prints its RUN_ID=...)
 python simulation.py --scenario A_low_current_small_hole
 python simulation.py --scenario B_high_current_small_hole
 python simulation.py --scenario C_high_current_big_hole
 
-# cohort analysis over the three COMPLETE runs (order does not matter)
 python analyze.py --runs outputs/<A-run> outputs/<B-run> outputs/<C-run> \
     --policy acceptance.yaml
-#   exit 0 = all gates pass; 1 = a gate failed; 2 = analysis error / mixed cohort
-
-# optional per-scenario movie
-python animate.py --run outputs/<run-id>
-
-# unit tests (no WarpX): config/scenario resolution + policy wiring
-PYTHONNOUSERSITE=1 python -m pytest tests/ -q
 ```
-
-`analyze.py --runs` verifies all members are COMPLETE, share this stage and this
-study's SHA-256, and cover each scenario exactly once — an incompatible or
-incomplete cohort is exit 2, never a partial PASS.
 
 ## Gate definitions and tolerance rationale
 
@@ -108,8 +97,15 @@ incomplete cohort is exit 2, never a partial PASS.
 - `{A,B,C}_collector_ke_conserved` |·| ≤ 1.5 eV — energy conservation.
 - `{A,B,C}_budget_closure` |·| ≤ 0.1% — conservation.
 
-Changing any tolerance requires a new `policy_id`; every verdict records this
-file's SHA-256.
+## Reference figures
+
+![Transmission summary](reference_results/joint_5e72702e/figures/transmission.png)
+
+| A: low current, small hole | B: high current, small hole | C: high current, big hole |
+|---|---|---|
+| ![A fields](reference_results/joint_5e72702e/figures/fields_A_low_current_small_hole.png) | ![B fields](reference_results/joint_5e72702e/figures/fields_B_high_current_small_hole.png) | ![C fields](reference_results/joint_5e72702e/figures/fields_C_high_current_big_hole.png) |
+
+[Dashboard animation](viz/20260806_20260806_20260806_dashboard.mp4)
 
 ## Known numerical limitations
 
@@ -119,6 +115,3 @@ file's SHA-256.
 - The KE prediction interpolates φ at the emission plane between cell centres
   (±~1 eV on the gap gradient), inside the 1.5 eV gate.
 
-The machine-readable record for a cohort is its joint
-`results/joint_<hash>/<analysis-id>/` `metrics.json` + `verdict.json`; numbers
-in this README are illustrative.
