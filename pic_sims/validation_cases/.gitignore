@@ -4,7 +4,6 @@
 # reference_results/ (see ARCHITECTURE_REFACTOR_PLAN.md section 12).
 **/outputs/
 **/results/
-**/viz/*.mp4
 suite_results/
 **/__pycache__/
 *.log
