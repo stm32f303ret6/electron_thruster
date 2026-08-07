@@ -114,23 +114,23 @@ potential is whatever makes that balance close.
   one point (χ ≈ 150). The 300 V run probes χ ≈ 270; if the measured φ
   deviates, that is a finding about the law form.
 - **PRE-REGISTERED COMPETING HYPOTHESES** (recorded 2026-08-04, before the
-  300 V run completed). Three candidate forms `I_collect ∝ (1+χ)^α` exist in
-  the project lineage, agreeing at the shared anchor region (χ ≈ 140–150)
+  300 V run completed). Three candidate forms `I_collect ∝ (1+χ)^α` were on
+  the table, agreeing at the shared anchor region (χ ≈ 140–150)
   and diverging at the 300 V operating point:
 
   | α | source | predicted φ at the 300 V run |
   |---|---|---|
-  | 1 (linear OML) | this repo's anchor inversion (one point) | ~31 V |
-  | **0.82 ± 0.06** | `electron_contactor` U-curve campaign, **fitted across six equilibria** (φ = +11 to +45 V, plus a choke at ~1.3 mA) | **~36 V** |
-  | 0.5 (square root) | `electron_gun_probe` converged reservoir run (one point + transient) | ~90 V — would fail the 50 V gate and approach the 100 V choke |
+  | 1 (linear OML) | sphere OML theory; this repo's anchor inversion (one point) | ~31 V |
+  | **0.82 ± 0.06** | intermediate candidate between the OML sphere (α = 1) and cylinder (α = 0.5) limits — a can is neither — **pre-registered with a ±0.06 band** | **~36 V** |
+  | 0.5 (square root) | OML-cylinder / thin-sheath square-root theory | ~90 V — would fail the 50 V gate and approach the 100 V choke |
 
-  The predecessor's direct price list on the same can geometry (0.43 mA →
-  +21 V, 0.74 mA → +45 V) brackets our 0.62 mA escaping current at roughly
-  +35–40 V, favoring α ≈ 0.82. The 300 V run discriminates. A caveat
-  travels with the comparison: the gun-probe study showed the high-χ sheath
-  equilibrates on the ion timescale (~1.6 µs there), so an 800 ns plateau at
-  high χ must be checked against its own late slope before any α is declared
-  the winner.
+  The 300 V run discriminates, and the fixed-thrust throttle stages
+  (`pic_sims/validation_cases/capstone/UCURVE_PLAN.md`) extend the measured
+  (I_esc, φ) price list in-repo to χ far beyond the frontier slice. A caveat
+  travels with the comparison: at high χ the sheath equilibrates on the ion
+  timescale, so an 800 ns plateau must be checked against its own late slope
+  before any α is declared the winner (the late-dφ/dt line every capstone
+  analysis reports).
 - **VERDICT (2026-08-05 — both frontier runs complete, all gates PASS).**
   Measured φ at 300 V: 36.3 V tail-averaged (policy window), 38.8 V at run
   end with the late slope still decaying (+44 → +27 mV/ns over the final
@@ -198,31 +198,38 @@ From the committed 2024 orbit sweep (5 mm chipsat, real F10.7/Ap):
 
 Demand swings ~10× over an orbit (diurnal) and ~15× across 400–600 km.
 
-**The throttle rule — corrected by the predecessor's measured U-curve.**
+**The throttle rule — why "as low as feasible" is wrong.**
 The naive rule from §2 alone ("throttle V as low as feasible; P ∝ F·√V")
-assumes escape stays high and current is free. The `electron_contactor`
-campaign (`UCURVE_explained.md`, five converged runs at fixed ~13.6 nN
-demand: 78 / 92.4 / 125 / 200 / 300 V) measured what actually happens at
-fixed thrust when V drops: the required current rises, and two taxes explode
-— the charging tax (φ eats 27.6 % of V at 78 V vs 8.7 % at 200 V) and escape
-collapse (68.6 % at 78 V; space charge blows the beam open at high
-perveance and the can eats its own beam). Specific power P/F is a **U**:
-5.18 / 4.44 / **4.31 (min)** / 5.02 / 5.90 mW/nN — and below ~91 V that
-thrust demand has **no equilibrium at all** (the death spiral is documented
-and was confirmed by a pre-registered counterexample run, which failed by
-beam optics before charging even bound).
+assumes escape stays high and current is free. Neither assumption survives
+the taxes: at fixed thrust, dropping V raises the required current as
+~1/√KE while the emission ceiling falls as V^1.5, so perveance I/I_CL
+explodes — and the in-repo evidence says that is not free
+(`emitter.holed_anode` B: transmission collapse at 79 % of I_CL;
+`emitter.voltage_bracket` C: over-ceiling current limiting at the 92.4 V
+throttle command; `capstone.low_power`: escape already degrading at the
+validated perveance; the killed slender attempt: 91 % self-scrape far over
+the ceiling). Two taxes grow on the left arm — the charging tax (φ eating
+a growing fraction of V) and escape collapse — so specific power P/F is a
+**U** in V at fixed thrust, with a no-equilibrium wall below the arm.
+
+The fixed-thrust slice that measures this curve in-repo is pre-registered
+(`capstone.ucurve_valley` 125 V, `capstone.ucurve_left_arm` 92.4 V,
+`capstone.ucurve_floor` 78 V, all at the anchor's 13.65 nN demand —
+`pic_sims/validation_cases/capstone/UCURVE_PLAN.md`), with the committed
+200 V anchor as the curve's fourth point (5.01 mW/nN measured).
 
 > **Sit at the U-valley for the instantaneous demand — not as low as
-> feasible.** The valley has a closed form, `V_opt ≈ 3.2·φ_eq` (injection
-> offset included), and φ_eq depends on the demanded current and the local
-> plasma — so the *rule* travels across rows and orbits while the *number*
-> (125 V on a dense dayside row at 13.6 nN) does not. Never operate below
-> the no-equilibrium boundary for the current demand.
+> feasible.** The valley has a closed form, `V_opt = ((2α+1)/α)·φ_eq ≈
+> 3.1·φ_eq` from the fitted collection law, and φ_eq depends on the
+> demanded current and the local plasma — so the *rule* travels across
+> rows and orbits while the *number* does not. Never operate below the
+> no-equilibrium boundary for the current demand (the wall
+> `capstone.ucurve_floor` maps).
 
 Two slices of the (V, I) plane, not to be confused:
 
-- **Fixed thrust, varying V** (the contactor U-curve): perveance I/I_CL
-  explodes at low V — this is where the left-arm taxes live.
+- **Fixed thrust, varying V** (the `capstone.ucurve_*` stages): perveance
+  I/I_CL explodes at low V — this is where the left-arm taxes live.
 - **Fixed I/I_CL = 1.46, varying V** (this repo's frontier stages): the
   perveance-preserving path — beam optics stay self-similar, escape should
   stay high at all three points, and thrust varies as ~V² along it. It

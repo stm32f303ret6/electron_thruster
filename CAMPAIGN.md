@@ -81,14 +81,14 @@ tests them**. Three pre-registrations were made. All three resolved.
 
 ### 3.1 The collection law (pre-registered 2026-08-04, before the 300 V run)
 
-Three candidate exponents in `I_collect ∝ (1+χ)^α` existed in the project
-lineage. They agree near the anchor (χ ≈ 150) and diverge at 300 V:
+Three candidate exponents in `I_collect ∝ (1+χ)^α` were on the table. They
+agree near the anchor (χ ≈ 150) and diverge at 300 V:
 
 | α | source | predicted φ at 300 V | outcome |
 |---|---|---|---|
 | 1 (linear OML) | this repo's single-point anchor inversion | ~31 V | **REFUTED** — φ passed 31 V near 650 ns and kept climbing |
-| **0.82** | `electron_contactor` U-curve campaign, fitted across six equilibria | **~36 V** | **SURVIVES** — measured 36.30 V |
-| 0.5 (square root) | `electron_gun_probe` converged reservoir run | ~90 V | **REFUTED** — nothing in the trajectory heads there |
+| **0.82** | intermediate candidate between the OML sphere (α = 1) and cylinder (α = 0.5) limits, pre-registered with a ±0.06 band | **~36 V** | **SURVIVES** — measured 36.30 V |
+| 0.5 (square root) | OML-cylinder / thin-sheath square-root theory | ~90 V | **REFUTED** — nothing in the trajectory heads there |
 
 The 100 V run measured 5.40 V against a ~6 V prediction — consistent, but at
 low χ the candidate laws converge, so it *confirms the anchor* rather than

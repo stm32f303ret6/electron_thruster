@@ -20,7 +20,7 @@ probe:
   radius: 7.5e-4         # [m] a/lambda_De = 0.38, 5 cells per radius
   bias: 10.0             # [V]
 
-plasma:                  # electron_contactor capstone "PLASMA_MAX" row
+plasma:                  # capstone "PLASMA_MAX" row -- IDENTICAL to the chipsat deck
   n0: 1.627e12           # [m^-3]
   Te_K: 1318.8           # [K]
   Ti_K: 936.2            # [K]

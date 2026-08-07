@@ -148,7 +148,7 @@ LOW-drag pose**. A slender body (h > 1.571·r) reverses it.
 
 ## What was left out of the port
 
-Deliberately dropped from `electron_thruster/steps/step0_orbit/`: the solar
+Deliberately dropped from the pre-refactor orbit step: the solar
 power ledger, the propulsion/calibration blocks, summary gates, plots, and the
 IGRF/B-field columns. Cube and box shapes are gone too — one cylinder, three
 poses.
