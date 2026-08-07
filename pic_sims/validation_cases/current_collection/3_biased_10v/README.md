@@ -2,13 +2,13 @@
 
 ![Schematic](viz/schematic_3_biased_10v.png)
 
-Third rung of the collector branch. Same sphere and plasma, now at a strong attracting bias. The main point here is **sheath containment** — can the domain hold the thick sheath without clipping it?
+Third step of the collector branch. Same sphere and plasma, now at a strong attracting bias. The main point here is **sheath containment** — can the domain hold the thick sheath without clipping it?
 
 ## Setup
 
 - **Sphere**: 0.75 mm radius, held at +10 V (χ = eV/kTe = 88.0)
 - **Plasma**: same capstone plasma
-- **Domain**: largest of the three collector rungs (11 λ_De), because a sheath clipped by the boundary fakes extra current
+- **Domain**: largest of the three collector steps (11 λ_De), because a sheath clipped by the boundary fakes extra current
 
 ### OML theory
 
@@ -22,7 +22,7 @@ The collected current sits below the +3 V case's OML fraction — barrier deepen
 
 Same as `collector.biased_3v`, with the probe at +10 V and a larger domain.
 
-## What this rung tests
+## What this step tests
 
 | Check | Target |
 |---|---|
@@ -31,7 +31,7 @@ Same as `collector.biased_3v`, with the probe at +10 V and a larger domain.
 | Quasineutrality | ≤ 2% |
 | Edge potential | ≤ 0.5 V (**the gate to watch** — thick sheath must stay inside the domain) |
 
-## What this rung does NOT test
+## What this step does NOT test
 
 - A quantitative sheath-collection law
 - Ion physics (repelled)
@@ -39,11 +39,11 @@ Same as `collector.biased_3v`, with the probe at +10 V and a larger domain.
 
 ## Dependencies
 
-Requires `collector.biased_3v` (this rung deepens the bias and enlarges the domain).
+Requires `collector.biased_3v` (this step deepens the bias and enlarges the domain).
 
 ## Cost
 
-~2–4.5 h. 150 000 steps × 20 ps = 3.0 µs. The heaviest collector rung.
+~2–4.5 h. 150 000 steps × 20 ps = 3.0 µs. The heaviest collector step.
 
 ## Commands
 
@@ -75,4 +75,4 @@ From `acceptance.yaml` (policy: `collector.biased_10v.v1`):
 - The current shows a **+4% drift** through its declared steady window, not yet caught by a stationarity gate (Phase 5, plan C6)
 - Connected-sheath-edge containment metric is a Phase 5 refinement (plan §10.5); currently just checking max |φ| near the boundary
 - OML is a ceiling; the band is a sanity check
-- EB faceting, RZ radial-face flux quirk, t = 0 spike same as other collector rungs; single grid/PPC/seed (Phase 5)
+- EB faceting, RZ radial-face flux quirk, t = 0 spike same as other collector steps; single grid/PPC/seed (Phase 5)

@@ -2,9 +2,9 @@
 
 ![Schematic](viz/schematic_4_floating.png)
 
-Fourth rung of the collector branch. Closes validation gap G2: the floating charge pump had no ladder rung with an analytic anchor beneath the capstone.
+Fourth step of the collector branch. Closes validation gap G2: the floating charge pump had no ladder step with an analytic anchor beneath the capstone.
 
-Same sphere (a = 0.75 mm) and plasma as the other collector rungs, but the EB potential is **not prescribed** — it floats using the chipsat capstone's charge-pump mechanism (copied from `capstone/2_chipsat_thruster/simulation.py`).
+Same sphere (a = 0.75 mm) and plasma as the other collector steps, but the EB potential is **not prescribed** — it floats using the chipsat capstone's charge-pump mechanism (copied from `capstone/2_chipsat_thruster/simulation.py`).
 
 ## Setup
 
@@ -27,7 +27,7 @@ Let R = I_th_e/I_th_i = √((mi/me)(Te/Ti)) = 23.74 for this plasma.
 
 The truth lies between the two models. φ_f is independent of C (C only sets the charging timescale), so the bracket gate isolates the pump's accounting from the capacitance calibration.
 
-## What this rung tests
+## What this step tests
 
 | Check | Target |
 |---|---|
@@ -41,7 +41,7 @@ The truth lies between the two models. φ_f is independent of C (C only sets the
 
 Reported, not gated: Boltzmann-retardation cross-check, individual species currents vs I_th, late dφ/dt.
 
-## What this rung does NOT test
+## What this step does NOT test
 
 - The beam, the two-node EB, or the supply offset (those are `capstone.two_node_laplace` and the capstone itself)
 - The exact φ_f value (the gate is a two-model bracket, not a single-model identity)
@@ -89,5 +89,5 @@ From `acceptance.yaml` (policy: `collector.floating.v1`):
 ## Limitations
 
 - Single grid/PPC/seed (Phase 5)
-- Ion-collection physics is validated only as a bracket; the biased rungs pin the electron-side OML fractions
+- Ion-collection physics is validated only as a bracket; the biased steps pin the electron-side OML fractions
 - Reduced ion mass (400 mₑ), not real O⁺

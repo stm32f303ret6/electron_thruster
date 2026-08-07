@@ -2,7 +2,7 @@
 
 ![Schematic](viz/schematic_negative_cathode.png)
 
-First rung of the emitter branch. A simple two-plate RZ diode with no embedded boundaries.
+First step of the emitter branch. A simple two-plate RZ diode with no embedded boundaries.
 
 ## Setup
 
@@ -27,7 +27,7 @@ First rung of the emitter branch. A simple two-plate RZ diode with no embedded b
 
 - Embedded boundaries, magnetic fields, collisions, ions
 
-## What this rung tests
+## What this step tests
 
 | Check | How | Target |
 |---|---|---|
@@ -41,10 +41,10 @@ First rung of the emitter branch. A simple two-plate RZ diode with no embedded b
 
 *The space-charge dip target (0.092 V) was measured from the validated baseline run, not predicted from theory. A 1D estimate only brackets it at 0.04–0.09 V.
 
-## What this rung does NOT test
+## What this step does NOT test
 
 - Emission physics (current is prescribed, not self-limiting)
-- Apertures, sheaths, or embedded boundaries (later rungs)
+- Apertures, sheaths, or embedded boundaries (later steps)
 - Grid convergence (single resolution/PPC/seed — deferred to Phase 5)
 
 ## Dependencies
