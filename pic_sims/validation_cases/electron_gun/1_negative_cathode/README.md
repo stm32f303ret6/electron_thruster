@@ -88,13 +88,9 @@ Defined in `acceptance.yaml` (`policy_id: emitter.negative_cathode.v1`):
 | `space_charge_depression_V` | \|· − 0.092\| ≤ 0.04 V | **regression** anchor (see above) |
 | `budget_closure_pct` | \|·\| ≤ 0.1% | conservation check |
 
-## Reference figures
+## Dashboard
 
-| | |
-|---|---|
-| ![Fields](reference_results/20260801T075244Z_52a474f6/figures/fields.png) | ![Current](reference_results/20260801T075244Z_52a474f6/figures/current.png) |
-
-[Dashboard animation](viz/20260806T073653Z_52a474f6_dashboard.mp4)
+<video src="viz/20260806T073653Z_52a474f6_dashboard.mp4" controls width="100%"></video>
 
 ## Known numerical limitations
 

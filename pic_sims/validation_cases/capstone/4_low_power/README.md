@@ -59,14 +59,9 @@ required**.
 | `i_beam` | 0.342 mA | **0.121 mA** |
 | everything else | — | identical (CFL dt grows to ~6.93 ps; ~115k steps for 800 ns) |
 
-## Reference figures
+## Dashboard
 
-| | |
-|---|---|
-| ![Thrust](reference_results/20260804T230218Z_0adb478f/figures/thrust_vs_time.png) | ![Body potential](reference_results/20260804T230218Z_0adb478f/figures/phi_vs_time.png) |
-| ![Currents](reference_results/20260804T230218Z_0adb478f/figures/currents_vs_time.png) | ![Beam fates](reference_results/20260804T230218Z_0adb478f/figures/fates_vs_time.png) |
-
-[Dashboard animation](viz/20260804T230218Z_0adb478f_dashboard.mp4)
+<video src="viz/20260804T230218Z_0adb478f_dashboard.mp4" controls width="100%"></video>
 
 ## Usage
 
