@@ -1,90 +1,63 @@
-# collector.floating — passive sphere on the capstone's charge pump
+# collector.floating — sphere on the capstone's charge pump
 
 ![Schematic](viz/schematic_4_floating.png)
 
-Closes **`capstone/2_chipsat_thruster/VALIDATION_GAPS.md` G2** (the floating charge pump had no
-ladder rung with an analytic anchor beneath the capstone): the collector
-rungs' sphere (a = 0.75 mm, a/λ_De = 0.38) in the same capstone plasma, but
-the EB potential is **not prescribed** — it is computed every step by the
-chipsat capstone's charge-pump mechanism, transcribed verbatim from
-`capstone/2_chipsat_thruster/simulation.py`:
+Fourth rung of the collector branch. Closes validation gap G2: the floating charge pump had no ladder rung with an analytic anchor beneath the capstone.
 
-- the EB starts at a uniform 1 V so the init solve calibrates the
-  self-capacitance C by Gauss' law on the domain faces;
-- every step, the scraped-this-step weights of both species are read from the
-  particle boundary buffers and `dQ = e·(w_i − w_e)` accumulates into Q;
-- `set_potential_on_eb` rewrites φ = φ_init + Q/C before the next solve.
+Same sphere (a = 0.75 mm) and plasma as the other collector rungs, but the EB potential is **not prescribed** — it floats using the chipsat capstone's charge-pump mechanism (copied from `capstone/2_chipsat_thruster/simulation.py`).
 
-With no beam, the pump must drive the sphere to the **floating potential** —
-the bias where electron and ion collection balance.  That equilibrium has
-closed-form anchors, giving the pump the analytic validation the capstone's
-own regression anchors cannot provide.
+## Setup
 
-## Analytic references
+The charge pump works like this:
+
+1. EB starts at a uniform 1 V → the init solve calibrates self-capacitance C by Gauss' law on the domain faces
+2. Every step, scraped weights of both species are read from the particle boundary buffers → dQ = e·(w_i − w_e)
+3. `set_potential_on_eb` rewrites φ = φ_init + Q/C before the next solve
+
+With no beam, the pump drives the sphere to the **floating potential** — the bias where electron and ion collection balance.
+
+### Analytic references
 
 Let R = I_th_e/I_th_i = √((mi/me)(Te/Ti)) = 23.74 for this plasma.
 
-| ion-collection model | balance equation | φ_f |
+| Ion-collection model | Balance equation | φ_f |
 |---|---|---|
-| thermal-ion (ions unaffected by φ) | exp(φ/kTe)·R = 1 | **−0.360 V** |
-| OML-ion (attracted ions at the OML sphere ceiling) | exp(φ/kTe)·R = 1 − φ/kTi | **−0.213 V** |
+| Thermal-ion (ions unaffected by φ) | exp(φ/kTe)·R = 1 | **−0.360 V** |
+| OML-ion (attracted ions at OML ceiling) | exp(φ/kTe)·R = 1 − φ/kTi | **−0.213 V** |
 
-The truth for this sub-Debye sphere lies between the two models (the biased
-rungs measured ion-side collection at 85–99 % of OML ceilings).  Crucially,
-**φ_f is independent of C** — C only sets the charging timescale — so the
-bracket gate isolates the pump's dQ accounting and EB rewrite from the
-calibration.
+The truth lies between the two models. φ_f is independent of C (C only sets the charging timescale), so the bracket gate isolates the pump's accounting from the capacitance calibration.
 
-## What this stage proves
+## What this rung tests
 
-- The charge pump's sign conventions, per-step scrape-buffer accounting, and
-  `set_potential_on_eb` rewrite drive a floating conductor to the physically
-  correct equilibrium (a sign error saturates at the wrong sign; a
-  double-count or missed channel lands outside the bracket).
-- The Gauss-law C calibration reproduces the analytic sphere capacitance
-  (measured 89.1 fF vs 4πε₀a = 83.4 fF — the ~+7 % is the grounded-box
-  correction).
-- The per-step ledger and the openPMD scrape dumps agree (the capstone's
-  G5-style cross-check, here on an analytically-anchored rung).
+| Check | Target |
+|---|---|
+| Floating potential φ_f | within [−0.40, −0.19] V (two-model bracket ± noise) |
+| Current balance at equilibrium | ≤ 15% |
+| Capacitance vs analytic 4πε₀a | within [0.8, 1.4] (measured 89.1 fF vs 83.4 fF) |
+| Ledger vs openPMD dumps | ≤ 2% |
+| Far-field density | ≤ 5% off n0 |
+| Quasineutrality | ≤ 2% |
+| Edge potential | ≤ 0.2 V |
 
-## What it does NOT prove
+Reported, not gated: Boltzmann-retardation cross-check, individual species currents vs I_th, late dφ/dt.
 
-- Nothing about the beam, the two-node EB, or the supply offset (that is
-  `capstone.two_node_laplace` and the capstone itself).
-- The exact φ_f value: the gate is a two-model bracket, not a single-model
-  verification — the ion-collection model uncertainty is real physics, not
-  numerics.
-- Long-term (ion-clock ≫ 6 µs) drift of the equilibrium.
+## What this rung does NOT test
 
-## Gates (`acceptance.yaml`, policy `collector.floating.v1`)
+- The beam, the two-node EB, or the supply offset (those are `capstone.two_node_laplace` and the capstone itself)
+- The exact φ_f value (the gate is a two-model bracket, not a single-model identity)
+- Long-term drift beyond 6 µs
 
-| gate (metric) | bound | provenance |
-|---|---|---|
-| `phi_float_V` | in [−0.40, −0.19] V | two-model theory bracket ±10 % noise margin |
-| `current_balance` | ≤ 0.15 | equilibrium identity; ion shot-noise allowance |
-| `capacitance_over_analytic` | in [0.8, 1.4] | 4πε₀a + box correction; catches O(1) mechanism errors |
-| `scrape_charge_consistency` | ≤ 0.02 | ledger vs openPMD dumps (capstone G5 gate value) |
-| `far_density_e_over_n0` | 1.0 ± 0.05 | carried over from collector.thermal |
-| `quasineutrality` | ≤ 0.02 | carried over from collector.thermal |
-| `edge_phi_max_V` | ≤ 0.2 V | φ_f is Debye-shielded to ~1e-4 V at the wall |
+## Run-length note
 
-Reported, never gated: the Boltzmann-retardation cross-check
-φ = (kTe/e)·ln(I_e/I_th_e), I_e/I_th_e and I_i/I_th_i, and the late dφ/dt.
+The pump's RC clock slows as it settles: near equilibrium τ = C·kTe/(e·I_eq) ≈ 89 fF × 0.114 V / 6 nA ≈ 1.7 µs. A 6 µs run puts the last-40% window (3.6–6 µs) within a few percent of balance.
 
-## Run-length rationale
+## Dependencies
 
-The pump's RC clock **slows as it settles**: near equilibrium
-τ = C·kTe/(e·I_eq) ≈ 89 fF·0.114 V/6 nA ≈ 1.7 µs.  A 3 µs run (the thermal
-stage's budget) would leave the tail window still sliding; 6 µs puts the
-last-40 % window (3.6–6 µs) within a few percent of balance.  Set from this
-arithmetic before the full run.
+Requires `collector.thermal` (same sphere/plasma/grid — hash-verified by `floating_shares_thermal_configuration`). The capstone requires this stage.
 
-## Dependencies and cost
+## Cost
 
-Requires `collector.thermal` (same sphere/plasma/grid — the cross-stage check
-`floating_shares_thermal_configuration` hash-verifies it).
-`capstone.floating_body` requires this stage.  Cost: ~35 min CPU
-(100k steps at ~20 ms/step including the per-step pump callback).
+~35 min. 100k steps at ~20 ms/step including the per-step pump callback.
 
 ## Commands
 
@@ -93,15 +66,28 @@ python simulation.py
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 ```
 
+## Gates
+
+From `acceptance.yaml` (policy: `collector.floating.v1`):
+
+| Gate | Bound | Why |
+|---|---|---|
+| `phi_float_V` | [−0.40, −0.19] V | two-model theory bracket ± noise margin |
+| `current_balance` | ≤ 0.15 | equilibrium identity; ion shot-noise allowance |
+| `capacitance_over_analytic` | [0.8, 1.4] | 4πε₀a + box correction; catches big mechanism errors |
+| `scrape_charge_consistency` | ≤ 0.02 | ledger vs openPMD dumps |
+| `far_density_e_over_n0` | 1.0 ± 0.05 | carried from collector.thermal |
+| `quasineutrality` | ≤ 0.02 | carried from collector.thermal |
+| `edge_phi_max_V` | ≤ 0.2 V | φ_f is Debye-shielded to ~1e-4 V at the wall |
+
 ## Dashboard
 
 [![Dashboard](viz/20260806T162656Z_40e77ecd_dashboard.gif)](viz/20260806T162656Z_40e77ecd_dashboard.mp4)
 
-*Animated dashboard of the reference run — click for the full-resolution video.*
+*Animated dashboard — click for the full video.*
 
-## Known numerical limitations
+## Limitations
 
-- Single grid/PPC/seed (ladder-wide C12; Phase 5).
-- The ion-collection physics itself is validated only as a bracket here; the
-  biased rungs pin the electron-side OML fractions.
-- The reduced ion mass (400 mₑ) is the ladder-wide caveat, not real O⁺.
+- Single grid/PPC/seed (Phase 5)
+- Ion-collection physics is validated only as a bracket; the biased rungs pin the electron-side OML fractions
+- Reduced ion mass (400 mₑ), not real O⁺

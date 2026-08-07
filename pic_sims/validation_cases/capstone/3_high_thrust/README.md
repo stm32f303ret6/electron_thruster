@@ -1,47 +1,31 @@
-# capstone.high_thrust — the thruster at the 300 V hardware ceiling
+# capstone.high_thrust — thruster at the 300 V hardware ceiling
 
 ![Schematic](viz/schematic_3_high_thrust.png)
 
-The same physical system as [`capstone.floating_body`](../2_chipsat_thruster/README.md)
-— identical can geometry, plasma row, grid, reservoir, and floating-body
-charge pump — driven at the **300 V hardware ceiling** with the beam current
-scaled to the same emission-ceiling ratio the validated run demonstrated:
+Same system as [`capstone.floating_body`](../2_chipsat_thruster/README.md) — identical can, plasma, grid, reservoir, and charge pump — driven at **300 V** with the beam current scaled to the same emission-ceiling ratio:
 
 ```
 I_CL(300 V, 4.7 mm gap, 0.5 mm spot) = 0.431 mA
-I / I_CL = 1.46 (the measured float200 ratio)   ->   i_beam = 0.63 mA
+I / I_CL = 1.46 (measured float200 ratio)  →  i_beam = 0.63 mA
 ```
 
 ## The question
 
-**How much thrust does the thruster produce at full drive, and does the body
-still float benignly?** The `orbit_sims` altitude sweep (2024, real F10.7/Ap,
-5 mm chipsat) sets the demand:
+**How much thrust at full drive, and does the body still float safely?**
 
-| altitude / pose | drag mean | drag max | covered by 13.65 nN (200 V)? |
+### Drag budget from orbit_sims (2024, real F10.7/Ap, 5 mm chipsat)
+
+| Altitude / pose | Drag mean | Drag max | Covered by 13.65 nN (200 V)? |
 |---|---|---|---|
 | 400 km axial | 32.9 nN | 92.4 nN | no |
 | 400 km lateral | 21.7 nN | 60.7 nN | no |
 | 500 km axial | 7.6 nN | 28.4 nN | mean only |
 | 550 km axial | 3.9 nN | 16.3 nN | mean; max barely missed |
-| 600 km axial | 2.0 nN | 9.6 nN | yes, fully |
+| 600 km axial | 2.0 nN | 9.6 nN | yes |
 
-Scaling the committed float200 measurement (13.65 nN at 200 V / 0.342 mA) by
-`I·sqrt(V − φ)` predicts **~30 nN** at this operating point — enough to cover
-the 500 km worst-case row (28.4 nN), close 550 km with margin, and lift the
-400 km duty cycle substantially.
+Scaling the 200 V measurement (13.65 nN at 0.342 mA) by I·√(V − φ) predicts ~30 nN — enough to cover the 500 km worst case (28.4 nN).
 
-## What is gated
-
-There is no regression anchor at 300 V, so the **required** gates are only
-the theory-anchored invariants that hold at any operating point (see
-`acceptance.yaml`): escape ≥ 95 %, benign float (φ ≤ 50 V), steady current
-balance ≤ 5 %, momentum sanity, sheath/plume containment, and both
-ledger-vs-dump charge cross-checks. The mission-coverage question
-(`f_beam_nN ≥ 28.4`) is **reported, not required** — a miss is a finding
-about the `I·sqrt(V − φ)` scaling, not an invalid run.
-
-## What is different from the baseline, exactly
+## What changed from the baseline
 
 | | floating_body (baseline) | high_thrust (this stage) |
 |---|---|---|
@@ -50,27 +34,30 @@ about the `I·sqrt(V − φ)` scaling, not an invalid run.
 | `max_steps` | 160 000 | **200 000** (CFL dt shrinks to ~4.15 ps) |
 | everything else | — | identical |
 
-The larger emitted current must be neutralized by roughly twice the ambient
-electron collection, so the float should settle higher (~+30 V by the same
-`(1+χ)` scaling that put the baseline at +17 V) — still well below the 50 V
-design limit. If instead the ionosphere cannot supply it, the choke
-watchdog (φ > 100 V sustained) fails the run early, and that too is a
-finding: the emission ceiling has outrun the collection ceiling at this
-density.
+The larger current needs roughly twice the ambient electron collection, so the float should settle higher (~+30 V) — still below the 50 V design limit. If the ionosphere can't supply it, the choke watchdog (φ > 100 V sustained) fails the run early.
+
+## What is gated
+
+No regression anchor at 300 V, so the required gates are only the theory-anchored invariants that hold at any operating point: escape ≥ 95%, float ≤ 50 V, current balance ≤ 5%, momentum sanity, containment, and both ledger cross-checks.
+
+The mission-coverage question (f_beam_nN ≥ 28.4) is reported, not required — a miss is a finding about the scaling, not an invalid run.
 
 ## Dashboard
 
 [![Dashboard](viz/20260804T154756Z_b854dcbe_dashboard.gif)](viz/20260804T154756Z_b854dcbe_dashboard.mp4)
 
-*Animated dashboard of the reference run — click for the full-resolution video.*
+*Animated dashboard — click for the full video.*
 
-## Usage
+## Commands
 
 ```bash
 python simulation.py                                   # ~8 h (193k steps)
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 ```
 
-Caveats travel with the ladder: reduced ion mass (400 mₑ, not O⁺),
-electrostatic (no B, no ram drift), single grid/PPC/seed, finite-time
-equilibrium on the ion clock.
+## Limitations
+
+- Reduced ion mass (400 mₑ, not O⁺)
+- Electrostatic only (no B, no ram drift)
+- Single grid/PPC/seed
+- Finite-time equilibrium on the ion clock
