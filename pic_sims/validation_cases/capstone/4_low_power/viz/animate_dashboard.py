@@ -47,8 +47,8 @@ def _draw_can(ax, geom):
                                    (r1 - r0) * 1e3, color="0.45", zorder=6))
 
     both(geom.z_bot, geom.z_top, geom.r_in, geom.r_p)
-    both(geom.z_bot, geom.zfloort, 0.0, geom.r_cath)
-    both(geom.z_bot, geom.zfloort, geom.r_cath_out, geom.r_p)
+    both(geom.z_floorb, geom.zfloort, 0.0, geom.r_cath)
+    both(geom.z_floorb, geom.zfloort, geom.r_cath_out, geom.r_p)
     both(geom.zlidb, geom.z_top, geom.r_slit, geom.r_p)
 
 
