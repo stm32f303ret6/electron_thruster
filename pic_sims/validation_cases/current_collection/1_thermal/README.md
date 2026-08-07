@@ -81,13 +81,9 @@ python animate.py --run outputs/<run-id>               # optional
 | `quasineutrality` | ≤ 0.02 | far-shell \|n_e−n_i\|/n0 |
 | `edge_phi_max_V` | ≤ 0.2 V | no spurious wall sheath |
 
-## Reference figures
+## Dashboard
 
-| | | |
-|---|---|---|
-| ![Current vs theory](reference_results/20260801T082253Z_ebb0fae8/figures/current.png) | ![Fields](reference_results/20260801T082253Z_ebb0fae8/figures/fields.png) | ![Sheath](reference_results/20260801T082253Z_ebb0fae8/figures/sheath.png) |
-
-[Dashboard animation](viz/20260806T084611Z_ebb0fae8_dashboard.mp4)
+<video src="viz/20260806T084611Z_ebb0fae8_dashboard.mp4" controls width="100%"></video>
 
 ## Known numerical limitations
 

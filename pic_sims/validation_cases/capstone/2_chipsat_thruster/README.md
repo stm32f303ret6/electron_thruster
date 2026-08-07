@@ -118,14 +118,9 @@ Reported, never gated: mean exhaust KE (~146 eV anchor), the energy ledger
 (injection-plane φ reconciliation), late dφ/dt (V/ns), far-shell density
 (confounded by the recycle shell).
 
-## Reference figures
+## Dashboard
 
-| | |
-|---|---|
-| ![Thrust](reference_results/20260806T011847Z_5670e54c/figures/thrust_vs_time.png) | ![Body potential](reference_results/20260806T011847Z_5670e54c/figures/phi_vs_time.png) |
-| ![Currents](reference_results/20260806T011847Z_5670e54c/figures/currents_vs_time.png) | ![Beam fates](reference_results/20260806T011847Z_5670e54c/figures/fates_vs_time.png) |
-
-[Dashboard animation](viz/20260806T011847Z_5670e54c_dashboard.mp4)
+<video src="viz/20260806T011847Z_5670e54c_dashboard.mp4" controls width="100%"></video>
 
 ## Known numerical limitations
 

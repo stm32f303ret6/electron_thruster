@@ -97,15 +97,9 @@ python analyze.py --runs outputs/<A-run> outputs/<B-run> outputs/<C-run> \
 - `{A,B,C}_collector_ke_conserved` |·| ≤ 1.5 eV — energy conservation.
 - `{A,B,C}_budget_closure` |·| ≤ 0.1% — conservation.
 
-## Reference figures
+## Dashboard
 
-![Transmission summary](reference_results/joint_5e72702e/figures/transmission.png)
-
-| A: low current, small hole | B: high current, small hole | C: high current, big hole |
-|---|---|---|
-| ![A fields](reference_results/joint_5e72702e/figures/fields_A_low_current_small_hole.png) | ![B fields](reference_results/joint_5e72702e/figures/fields_B_high_current_small_hole.png) | ![C fields](reference_results/joint_5e72702e/figures/fields_C_high_current_big_hole.png) |
-
-[Dashboard animation](viz/20260806_20260806_20260806_dashboard.mp4)
+<video src="viz/20260806_20260806_20260806_dashboard.mp4" controls width="100%"></video>
 
 ## Known numerical limitations
 

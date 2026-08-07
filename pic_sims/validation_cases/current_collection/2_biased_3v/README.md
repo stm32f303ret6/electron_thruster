@@ -71,13 +71,9 @@ python animate.py --run outputs/<run-id>               # optional
 | `quasineutrality` | ≤ 0.02 | far-shell \|n_e−n_i\|/n0 |
 | `edge_phi_max_V` | ≤ 0.5 V | sheath must not touch the open boundaries |
 
-## Reference figures
+## Dashboard
 
-| | |
-|---|---|
-| ![Current](reference_results/20260806T142605Z_1a87cbce/figures/current.png) | ![Sheath](reference_results/20260806T142605Z_1a87cbce/figures/sheath.png) |
-
-[Dashboard animation](viz/20260806T142605Z_1a87cbce_dashboard.mp4)
+<video src="viz/20260806T142605Z_1a87cbce_dashboard.mp4" controls width="100%"></video>
 
 ## Known numerical limitations
 

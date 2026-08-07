@@ -58,14 +58,9 @@ watchdog (φ > 100 V sustained) fails the run early, and that too is a
 finding: the emission ceiling has outrun the collection ceiling at this
 density.
 
-## Reference figures
+## Dashboard
 
-| | |
-|---|---|
-| ![Thrust](reference_results/20260804T154756Z_b854dcbe/figures/thrust_vs_time.png) | ![Body potential](reference_results/20260804T154756Z_b854dcbe/figures/phi_vs_time.png) |
-| ![Currents](reference_results/20260804T154756Z_b854dcbe/figures/currents_vs_time.png) | ![Beam fates](reference_results/20260804T154756Z_b854dcbe/figures/fates_vs_time.png) |
-
-[Dashboard animation](viz/20260804T154756Z_b854dcbe_dashboard.mp4)
+<video src="viz/20260804T154756Z_b854dcbe_dashboard.mp4" controls width="100%"></video>
 
 ## Usage
 
