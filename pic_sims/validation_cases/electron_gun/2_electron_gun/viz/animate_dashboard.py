@@ -21,7 +21,7 @@ from pathlib import Path
 import numpy as np
 from scipy import constants as scc
 
-CASE_DIR = Path(__file__).resolve().parent
+CASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(CASE_DIR.parents[1]))
 sys.path.insert(0, str(CASE_DIR))
 
@@ -29,7 +29,7 @@ import ladder_contract as lc
 from analyze import field_rz, ke_eV
 from helpers import SPECIES_NAME, load_config, scenario_names
 
-ANIM_ROOT = CASE_DIR / "animations"
+ANIM_ROOT = CASE_DIR / "viz"
 
 
 def parse_args(argv=None):
@@ -200,23 +200,17 @@ def main(argv=None) -> int:
     all_ke_max = max(all_ke_valid.max() * 1.15, 1.0) if len(all_ke_valid) else 120.0
 
     # figure setup
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(18, 5))
-    fig.subplots_adjust(wspace=0.35, left=0.05, right=0.97, top=0.88, bottom=0.13)
+    fig = plt.figure(figsize=(18, 5))
 
     writer = FFMpegWriter(fps=fps, bitrate=4000)
     writer.setup(fig, str(out), dpi=150)
 
-    # ── stage title card ──────────────────────────────────────────────
     def write_title_card(title, desc, n_frames):
-        for ax in (ax1, ax2, ax3):
-            ax.clear(); ax.axis("off")
-        ax2.text(0.5, 0.6, title,
-                 transform=ax2.transAxes, ha="center", va="center",
+        fig.clf()
+        fig.text(0.5, 0.6, title, ha="center", va="center",
                  fontsize=18, fontweight="bold", color="#333333")
-        ax2.text(0.5, 0.32, desc,
-                 transform=ax2.transAxes, ha="center", va="center",
+        fig.text(0.5, 0.32, desc, ha="center", va="center",
                  fontsize=12, color="#555555", linespacing=1.5)
-        fig.suptitle("")
         for _ in range(n_frames):
             writer.grab_frame()
 
@@ -234,9 +228,12 @@ def main(argv=None) -> int:
         # title card
         write_title_card(info["title"], info["desc"], title_frames)
 
-        # set up panels
-        for ax in (ax1, ax2, ax3):
-            ax.clear(); ax.axis("on")
+        # set up panels (fig.clf() already called by write_title_card)
+        fig.subplots_adjust(wspace=0.35, left=0.05, right=0.97,
+                            top=0.88, bottom=0.13)
+        ax1 = fig.add_subplot(1, 3, 1)
+        ax2 = fig.add_subplot(1, 3, 2)
+        ax3 = fig.add_subplot(1, 3, 3)
 
         # panel 1: electron density
         rho0, r0, z0 = field_rz(d["ts"], "rho", its[0])

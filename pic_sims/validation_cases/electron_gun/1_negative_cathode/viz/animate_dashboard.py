@@ -20,7 +20,7 @@ from pathlib import Path
 import numpy as np
 from scipy import constants as scc
 
-CASE_DIR = Path(__file__).resolve().parent
+CASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(CASE_DIR.parents[1]))
 sys.path.insert(0, str(CASE_DIR))
 
@@ -28,7 +28,7 @@ import ladder_contract as lc
 from analyze import field_rz, ke_eV
 
 SPECIES_NAME = "electrons"
-ANIM_ROOT = CASE_DIR / "animations"
+ANIM_ROOT = CASE_DIR / "viz"
 
 
 def parse_args(argv=None):
@@ -95,7 +95,7 @@ def main(argv=None) -> int:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    from matplotlib.animation import FFMpegWriter, FuncAnimation
+    from matplotlib.animation import FFMpegWriter
     from openpmd_viewer import OpenPMDTimeSeries
 
     diags = str(evidence.diags_dir)
@@ -153,9 +153,28 @@ def main(argv=None) -> int:
     ke_valid = median_ke[np.isfinite(median_ke)]
     ke_ylim = (0, max(ke_valid.max() * 1.15, 1.0)) if len(ke_valid) else (0, cfg.ke_max_ev)
 
-    # Set up figure
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(18, 5))
+    fig = plt.figure(figsize=(18, 5))
+
+    # title card (on blank figure, before any axes/colorbars)
+    anim_writer = FFMpegWriter(fps=args.fps, bitrate=4000)
+    anim_writer.setup(fig, str(out), dpi=150)
+    fig.text(0.5, 0.55, "Negative Cathode",
+             fontsize=22, fontweight="bold", ha="center", va="center",
+             color="#333333")
+    fig.text(0.5, 0.40,
+             "Two-plate diode: cathode at −100 V, collector at 0 V\n"
+             f"Beam current: {cfg.beam_current*1e6:.0f} μA",
+             fontsize=13, ha="center", va="center", color="#555555",
+             linespacing=1.5)
+    for _ in range(int(round(2.0 * args.fps))):
+        anim_writer.grab_frame()
+    fig.clf()
+
+    # build panels
     fig.subplots_adjust(wspace=0.35, left=0.05, right=0.97, top=0.88, bottom=0.13)
+    ax1 = fig.add_subplot(1, 3, 1)
+    ax2 = fig.add_subplot(1, 3, 2)
+    ax3 = fig.add_subplot(1, 3, 3)
 
     # Panel 1: electron density
     NE0, _, _ = get_ne(its[0])
@@ -193,22 +212,19 @@ def main(argv=None) -> int:
 
     sup = fig.suptitle("")
 
-    def update(frame_idx):
-        it = its[frame_idx]
+    for fi in range(len(its)):
+        it = its[fi]
         t_ns = it * dt * 1e9
 
-        # Panel 1: update density
         NE, _, _ = get_ne(it)
         im.set_data(NE)
 
-        # Panel 2: current up to this iteration
         mask = scrape_steps <= it
         if mask.any():
             line_curr.set_data(scrape_times_ns[mask], current_mA[mask])
         else:
             line_curr.set_data([], [])
 
-        # Panel 3: median KE up to this iteration
         if mask.any():
             t_plot = scrape_times_ns[mask]
             ke_plot = median_ke[mask]
@@ -217,17 +233,15 @@ def main(argv=None) -> int:
         else:
             line_ke.set_data([], [])
 
-        sup.set_text(f"negative_cathode   step {it}   t = {t_ns:.2f} ns")
-        return im, line_curr, line_ke
+        sup.set_text(f"Negative Cathode    step {it}    t = {t_ns:.2f} ns")
+        anim_writer.grab_frame()
 
-    anim = FuncAnimation(fig, update, frames=len(its), blit=False)
-    try:
-        anim.save(str(out), writer=FFMpegWriter(fps=args.fps, bitrate=4000))
-        print(f"wrote {out}")
-    except Exception as exc:
-        print(f"ffmpeg failed ({exc})", file=sys.stderr)
-        return 1
+    for _ in range(int(round(args.fps))):
+        anim_writer.grab_frame()
+
+    anim_writer.finish()
     plt.close(fig)
+    print(f"wrote {out}")
     return 0
 
 
