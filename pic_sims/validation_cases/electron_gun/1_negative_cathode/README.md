@@ -90,7 +90,7 @@ Defined in `acceptance.yaml` (`policy_id: emitter.negative_cathode.v1`):
 
 ## Dashboard
 
-<video src="viz/20260806T073653Z_52a474f6_dashboard.mp4" controls width="100%"></video>
+![Dashboard](viz/20260806T073653Z_52a474f6_dashboard.mp4)
 
 ## Known numerical limitations
 
