@@ -1,0 +1,114 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for emitter.voltage_bracket (the voltage-axis gun).
+#
+# Scenarios A (200 V) and B (300 V) are MECHANISM-REGRESSION gates: both
+# sit at the same healthy fraction of the planar ceiling (23.9%), so the
+# bracket's claim -- beam formation and transmission are V-independent at
+# fixed perveance fraction -- is gated directly (transmission >= 96% at
+# both, spread between them <= 2 pp).  This closes the emitter branch's
+# voltage gap: beam formation was previously validated only at 100 V
+# while the capstone stages gun at 200-300 V (VALIDATION_GAPS.md G3).
+#
+# Scenario C drives the gun PAST its planar ceiling (133.5%) at the
+# ucurve_left_arm command.  Space-charge current limiting is textbook
+# physics and prior in-repo evidence (emitter.holed_anode B) already
+# showed transmission loss at 79% of I_CL, so the DROP vs A is a required
+# mechanism gate; but exactly where the limited current lands
+# (collector/cathode-return split) is what the run measures, so those
+# are reported.
+#
+# Energy conservation and particle-budget closure are required for every
+# scenario: they certify accounting, not physics.
+#
+# The planar Child-Langmuir current itself is DELIBERATELY not gated
+# (non-planar geometry; printed scale only -- the holed_anode precedent).
+#
+# Changing any tolerance requires a new policy_id; every verdict records
+# this file's SHA-256.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: emitter.voltage_bracket.v1
+stage_id: emitter.voltage_bracket
+evidence_kind: mechanism_regression
+
+gates:
+  # A -- 200 V at the anchor command: healthy perveance fraction, transmits.
+  - id: A_collector_transmits
+    required: true
+    metric: A_200v_anchor_drive__collector_fraction
+    comparison: at_least
+    minimum: 0.96
+
+  # B -- 300 V at the ceiling command: same perveance fraction, same result.
+  - id: B_collector_transmits
+    required: true
+    metric: B_300v_ceiling_drive__collector_fraction
+    comparison: at_least
+    minimum: 0.96
+
+  # The bracket claim itself: at fixed perveance fraction, transmission is
+  # voltage-independent across the full capstone drive range.
+  - id: transmission_flat_across_bracket
+    required: true
+    metric: transmission_spread_A_to_B
+    comparison: at_most
+    maximum: 0.02
+
+  # C -- over the planar ceiling: current limiting must cost transmission.
+  - id: C_overperveance_costs_transmission
+    required: true
+    metric: C_collector_drop_vs_A
+    comparison: at_least
+    minimum: 0.03
+
+  # Where C's limited current lands is the measurement: reported.
+  - id: C_meets_frontier_transmission
+    required: false
+    metric: C_ucurve_overperveance__collector_fraction
+    comparison: at_least
+    minimum: 0.96
+  - id: C_excess_returns_upstream
+    required: false
+    metric: C_ucurve_overperveance__cathode_fraction
+    comparison: at_least
+    minimum: 0.03
+
+  # Per-scenario energy conservation from the emission plane (self-consistent phi).
+  - id: A_collector_ke_conserved
+    required: true
+    metric: A_200v_anchor_drive__ke_error_eV
+    comparison: abs_within
+    target: 0.0
+    tolerance: 1.5
+  - id: B_collector_ke_conserved
+    required: true
+    metric: B_300v_ceiling_drive__ke_error_eV
+    comparison: abs_within
+    target: 0.0
+    tolerance: 1.5
+  - id: C_collector_ke_conserved
+    required: true
+    metric: C_ucurve_overperveance__ke_error_eV
+    comparison: abs_within
+    target: 0.0
+    tolerance: 1.5
+
+  # Per-scenario particle-budget closure.
+  - id: A_budget_closure
+    required: true
+    metric: A_200v_anchor_drive__budget_closure_pct
+    comparison: abs_within
+    target: 0.0
+    tolerance: 0.1
+  - id: B_budget_closure
+    required: true
+    metric: B_300v_ceiling_drive__budget_closure_pct
+    comparison: abs_within
+    target: 0.0
+    tolerance: 0.1
+  - id: C_budget_closure
+    required: true
+    metric: C_ucurve_overperveance__budget_closure_pct
+    comparison: abs_within
+    target: 0.0
+    tolerance: 0.1

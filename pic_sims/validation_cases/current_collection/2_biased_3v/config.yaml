@@ -4,8 +4,8 @@
 # Small attracting bias.  For a sub-Debye sphere (a/lambda_De = 0.38) the
 # Orbit-Motion-Limited ceiling applies:
 #     I_OML = I_th * (1 + chi) = 0.10393 uA * 27.40 = 2.847 uA
-# OML is an UPPER bound approached as a/lambda -> 0; at 0.38 the
-# electron_contactor OML study measured 93% of the ceiling, so the gate
+# OML is an UPPER bound approached as a/lambda -> 0; at finite radius the
+# collected fraction falls below it (Laframboise 1966), so the gate
 # accepts [0.85, 1.05].  Ions are Boltzmann-repelled (~1e-16); the measured
 # ion trickle is start-up bias, reported not gated.
 #
@@ -20,7 +20,7 @@ probe:
   radius: 7.5e-4         # [m] a/lambda_De = 0.38, 5 cells per radius
   bias: 3.0              # [V]
 
-plasma:                  # electron_contactor capstone "PLASMA_MAX" row
+plasma:                  # capstone "PLASMA_MAX" row -- IDENTICAL to the chipsat deck
   n0: 1.627e12           # [m^-3]
   Te_K: 1318.8           # [K]
   Ti_K: 936.2            # [K]

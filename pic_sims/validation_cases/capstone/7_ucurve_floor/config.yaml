@@ -1,0 +1,107 @@
+# ----------------------------------------------------------------------
+# capstone.ucurve_floor -- physics/numerics config (chipsat, 78 V at
+# fixed 13.65 nN demand)
+#
+# The SAME physical system as capstone.floating_body (2_chipsat_thruster)
+# -- identical can geometry, plasma row, grid, and charge pump -- driven at
+# 78 V with the beam current commanded for the 200 V anchor's measured
+# thrust (13.65 nN), per the calibrated laws:
+#
+#   model/ucurve_targeting.py (committed constants, H1 branch):
+#   i_beam = 0.840 mA, predicted phi = 47.3 V, P/F = 4.80 mW/nN
+#   I/I_CL(78 V) = 14.7  ->  10.1x the validated emission ceiling
+#
+# THE QUESTION: does this thrust demand have ANY operating point at 78 V?
+# This is a boundary demonstration, not an operating-point extension.  H1
+# (implausibly: chi = 416, far outside every measured envelope) says yes
+# at phi = 47.3 V, brushing the benign limit.  H2 says the commanded
+# current -- 10x the validated emission ceiling -- fails by beam optics
+# before the float ever binds (cf. the killed slender attempt: 91% of the
+# beam self-scraped, phi stuck at 0.3 V).  Either outcome maps the no-go
+# wall under the flight rule's V floor.  Pre-registered hypotheses and
+# numeric predictions: ../UCURVE_PLAN.md, committed before this run.
+#
+# This file holds ONLY the effective physics/numerics (frozen + hashed per
+# run).  Gates live in acceptance.yaml.
+#
+# PyYAML 1.1: decimal point AND signed exponent; helpers.py coerces every
+# numeric leaf regardless.
+# ----------------------------------------------------------------------
+stage_id: capstone.ucurve_floor
+
+electrical:
+  cathode_offset: -78.0    # [V] cathode relative to the floating body: far
+                           #     below the 100 V hardware floor on purpose --
+                           #     this run maps the no-go wall, not an operating
+                           #     point.  Always negative.
+  phi_body_init: 0.0       # [V] initial floating-body potential (pump start).
+  t_supply: 100.0e-9       # [s] supply switch-on; before this, body and cathode are
+                           #     equipotential and the can settles like a bare probe.
+
+beam:
+  i_beam: 0.840e-3         # [A] commanded for F = 13.65 nN at 78 V by the
+                           #     calibrated laws (model/ucurve_targeting.py,
+                           #     H1 branch; solved 0.8397 mA, rounded to 3 sf).
+                           #     14.7x I_CL(78 V) -- an order of magnitude past
+                           #     the validated perveance; see ../UCURVE_PLAN.md.
+  t_on: 150.0e-9           # [s] gun switch-on; must be >= t_supply.
+  rms_velocity: 2.6e5      # [m/s] per-axis thermal spread of the emitted beam
+                           #     (~0.39 eV/axis; hotter than the emitter rungs' 0.25 eV
+                           #     -- see 2_chipsat_thruster/VALIDATION_GAPS.md G3).
+  flux_correction: 1.0     # [-] RZ over-emission divisor; z-normal planar flux
+                           #     calibrates to ~1.0 (measured 1.007 for this deck).
+
+geometry:                  # all lengths [m]; labelled cross-section in README.md.
+  r_probe: 5.0e-3          # can outer radius.
+  wall_thickness: 0.4e-3
+  lid_thickness: 0.4e-3
+  floor_thickness: 0.4e-3
+  z_bot: -5.0e-3           # can floor bottom (also the cathode-disk bottom).
+  z_top: 0.5e-3            # lid top (capstone short-drift geometry).
+  r_slit: 2.0e-3           # lid exhaust-hole radius -- the escape lever.
+  r_cathode: 1.5e-3        # cathode-disk radius (the emitting electrode).
+  emit_radius: 0.5e-3      # emission-spot radius; < r_cathode and < r_slit.
+
+plasma:                    # capstone "PLASMA_MAX" row -- IDENTICAL to collector.*.
+  n0: 1.627e12             # [m^-3]
+  Te_K: 1318.8             # [K]  (kTe = 113.6 meV)
+  Ti_K: 936.2              # [K]
+  ion_mass_me: 400.0       # [-] reduced ion mass (NOT real O+; ladder-wide caveat).
+
+reservoir:                 # infinite-ionosphere recycle.  REQUIRED for the floating
+                           # equilibrium (a current balance); without refill the run
+                           # measures reservoir depletion, not physics.
+  enabled: true
+  frac: 0.7                # recycle into the outer (1-frac) radial shell.
+  every: 25                # inject the banked weight every N steps.
+
+domain:
+  rmax: 0.030              # [m] outer radial extent (must contain sheath + plume).
+  aspect: 1.12             # [-] Lz/rmax of the squat domain.
+  zmargin_lo: 25.0e-3      # [m] min plasma margin below the can floor.
+  zmargin_hi: 35.0e-3      # [m] min margin above the lid (the +z exhaust plume must
+                           #     reach phi~0 so a z_hi crossing is a genuine escape).
+  edge_phi_max: 1.0        # [V] live sheath-containment watchdog threshold (warn);
+                           #     the same bound is GATED in analysis from field dumps.
+
+numerics:
+  dx: 0.15e-3              # [m] cell size (dr = dz) -- chipsat capstone/collector value.
+  dt: null                 # [s] null -> CFL-derived: 0.3*dx/(v_beam + 4*vth_e).
+  ppc: 16                  # ambient macroparticles per cell per species.
+  ppc_beam: 16             # beam macroparticles per surface cell per step
+                           #     (emitter rungs used 128 -- VALIDATION_GAPS.md G3).
+
+run:
+  t_end: 800.0e-9          # [s] simulated end time (overrides max_steps if fewer).
+  max_steps: 160000        # [-] hard step cap.  The 78 V beam gives CFL
+                           #     dt ~7.75 ps; 800 ns needs ~103k steps (the
+                           #     200 V baseline needed ~159k).
+  diag_period_frac: 40     # openPMD field/particle/scrape dumps: ~this many per run.
+  phi_ceiling: 100.0       # [V] choke detector: sustained phi_body above this aborts
+                           #     the run as FAILED (the ionosphere cannot neutralize).
+  choke_sustain: 50.0e-9   # [s] how long above the ceiling before calling it.
+
+compute:
+  # AMReX pre-allocates ~3/4 of TOTAL GPU memory by default; cap the arena.
+  # This deck peaks around ~3-4 GB (3M+ ambient macroparticles + 200x440 grid).
+  gpu_arena_bytes: 6000000000
