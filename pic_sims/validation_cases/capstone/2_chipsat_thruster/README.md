@@ -30,6 +30,10 @@ Migrated from the validated float200 baseline of the `electron_contactor` projec
 2. Every step: net scraped charge → dQ = e·(dW_beam + beam_escape) − e·amb_e_coll + e·amb_i_coll, then φ_body = φ0 + Q/C
 3. The two-node EB potential (BODY = φ_body, CATHODE = φ_body − 200 V) is rewritten every step via `set_potential_on_eb`
 
+![Equivalent circuit](viz/circuit_2_chipsat_thruster.png)
+
+*The current loop as a circuit: the supply lifts electrons out of the cathode, the beam carries them to space, and the ionosphere returns them to the floating body. Regenerate with `python viz/circuit.py`.*
+
 A **reservoir** re-injects every EB-collected ambient particle into the outer radial shell (r > 22.5 mm, every 25 steps) to maintain the plasma supply.
 
 ### What's included
@@ -80,6 +84,11 @@ The escape, thrust, and float targets were read from the validated float200 run 
 python simulation.py
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 python animate.py --run outputs/<run-id>
+
+# figures (all take --dpi and --format png|pdf|svg)
+python viz/schematic.py        # color cutaway with circuit + thrust vector
+python viz/circuit.py          # equivalent-circuit diagram
+python viz/potential_map.py    # phi(r,z) map from outputs/LATEST (or --run)
 ```
 
 A CHOKED run (φ_body > 100 V sustained 50 ns) or non-finite φ_body aborts as FAILED. No checkpoint/restart — interrupted runs are rerun from scratch.
@@ -104,6 +113,12 @@ From `acceptance.yaml` (policy: `capstone.floating_body.v2`):
 [![Dashboard](viz/20260806T011847Z_5670e54c_dashboard.gif)](viz/20260806T011847Z_5670e54c_dashboard.mp4)
 
 *Animated dashboard — click for the full video.*
+
+### Potential map
+
+![Potential map](viz/potential_map_2_chipsat_thruster.png)
+
+*Self-consistent φ(r,z) from the last field dump of the latest run (run id in the title): sheath and plume containment on the left (±20 V scale), the acceleration gap inside the can on the right (full −200…φ_body range). Body metal drawn red, cathode blue, matching the schematic. Regenerate with `python viz/potential_map.py`.*
 
 ## Results
 
