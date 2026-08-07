@@ -81,7 +81,10 @@ def main(argv=None) -> int:
     PHI = np.vstack([phi[::-1], phi])
 
     ledger = load_ledger(evidence.diags_dir)
-    phi_body = float(np.atleast_1d(ledger["phi_body"])[-1])
+    t_l = np.atleast_1d(ledger["t"])
+    phi_l = np.atleast_1d(ledger["phi_body"])
+    tail = t_l > t_l[-1] - 100e-9
+    phi_body = float(phi_l[tail].mean())
 
     fig, (axL, axR) = plt.subplots(
         1, 2, figsize=(15, 6.2), facecolor="white",
@@ -118,8 +121,8 @@ def main(argv=None) -> int:
 
     fig.suptitle(
         f"Self-consistent potential φ(r,z) — run {evidence.run_id}\n"
-        f"body (red) at φ_body ≈ {phi_body:+.1f} V, cathode (blue) at "
-        f"φ_body − {abs(cfg.cathode_offset):.0f} V",
+        f"body (red) at φ_body ≈ {phi_body:+.1f} V (tail mean), cathode "
+        f"(blue) at φ_body − {abs(cfg.cathode_offset):.0f} V",
         fontsize=13, fontweight="bold")
 
     out = CASE_DIR / "viz" / f"potential_map_2_chipsat_thruster.{args.format}"

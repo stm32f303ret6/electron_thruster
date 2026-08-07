@@ -118,7 +118,7 @@ From `acceptance.yaml` (policy: `capstone.floating_body.v2`):
 
 ![Potential map](viz/potential_map_2_chipsat_thruster.png)
 
-*Self-consistent φ(r,z) from the last field dump of the latest run (run id in the title): sheath and plume containment on the left (±20 V scale), the acceleration gap inside the can on the right (full −200…φ_body range). Body metal drawn red, cathode blue, matching the schematic. Regenerate with `python viz/potential_map.py`.*
+*Self-consistent φ(r,z) from the last field dump — an illustration of three gated/claimed facts, not a gate itself: (1) φ decays to ≈0 well inside the domain (the containment gate — escapes are genuine, not a clipped sheath); (2) the two-node charge pump is really applied (body at φ_body, cathode exactly 200 V below); (3) the craft floats benignly, perturbing the plasma by only a few volts, while the full 200 V drops inside the can's acceleration gap (right panel). Rendered from `20260805T045954Z_b87fbefc` (baseline deck at ppc = 32; φ_body tail ≈ +17.5 V, inside the +16 ± 4 V gate). Regenerate with `python viz/potential_map.py --run outputs/<run-id>` (defaults to `outputs/LATEST`, which may be an exploratory variant — the run id and geometry in the figure are the ground truth).*
 
 ## Results
 
