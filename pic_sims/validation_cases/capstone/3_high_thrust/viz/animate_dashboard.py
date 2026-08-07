@@ -3,7 +3,7 @@
 
     Panel 1: phi(r,z) — electrostatic potential
     Panel 2: n_beam(r,z) — beam electron density
-    Panel 3: thrust vs time — F_beam clearing the 28.4 nN drag bar
+    Panel 3: beam fates — % escaped vs % returned to spacecraft
 
     python animate_dashboard.py --run outputs/<run-id> [--out PATH] [--fps 10]
 """
@@ -27,8 +27,6 @@ from analyze import field_rz, load_ledger
 from helpers import load_config
 
 ANIM_ROOT = CASE_DIR / "viz"
-
-DRAG_500KM_nN = 28.4
 
 
 def parse_args(argv=None):
@@ -76,7 +74,9 @@ def main(argv=None) -> int:
     ledger = load_ledger(evidence.diags_dir)
     steps_l = np.atleast_1d(ledger["step"]).astype(float)
     t_l_ns = np.atleast_1d(ledger["t"]) * 1e9
-    F_beam_nN = np.atleast_1d(ledger["F_beam_N"]) * 1e9
+    pct_escape = np.atleast_1d(ledger["pct_escape"])
+    pct_return = (np.atleast_1d(ledger["pct_body"])
+                  + np.atleast_1d(ledger["pct_cathode"]))
 
     def get_fields(it):
         phi, r, z = field_rz(ts, "phi", it)
@@ -91,8 +91,6 @@ def main(argv=None) -> int:
     ext = [zmm.min(), zmm.max(), rr.min(), rr.max()]
 
     t_end_ns = cfg.t_end * 1e9
-    F_max = max(F_beam_nN.max() if len(F_beam_nN) else 1,
-                DRAG_500KM_nN) * 1.3
 
     fps = args.fps
     fig = plt.figure(figsize=(20, 5.5))
@@ -103,8 +101,8 @@ def main(argv=None) -> int:
              fontsize=22, fontweight="bold", ha="center", va="center",
              color="#333333")
     fig.text(0.5, 0.40,
-             "Same geometry at hardware ceiling\n"
-             "Panel 3: does beam thrust clear the 28.4 nN drag bar?",
+             "Same geometry at hardware ceiling (300 V)\n"
+             "Panel 3: beam electron fates (escaped vs returned)",
              fontsize=13, ha="center", va="center", color="#555555",
              linespacing=1.5)
     for _ in range(int(round(2.0 * fps))):
@@ -133,14 +131,12 @@ def main(argv=None) -> int:
     for ax in (ax1, ax2):
         _draw_can(ax, geom)
 
-    line_f, = ax3.plot([], [], color="tab:green", lw=1.2, label="F_beam")
-    ax3.axhline(DRAG_500KM_nN, color="tab:red", ls="--", lw=0.8,
-                label=f"500 km drag = {DRAG_500KM_nN:.1f} nN")
-    ax3.axhline(0.0, color="k", lw=0.5)
+    line_esc, = ax3.plot([], [], color="tab:green", lw=1.5, label="% escaped")
+    line_ret, = ax3.plot([], [], color="tab:red", lw=1.2, label="% returned")
     ax3.set_xlim(0, t_end_ns)
-    ax3.set_ylim(-2, F_max)
-    ax3.set_ylabel("F_beam [nN]"); ax3.set_xlabel("time [ns]")
-    ax3.legend(fontsize=7, loc="lower right"); ax3.grid(alpha=0.3)
+    ax3.set_ylim(-2, 105)
+    ax3.set_ylabel("beam fraction [%]"); ax3.set_xlabel("time [ns]")
+    ax3.legend(fontsize=8, loc="center right"); ax3.grid(alpha=0.3)
 
     sup = fig.suptitle("")
 
@@ -152,9 +148,11 @@ def main(argv=None) -> int:
 
         mask = steps_l <= it
         if mask.any():
-            line_f.set_data(t_l_ns[mask], F_beam_nN[mask])
+            line_esc.set_data(t_l_ns[mask], pct_escape[mask])
+            line_ret.set_data(t_l_ns[mask], pct_return[mask])
         else:
-            line_f.set_data([], [])
+            line_esc.set_data([], [])
+            line_ret.set_data([], [])
 
         sup.set_text(f"High Thrust 300 V    step {it}    t = {t_ns:.1f} ns")
         writer.grab_frame()
