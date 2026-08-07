@@ -17,7 +17,7 @@ from pathlib import Path
 import numpy as np
 from scipy import constants as scc
 
-CASE_DIR = Path(__file__).resolve().parent
+CASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(CASE_DIR.parents[1]))
 sys.path.insert(0, str(CASE_DIR))
 
@@ -25,7 +25,7 @@ import ladder_contract as lc  # noqa: E402
 from analyze import field_rz  # noqa: E402
 from helpers import load_config  # noqa: E402
 
-ANIM_ROOT = CASE_DIR / "animations"
+ANIM_ROOT = CASE_DIR / "viz"
 
 
 def parse_args(argv=None):
