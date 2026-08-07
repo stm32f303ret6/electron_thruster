@@ -1,5 +1,7 @@
 # capstone.high_thrust — the thruster at the 300 V hardware ceiling
 
+![Schematic](viz/schematic_3_high_thrust.png)
+
 The same physical system as [`capstone.floating_body`](../2_chipsat_thruster/README.md)
 — identical can geometry, plasma row, grid, reservoir, and floating-body
 charge pump — driven at the **300 V hardware ceiling** with the beam current
@@ -56,11 +58,19 @@ watchdog (φ > 100 V sustained) fails the run early, and that too is a
 finding: the emission ceiling has outrun the collection ceiling at this
 density.
 
+## Reference figures
+
+| | |
+|---|---|
+| ![Thrust](reference_results/20260804T154756Z_b854dcbe/figures/thrust_vs_time.png) | ![Body potential](reference_results/20260804T154756Z_b854dcbe/figures/phi_vs_time.png) |
+| ![Currents](reference_results/20260804T154756Z_b854dcbe/figures/currents_vs_time.png) | ![Beam fates](reference_results/20260804T154756Z_b854dcbe/figures/fates_vs_time.png) |
+
+[Dashboard animation](viz/20260804T154756Z_b854dcbe_dashboard.mp4)
+
 ## Usage
 
 ```bash
-conda activate warpx-cpu-mpich-dev
-python simulation.py                                   # ~8 h CPU (193k steps)
+python simulation.py                                   # ~8 h (193k steps)
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 ```
 

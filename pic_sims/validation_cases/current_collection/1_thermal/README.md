@@ -1,9 +1,9 @@
 # collector.thermal — sphere at plasma potential (0 V)
 
+![Schematic](viz/schematic_1_thermal.png)
+
 The one probe problem with an **exact, assumption-free** answer, and the first
-rung of the collector branch. Read this one folder and you have the whole model:
-`simulation.py` (the complete PIC deck), `helpers.py` (config + closed-form
-references), `analyze.py` (the gated interpretation).
+rung of the collector branch.
 
 ## Physical system
 
@@ -59,16 +59,13 @@ None — a root stage of the collector branch.
 ~25–50 min on an RTX 3060 GPU. 50000 steps × 60 ps = 3.0 µs: the **electron**
 current equilibrates on the electron clock (~0.06 µs) but the **ion** current
 fills in on the slow ion transit clock (~2 µs) — "steady on whose clock?".
-Infeasible on CPU.
 
 ## Commands
 
 ```bash
-conda activate warpx-cpu-mpich-dev
-python simulation.py                                   # -> outputs/<run-id>/
+python simulation.py
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 python animate.py --run outputs/<run-id>               # optional
-PYTHONNOUSERSITE=1 python -m pytest tests/ -q          # no WarpX
 ```
 
 ## Gate definitions and tolerance rationale
@@ -84,8 +81,13 @@ PYTHONNOUSERSITE=1 python -m pytest tests/ -q          # no WarpX
 | `quasineutrality` | ≤ 0.02 | far-shell \|n_e−n_i\|/n0 |
 | `edge_phi_max_V` | ≤ 0.2 V | no spurious wall sheath |
 
-Changing any tolerance requires a new `policy_id`; every verdict records this
-file's SHA-256.
+## Reference figures
+
+| | | |
+|---|---|---|
+| ![Current vs theory](reference_results/20260801T082253Z_ebb0fae8/figures/current.png) | ![Fields](reference_results/20260801T082253Z_ebb0fae8/figures/fields.png) | ![Sheath](reference_results/20260801T082253Z_ebb0fae8/figures/sheath.png) |
+
+[Dashboard animation](viz/20260806T084611Z_ebb0fae8_dashboard.mp4)
 
 ## Known numerical limitations
 
@@ -96,6 +98,3 @@ file's SHA-256.
 - **t = 0 spike**: bulk particles born inside the sphere are scraped in the
   first steps; the last-40% steady window excludes the transient.
 - Single grid/PPC/seed — no convergence evidence yet (Phase 5).
-
-The machine-readable record is `results/<run-id>/<analysis-id>/metrics.json` +
-`verdict.json`; numbers here are illustrative.

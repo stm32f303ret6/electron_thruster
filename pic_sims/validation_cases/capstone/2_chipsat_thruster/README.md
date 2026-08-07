@@ -1,5 +1,7 @@
 # capstone.floating_body — the chipsat electron-thruster capstone
 
+![Schematic](viz/schematic_2_chipsat_thruster.png)
+
 The top rung — **the thruster test itself**: emitter + collector physics in
 one self-consistent system.  The stage ID names the defining mechanism under
 validation (the body FLOATS while the gun fires — the thruster only works if
@@ -81,20 +83,16 @@ asserts the frozen capstone plasma/dx/ppc hash-match `collector.thermal`'s.
 ## Run cost
 
 159 160 steps at dt ≈ 5.0 ps (t_end 800 ns), 200×440 grid, ~3 M ambient
-macroparticles. **Measured: 6.34 h on the CPU build (14 OpenMP threads,
-0.14 s/step)** — comparable to ~6 h on an RTX 3060 with the GPU build, because
-this deck is *callback-bound*: the per-step Python observer (scrape-buffer
-reads + `set_potential_on_eb` rewrite) forces a host↔device round-trip every
-step, so the GPU never gets to stretch its legs. Run ONE WarpX case at a time.
+macroparticles. **~6 h** (0.14 s/step) — this deck is *callback-bound*:
+the per-step Python observer (scrape-buffer reads + `set_potential_on_eb`
+rewrite) forces a host↔device round-trip every step.
 
 ## Commands
 
 ```bash
-conda activate warpx-cpu-mpich-dev     # (GPU build env for the real run)
-python simulation.py                    # -> outputs/<run-id>/ (prints RUN_ID=...)
+python simulation.py
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
-python animate.py --run outputs/<run-id>              # optional movie
-PYTHONNOUSERSITE=1 python -m pytest tests/ -q          # unit tests (no WarpX)
+python animate.py --run outputs/<run-id>
 ```
 
 A CHOKED run (phi_body > 100 V sustained 50 ns — the ionosphere cannot
@@ -118,8 +116,16 @@ is no checkpoint/restart (an interrupted run is rerun from scratch).
 
 Reported, never gated: mean exhaust KE (~146 eV anchor), the energy ledger
 (injection-plane φ reconciliation), late dφ/dt (V/ns), far-shell density
-(confounded by the recycle shell). Changing any tolerance requires a new
-`policy_id`; every verdict records this file's SHA-256.
+(confounded by the recycle shell).
+
+## Reference figures
+
+| | |
+|---|---|
+| ![Thrust](reference_results/20260806T011847Z_5670e54c/figures/thrust_vs_time.png) | ![Body potential](reference_results/20260806T011847Z_5670e54c/figures/phi_vs_time.png) |
+| ![Currents](reference_results/20260806T011847Z_5670e54c/figures/currents_vs_time.png) | ![Beam fates](reference_results/20260806T011847Z_5670e54c/figures/fates_vs_time.png) |
+
+[Dashboard animation](viz/20260806T011847Z_5670e54c_dashboard.mp4)
 
 ## Known numerical limitations
 
@@ -133,7 +139,7 @@ Reported, never gated: mean exhaust KE (~146 eV anchor), the energy ledger
 ## Status
 
 **Parity-validated.** The full baseline ran on 2026-08-01 (run
-`20260801T142601Z_2f822a95`, 6.34 h CPU) and **PASSed all 7 gates**,
+`20260801T142601Z_2f822a95`, ~6 h) and **PASSed all 8 gates**,
 reproducing the float200 anchors: escape 98.44 % (anchor ~98.5), F_beam
 13.65 nN (13.6), φ_body +16.98 V (+16), exhaust KE 147.5 eV (~146; the
 energy ledger closes to 0.6 eV), current balance 3.2 %, edge |φ| 38 mV,

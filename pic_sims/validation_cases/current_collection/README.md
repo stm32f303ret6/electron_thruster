@@ -54,12 +54,8 @@ measured trickle starts high and decays on the ion clock — reported, never gat
 
 ## Run cost
 
-Measured on the CPU build (2026-08-01): thermal ~16 min, +3 V ~65 min,
-+10 V ~80 min, floating ~37 min — the original "GPU-only" assumption is
-retired (verified reference runs for all four rungs were produced on CPU).
-Run ONE at a time (each caps its arena but they contend). There is no
-checkpointing: a killed run is FAILED and restarts from zero (an interrupted
-run is rerun from scratch, by design).
+Thermal ~16 min, +3 V ~65 min, +10 V ~80 min, floating ~37 min.
+Run ONE at a time (each caps its arena but they contend).
 
 ## Known risks (documented up front)
 

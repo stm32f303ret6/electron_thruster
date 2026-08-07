@@ -1,9 +1,8 @@
 # emitter.negative_cathode
 
-Two-plate RZ plane diode: the first rung of the emitter branch. Read this one
-folder and you have the whole model — `simulation.py` is the complete PIC deck,
-`helpers.py` the config + closed-form references, `analyze.py` the gated
-interpretation.
+![Schematic](viz/schematic_negative_cathode.png)
+
+Two-plate RZ plane diode: the first rung of the emitter branch.
 
 ## Physical system
 
@@ -64,32 +63,16 @@ None — this is a root stage of the ladder.
 
 ## Run cost
 
-~3 min on an RTX 3060 GPU; a few minutes on CPU/OpenMP. 4000 steps × 1.5 ps =
-6.0 ns; beam transit ≈ 1.3 ns, so steady state is reached well before the end.
+~3 min. 4000 steps × 1.5 ps = 6.0 ns; beam transit ≈ 1.3 ns, so steady state
+is reached well before the end.
 
 ## Commands
 
 ```bash
-conda activate warpx-cpu-mpich-dev
-
-# 1. run the PIC model -> a fresh immutable outputs/<run-id>/ (prints RUN_ID=...)
 python simulation.py
-
-# 2. analyze that run under this stage's acceptance policy
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
-#    exit 0 = all required gates pass; 1 = a gate failed; 2 = analysis error
-
-# 3. (optional) presentation movie -> animations/<run-id>_fields.mp4
 python animate.py --run outputs/<run-id>
-
-# unit tests (no WarpX): config/analytics + contract math
-PYTHONNOUSERSITE=1 python -m pytest tests/ -q
 ```
-
-Each `simulation.py` invocation creates a **new** run directory; reruns never
-mix with old output. A run is COMPLETE only after its artifacts and final
-iteration are verified. `results/<run-id>/<analysis-id>/` holds each analysis;
-re-analysis never overwrites an earlier one.
 
 ## Gate definitions and tolerance rationale
 
@@ -105,8 +88,13 @@ Defined in `acceptance.yaml` (`policy_id: emitter.negative_cathode.v1`):
 | `space_charge_depression_V` | \|· − 0.092\| ≤ 0.04 V | **regression** anchor (see above) |
 | `budget_closure_pct` | \|·\| ≤ 0.1% | conservation check |
 
-Changing any tolerance requires a new `policy_id`; every verdict records the
-policy file's SHA-256, and old verdicts are never reinterpreted.
+## Reference figures
+
+| | |
+|---|---|
+| ![Fields](reference_results/20260801T075244Z_52a474f6/figures/fields.png) | ![Current](reference_results/20260801T075244Z_52a474f6/figures/current.png) |
+
+[Dashboard animation](viz/20260806T073653Z_52a474f6_dashboard.mp4)
 
 ## Known numerical limitations
 
@@ -116,9 +104,3 @@ policy file's SHA-256, and old verdicts are never reinterpreted.
   cell centres; on the ~50 V/mm gap gradient the nearest-cell ambiguity is
   worth a fraction of an eV, inside the 0.5 eV gate.
 
-## Provenance
-
-The machine-readable record for any run is its `results/<run-id>/<analysis-id>/`
-`metrics.json` + `verdict.json` (and the frozen `outputs/<run-id>/config_used.yaml`
-+ `manifest.json`). Numbers quoted in this README are illustrative; the JSON is
-authoritative.
