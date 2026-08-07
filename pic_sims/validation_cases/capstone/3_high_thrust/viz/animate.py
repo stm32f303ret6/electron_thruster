@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Presentation animation for a capstone.low_power run (no gate logic).
+"""Presentation animation for a capstone.high_thrust run (no gate logic).
 
 Reads one explicitly selected COMPLETE run and renders a potential/density
 movie with the can cross-section drawn and a phi_body/escape HUD from the CSV
@@ -18,7 +18,7 @@ from pathlib import Path
 import numpy as np
 from scipy import constants as scc
 
-CASE_DIR = Path(__file__).resolve().parent
+CASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(CASE_DIR.parents[1]))
 sys.path.insert(0, str(CASE_DIR))
 
@@ -26,7 +26,7 @@ import ladder_contract as lc  # noqa: E402
 from analyze import field_rz, load_ledger  # noqa: E402
 from helpers import load_config  # noqa: E402
 
-ANIM_ROOT = CASE_DIR / "animations"
+ANIM_ROOT = CASE_DIR / "viz"
 
 
 def parse_args(argv=None):
@@ -114,7 +114,7 @@ def main(argv=None) -> int:
         P, N, _, _ = frame(it)
         imP.set_data(P)
         imN.set_data(N)
-        sup.set_text(f"capstone.low_power   t={it*cfg.dt*1e9:.1f} ns "
+        sup.set_text(f"capstone.high_thrust   t={it*cfg.dt*1e9:.1f} ns "
                      f"(step {it})   {hud(it)}")
         return imP, imN
 
