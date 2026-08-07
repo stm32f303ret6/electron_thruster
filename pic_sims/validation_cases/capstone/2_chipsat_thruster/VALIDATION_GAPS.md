@@ -3,7 +3,7 @@
 The premise of the ladder is that by the time `capstone.floating_body` runs,
 every numerical choice it rides on has already passed a gate somewhere cheaper.
 This document audits that claim against the actual capstone deck
-(`electron_contactor` float200 baseline). First what genuinely carries over,
+(the float200 baseline). First what genuinely carries over,
 then the gaps, ordered by how much they matter.
 
 ## What the lower steps DO validate for the capstone (verified matches)
@@ -54,7 +54,7 @@ two-node float under beam load first occurs in the capstone (G6).
 ### G3 — Gun operating point differs from the validated emitter steps
 | quantity | emitter steps | capstone | status |
 |---|---|---|---|
-| accelerating voltage | 100 V | 200 V | not bracketed in the ladder (the contactor's own E-sweep 78–300 V exists but outside the ladder) |
+| accelerating voltage | 100 V | 200 V | not bracketed in the ladder (a prior E-sweep 78–300 V exists but outside the ladder) |
 | accel gap | 1.9 mm planar, flat mid-plate | 4.7 mm inside a closed can | different geometry class; I_CL scale differs |
 | beam current | 10 µA (A) / 400 µA (B,C) | 342 µA | bracketed ✓ |
 | aperture radius | 0.7 / 1.4 mm | 2.0 mm | larger than C's restored-transmission hole → favorable side ✓ |
@@ -107,7 +107,7 @@ and edge containment.
 ### G10 — Shared numerics that are *consistently unvalidated*
 - **Reduced ion mass 400 mₑ** everywhere (ladder + capstone): internally
   consistent, but every real-O⁺ conclusion is an unvalidated extrapolation
-  (the contactor flags this too).
+  (flagged in prior work too).
 - **dt regime**: capstone dt ≈ 5.0e-12 s (beam CFL) differs from every step's
   dt; each step validated its own CFL/ωpe·dt, and the capstone's satisfies the
   same invariants, but no step ran ambient plasma at beam-scale dt.
@@ -118,7 +118,7 @@ and edge containment.
 - Checkpoint/restart is not migrated (plan defers it): an interrupted capstone
   run is FAILED and rerun (~GPU-hours at stake per interruption).
 - Probe/pinned mode, shroud, ram drift, Bz: research configs stay in
-  `electron_contactor`; the migrated stage is the float200 baseline only.
+  the original study; the migrated stage is the float200 baseline only.
 
 ## Priority summary
 
