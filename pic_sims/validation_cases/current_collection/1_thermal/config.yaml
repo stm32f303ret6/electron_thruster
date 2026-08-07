@@ -8,7 +8,7 @@
 #     I_th = n0 * e * <v>/4 * 4*pi*a^2       (ANY convex probe size)
 #     I_th_e = 0.10393 uA, I_th_i = 4.379 nA, I_e/I_i = 23.74
 #
-# Plasma, cell size (0.15 mm), and ppc are the electron_contactor capstone
+# Plasma, cell size (0.15 mm), and ppc are the chipsat capstone
 # values the chipsat case uses -- passing gates here validates that
 # configuration (13.1 cells per Debye length), not just the code.
 #
@@ -22,7 +22,7 @@ probe:
   radius: 7.5e-4         # [m] sphere radius: a/lambda_De = 0.38, 5 cells
   bias: 0.0              # [V] at plasma potential -> exact thermal collection
 
-plasma:                  # electron_contactor capstone "PLASMA_MAX" row
+plasma:                  # capstone "PLASMA_MAX" row -- IDENTICAL to the chipsat deck
   n0: 1.627e12           # [m^-3] ambient density (electrons = ions)
   Te_K: 1318.8           # [K] electron temperature (kTe = 113.6 meV)
   Ti_K: 936.2            # [K] ion temperature

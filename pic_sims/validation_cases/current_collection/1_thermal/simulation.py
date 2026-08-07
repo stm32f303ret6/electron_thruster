@@ -2,7 +2,7 @@
 """current_collection: conducting sphere at fixed bias in ambient plasma (WarpX).
 
 The complete PIC model for this stage: a conducting sphere (embedded boundary)
-at the origin of an RZ domain filled with the electron_contactor capstone
+at the origin of an RZ domain filled with the capstone
 plasma.  The ambient plasma is maintained by one-sided Maxwellian flux injection
 from the three open faces on top of a bulk fill at t=0.  This deck is duplicated
 verbatim across the three collector stages; only config.yaml (bias, domain, dt)

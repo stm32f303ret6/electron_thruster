@@ -3,8 +3,8 @@
 
 Typed config + the derivations of the validated float200 capstone deck
 (same geometry/plasma/numerics, driven at the 100 V hardware floor)
-(electron_contactor config.py, transcribed), and the conducting-can Geometry
-(electron_contactor geometry.py, transcribed: EB implicit function, piecewise
+(float200 config derivations, transcribed), and the conducting-can Geometry
+(float200 geometry, transcribed: EB implicit function, piecewise
 two-node potential strings, scraped-hit region classification).
 
 No pywarpx/PICMI, matplotlib, or openPMD here, and no run/analysis lifecycle
@@ -47,7 +47,7 @@ _SCHEMA: dict[str, tuple[str, ...]] = {
     "compute": ("gpu_arena_bytes",),
 }
 
-# Research knobs that exist in electron_contactor but are NOT migrated (the
+# Research knobs from the pre-ladder research deck, deliberately NOT migrated (the
 # stage is the float200 baseline only); reject them with a pointer.
 _NOT_MIGRATED = ("probe", "shroud", "fields", "checkpoint")
 
@@ -62,7 +62,7 @@ def _reject_unknown(raw: Mapping[str, Any]) -> None:
             raise ConfigError(
                 f"config group '{group}' is not migrated -- research variants "
                 f"(probe/shroud/Bz/ram-drift/restart) live in the "
-                f"electron_contactor repo, not the validation ladder")
+                f"pre-ladder research deck, not the validation ladder")
     allowed_top = set(_SCHEMA) | {"stage_id"}
     unknown = set(raw) - allowed_top
     if unknown:
@@ -93,7 +93,7 @@ def _i(section: Mapping[str, Any], key: str) -> int:
 
 
 # ======================================================================
-# geometry (electron_contactor geometry.py, transcribed)
+# geometry (float200 can, transcribed)
 # ======================================================================
 
 def _disk(zlo, zhi, R):
@@ -236,7 +236,7 @@ class Geometry:
 class Config:
     """Typed float200-baseline config plus every derived numeric the deck needs.
 
-    All derivations are transcribed from electron_contactor config.py
+    All derivations are transcribed from the float200 config derivations
     (_derive_plasma + finalize); the one deviation is documented in
     MIGRATION_PLAN.md: max_steps is floored to a multiple of diag_period so
     the final dump lands exactly on the last iteration.

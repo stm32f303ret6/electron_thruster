@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------
 # capstone.floating_body -- physics/numerics config (chipsat capstone)
 #
-# The validated "float200" electron_contactor baseline, migrated verbatim:
+# The validated "float200" baseline deck, carried verbatim:
 # a conducting can floats electrically in the capstone ionospheric plasma;
 # an electron gun is fully enclosed inside, the only opening a hole in the
 # lid.  The body potential floats (charge pump: C from a Gauss-law init
@@ -13,8 +13,8 @@
 #
 # This file holds ONLY the effective physics/numerics (frozen + hashed per
 # run).  Gates live in acceptance.yaml.  Research variants (density/voltage
-# sweeps, ram drift, Bz, shroud, probe mode) stay in the electron_contactor
-# repo -- helpers.py rejects their keys here.
+# sweeps, ram drift, Bz, shroud, probe mode) are deliberately outside the
+# validation ladder -- helpers.py rejects their keys here.
 #
 # PyYAML 1.1: decimal point AND signed exponent; helpers.py coerces every
 # numeric leaf regardless.
