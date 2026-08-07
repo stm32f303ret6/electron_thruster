@@ -120,7 +120,9 @@ Reported, never gated: mean exhaust KE (~146 eV anchor), the energy ledger
 
 ## Dashboard
 
-![Dashboard](viz/20260806T011847Z_5670e54c_dashboard.mp4)
+[![Dashboard](viz/20260806T011847Z_5670e54c_dashboard.gif)](viz/20260806T011847Z_5670e54c_dashboard.mp4)
+
+*Animated dashboard of the reference run — click for the full-resolution video.*
 
 ## Known numerical limitations
 
