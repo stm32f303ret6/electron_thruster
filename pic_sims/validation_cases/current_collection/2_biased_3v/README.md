@@ -2,7 +2,7 @@
 
 ![Schematic](viz/schematic_2_biased_3v.png)
 
-Second rung of the collector branch. Same sphere and plasma as `collector.thermal`, now biased to attract electrons.
+Second step of the collector branch. Same sphere and plasma as `collector.thermal`, now biased to attract electrons.
 
 ## Setup
 
@@ -27,7 +27,7 @@ Ions are Boltzmann-repelled by exp(−eV/kTi) ≈ 1e-16. The measured ion trickl
 
 Same as `collector.thermal` (two-species RZ electrostatics, EB probe, flux reservoir), with the probe at +3 V so a sheath now forms.
 
-## What this rung tests
+## What this step tests
 
 | Check | Target |
 |---|---|
@@ -36,7 +36,7 @@ Same as `collector.thermal` (two-species RZ electrostatics, EB probe, flux reser
 | Quasineutrality | ≤ 2% |
 | Edge potential | ≤ 0.5 V (sheath must not reach the boundaries) |
 
-## What this rung does NOT test
+## What this step does NOT test
 
 - An exact collected-current value (OML is a ceiling, not an equality at this a/λ_De)
 - Ion collection (repelled; start-up biased)
@@ -44,7 +44,7 @@ Same as `collector.thermal` (two-species RZ electrostatics, EB probe, flux reser
 
 ## Dependencies
 
-Requires `collector.thermal` (this rung adds the attracting sheath).
+Requires `collector.thermal` (this step adds the attracting sheath).
 
 ## Cost
 

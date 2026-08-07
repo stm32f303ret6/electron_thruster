@@ -72,7 +72,7 @@ At 100 V, KE = 78 eV:
 
 ## Step 4 — collection gets EASIER with size
 
-Bare thermal collection is `I = A_skin · j_the`, validated to ±1 % at rung
+Bare thermal collection is `I = A_skin · j_the`, validated to ±1 % at step
 `collector.thermal`. At the committed plasma row j_the gives:
 
 | body | skin | I_thermal | boost needed @600 km | regime r/λ_D |

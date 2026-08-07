@@ -67,7 +67,7 @@ beam). 300 V run `20260804T154756Z_b854dcbe`, steady tail:
   measured 1 %.
 - Charging is emergent, not prescribed: φ_body floats (+36 V at 300 V drive),
   gated ≤ 50 V with a 100 V choke-abort; collection physics was validated on
-  dedicated ladder rungs (thermal → biased → floating) against OML/sheath
+  dedicated ladder steps (thermal → biased → floating) against OML/sheath
   theory before any thrust claim.
 - Gaps that travel with this answer (disclose proactively): plasma at rest —
   no mesothermal ram (electron-influx anisotropy ~v_orb/v_th,e ≈ 5 %;

@@ -2,22 +2,22 @@
 
 [![Chipsat thruster dashboard](capstone/2_chipsat_thruster/viz/20260806T011847Z_5670e54c_dashboard.gif)](capstone/2_chipsat_thruster/viz/20260806T011847Z_5670e54c_dashboard.mp4)
 
-*The top rung in motion — the chipsat electron thruster capstone ([`capstone/2_chipsat_thruster`](capstone/2_chipsat_thruster/README.md)); click for the full video.*
+*The top step in motion — the chipsat electron thruster capstone ([`capstone/2_chipsat_thruster`](capstone/2_chipsat_thruster/README.md)); click for the full video.*
 
-See `LADDER_SUMMARY.md` for every rung's test, measured numbers, and theory comparison on one page.
+See `LADDER_SUMMARY.md` for every step's test, measured numbers, and theory comparison on one page.
 
 ## What this is
 
 A series of PIC simulations in order of increasing physics, each gated against closed-form theory. The ladder validates:
 
 - **The code**: WarpX RZ electrostatics, embedded boundaries, flux emission, scraping
-- **The configuration**: grid resolution, plasma parameters, ppc, emitted current, aperture geometry — so that by the top rung every numerical choice has already passed a gate somewhere cheaper
+- **The configuration**: grid resolution, plasma parameters, ppc, emitted current, aperture geometry — so that by the top step every numerical choice has already passed a gate somewhere cheaper
 
-## Rungs
+## Steps
 
 **Emitter side** (prescribed-current beams) → **Collector side** (ambient plasma) → **Capstone** (the thruster):
 
-| Rung | Stage ID | What it tests | Cost |
+| Step | Stage ID | What it tests | Cost |
 |---|---|---|---|
 | [`electron_gun/1_negative_cathode`](electron_gun/1_negative_cathode/README.md) | `emitter.negative_cathode` | plane diode, no EB | ~3 min |
 | [`electron_gun/2_electron_gun`](electron_gun/2_electron_gun/README.md) | `emitter.holed_anode` | + holed-anode plate | ~10 min |

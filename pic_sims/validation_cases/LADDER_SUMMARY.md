@@ -1,11 +1,11 @@
 # Validation ladder — summary of evidence
 
-One page per question a reviewer would ask: **what does each rung test, what
+One page per question a reviewer would ask: **what does each step test, what
 did it measure, and how close is that to theory?**  All numbers below come
 from the committed, machine-readable `reference_results/` snapshots (each
 carries its run ID, config hash, policy ID/hash, git commit, and WarpX
 version); this file is a human-readable digest, never the authoritative
-record.  Every rung ran on the CPU build (WarpX 26.5, RZ electrostatic,
+record.  Every step ran on the CPU build (WarpX 26.5, RZ electrostatic,
 seed 42) and PASSed all of its required gates.
 
 The plasma everywhere is the chipsat capstone's ionospheric row:
@@ -96,7 +96,7 @@ grow yet stay contained inside the domain.
 | sheath radius | > 3 V value (4.12 mm) | **6.89 mm** (GPU baseline 6.88) |
 | edge \|φ\| (containment) | ≤ 0.2 V | **0.003 V** |
 
-### 6. `collector.floating` — the capstone's charge pump vs the floating potential  *(new rung, closes gap G2)*
+### 6. `collector.floating` — the capstone's charge pump vs the floating potential  *(new step, closes gap G2)*
 
 **The test:** the same sphere, but nothing prescribes its voltage: the
 chipsat capstone's charge-pump mechanism (Gauss-law capacitance calibration,
@@ -114,10 +114,10 @@ so the gate isolates the charge accounting itself).
 | Gauss-law C / 4πε₀a | ~1.07 (grounded-box correction) | **1.068** (89.1 fF vs 83.4 fF) |
 | ledger vs openPMD scraped charge | identical | **5·10⁻⁹** |
 
-### 7. `capstone.two_node_laplace` — the capstone's two-node EB in vacuum  *(new rung, closes gap G1)*
+### 7. `capstone.two_node_laplace` — the capstone's two-node EB in vacuum  *(new step, closes gap G1)*
 
 **The test:** the chipsat's conducting can carries TWO potentials on one
-embedded boundary (BODY floats; CATHODE = body − 200 V).  This rung solves
+embedded boundary (BODY floats; CATHODE = body − 200 V).  This step solves
 that exact geometry in vacuum with both nodes pinned (+16 V / −184 V)
 through the same potential string and per-step rewrite the capstone uses.
 With zero space charge the solve is Laplace's equation, so exact mathematics
@@ -191,7 +191,7 @@ required gates PASS**: F_beam **3.42 nN**, escape **96.12 %**,
 77.10).  At low χ the candidate collection laws converge, so this point
 **confirms the anchor rather than discriminating**.
 
-With rungs 8 and 9 it completes the three-point measured P–F frontier and
+With steps 8 and 9 it completes the three-point measured P–F frontier and
 confirms F/P ∝ 1/√V: **0.283 / 0.200 / 0.159 µN/W** at 100 / 200 / 300 V.
 
 ### 11. Slender body — the geometry axis (PASS, promoted)
@@ -218,12 +218,12 @@ fitted exponent survives a 3.24× area change.  Thrust *rose* to 14.22 nN
 - **Collector current-fraction trend:** 0.992 (0 V) ≥ 0.853 (3 V) ≥ 0.809
   (10 V) — the barrier deepens with χ.
 - **Sheath-radius ordering:** 4.12 mm (3 V) ≤ 6.89 mm (10 V).
-- **Shared plasma:** all collector rungs hash-match plasma/ppc/probe radius.
+- **Shared plasma:** all collector steps hash-match plasma/ppc/probe radius.
 - **Emitter transmission consistency:** no-plate 1.000 vs holed-A 0.973.
 - **Capstone inherits the validated configuration:** frozen plasma/dx/ppc
   hash-match `collector.thermal`'s.
-- **Floating rung shares thermal's configuration** (new).
-- **Two-node rung solves the capstone's exact geometry/dx/offset** (new).
+- **Floating step shares thermal's configuration** (new).
+- **Two-node step solves the capstone's exact geometry/dx/offset** (new).
 
 ## What this ladder does NOT yet establish
 
@@ -236,7 +236,7 @@ Kept visible on purpose (details: `ARCHITECTURE_REFACTOR_PLAN.md` §13,
   stationarity test; the capstone's 800 ns plateau is a finite-time
   equilibrium on the ion clock (late dφ/dt is reported honestly).
 - **Beam + plasma coexistence** (G6) first appears at the capstone; no
-  cheaper rung can close it.
+  cheaper step can close it.
 - The **reduced ion mass** (400 mₑ) is internally consistent everywhere but
   makes every real-O⁺ conclusion an extrapolation.
 - The capstone's escape/thrust/φ_body gates are **regression anchors**, not

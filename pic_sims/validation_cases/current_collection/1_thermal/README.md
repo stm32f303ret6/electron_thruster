@@ -2,7 +2,7 @@
 
 ![Schematic](viz/schematic_1_thermal.png)
 
-First rung of the collector branch. A sphere at 0 V in the capstone plasma — the one probe problem with an exact answer.
+First step of the collector branch. A sphere at 0 V in the capstone plasma — the one probe problem with an exact answer.
 
 ## Setup
 
@@ -41,7 +41,7 @@ Magnetic fields, collisions, emission.
 
 Every numerical choice the chipsat capstone uses is tested here against an exact theory: plasma parameters, dx = 0.15 mm (13.1 cells/λ_De), ppc = 16, flux-reservoir injection, domain sizing. The sphere is at a/λ_De = 0.382.
 
-## What this rung tests
+## What this step tests
 
 | Check | Target |
 |---|---|
@@ -52,7 +52,7 @@ Every numerical choice the chipsat capstone uses is tested here against an exact
 | Quasineutrality (far shell) | \|n_e − n_i\|/n0 ≤ 2% |
 | Edge potential | ≤ 0.2 V (no spurious wall sheath) |
 
-## What this rung does NOT test
+## What this step does NOT test
 
 - Sheath or OML physics (0 V means no sheath)
 - Grid convergence (single resolution/PPC/seed — Phase 5)
