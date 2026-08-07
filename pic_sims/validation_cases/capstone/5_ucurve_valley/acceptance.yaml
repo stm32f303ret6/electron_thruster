@@ -1,0 +1,88 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for capstone.ucurve_valley (125 V, fixed 13.65 nN
+# demand -- the first point of the fixed-thrust throttle curve).
+#
+# Escape, float, and delivered thrust ARE THE MEASUREMENT here: the
+# pre-registered hypotheses (../UCURVE_PLAN.md, committed before the run)
+# disagree about exactly those numbers, so gating any of them would gate
+# the answer (the capstone.exploratory_axes.v1 precedent).  REQUIRED gates
+# are the trust set only -- does the run measure what it claims to
+# measure? -- with tolerances byte-identical to the frontier policies:
+# steady current balance, momentum bound, sheath/plume containment, and
+# both ledger-vs-dump cross-checks.
+#
+# H1 (calibrated laws, frontier escape): escape >= 96 %, phi ~ 24.5 V,
+# F on the 13.65 nN demand.  H2 (perveance tax at 2.7x the validated
+# emission ceiling): escape degraded, delivered thrust short of demand.
+# The three reported gates print that discrimination in every verdict
+# without deciding it.
+#
+# Changing any tolerance requires a new policy_id; every verdict records
+# this file's SHA-256.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: capstone.ucurve_valley.v1
+stage_id: capstone.ucurve_valley
+evidence_kind: throttle_curve_measurement
+
+gates:
+  # ---- required: trust gates, tolerances identical to the frontier ----
+
+  # The floating equilibrium IS a current balance: I_escape == I_amb_e - I_amb_i.
+  - id: steady_current_balance
+    required: true
+    metric: current_balance
+    comparison: at_most
+    maximum: 0.05
+
+  # Momentum sanity: the craft cannot catch more z-momentum than the beam carries.
+  - id: momentum_sanity_bound
+    required: true
+    metric: f_net_over_f_beam
+    comparison: at_most
+    maximum: 1.0
+
+  # Sheath/plume containment (collector-rung style; a clipped plume fakes escape).
+  - id: sheath_and_plume_contained
+    required: true
+    metric: edge_phi_max_V
+    comparison: at_most
+    maximum: 1.0
+
+  # Per-step scrape-buffer ledger vs post-hoc openPMD dumps.
+  - id: scrape_ledger_consistent_with_dumps
+    required: true
+    metric: scrape_charge_consistency
+    comparison: at_most
+    maximum: 0.02
+
+  - id: beam_escape_ledger_consistent_with_dumps
+    required: true
+    metric: scrape_charge_consistency_beam_escape
+    comparison: at_most
+    maximum: 0.02
+
+  # ---- reported: the measurement itself (H1 vs H2 discrimination) ----
+
+  # H1 predicts >= 96 % (frontier path); H2 predicts collapse with perveance.
+  - id: beam_escapes
+    required: false
+    metric: escape_fraction_pct
+    comparison: at_least
+    minimum: 95.0
+
+  # H1 predicts 24.5 V; the 50 V design limit is the benign bound.
+  - id: body_floats_benign
+    required: false
+    metric: phi_body_V
+    comparison: at_most
+    maximum: 50.0
+
+  # The commanded demand.  H1 lands inside the anchor's +-15 % band; an H2
+  # shortfall is the left-arm-tax finding, not a bad run.
+  - id: thrust_meets_demand
+    required: false
+    metric: f_beam_nN
+    comparison: abs_within
+    target: 13.65
+    tolerance: 2.05
