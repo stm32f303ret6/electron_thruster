@@ -2,16 +2,16 @@
 
 This documents how the validated **float200 chipsat capstone** from the
 `electron_contactor` project (external, not part of this repository) is
-migrated into this repo as the top rung of the validation ladder, following
+migrated into this repo as the top step of the validation ladder, following
 the stage contract of `../../ARCHITECTURE_REFACTOR_PLAN.md`. Companion document:
-`VALIDATION_GAPS.md` — what the lower rungs do and do **not** validate about
+`VALIDATION_GAPS.md` — what the lower steps do and do **not** validate about
 this stage.
 
 ## The physical system being migrated
 
 A conducting **can** (r = 5 mm, wall/lid/floor 0.4 mm, z ∈ [-5, +0.5] mm)
 floats electrically in the capstone ionospheric plasma (the same PLASMA_MAX row
-the collector rungs gate: n0 = 1.627e12 m⁻³, Te = 1318.8 K, Ti = 936.2 K,
+the collector steps gate: n0 = 1.627e12 m⁻³, Te = 1318.8 K, Ti = 936.2 K,
 mi = 400 mₑ). An electron gun is fully enclosed: the **cathode disk**
 (r < 1.5 mm) sits on the floor, held at `phi_body − 200 V` once the supply
 switches on (t ≥ 100 ns); the beam (0.342 mA, spot r < 0.5 mm, on at 150 ns)
@@ -59,7 +59,7 @@ Per the refactor plan's non-goals and the baseline-only scope:
   FAILED and rerun from scratch. This costs up to a few GPU-hours per
   interruption; stated trade-off.
 - **Probe/pinned mode** (`PinnedBody`, `plasma_check.py`, `analysis_oml.py`):
-  that physics is exactly what `collector.*` rungs validate.
+  that physics is exactly what `collector.*` steps validate.
 - **Shroud, `plasma.drift_z`, `fields.Bz_T`** (gap-LX/D experiments): baseline
   has them off; config validation rejects non-defaults with a pointer to the
   contactor repo. Research sweeps stay in `electron_contactor`.
@@ -92,7 +92,7 @@ Per the refactor plan's non-goals and the baseline-only scope:
 `acceptance.yaml`, policy `capstone.floating_body.v1`,
 `evidence_kind: system_integration_regression` — the gate numbers come from
 the validated float200 run itself (regression + internal consistency, not
-analytic verification; the analytic anchors live in the lower rungs):
+analytic verification; the analytic anchors live in the lower steps):
 
 | gate | bound | provenance |
 |---|---|---|
@@ -101,7 +101,7 @@ analytic verification; the analytic anchors live in the lower rungs):
 | `phi_body_V` | +16 ± 4 V | float200 |
 | `current_balance` | ≤ 5 % | steady-state identity I_escape ≈ I_amb_e − I_amb_i |
 | `f_net_over_f_beam` | ≤ 1.0 | momentum sanity bound |
-| `edge_phi_max_V` | ≤ 1.0 V | sheath/plume containment (collector-rung style) |
+| `edge_phi_max_V` | ≤ 1.0 V | sheath/plume containment (collector-step style) |
 | `scrape_charge_consistency` | ≤ 2 % | NEW: CSV ledger vs openPMD dumps |
 
 Reported, not gated: mean exhaust KE + energy ledger (injection-plane φ

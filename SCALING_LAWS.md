@@ -93,11 +93,11 @@ consequences:
 Every escaping electron must be replaced by a collected ambient one; the body
 potential is whatever makes that balance close.
 
-- **Thermal collection** (validated at rung `collector.thermal` to ±1 %):
+- **Thermal collection** (validated at step `collector.thermal` to ±1 %):
   one-sided random flux `I_the = e·A·n_e·sqrt(kTe/2π m_e)`.
 - **OML-style enhancement**: a body at `+φ` pulls a wider impact-parameter
   fan, `I ≈ β·I_the·(1 + χ)` with `χ = eφ/kTe` and β an order-0.5 geometry
-  factor (a can is not a sphere). Rungs `collector.biased_*` measured the
+  factor (a can is not a sphere). Steps `collector.biased_*` measured the
   finite-size fractions of this ceiling at χ = 26 and 88.
 - **The float condition**: `I_esc = β·I_the·(1 + χ)` inverts to
 
@@ -275,7 +275,7 @@ controller is a two-line servo on its own floating potential.*
 ## 8. Plasma scaling — what one plasma row does and does not cover
 
 Every capstone operating-point stage (100 / 200 / 300 V) runs at the **same
-fixed plasma row**, inherited ladder-wide from the collector rungs:
+fixed plasma row**, inherited ladder-wide from the collector steps:
 
 ```
 n0 = 1.627e12 m^-3    Te = 1318.8 K (113.6 meV)    Ti = 936.2 K
@@ -323,7 +323,7 @@ were committed (α = 1 → 53.4 V, 0.893 → 60.9 V, 0.82 → 68.0 V, 0.5 →
 160.4 V) in `pic_sims/validation_cases/capstone/THIN_PLASMA_PLAN.md`, then
 the run was cut on re-examination of what it buys. The law's density
 dependence is `I ∝ n·(1+χ)^α`: the `n`-linear term is the one-sided thermal
-flux, **already validated to ±1 % at rung `collector.thermal`**, and χ has no
+flux, **already validated to ±1 % at step `collector.thermal`**, and χ has no
 density dependence at all. α is already discriminated on the voltage axis
 (§4). What remains under test is one residual assumption — that α and β do
 not drift as `r_probe/λ_D` goes 2.5 → 1.5 — and the settle limit of §5 would
@@ -404,7 +404,7 @@ is scale-free too: nothing closes there. In absolute terms a 3U end-on needs
 **Two things get easier with size.** The enhancement demanded over bare
 thermal collection *falls* as skin grows — a 3U needs 4.3× the thermal flux at
 600 km where the chipsat needs 15×, and the chipsat frontier runs at
-χ ≈ 150–320. Since bare thermal collection is the rung validated to ±1 % and
+χ ≈ 150–320. Since bare thermal collection is the step validated to ±1 % and
 the enhancement exponent is the fitted quantity, **larger bodies rest on less
 extrapolation, not more.** And lower χ means a lower float, which by
 `KE = κ(V−φ)` returns drive energy to the beam.

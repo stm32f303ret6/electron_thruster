@@ -126,7 +126,7 @@ Why, recorded so the reasoning survives the decision. Re-examining what this
 run actually tests, the value is narrower than the plan implies:
 
 - The law's density dependence is `I ∝ n · (1 + chi)^alpha`. The `n`-linear
-  part is the one-sided thermal flux, **already validated to ±1 % at rung
+  part is the one-sided thermal flux, **already validated to ±1 % at step
   `collector.thermal`**, and `chi = e*phi/kTe` has no density dependence at
   all. `alpha` is **already discriminated on the voltage axis** (§4 VERDICT:
   1 refuted, 0.5 refuted, 0.82 favored).

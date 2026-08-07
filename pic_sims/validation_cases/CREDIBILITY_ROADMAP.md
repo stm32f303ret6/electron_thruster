@@ -21,7 +21,7 @@ evidence* first, promoted to gates only with a policy bump.
 | 1.1 | **PPC doubling on `collector.biased_10v`** (ppc 16→32, config variant) | "the collector fractions and sheath radius are not shot-noise artifacts" — the trend feeding the capstone | none | ~2.5–3 h |
 | 1.2 | **Grid refinement on `collector.thermal`** (dx 0.15→0.075 mm, dt halved) | measured convergence against an *exact* law; validates the 13.1 cells/λ_De choice every stage inherits | none | ~2–3 h |
 | 1.3 | **Seed variation on `collector.floating` + `collector.thermal`** (2 extra seeds each) | error bars on φ_f = −0.251 V and the thermal currents instead of point values | none | ~2 h total |
-| 1.4 | **Close gap G3: new `emitter.holed_anode` scenario D** at the capstone's gun operating point (200 V, ~4.7 mm-gap-equivalent, rms 2.6e5 m/s, ppc_beam 16) | the capstone's gun voltage/temperature/graininess is bracketed by a validated rung | ~1–2 h (scenario block + acceptance + ladder tuple + tests) | ~5–10 min |
+| 1.4 | **Close gap G3: new `emitter.holed_anode` scenario D** at the capstone's gun operating point (200 V, ~4.7 mm-gap-equivalent, rms 2.6e5 m/s, ppc_beam 16) | the capstone's gun voltage/temperature/graininess is bracketed by a validated step | ~1–2 h (scenario block + acceptance + ladder tuple + tests) | ~5–10 min |
 
 Report each comparison in the stage README + a small committed table; no
 gate changes needed.
@@ -57,7 +57,7 @@ could poke:
 | # | item | unlocks | cost |
 |---|---|---|---|
 | 4.1 | **C12 convergence matrix**: grid × ppc × domain × seed for every promoted quantitative claim, all stages | "quantitative validation" label without asterisks | ~100–300 h CPU + curation |
-| 4.2 | **Ion-mass scaling study**: rerun `collector.*`/`collector.floating` at mi = 1600, 6400 mₑ and fit the known √mi scalings; extrapolate to real O⁺ (~29,000 mₑ) with a documented argument. A direct real-O⁺ capstone run is ~√(29000/400) ≈ 8.5× the ion clock → ~55 h/run | real-ionosphere numbers instead of surrogate-mass numbers — the biggest physical caveat in the whole suite | ~10–20 h for the scaling rungs; ~55 h per real-mass capstone |
+| 4.2 | **Ion-mass scaling study**: rerun `collector.*`/`collector.floating` at mi = 1600, 6400 mₑ and fit the known √mi scalings; extrapolate to real O⁺ (~29,000 mₑ) with a documented argument. A direct real-O⁺ capstone run is ~√(29000/400) ≈ 8.5× the ion clock → ~55 h/run | real-ionosphere numbers instead of surrogate-mass numbers — the biggest physical caveat in the whole suite | ~10–20 h for the scaling steps; ~55 h per real-mass capstone |
 | 4.3 | **C8 properly**: a planar-anode sweep locating actual reflection onset (or keep the "rough scale" label forever — acceptable) | a defensible virtual-cathode threshold statement | ~1 day + ~1 h runs |
 | 4.4 | Fresh validation runs under pre-registered policies for anything Tier 1–3 changed | the §9.3 discipline: calibration ≠ validation | re-run cost of the affected stages |
 

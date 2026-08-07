@@ -2,7 +2,7 @@
 
 ![Schematic](viz/schematic_1_two_node_laplace.png)
 
-Closes validation gap G1: the piecewise two-node embedded boundary had no ladder rung beneath the capstone.
+Closes validation gap G1: the piecewise two-node embedded boundary had no ladder step beneath the capstone.
 
 The chipsat's conducting-can geometry, solved in **vacuum** (no particles, no space charge) with both nodes pinned: BODY at +16 V (the capstone's observed equilibrium), CATHODE at −184 V. Uses the same piecewise potential string and the same `set_potential_on_eb` per-step rewrite the capstone's charge pump uses.
 
@@ -12,7 +12,7 @@ The chipsat's conducting-can geometry, solved in **vacuum** (no particles, no sp
 - **Particles**: none
 - **Solver**: every solve is Laplace's equation (no charge → exact mathematical properties available as gates)
 
-## What this rung tests
+## What this step tests
 
 | Check | Target |
 |---|---|
@@ -28,7 +28,7 @@ Reported, not gated: full-domain solver difference (dominated by cathode-edge st
 
 A scipy sparse direct factorization with stair-step EB representation — different EB representation and different linear solver than WarpX. The comparison excludes the 3-cell skin near surfaces (the stair-step reference is not accurate there).
 
-## What this rung does NOT test
+## What this step does NOT test
 
 - Plasma, beam, scraping, or the charge pump's dQ accounting (that is `collector.floating` and the capstone)
 - Cut-cell field accuracy at the surface (stair-step reference is not accurate there)
@@ -40,7 +40,7 @@ The first run was judged under policy v1, which gated the solver comparison at �
 
 ## Dependencies
 
-None (a leaf rung). The capstone requires this stage.
+None (a leaf step). The capstone requires this stage.
 
 ## Cost
 

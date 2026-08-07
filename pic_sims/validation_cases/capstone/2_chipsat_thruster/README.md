@@ -2,7 +2,7 @@
 
 ![Schematic](viz/schematic_2_chipsat_thruster.png)
 
-The top rung — the thruster test itself. Emitter + collector physics in one self-consistent system. The body floats while the gun fires; the thruster only works if it floats to a benign potential. Thrust is gated directly.
+The top step — the thruster test itself. Emitter + collector physics in one self-consistent system. The body floats while the gun fires; the thruster only works if it floats to a benign potential. Thrust is gated directly.
 
 Migrated from the validated float200 baseline of the `electron_contactor` project (see `MIGRATION_PLAN.md`; validation audit in `VALIDATION_GAPS.md`).
 
@@ -19,7 +19,7 @@ Migrated from the validated float200 baseline of the `electron_contactor` projec
 ```
 
 - **Can**: conducting body that floats electrically in the capstone ionospheric plasma
-- **Plasma**: same as collector rungs (n0 = 1.627e12 m⁻³, kTe = 113.6 meV, dx = 0.15 mm, ppc = 16)
+- **Plasma**: same as collector steps (n0 = 1.627e12 m⁻³, kTe = 113.6 meV, dx = 0.15 mm, ppc = 16)
 - **Beam**: prescribed 0.342 mA, spot r < 0.5 mm, turns on at 150 ns
 - **Cathode**: held 200 V below the body (turns on at 100 ns)
 - **Grid**: 200 × 440 cells
@@ -40,7 +40,7 @@ RZ electrostatic, three species, EB scraping, plume — all self-consistent.
 
 Ram drift, applied Bz, exit shroud, pinned-probe mode, checkpoint/restart, real-mass O⁺ (mi = 400 mₑ ladder-wide).
 
-## What this rung tests
+## What this step tests
 
 | Check | Target | Type |
 |---|---|---|
@@ -59,7 +59,7 @@ Reported, not gated: mean exhaust KE (~146 eV), energy ledger, late dφ/dt, far-
 
 The escape, thrust, and float targets were read from the validated float200 run — disclosed calibration, not independent predictions. See `VALIDATION_GAPS.md`.
 
-## What this rung does NOT test
+## What this step does NOT test
 
 - The regression anchors themselves (they come from the same system)
 - Stationarity of the 800 ns plateau (finite-time equilibrium on the ion clock — Phase 5)
@@ -122,6 +122,6 @@ Reference run `20260801T142601Z_2f822a95` (~6 h), all 8 gates PASS:
 ## Limitations
 
 - 800 ns is a finite-time equilibrium: the ion-clock tail is still moving (late dφ/dt reported; Phase 5 adds stationarity gating)
-- ppc_beam = 16 (the emitter rungs validated emission at 128) — gap G3
+- ppc_beam = 16 (the emitter steps validated emission at 128) — gap G3
 - Single grid/PPC/seed; EB staircase at 0.15 mm; reduced ion mass 400 mₑ
 - `max_steps` is floored to a diag-period multiple (−11 steps vs contactor baseline ≈ −0.06 ns of 800 ns)

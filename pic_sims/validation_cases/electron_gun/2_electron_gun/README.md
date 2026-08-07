@@ -4,7 +4,7 @@
 |---|---|---|
 | ![A](viz/schematic_A_low_current_small_hole.png) | ![B](viz/schematic_B_high_current_small_hole.png) | ![C](viz/schematic_C_high_current_big_hole.png) |
 
-Second rung of the emitter branch. Same diode as `emitter.negative_cathode`, plus a grounded plate with a hole on axis (embedded boundary).
+Second step of the emitter branch. Same diode as `emitter.negative_cathode`, plus a grounded plate with a hole on axis (embedded boundary).
 
 ## Setup
 
@@ -27,7 +27,7 @@ Same as `emitter.negative_cathode` (electrostatic Poisson, prescribed flux emiss
 
 Emission physics, magnetic fields, collisions, ions.
 
-## What this rung tests
+## What this step tests
 
 | Check | Target |
 |---|---|
@@ -41,7 +41,7 @@ Emission physics, magnetic fields, collisions, ions.
 
 The original gate was ≥ 99% transmission (cold beam). The first run failed it — the beam has ~0.25 eV transverse temperature (σ_r ≈ 0.135 mm at the plate), so a thermal tail clips the hole edge. The gate was widened to ≤ 4% to cover that tail. This is calibration, not a prediction.
 
-## What this rung does NOT test
+## What this step does NOT test
 
 - A quantitative aperture-transmission law
 - Virtual-cathode onset (Child-Langmuir limit is printed as a rough scale only, not gated)
@@ -49,7 +49,7 @@ The original gate was ≥ 99% transmission (cold beam). The first run failed it 
 
 ## Dependencies
 
-Requires `emitter.negative_cathode` (this rung only adds the EB plate).
+Requires `emitter.negative_cathode` (this step only adds the EB plate).
 
 ## Cost
 

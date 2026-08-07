@@ -147,7 +147,7 @@ environment. After a source edit, `--target pip_install_nodeps` is faster.
 | flag | value | why the campaign needs it |
 |---|---|---|
 | `WarpX_DIMS` | `3;RZ` | every stage is **RZ** (cylindrical, `n_azimuthal_modes=1`). `3` is built only so the upstream test suite still runs; nothing in this repo uses it. Building `RZ` alone is enough and roughly halves compile time. |
-| `WarpX_COMPUTE` | `CUDA` | the capstone runs are 9–10 GPU-hours each; CPU is not viable for them. The four `current_collection` rungs are CPU-cheap and run either way. |
+| `WarpX_COMPUTE` | `CUDA` | the capstone runs are 9–10 GPU-hours each; CPU is not viable for them. The four `current_collection` steps are CPU-cheap and run either way. |
 | `AMReX_CUDA_ARCH` | `8.6` | **change this for your GPU** (Ampere consumer = 8.6, A100 = 8.0, Ada = 8.9, Hopper = 9.0). |
 | `WarpX_EB` | `ON` | **mandatory.** The whole device is an embedded-boundary conductor with a two-node piecewise Dirichlet potential. Without EB nothing above `emitter.negative_cathode` builds a geometry. |
 | `WarpX_PYTHON` | `ON` | **mandatory.** Every stage is a PICMI Python deck driving `libwarpx` in-process; the charge pump reads and writes the EB potential *between steps*, which no input-file run can do. |
@@ -215,7 +215,7 @@ capstone/                     THE DEVICE
 ```
 
 A full cold ladder is roughly **20 GPU-hours**, dominated by the three capstone
-frontier runs. The lower rungs are what let you trust the top one; run them once
+frontier runs. The lower steps are what let you trust the top one; run them once
 and they stay valid until a config or the code changes.
 
 ### Running one stage directly

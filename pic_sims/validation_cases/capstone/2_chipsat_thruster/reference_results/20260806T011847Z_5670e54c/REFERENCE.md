@@ -80,7 +80,7 @@ Provenance: run `20260806T011847Z_5670e54c`, case `5670e54c9cb4b6fb...`,
 git `a7f4106cc476` (dirty: False), seed 42, WarpX 26.5,
 analysis `20260806T140956Z_aae666a6`,
 wall 2026-08-06T01:18:47Z → 2026-08-06T14:08:24Z (12 h 50 min; the last ~3 h
-shared the GPU with lower-rung ladder runs).
+shared the GPU with lower-step ladder runs).
 
 The machine-readable record is `metrics.json` + `verdict.json` + the frozen
 `config_used.yaml` of the run they describe; `run_manifests.json` carries the

@@ -118,7 +118,7 @@ Predictions were recorded — α = 1 → 53.4 V, 0.893 → 60.9 V, 0.82 → 68.0
 0.5 → 160.4 V — and the run was then **unchained before launch by scope
 decision**, with the reasoning recorded in the plan's amendment: the law's
 density dependence is `I ∝ n·(1+χ)^α`, whose `n`-linear term is *already*
-validated to ±1 % at rung `collector.thermal`, and whose α is *already*
+validated to ±1 % at step `collector.thermal`, and whose α is *already*
 discriminated on the voltage axis. The run tests one residual assumption (that
 α and β do not drift as `r_probe/λ_D` goes 2.5 → 1.5), and the settle limit
 would blur a 53–68 V discrimination anyway. It is a **gross-breakdown
@@ -305,7 +305,7 @@ end-on flight return **identical** margins — 1.4× / 2.8× / 5.4× at
 
 Larger bodies also need **less** extrapolation. The chipsat frontier runs at
 χ ≈ 150–320, deep in the fitted enhancement regime; a 3U needs only ~4× the
-bare thermal flux, which is the rung validated to ±1 %. The unmeasured piece
+bare thermal flux, which is the step validated to ±1 %. The unmeasured piece
 is a *regime* change, not a size problem: CubeSat radii are 25–60 λ_D against
 our 2.5, where collection proceeds through a thin φ-growing sheath rather than
 an orbital-motion fan. A Child-sheath estimate puts a 3U float at ~12 V at
@@ -329,7 +329,7 @@ part wrong.
 Ranked by how much they threaten the conclusions.
 
 1. **The density axis is untested.** All runs share one dayside plasma row. The
-   `n`-linear term is validated at ±1 % on a lower rung and α is discriminated
+   `n`-linear term is validated at ±1 % on a lower step and α is discriminated
    on the voltage axis, so the exposure is narrow — but "untested" is the word.
    The pre-registered run is ready.
 2. **Nothing is fully settled.** Every float is still drifting at 800 ns

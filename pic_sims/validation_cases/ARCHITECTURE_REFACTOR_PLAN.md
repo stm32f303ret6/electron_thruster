@@ -77,7 +77,7 @@ belong to Phase 5.
 
 ## 3. Terminology
 
-- **Stage**: one rung of the validation ladder; one self-contained directory.
+- **Stage**: one step of the validation ladder; one self-contained directory.
 - **Run**: one immutable execution of one stage (and, when applicable, one
   named scenario). Identified by a **run ID**.
 - **Analysis**: one immutable interpretation of one run (or an explicit list

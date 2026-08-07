@@ -15,7 +15,7 @@ A conducting sphere (embedded boundary) in the chipsat capstone plasma, tested a
 
 The plasma is maintained by one-sided Maxwellian flux injection from the three open faces, on top of a bulk fill at t = 0. Each stage is a self-contained folder with its own simulation, config, analysis, and tests.
 
-## Rungs
+## Steps
 
 | Stage | Dir | Bias | Theory reference | Key gates |
 |---|---|---|---|---|
