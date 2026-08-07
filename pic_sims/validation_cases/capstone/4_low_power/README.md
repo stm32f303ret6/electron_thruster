@@ -61,7 +61,7 @@ required**.
 
 ## Dashboard
 
-<video src="viz/20260804T230218Z_0adb478f_dashboard.mp4" controls width="100%"></video>
+![Dashboard](viz/20260804T230218Z_0adb478f_dashboard.mp4)
 
 ## Usage
 
