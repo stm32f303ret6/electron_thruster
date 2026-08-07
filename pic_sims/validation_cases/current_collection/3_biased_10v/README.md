@@ -65,13 +65,9 @@ python animate.py --run outputs/<run-id>               # optional
 | `quasineutrality` | ≤ 0.02 | far-shell \|n_e−n_i\|/n0 |
 | `edge_phi_max_V` | ≤ 0.5 V | **THE gate to watch** — thick sheath containment |
 
-## Reference figures
+## Dashboard
 
-| | |
-|---|---|
-| ![Current](reference_results/20260806T150359Z_503c1220/figures/current.png) | ![Sheath](reference_results/20260806T150359Z_503c1220/figures/sheath.png) |
-
-[Dashboard animation](viz/20260806T150359Z_503c1220_dashboard.mp4)
+<video src="viz/20260806T150359Z_503c1220_dashboard.mp4" controls width="100%"></video>
 
 ## Known numerical limitations
 

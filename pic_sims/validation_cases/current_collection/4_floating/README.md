@@ -93,13 +93,9 @@ python simulation.py
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 ```
 
-## Reference figures
+## Dashboard
 
-| | |
-|---|---|
-| ![Floating potential](reference_results/20260806T162656Z_40e77ecd/figures/floating.png) | ![Fields](reference_results/20260806T162656Z_40e77ecd/figures/fields.png) |
-
-[Dashboard animation](viz/20260806T162656Z_40e77ecd_dashboard.mp4)
+<video src="viz/20260806T162656Z_40e77ecd_dashboard.mp4" controls width="100%"></video>
 
 ## Known numerical limitations
 
