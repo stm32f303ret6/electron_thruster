@@ -3,7 +3,7 @@
 
     Panel 1: phi(r,z) — electrostatic potential
     Panel 2: n_beam(r,z) — beam electron density
-    Panel 3: phi_body vs time — charge-pump oscillation settling to equilibrium
+    Panel 3: beam fates — % escaped vs % returned to spacecraft
 
     python animate_dashboard.py --run outputs/<run-id> [--out PATH] [--fps 10]
 """
@@ -74,7 +74,9 @@ def main(argv=None) -> int:
     ledger = load_ledger(evidence.diags_dir)
     steps_l = np.atleast_1d(ledger["step"]).astype(float)
     t_l_ns = np.atleast_1d(ledger["t"]) * 1e9
-    phi_body_l = np.atleast_1d(ledger["phi_body"])
+    pct_escape = np.atleast_1d(ledger["pct_escape"])
+    pct_return = (np.atleast_1d(ledger["pct_body"])
+                  + np.atleast_1d(ledger["pct_cathode"]))
 
     def get_fields(it):
         phi, r, z = field_rz(ts, "phi", it)
@@ -89,8 +91,6 @@ def main(argv=None) -> int:
     ext = [zmm.min(), zmm.max(), rr.min(), rr.max()]
 
     t_end_ns = cfg.t_end * 1e9
-    phi_lo = min(phi_body_l.min(), -5) - 2
-    phi_hi = max(phi_body_l.max(), 20) + 2
 
     fps = args.fps
     fig = plt.figure(figsize=(20, 5.5))
@@ -101,8 +101,8 @@ def main(argv=None) -> int:
              fontsize=22, fontweight="bold", ha="center", va="center",
              color="#333333")
     fig.text(0.5, 0.40,
-             "Floating body charge-pump equilibrium\n"
-             "Panel 3: body potential settling to steady state",
+             "Full system: beam + plasma + charge pump\n"
+             "Panel 3: beam electron fates (escaped vs returned)",
              fontsize=13, ha="center", va="center", color="#555555",
              linespacing=1.5)
     for _ in range(int(round(2.0 * fps))):
@@ -131,12 +131,12 @@ def main(argv=None) -> int:
     for ax in (ax1, ax2):
         _draw_can(ax, geom)
 
-    line_phi, = ax3.plot([], [], color="tab:blue", lw=1.2, label="φ_body")
-    ax3.axhline(0.0, color="k", lw=0.5)
+    line_esc, = ax3.plot([], [], color="tab:green", lw=1.5, label="% escaped")
+    line_ret, = ax3.plot([], [], color="tab:red", lw=1.2, label="% returned")
     ax3.set_xlim(0, t_end_ns)
-    ax3.set_ylim(phi_lo, phi_hi)
-    ax3.set_ylabel("φ_body [V]"); ax3.set_xlabel("time [ns]")
-    ax3.legend(fontsize=8, loc="lower right"); ax3.grid(alpha=0.3)
+    ax3.set_ylim(-2, 105)
+    ax3.set_ylabel("beam fraction [%]"); ax3.set_xlabel("time [ns]")
+    ax3.legend(fontsize=8, loc="center right"); ax3.grid(alpha=0.3)
 
     sup = fig.suptitle("")
 
@@ -148,9 +148,11 @@ def main(argv=None) -> int:
 
         mask = steps_l <= it
         if mask.any():
-            line_phi.set_data(t_l_ns[mask], phi_body_l[mask])
+            line_esc.set_data(t_l_ns[mask], pct_escape[mask])
+            line_ret.set_data(t_l_ns[mask], pct_return[mask])
         else:
-            line_phi.set_data([], [])
+            line_esc.set_data([], [])
+            line_ret.set_data([], [])
 
         sup.set_text(f"Chipsat 200 V    step {it}    t = {t_ns:.1f} ns")
         writer.grab_frame()
