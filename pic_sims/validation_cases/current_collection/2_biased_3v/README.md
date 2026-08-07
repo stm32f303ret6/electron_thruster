@@ -19,7 +19,7 @@ I_OML = I_th · (1 + χ)     where χ = eV/kTe = 26.4
 I_OML = 0.10393 µA × 27.40 = 2.847 µA
 ```
 
-OML is a ceiling approached as a/λ_De → 0. At a/λ_De = 0.38 the contactor OML study measured 93% of this ceiling. The gate is a band [0.85, 1.05], not an equality.
+OML is a ceiling approached as a/λ_De → 0. At a/λ_De = 0.38 a prior OML study measured 93% of this ceiling. The gate is a band [0.85, 1.05], not an equality.
 
 Ions are Boltzmann-repelled by exp(−eV/kTi) ≈ 1e-16. The measured ion trickle comes from ions already inside the domain at t = 0 — reported, not gated.
 
