@@ -190,11 +190,9 @@ def main(argv=None) -> int:
         print(f"[dashboard] loading {name} ...")
         data[name] = load_scenario(by_scn[name], cfgs[name])
 
-    # global axis limits (shared across scenarios for comparability)
-    all_ne_vmax = max(data[n]["ne_vmax"] for n in order)
-    all_current_max = max(
-        max(data[n]["current_mA"].max(),
-            cfgs[n].beam_current * 1e3) for n in order) * 1.15
+    # KE axis shared across scenarios (all arrive at ~the gap energy); density
+    # and current axes are PER-SCENARIO — A runs at 10 uA vs B/C's 400 uA, so
+    # a shared linear scale would render A's beam and current invisible.
     all_ke_valid = np.concatenate([
         data[n]["median_ke"][np.isfinite(data[n]["median_ke"])] for n in order])
     all_ke_max = max(all_ke_valid.max() * 1.15, 1.0) if len(all_ke_valid) else 120.0
@@ -207,12 +205,14 @@ def main(argv=None) -> int:
 
     def write_title_card(title, desc, n_frames):
         fig.clf()
-        fig.text(0.5, 0.6, title, ha="center", va="center",
-                 fontsize=18, fontweight="bold", color="#333333")
-        fig.text(0.5, 0.32, desc, ha="center", va="center",
-                 fontsize=12, color="#555555", linespacing=1.5)
+        t1 = fig.text(0.5, 0.6, title, ha="center", va="center",
+                      fontsize=18, fontweight="bold", color="#333333")
+        t2 = fig.text(0.5, 0.32, desc, ha="center", va="center",
+                      fontsize=12, color="#555555", linespacing=1.5)
         for _ in range(n_frames):
             writer.grab_frame()
+        t1.remove()
+        t2.remove()
 
     title_frames = int(round(2.0 * fps))
 
@@ -240,7 +240,7 @@ def main(argv=None) -> int:
         ne0 = np.abs(rho0) / scc.e
         NE0 = np.vstack([ne0[::-1], ne0])
         im = ax1.imshow(NE0, origin="lower", extent=d["ext"], aspect="auto",
-                        cmap="inferno", vmin=0, vmax=all_ne_vmax)
+                        cmap="inferno", vmin=0, vmax=d["ne_vmax"])
         fig.colorbar(im, ax=ax1, label=r"$n_e$ [m$^{-3}$]", shrink=0.9)
         ax1.set_xlabel("z [mm]"); ax1.set_ylabel("r [mm] (mirrored)")
         ax1.set_title("Electron density")
@@ -258,8 +258,9 @@ def main(argv=None) -> int:
         ax2.axhline(cfg.beam_current * 1e3, color="gray", ls="--", lw=1,
                     label=f"emitted = {cfg.beam_current*1e3:.3f} mA")
         line_curr, = ax2.plot([], [], "-o", ms=2, color="tab:green", lw=1.2)
+        curr_max = max(d["current_mA"].max(), cfg.beam_current * 1e3) * 1.15
         ax2.set_xlim(0, d["max_time_ns"])
-        ax2.set_ylim(-all_current_max * 0.05, all_current_max)
+        ax2.set_ylim(-curr_max * 0.05, curr_max)
         ax2.set_xlabel("time [ns]"); ax2.set_ylabel("current [mA]")
         ax2.set_title("Collector current")
         ax2.legend(fontsize=7, loc="upper left"); ax2.grid(alpha=0.3)
