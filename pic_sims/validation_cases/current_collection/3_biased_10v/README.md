@@ -1,7 +1,9 @@
 # collector.biased_10v — sphere at +10 V (χ = eV/kTe = 88.0)
 
+![Schematic](viz/schematic_3_biased_10v.png)
+
 A strong attracting bias, and the **sheath-containment stressor** of the
-collector branch. Read this one folder and you have the whole model.
+collector branch.
 
 ## Physical system
 
@@ -42,17 +44,14 @@ domain).
 
 ## Run cost
 
-~2–4.5 h on an RTX 3060 GPU (150000 steps × 20 ps = 3.0 µs). The heaviest rung;
-infeasible on CPU.
+~2–4.5 h on an RTX 3060 GPU (150000 steps × 20 ps = 3.0 µs). The heaviest rung.
 
 ## Commands
 
 ```bash
-conda activate warpx-cpu-mpich-dev
 python simulation.py
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 python animate.py --run outputs/<run-id>               # optional
-PYTHONNOUSERSITE=1 python -m pytest tests/ -q
 ```
 
 ## Gate definitions and tolerance rationale
@@ -66,8 +65,13 @@ PYTHONNOUSERSITE=1 python -m pytest tests/ -q
 | `quasineutrality` | ≤ 0.02 | far-shell \|n_e−n_i\|/n0 |
 | `edge_phi_max_V` | ≤ 0.5 V | **THE gate to watch** — thick sheath containment |
 
-Changing any tolerance requires a new `policy_id`; every verdict records this
-file's SHA-256.
+## Reference figures
+
+| | |
+|---|---|
+| ![Current](reference_results/20260806T150359Z_503c1220/figures/current.png) | ![Sheath](reference_results/20260806T150359Z_503c1220/figures/sheath.png) |
+
+[Dashboard animation](viz/20260806T150359Z_503c1220_dashboard.mp4)
 
 ## Known numerical limitations
 
@@ -77,6 +81,3 @@ file's SHA-256.
 - OML is only a **ceiling**; the band is a numerical-sanity check.
 - EB faceting, RZ radial-face flux quirk, t = 0 spike as in the other collector
   rungs; single grid/PPC/seed (Phase 5).
-
-The machine-readable record is `results/<run-id>/<analysis-id>/metrics.json` +
-`verdict.json`.
