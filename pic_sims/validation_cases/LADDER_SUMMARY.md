@@ -77,7 +77,7 @@ free parameter.
 **The test:** at +3 V the small-sphere Orbit-Motion-Limited ceiling is
 I_OML = I_th·(1+χ) = 2.847 µA.  A finite sphere collects a *fraction* of the
 ceiling (an effective-potential barrier forms); the cross-code reference
-(a prior OML study at this a/λ_De) measured ~93 %.
+(the electron_contactor OML study at this a/λ_De) measured ~93 %.
 
 | measured | reference | agreement |
 |---|---|---|
