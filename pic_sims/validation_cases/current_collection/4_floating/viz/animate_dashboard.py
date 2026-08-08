@@ -110,7 +110,8 @@ def main(argv=None) -> int:
     ax1.set_anchor('C')
     imN = ax1.imshow(NE0, origin="lower", extent=ext, aspect="equal",
                      cmap="inferno", vmin=0, vmax=ne_vmax)
-    fig.colorbar(imN, ax=ax1, label="n_e [m⁻³]", shrink=0.75)
+    fig.colorbar(imN, cax=ax1.inset_axes([1.02, 0.1, 0.015, 0.8]),
+                 label="n_e [m⁻³]")
     ax1.set_title("Electron density n_e")
     ax1.set_xlabel("z [mm]"); ax1.set_ylabel("r [mm] (mirrored)")
     ax1.add_patch(plt.Circle((0.0, 0.0), cfg.probe_radius * 1e3,
