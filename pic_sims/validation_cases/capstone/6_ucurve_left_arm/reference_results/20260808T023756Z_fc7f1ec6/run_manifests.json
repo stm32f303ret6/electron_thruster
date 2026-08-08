@@ -1,0 +1,40 @@
+{
+  "20260808T023756Z_fc7f1ec6": {
+    "schema_version": 1,
+    "run_id": "20260808T023756Z_fc7f1ec6",
+    "stage_id": "capstone.ucurve_left_arm",
+    "scenario": null,
+    "status": "COMPLETE",
+    "created_at_utc": "2026-08-08T02:37:56Z",
+    "completed_at_utc": "2026-08-08T07:01:42Z",
+    "case_sha256": "fc7f1ec6a45aaf016ad20c9c34a860634e123e7b80c372c03c168e8dafe41236",
+    "study_sha256": null,
+    "git_commit": "9e1240cb10897d714d41b326750951003e547c96",
+    "git_dirty": true,
+    "python_version": "3.12.13",
+    "warpx_version": "26.5",
+    "mpi_ranks": 1,
+    "omp_threads": null,
+    "random_seed": 42,
+    "expected_final_iteration": 111400,
+    "observed_final_iteration": 111400,
+    "artifacts": [
+      {
+        "path": "diags/fields/*.h5",
+        "bytes": 302421576,
+        "files": 41
+      },
+      {
+        "path": "diags/contactor_log.csv",
+        "bytes": 213805,
+        "files": 1
+      },
+      {
+        "path": "diags/reducedfiles/*.txt",
+        "bytes": 217682,
+        "files": 1
+      }
+    ],
+    "error": null
+  }
+}

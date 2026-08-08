@@ -38,6 +38,17 @@ python simulation.py                    # ~4.4 h
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 ```
 
+## results (run `20260808T070147Z_ea2cf8d9`, PASS, promoted)
+
+| | measured | H1 said | H2 said |
+|---|---|---|---|
+| steady state | **forms** (balance 0.035) | converges | possibly none — refuted |
+| escape | **57.43%** | ≥ 96% | collapses ✓ |
+| φ_body | 23.84 V | 47.3 V | ~0 V — neither |
+| delivered F | **10.38 nN** (−24%) | on demand | far short ✓ |
+
+the wall has a third shape: a steady equilibrium forms but is starved — meeting the demand would take more current at still lower escape, so **the demand has no operating point at 78 V** (H2's operative claim). F_net/F_beam = 0.89: the self-scraped beam loads the body almost as hard as the exhaust pushes it. P/F = 6.31 mW/nN at what little is delivered. this is the no-go wall the 100 V hardware floor exists to avoid. see `../UCURVE_PLAN.md` amendment.
+
 ## limitations
 
 - reduced ion mass (400 mₑ), electrostatic only, single grid/PPC/seed, finite-time equilibrium

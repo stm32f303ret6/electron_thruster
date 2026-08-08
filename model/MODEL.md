@@ -66,6 +66,15 @@ pre-registered winner α = 0.82 ± 0.06 (the discrete-hypothesis verdict in
 fits bracket the tail-vs-equilibrium uncertainty of the 300 V float; closing
 the band needs the longer-tail 300 V run (not scheduled).
 
+**Two-slice extension (2026-08-08).** The three fixed-thrust throttle
+equilibria (`capstone.ucurve_*`, tail-averaged φ) add measured (I_esc, φ)
+pairs on a second slice of the (V, I) plane. Fitting all six equilibria:
+**α_all = 0.922, βA = 2.27 cm²**, every residual within ±9.3 %. The same
+power law describing both the fixed-perveance frontier and the fixed-thrust
+throttle points — reached at very different escape fractions and beam optics
+— is the collection law's strongest in-repo test: collection depends on the
+escaped current and the float, not on how the beam got out.
+
 ---
 
 ## 2. The control law (flight rule, §7b) — documented for the paper
@@ -83,15 +92,44 @@ spacecraft's own measured float — **no ionosphere model, no lookup table**:
 
 Why it works: φ is the sensor — density, temperature, day/night, and the
 vehicle's own draw all collapse into where the body floats, which the body
-measures by existing. The 3.12 factor is physics
-(`V_opt = ((2α+1)/α)·φ_eq`, the U-valley marginal-cost balance), not tuning,
-and the valley is shallow (measured flat over ~110–160 V dayside), so factor
-errors cost percent-level power. Hardware clamps V to [100, 300] V; where the
-servo target sits below the emission-feasibility floor, the model lifts V to
-the lowest feasible value — "the optimum is the boundary."
+measures by existing. The 3.12 factor is the **untaxed** marginal-cost
+balance (`V_opt = ((2α+1)/α)·φ_eq`) — see the measured correction below.
+Hardware clamps V to [100, 300] V; where the servo target sits below the
+emission-feasibility floor, the model lifts V to the lowest feasible value —
+"the optimum is the boundary."
 
 In the model the rule is solved self-consistently per row (damped fixed
 point over φ → V → I → φ), which is what the real servo does in time.
+
+### The measured throttle curve (2026-08-08) — the tax correction
+
+The fixed-thrust slice at the anchor's 13.65 nN demand
+(`capstone.ucurve_*` + the committed anchor; specific power at **delivered**
+thrust):
+
+| V | escape | delivered F (nN) | P/F (mW/nN) |
+|---|---|---|---|
+| 78 | 57.4 % | 10.38 (−24 %) | 6.31 |
+| 92.4 | 79.9 % | 11.59 (−15 %) | 4.79 |
+| **125** | 93.8 % | 13.09 (−4 %) | **4.43 (valley)** |
+| 200 (anchor) | 98.4 % | 13.65 | 5.01 |
+
+Two corrections the servo must carry:
+
+1. **The untaxed closed form under-shoots V_opt.** At this demand the
+   measured valley sits at 125 V where V/φ = 5.9, not 3.12: the escape tax
+   (perveance-driven, absent from the two-line rule) moves the optimum up.
+   Treat `((2α+1)/α)·φ` as a hard **lower bound** on V, never a target.
+2. **Below the valley the demand becomes unreachable, not just expensive.**
+   At 78 V a steady equilibrium still forms but delivers −24 % at 10× the
+   validated emission ceiling with F_net/F_beam = 0.89 — the no-go wall the
+   hardware floor (100 V) exists to avoid.
+
+The valley remains shallow on its right arm (4.43 → 5.01 over 125 → 200 V,
++13 %), so overshooting V_opt stays cheap; undershooting is what the curve
+punishes. A tax-aware servo (escape as a function of I/I_CL) is the natural
+next model iteration; it needs the escape–perveance surface, which the three
+throttle points now bracket.
 
 ## 3. Capability, duty cycle, closure — definitions
 

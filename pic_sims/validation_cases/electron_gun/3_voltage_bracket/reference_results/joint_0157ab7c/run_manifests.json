@@ -1,0 +1,101 @@
+{
+  "20260807T203301Z_A_200v_anchor_drive_0bb2c097": {
+    "schema_version": 1,
+    "run_id": "20260807T203301Z_A_200v_anchor_drive_0bb2c097",
+    "stage_id": "emitter.voltage_bracket",
+    "scenario": "A_200v_anchor_drive",
+    "status": "COMPLETE",
+    "created_at_utc": "2026-08-07T20:33:01Z",
+    "completed_at_utc": "2026-08-07T20:37:15Z",
+    "case_sha256": "0bb2c09709d8cd3b5ed92f8f9b396189785cf1c4870426465ebbc606ff5d8ed5",
+    "study_sha256": "1d2e2906c9b41d85bef871f2a38176290e57999ad628fd3e7b966dc080232088",
+    "git_commit": "9e1240cb10897d714d41b326750951003e547c96",
+    "git_dirty": false,
+    "python_version": "3.12.13",
+    "warpx_version": "26.5",
+    "mpi_ranks": 1,
+    "omp_threads": null,
+    "random_seed": 42,
+    "expected_final_iteration": 6000,
+    "observed_final_iteration": 6000,
+    "artifacts": [
+      {
+        "path": "diags/fields/*.h5",
+        "bytes": 8857688,
+        "files": 61
+      },
+      {
+        "path": "diags/reducedfiles/beam_n.txt",
+        "bytes": 6816,
+        "files": 1
+      }
+    ],
+    "error": null
+  },
+  "20260807T203716Z_B_300v_ceiling_drive_58e09715": {
+    "schema_version": 1,
+    "run_id": "20260807T203716Z_B_300v_ceiling_drive_58e09715",
+    "stage_id": "emitter.voltage_bracket",
+    "scenario": "B_300v_ceiling_drive",
+    "status": "COMPLETE",
+    "created_at_utc": "2026-08-07T20:37:16Z",
+    "completed_at_utc": "2026-08-07T20:41:11Z",
+    "case_sha256": "58e0971500fa80cce2ff7920dfa25fd273e3981396b0405579d0937f0521caad",
+    "study_sha256": "1d2e2906c9b41d85bef871f2a38176290e57999ad628fd3e7b966dc080232088",
+    "git_commit": "9e1240cb10897d714d41b326750951003e547c96",
+    "git_dirty": false,
+    "python_version": "3.12.13",
+    "warpx_version": "26.5",
+    "mpi_ranks": 1,
+    "omp_threads": null,
+    "random_seed": 42,
+    "expected_final_iteration": 6000,
+    "observed_final_iteration": 6000,
+    "artifacts": [
+      {
+        "path": "diags/fields/*.h5",
+        "bytes": 8857688,
+        "files": 61
+      },
+      {
+        "path": "diags/reducedfiles/beam_n.txt",
+        "bytes": 6816,
+        "files": 1
+      }
+    ],
+    "error": null
+  },
+  "20260807T204111Z_C_ucurve_overperveance_335806d6": {
+    "schema_version": 1,
+    "run_id": "20260807T204111Z_C_ucurve_overperveance_335806d6",
+    "stage_id": "emitter.voltage_bracket",
+    "scenario": "C_ucurve_overperveance",
+    "status": "COMPLETE",
+    "created_at_utc": "2026-08-07T20:41:11Z",
+    "completed_at_utc": "2026-08-07T20:46:00Z",
+    "case_sha256": "335806d6539477af0150f931139a578a2a80f63945f462b7a125b041c67588b1",
+    "study_sha256": "1d2e2906c9b41d85bef871f2a38176290e57999ad628fd3e7b966dc080232088",
+    "git_commit": "9e1240cb10897d714d41b326750951003e547c96",
+    "git_dirty": false,
+    "python_version": "3.12.13",
+    "warpx_version": "26.5",
+    "mpi_ranks": 1,
+    "omp_threads": null,
+    "random_seed": 42,
+    "expected_final_iteration": 6000,
+    "observed_final_iteration": 6000,
+    "artifacts": [
+      {
+        "path": "diags/fields/*.h5",
+        "bytes": 8857688,
+        "files": 61
+      },
+      {
+        "path": "diags/reducedfiles/beam_n.txt",
+        "bytes": 6816,
+        "files": 1
+      }
+    ],
+    "error": null
+  }
+}

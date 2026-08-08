@@ -1,0 +1,109 @@
+{
+  "stage_id": "emitter.voltage_bracket",
+  "policy_id": "emitter.voltage_bracket.v2",
+  "status": "PASS",
+  "exit_code": 0,
+  "detail": "all 11 required gate(s) passed",
+  "gates": [
+    {
+      "id": "A_collector_transmits",
+      "status": "PASS",
+      "required": true,
+      "metric": "A_200v_anchor_drive__collector_fraction",
+      "comparison": "at_least",
+      "value": 0.9999904895515399,
+      "detail": "0.99999 >= 0.96"
+    },
+    {
+      "id": "B_collector_transmits",
+      "status": "PASS",
+      "required": true,
+      "metric": "B_300v_ceiling_drive__collector_fraction",
+      "comparison": "at_least",
+      "value": 1.0000475390273458,
+      "detail": "1.00005 >= 0.96"
+    },
+    {
+      "id": "C_collector_transmits",
+      "status": "PASS",
+      "required": true,
+      "metric": "C_ucurve_overperveance__collector_fraction",
+      "comparison": "at_least",
+      "value": 0.9998844454468859,
+      "detail": "0.999884 >= 0.96"
+    },
+    {
+      "id": "transmission_flat_across_bracket",
+      "status": "PASS",
+      "required": true,
+      "metric": "transmission_spread_A_to_B",
+      "comparison": "at_most",
+      "value": 5.7049475805870387e-05,
+      "detail": "5.70495e-05 <= 0.02"
+    },
+    {
+      "id": "C_transmission_flat_vs_A",
+      "status": "PASS",
+      "required": true,
+      "metric": "C_collector_drop_vs_A",
+      "comparison": "abs_within",
+      "value": 0.00010604410465397951,
+      "detail": "0.000106044 |x - 0| <= 0.02"
+    },
+    {
+      "id": "A_collector_ke_conserved",
+      "status": "PASS",
+      "required": true,
+      "metric": "A_200v_anchor_drive__ke_error_eV",
+      "comparison": "abs_within",
+      "value": -0.019141901223264313,
+      "detail": "-0.0191419 |x - 0| <= 1.5"
+    },
+    {
+      "id": "B_collector_ke_conserved",
+      "status": "PASS",
+      "required": true,
+      "metric": "B_300v_ceiling_drive__ke_error_eV",
+      "comparison": "abs_within",
+      "value": -0.044722890374941926,
+      "detail": "-0.0447229 |x - 0| <= 1.5"
+    },
+    {
+      "id": "C_collector_ke_conserved",
+      "status": "PASS",
+      "required": true,
+      "metric": "C_ucurve_overperveance__ke_error_eV",
+      "comparison": "abs_within",
+      "value": 0.0274930327930889,
+      "detail": "0.027493 |x - 0| <= 1.5"
+    },
+    {
+      "id": "A_budget_closure",
+      "status": "PASS",
+      "required": true,
+      "metric": "A_200v_anchor_drive__budget_closure_pct",
+      "comparison": "abs_within",
+      "value": 0.0006998306250811042,
+      "detail": "0.000699831 |x - 0| <= 0.1"
+    },
+    {
+      "id": "B_budget_closure",
+      "status": "PASS",
+      "required": true,
+      "metric": "B_300v_ceiling_drive__budget_closure_pct",
+      "comparison": "abs_within",
+      "value": 0.0006998306250225154,
+      "detail": "0.000699831 |x - 0| <= 0.1"
+    },
+    {
+      "id": "C_budget_closure",
+      "status": "PASS",
+      "required": true,
+      "metric": "C_ucurve_overperveance__budget_closure_pct",
+      "comparison": "abs_within",
+      "value": 0.0009719372420123585,
+      "detail": "0.000971937 |x - 0| <= 0.1"
+    }
+  ],
+  "analysis_id": "20260808T104718Z_9b72cb0b"
+}

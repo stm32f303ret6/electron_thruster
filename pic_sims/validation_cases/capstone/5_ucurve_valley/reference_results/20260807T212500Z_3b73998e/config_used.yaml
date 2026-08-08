@@ -1,0 +1,48 @@
+stage_id: capstone.ucurve_valley
+electrical:
+  cathode_offset: -125.0
+  phi_body_init: 0.0
+  t_supply: 1.0e-07
+beam:
+  i_beam: 0.000464
+  t_on: 1.5e-07
+  rms_velocity: 260000.0
+  flux_correction: 1.0
+geometry:
+  r_probe: 0.005
+  wall_thickness: 0.0004
+  lid_thickness: 0.0004
+  floor_thickness: 0.0004
+  z_bot: -0.005
+  z_top: 0.0005
+  r_slit: 0.002
+  r_cathode: 0.0015
+  emit_radius: 0.0005
+plasma:
+  n0: 1627000000000.0
+  Te_K: 1318.8
+  Ti_K: 936.2
+  ion_mass_me: 400.0
+reservoir:
+  enabled: true
+  frac: 0.7
+  every: 25
+domain:
+  rmax: 0.03
+  aspect: 1.12
+  zmargin_lo: 0.025
+  zmargin_hi: 0.035
+  edge_phi_max: 1.0
+numerics:
+  dx: 0.00015
+  dt: 6.253001614259725e-12
+  ppc: 16
+  ppc_beam: 16
+run:
+  t_end: 8.0e-07
+  max_steps: 127920
+  diag_period_frac: 40
+  phi_ceiling: 100.0
+  choke_sustain: 5.0e-08
+compute:
+  gpu_arena_bytes: 6000000000

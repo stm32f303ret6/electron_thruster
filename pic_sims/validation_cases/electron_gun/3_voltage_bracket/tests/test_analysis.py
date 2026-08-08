@@ -52,29 +52,16 @@ def _meas(coll, anode, cathode=0.0, ke_err=0.0, closure=0.0):
 
 
 def test_realistic_cohort_passes_policy():
-    # A and B transmit alike at the frontier perveance fraction; C is
-    # current-limited past the ceiling, excess returning upstream.
+    # The measured shape (v2): all three scenarios transmit alike -- the
+    # planar scale is conservative for this geometry, so C loses nothing.
     meas = {
         ORDER[0]: _meas(0.985, 0.012),
         ORDER[1]: _meas(0.988, 0.010),
-        ORDER[2]: _meas(0.62, 0.10, cathode=0.25),
+        ORDER[2]: _meas(0.992, 0.006),
     }
     metrics = analyze.build_metrics(ORDER, {}, meas)
     verdict = lc.evaluate_gates(metrics, lc.load_policy(POLICY))
     assert verdict.status == lc.V_PASS, verdict.detail
-
-
-def test_c_shortfall_details_are_reported_not_gated():
-    meas = {
-        ORDER[0]: _meas(0.985, 0.012),
-        ORDER[1]: _meas(0.988, 0.010),
-        ORDER[2]: _meas(0.62, 0.35, cathode=0.0),   # excess on the plate instead
-    }
-    metrics = analyze.build_metrics(ORDER, {}, meas)
-    verdict = lc.evaluate_gates(metrics, lc.load_policy(POLICY))
-    assert verdict.status == lc.V_PASS, verdict.detail
-    gate = next(g for g in verdict.gates if g.id == "C_excess_returns_upstream")
-    assert gate.status == lc.GATE_FAIL and not gate.required
 
 
 def test_voltage_dependent_transmission_fails_bracket():
@@ -82,33 +69,33 @@ def test_voltage_dependent_transmission_fails_bracket():
     meas = {
         ORDER[0]: _meas(0.99, 0.008),
         ORDER[1]: _meas(0.94, 0.055),
+        ORDER[2]: _meas(0.992, 0.006),
+    }
+    metrics = analyze.build_metrics(ORDER, {}, meas)
+    verdict = lc.evaluate_gates(metrics, lc.load_policy(POLICY))
+    assert verdict.status == lc.V_FAIL
+
+
+def test_overperveance_transmission_loss_is_a_regression_now():
+    # v1 EXPECTED C to lose current; the committed cohort refuted that
+    # (C transmitted 0.9999).  Under v2 a C loss is a real defect.
+    meas = {
+        ORDER[0]: _meas(0.985, 0.012),
+        ORDER[1]: _meas(0.988, 0.010),
         ORDER[2]: _meas(0.62, 0.10, cathode=0.25),
     }
     metrics = analyze.build_metrics(ORDER, {}, meas)
     verdict = lc.evaluate_gates(metrics, lc.load_policy(POLICY))
     assert verdict.status == lc.V_FAIL
-
-
-def test_free_overperveance_fails_mechanism_gate():
-    # C transmitting like A would refute current limiting -> required FAIL.
-    meas = {
-        ORDER[0]: _meas(0.985, 0.012),
-        ORDER[1]: _meas(0.988, 0.010),
-        ORDER[2]: _meas(0.985, 0.012),
-    }
-    metrics = analyze.build_metrics(ORDER, {}, meas)
-    verdict = lc.evaluate_gates(metrics, lc.load_policy(POLICY))
-    assert verdict.status == lc.V_FAIL
-    gate = next(g for g in verdict.gates
-                if g.id == "C_overperveance_costs_transmission")
-    assert gate.status == lc.GATE_FAIL and gate.required
+    flat = next(g for g in verdict.gates if g.id == "C_transmission_flat_vs_A")
+    assert flat.status == lc.GATE_FAIL and flat.required
 
 
 def test_nonfinite_metric_errors_policy():
     meas = {
         ORDER[0]: _meas(float("nan"), 0.012),
         ORDER[1]: _meas(0.988, 0.010),
-        ORDER[2]: _meas(0.62, 0.10, cathode=0.25),
+        ORDER[2]: _meas(0.992, 0.006),
     }
     metrics = analyze.build_metrics(ORDER, {}, meas)
     verdict = lc.evaluate_gates(metrics, lc.load_policy(POLICY))

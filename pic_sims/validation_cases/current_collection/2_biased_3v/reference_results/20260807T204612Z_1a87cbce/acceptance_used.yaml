@@ -1,0 +1,64 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for collector.biased_3v (sphere at +3 V).
+#
+# This is a NUMERICAL-SANITY policy, not an exact analytic verification:
+# OML is an UPPER bound on the collected current, attained only as
+# a/lambda_De -> 0 (Mott-Smith & Langmuir 1926; the effective-potential
+# barrier argument).  At finite probe radius the collected fraction falls
+# below the ceiling, and the reduction grows with both a/lambda_De and
+# chi (Laframboise 1966, the standard numerical solutions for a
+# collisionless Maxwellian plasma).  At this stage's a/lambda_De = 0.38
+# and chi = 26.4 a reduction of order 10% is therefore expected physics,
+# not a defect.  The electron-current gate is a band [0.85, 1.05]: above
+# 1 beyond noise would signal an injection bug (nothing may exceed OML),
+# well below 0.85 a resolution or containment problem.  The committed
+# reference run measured 0.852 of the ceiling, inside the band and
+# consistent with the expected finite-radius reduction.
+#
+# v2 NOTE: gate values, comparisons, and tolerances are byte-identical to
+# collector.biased_3v.v1; only this rationale text changed (the v1 text
+# anchored the band on an unpublished cross-code study).  Per the ladder
+# contract, any policy-file change requires a new policy_id.
+#
+# Ions are Boltzmann-repelled and NOT gated (their start-up trickle
+# decays on the slow ion clock; see README).
+#
+# Changing any tolerance requires a new policy_id; every verdict records
+# this file's SHA-256.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: collector.biased_3v.v2
+stage_id: collector.biased_3v
+evidence_kind: numerical_sanity
+
+gates:
+  # I_e vs the OML ceiling (finite radius + chi = 26.4 -> below 1 expected).
+  - id: electron_current_vs_oml
+    required: true
+    metric: electron_current_over_oml
+    comparison: within_range
+    minimum: 0.85
+    maximum: 1.05
+
+  # Far-shell density == n0 (flux reservoir intact).
+  - id: far_density_matches_n0
+    required: true
+    metric: far_density_e_over_n0
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.05
+
+  # Far-field quasineutrality (the reservoir must not charge up).
+  - id: far_field_quasineutral
+    required: true
+    metric: quasineutrality
+    comparison: at_most
+    maximum: 0.02
+
+  # The sheath must not touch the domain boundary (a clipped sheath fakes
+  # a collection measurement).
+  - id: sheath_contained
+    required: true
+    metric: edge_phi_max_V
+    comparison: at_most
+    maximum: 0.5

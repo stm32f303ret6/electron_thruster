@@ -5,8 +5,9 @@ did it measure, and how close is that to theory?**  All numbers below come
 from the committed, machine-readable `reference_results/` snapshots (each
 carries its run ID, config hash, policy ID/hash, git commit, and WarpX
 version); this file is a human-readable digest, never the authoritative
-record.  Every step ran on the CPU build (WarpX 26.5, RZ electrostatic,
-seed 42) and PASSed all of its required gates.
+record.  Every step ran on the committed build (WarpX 26.5, RZ electrostatic,
+seed 42; backend recorded per reference) and PASSed all of its required
+gates.
 
 The plasma everywhere is the chipsat capstone's ionospheric row:
 n₀ = 1.627·10¹² m⁻³, kTe = 113.6 meV (1318.8 K), Ti = 936.2 K, reduced ion
@@ -50,6 +51,32 @@ printed as a rough scale only, never gated — plan C8.)
 
 ---
 
+### 3. `emitter.voltage_bracket` — the gun along the voltage axis  *(new step, closes gap G3's voltage row)*
+
+**The test:** the same holed-anode gun with the accelerating voltage promoted
+to the study axis: the capstone's 200 V anchor and 300 V ceiling commands
+(both 23.9 % of the gun's planar Child–Langmuir scale) must transmit
+identically, and the 92.4 V fixed-thrust throttle command (133.5 % of the
+planar scale) probes what an over-scale command costs in the clean geometry.
+
+| measured | expectation | agreement |
+|---|---|---|
+| A (200 V) collector fraction | ≥ 0.96 | **0.99999** |
+| B (300 V) collector fraction | ≥ 0.96 | **1.00005** |
+| \|A − B\| transmission spread | ≤ 2 pp (voltage independence) | **0.006 pp** |
+| C (92.4 V, 133.5 % of planar I_CL) | flat vs A (v2; see below) | **0.99988** |
+| energy conservation (each) | ≤ 1.5 eV | 0.02–0.04 eV |
+| particle budget (each) | ≤ 0.1 % | ≤ 0.001 % |
+
+**A recorded refutation:** the v1 policy *required* scenario C to lose ≥ 3 pp
+to space-charge current limiting; the cohort refuted it (the planar I_CL over
+the spot is a conservative scale for this geometry — `holed_anode` B's loss
+at 79 % of the same scale was aperture clipping through the small hole, not
+virtual-cathode limiting). The v1 FAIL analysis is retained under `results/`;
+the v2 policy gates the measured mechanism. Consequence for the throttle
+campaign: the capstone's escape collapse at the same command is a **can**
+phenomenon, not gun optics.
+
 ## Collector branch (ambient plasma, conducting sphere)
 
 The sphere (a = 0.75 mm, a/λ_De = 0.38, 5 cells) sits in the capstone plasma
@@ -57,7 +84,7 @@ maintained by one-sided Maxwellian flux injection; dx = 0.15 mm and
 ppc = 16 are the capstone's own numbers, so these gates validate the
 capstone's configuration, not just the code.
 
-### 3. `collector.thermal` — sphere at 0 V: the exact answer
+### 4. `collector.thermal` — sphere at 0 V: the exact answer
 
 **The test:** an absorber at plasma potential creates no field, so the
 collected current of each species is the closed-form one-sided thermal flux
@@ -72,7 +99,7 @@ free parameter.
 | far-shell density | n₀ | **0.997** |
 | far-shell quasineutrality | 0 | **0.005** |
 
-### 4. `collector.biased_3v` — OML ceiling at χ = eV/kTe = 26.4
+### 5. `collector.biased_3v` — OML ceiling at χ = eV/kTe = 26.4
 
 **The test:** at +3 V the small-sphere Orbit-Motion-Limited ceiling is
 I_OML = I_th·(1+χ) = 2.847 µA.  A finite sphere collects a *fraction* of the
@@ -82,9 +109,10 @@ a/λ_De and χ (Laframboise 1966) — so a value below 1 is expected physics.
 | measured | reference | agreement |
 |---|---|---|
 | I_e/I_OML | ∈ [0.85, 1.05]; pre-refactor GPU baseline 0.852 | **0.8526** |
+| I_e/I_OML (v2 re-gate, 2026-08-07) | same band, literature-anchored rationale | **0.8523** |
 | sheath radius (\|φ\| = kTe/e) | grows with bias | **4.12 mm** |
 
-### 5. `collector.biased_10v` — sheath growth at χ = 88
+### 6. `collector.biased_10v` — sheath growth at χ = 88
 
 **The test:** at +10 V (I_OML = 9.249 µA) the barrier deepens — the
 collected fraction must *fall* below the 3 V value — and the sheath must
@@ -96,7 +124,7 @@ grow yet stay contained inside the domain.
 | sheath radius | > 3 V value (4.12 mm) | **6.89 mm** (GPU baseline 6.88) |
 | edge \|φ\| (containment) | ≤ 0.2 V | **0.003 V** |
 
-### 6. `collector.floating` — the capstone's charge pump vs the floating potential  *(new step, closes gap G2)*
+### 7. `collector.floating` — the capstone's charge pump vs the floating potential  *(new step, closes gap G2)*
 
 **The test:** the same sphere, but nothing prescribes its voltage: the
 chipsat capstone's charge-pump mechanism (Gauss-law capacitance calibration,
@@ -114,7 +142,7 @@ so the gate isolates the charge accounting itself).
 | Gauss-law C / 4πε₀a | ~1.07 (grounded-box correction) | **1.068** (89.1 fF vs 83.4 fF) |
 | ledger vs openPMD scraped charge | identical | **5·10⁻⁹** |
 
-### 7. `capstone.two_node_laplace` — the capstone's two-node EB in vacuum  *(new step, closes gap G1)*
+### 8. `capstone.two_node_laplace` — the capstone's two-node EB in vacuum  *(new step, closes gap G1)*
 
 **The test:** the chipsat's conducting can carries TWO potentials on one
 embedded boundary (BODY floats; CATHODE = body − 200 V).  This step solves
@@ -135,7 +163,7 @@ gates it.
 
 ## Capstone
 
-### 8. `capstone.floating_body` — the full chipsat (emitter + collector + float)
+### 9. `capstone.floating_body` — the full chipsat (emitter + collector + float)
 
 **The test:** the complete system — the can floats via the charge pump, the
 cathode rides at body − 200 V, a 0.342 mA beam exits the lid hole into the
@@ -156,7 +184,7 @@ containment, and the ledger-vs-dump consistency checks.
 | exhaust KE | −φ(injection plane) = 148.1 eV | **147.5 eV** |
 | ledger vs dumps (ambient-e / beam-escape) | identical | **3·10⁻⁹ / 5·10⁻⁹** |
 
-### 9. `capstone.high_thrust` — the 300 V ceiling (PASS, promoted)
+### 10. `capstone.high_thrust` — the 300 V ceiling (PASS, promoted)
 
 **The test:** the same deck driven at the 300 V hardware ceiling with
 i_beam = 0.63 mA (the same measured I/I_CL = 1.46 emission ratio).  Scaling
@@ -179,7 +207,7 @@ linear (α = 1 → 31 V) and square-root (α = 0.5 → 90 V) laws are refuted;
 α = 0.82 survives.  Late slope +26.8 mV/ns at run end, so the settled float
 extrapolates to ~42–48 V — see `SCALING_LAWS.md` §4 VERDICT.
 
-### 10. `capstone.low_power` — the 100 V floor (PASS, promoted)
+### 11. `capstone.low_power` — the 100 V floor (PASS, promoted)
 
 **The test:** the same deck at the 100 V hardware floor, i_beam = 0.121 mA
 (same I/I_CL = 1.46).  At fixed thrust, supply power grows as ~√V, so this
@@ -194,7 +222,7 @@ required gates PASS**: F_beam **3.42 nN**, escape **96.12 %**,
 With steps 8 and 9 it completes the three-point measured P–F frontier and
 confirms F/P ∝ 1/√V: **0.283 / 0.200 / 0.159 µN/W** at 100 / 200 / 300 V.
 
-### 11. Slender body — the geometry axis (PASS, promoted)
+### 12. Slender body — the geometry axis (PASS, promoted)
 
 **The test:** the capstone deck with the can lengthened to Ø10 × 30.5 mm
 (L/r = 6, skin 3.24×) at the anchor's identical drive, current, plasma row,
@@ -212,6 +240,52 @@ fitted exponent survives a 3.24× area change.  Thrust *rose* to 14.22 nN
 (from 13.65) because a lower float keeps more of the drive.
 
 ---
+
+### 13. `capstone.ucurve_valley` — fixed thrust at 125 V (PASS, promoted)
+
+**The test:** first point of the pre-registered fixed-thrust throttle slice
+(`capstone/UCURVE_PLAN.md`): hold the anchor's 13.65 nN demand at 125 V
+(commanded current 4.0× the planar perveance). Trust gates required; escape,
+float, and delivered thrust are the measurement.
+
+| measured | pre-registered H1 | outcome |
+|---|---|---|
+| escape | ≥ 96 % | **93.78 %** — the tax's onset |
+| φ_body | 24.5 V | **21.25 V** |
+| delivered F | 13.65 nN | **13.09 nN** (−4.1 %) |
+| P/F at delivered F | 4.25 mW/nN | **4.43 mW/nN** — the measured valley |
+
+### 14. `capstone.ucurve_left_arm` — fixed thrust at 92.4 V (PASS, promoted)
+
+**The test:** the discriminator. H1 (untaxed laws) put the valley near 95 V —
+P/F here *below* the 125 V point; H2 (perveance tax) put it right of here.
+
+| measured | H1 | outcome |
+|---|---|---|
+| escape | ≥ 96 % | **79.95 %** — collapse (5.6× over-ceiling) |
+| delivered F | 13.65 nN | **11.59 nN** (−15 %) |
+| P/F at delivered F | 4.07 (below 125 V) | **4.79 — above 125 V: H2 wins** |
+| F_net/F_beam | ~0.06 | **0.30** (self-scraped beam load) |
+
+### 15. `capstone.ucurve_floor` — the no-go wall at 78 V (PASS, promoted)
+
+**The test:** boundary demonstration — does the demand have *any* operating
+point at 78 V? Even current balance is a reported gate here (a policy must
+not gate away its own hypothesis).
+
+| measured | note |
+|---|---|
+| steady equilibrium | **forms** (balance 0.035) — H2's no-steady-state variant refuted |
+| escape | **57.43 %** at 10.1× the validated ceiling |
+| delivered F | **10.38 nN** (−24 %) — the demand is unreachable |
+| F_net/F_beam | **0.89** — self-scrape loads the body almost as hard as the exhaust pushes |
+| φ_body | 23.84 V (H1's 47.3 V never materialized) |
+
+Together with the 200 V anchor (5.01 mW/nN), stages 13–15 measure the
+throttle curve the §7 flight rule optimizes over: a U with its valley at
+~125 V and a no-go wall below the arm — resolved for H2, the perveance tax
+(`UCURVE_PLAN.md` amendment 2026-08-08).
+
 
 ## Cross-stage checks (all green in the suite verdict)
 

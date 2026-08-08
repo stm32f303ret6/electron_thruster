@@ -37,8 +37,10 @@ STAGES: tuple[Stage, ...] = (
                      "C_high_current_big_hole")),
     # The gun along the voltage axis: closes the emitter branch's voltage gap
     # (beam formation was validated only at 100 V while the capstones drive
-    # 200-300 V -- VALIDATION_GAPS.md G3) and demonstrates over-ceiling
-    # current limiting at the fixed-thrust throttle command (UCURVE_PLAN.md).
+    # 200-300 V -- VALIDATION_GAPS.md G3).  Its scenario C measured that the
+    # planar-I_CL scale is conservative here (0.9999 transmission at 133.5%
+    # of the scale; the v1 limiting expectation is a recorded refutation),
+    # locating the throttle stages' escape tax inside the can (UCURVE_PLAN.md).
     Stage("emitter.voltage_bracket",
           Path("electron_gun/3_voltage_bracket"),
           requires=("emitter.holed_anode",),

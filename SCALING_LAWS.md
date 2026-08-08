@@ -125,8 +125,10 @@ potential is whatever makes that balance close.
   | 0.5 (square root) | OML-cylinder / thin-sheath square-root theory | ~90 V — would fail the 50 V gate and approach the 100 V choke |
 
   The 300 V run discriminates, and the fixed-thrust throttle stages
-  (`pic_sims/validation_cases/capstone/UCURVE_PLAN.md`) extend the measured
-  (I_esc, φ) price list in-repo to χ far beyond the frontier slice. A caveat
+  (`pic_sims/validation_cases/capstone/UCURVE_PLAN.md`, resolved 2026-08-08)
+  extended the measured (I_esc, φ) price list to a second slice: all six
+  committed equilibria fit `(1+χ)^α` with α_all = 0.922 and residuals
+  ≤ 9.3 % (`model/minimal_model.py --calibrate`). A caveat
   travels with the comparison: at high χ the sheath equilibrates on the ion
   timescale, so an 800 ns plateau must be checked against its own late slope
   before any α is declared the winner (the late-dφ/dt line every capstone
@@ -201,30 +203,40 @@ Demand swings ~10× over an orbit (diurnal) and ~15× across 400–600 km.
 **The throttle rule — why "as low as feasible" is wrong.**
 The naive rule from §2 alone ("throttle V as low as feasible; P ∝ F·√V")
 assumes escape stays high and current is free. Neither assumption survives
-the taxes: at fixed thrust, dropping V raises the required current as
-~1/√KE while the emission ceiling falls as V^1.5, so perveance I/I_CL
-explodes — and the in-repo evidence says that is not free
-(`emitter.holed_anode` B: transmission collapse at 79 % of I_CL;
-`emitter.voltage_bracket` C: over-ceiling current limiting at the 92.4 V
-throttle command; `capstone.low_power`: escape already degrading at the
-validated perveance; the killed slender attempt: 91 % self-scrape far over
-the ceiling). Two taxes grow on the left arm — the charging tax (φ eating
-a growing fraction of V) and escape collapse — so specific power P/F is a
-**U** in V at fixed thrust, with a no-equilibrium wall below the arm.
+the measured taxes: at fixed thrust, dropping V raises the required current
+as ~1/√KE while the emission ceiling falls as V^1.5, so perveance I/I_CL
+explodes — and the fixed-thrust slice (`capstone.ucurve_*` at the anchor's
+13.65 nN demand, pre-registered in
+`pic_sims/validation_cases/capstone/UCURVE_PLAN.md` and resolved
+2026-08-08) **measured** what that costs. Specific power at delivered
+thrust:
 
-The fixed-thrust slice that measures this curve in-repo is pre-registered
-(`capstone.ucurve_valley` 125 V, `capstone.ucurve_left_arm` 92.4 V,
-`capstone.ucurve_floor` 78 V, all at the anchor's 13.65 nN demand —
-`pic_sims/validation_cases/capstone/UCURVE_PLAN.md`), with the committed
-200 V anchor as the curve's fourth point (5.01 mW/nN measured).
+| V | escape | delivered F | P/F (mW/nN) |
+|---|---|---|---|
+| 78 | 57.4 % | 10.38 nN (−24 %) | 6.31 |
+| 92.4 | 79.9 % | 11.59 nN (−15 %) | 4.79 |
+| **125** | 93.8 % | 13.09 nN (−4 %) | **4.43 (valley)** |
+| 200 (anchor) | 98.4 % | 13.65 nN | 5.01 |
+
+Escape collapses monotonically with over-ceiling ratio (2.7× → 5.6× →
+10.1×), delivered thrust falls short, and P/F is a measured **U** with its
+valley at ~125 V. Below the arm the demand becomes unreachable, not just
+expensive: at 78 V a steady equilibrium still forms but delivers −24 % at
+10× the validated ceiling with F_net/F_beam = 0.89 — the no-go wall the
+100 V hardware floor exists to avoid. The tax is a *can* phenomenon, not
+generic gun optics: `emitter.voltage_bracket` C ran the same 92.4 V command
+in the clean isolated-gun geometry and transmitted 0.9999 (the planar I_CL
+scale is conservative there — its v2 policy records the refuted
+current-limiting expectation).
 
 > **Sit at the U-valley for the instantaneous demand — not as low as
-> feasible.** The valley has a closed form, `V_opt = ((2α+1)/α)·φ_eq ≈
-> 3.1·φ_eq` from the fitted collection law, and φ_eq depends on the
-> demanded current and the local plasma — so the *rule* travels across
-> rows and orbits while the *number* does not. Never operate below the
-> no-equilibrium boundary for the current demand (the wall
-> `capstone.ucurve_floor` maps).
+> feasible.** The untaxed closed form `V_opt = ((2α+1)/α)·φ_eq ≈ 3.1·φ_eq`
+> is a hard **lower bound**, not a target: the measured valley sits at
+> V/φ = 5.9 (125 V at this demand) because the escape tax moves the optimum
+> up. The valley is shallow rightward (+13 % power from 125 → 200 V), so
+> overshoot is cheap; undershoot is what the curve punishes. Never operate
+> below the no-go wall for the current demand (measured by
+> `capstone.ucurve_floor`: at 78 V the demand has no operating point).
 
 Two slices of the (V, I) plane, not to be confused:
 

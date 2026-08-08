@@ -1,12 +1,12 @@
 {
-  "analysis_id": "20260806T150357Z_fe1c00b4",
+  "analysis_id": "20260807T212457Z_350c2ba2",
   "metrics": [
     {
       "id": "electron_current_A",
       "status": "OK",
-      "value": 2.426530341650259e-06,
+      "value": 2.426756176489923e-06,
       "unit": "A",
-      "uncertainty": 5.9833821118802566e-09,
+      "uncertainty": 6.271423516620656e-09,
       "sample_count": 40,
       "window": {
         "start_iteration": 61000,
@@ -30,7 +30,7 @@
     {
       "id": "electron_current_over_th",
       "status": "OK",
-      "value": 23.348485236525377,
+      "value": 23.35065825753784,
       "unit": "-",
       "uncertainty": null,
       "sample_count": null,
@@ -43,7 +43,7 @@
     {
       "id": "electron_current_over_oml",
       "status": "OK",
-      "value": 0.8521997215895435,
+      "value": 0.8522790349960909,
       "unit": "-",
       "uncertainty": null,
       "sample_count": null,
@@ -79,7 +79,7 @@
     {
       "id": "far_density_e_over_n0",
       "status": "OK",
-      "value": 0.9696191278162886,
+      "value": 0.9701613565991482,
       "unit": "-",
       "uncertainty": null,
       "sample_count": null,
@@ -89,7 +89,7 @@
     {
       "id": "quasineutrality",
       "status": "OK",
-      "value": 0.0019159758768633917,
+      "value": 0.002513443541627102,
       "unit": "-",
       "uncertainty": null,
       "sample_count": null,
@@ -99,7 +99,7 @@
     {
       "id": "edge_phi_max_V",
       "status": "OK",
-      "value": 0.0025185233599883043,
+      "value": 0.002525369163366609,
       "unit": "V",
       "uncertainty": null,
       "sample_count": null,
@@ -109,7 +109,7 @@
     {
       "id": "sheath_radius_mm",
       "status": "OK",
-      "value": 4.128091865689888,
+      "value": 4.1249519607287235,
       "unit": "mm",
       "uncertainty": null,
       "sample_count": null,

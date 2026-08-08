@@ -120,3 +120,54 @@ Measured 0.154 s/step on the §1 machine (`SETUP.md`) at this domain size:
 - The α fit gains high-χ points off the frontier slice (χ 215–416 commanded).
 - The mission sweeps' low-V rows move from flagged extrapolation toward
   measured envelope (or gain a measured no-go wall).
+
+---
+
+## AMENDMENT — 2026-08-08: all three runs complete, discrimination resolved
+
+All three stages ran to 800 ns on the committed configs (seed 42, git clean)
+and **PASSed every required trust gate**; verdicts and evidence are promoted
+under each stage's `reference_results/`. Measured, with specific power at
+**delivered** thrust:
+
+| V | escape | φ_body (V) | delivered F (nN) | P/F (mW/nN) | late dφ/dt |
+|---|---|---|---|---|---|
+| 78 | **57.43 %** | 23.84 | 10.38 (−24 %) | 6.31 | +23.6 mV/ns |
+| 92.4 | **79.95 %** | 23.72 | 11.59 (−15 %) | 4.79 | +24.7 mV/ns |
+| 125 | **93.78 %** | 21.25 | 13.09 (−4.1 %) | **4.43** | +18.4 mV/ns |
+| 200 (anchor) | 98.44 % | 16.98 | 13.65 | 5.01 | +16.5 mV/ns |
+
+**H2 (the perveance tax) wins the discrimination.** The pre-registered
+discriminator — the sign of P/F(92.4) − P/F(125) — is **positive**
+(4.79 > 4.43): the valley sits at ~125 V, not at H1's untaxed ~95 V. Escape
+collapses monotonically with over-ceiling ratio (93.8 → 79.9 → 57.4 % at
+2.7× → 5.6× → 10.1×), exactly the H2 mechanism; delivered thrust falls
+correspondingly short of the demand.
+
+**The floor's wall has a different shape than either branch predicted.** At
+78 V a steady equilibrium *does* form (current balance 0.035 — H2's
+no-steady-state variant did not materialize), but it is starved: −24 % thrust
+at 10× the validated ceiling, with F_net/F_beam = 0.89 (the self-scraped
+beam loads the body nearly as hard as the exhaust pushes it). Meeting the
+demand would take still more current at still lower escape — the demand has
+**no operating point** at 78 V, which is H2's operative claim and the wall
+the flight rule's voltage floor exists to avoid. H1's 47.3 V float never
+materialized (measured 23.84 V).
+
+**Where the tax lives.** `emitter.voltage_bracket` scenario C (the same
+92.4 V command in the clean isolated-gun geometry) transmitted 0.9999 — no
+generic gun-optics loss. The escape collapse measured here is therefore
+attributable to the can's own gap and lid/collection physics, not to beam
+formation.
+
+**The collection law survives the slice change.** Each converged run's
+(I_esc, φ) pair joins the fit: all six committed equilibria — two slices of
+the (V, I) plane, escape fractions from 57 to 99 % — fit
+`I_esc = βA·j_the·(1+χ)^α` with α_all = 0.922, βA = 2.27 cm², residuals
+≤ 9.3 % (`model/minimal_model.py --calibrate`).
+
+**Flight-rule consequence** (recorded in `model/MODEL.md` §2): the untaxed
+closed form `V_opt = ((2α+1)/α)·φ` under-shoots the measured optimum
+(V/φ = 5.9 at the valley) and is demoted to a hard lower bound; the valley
+is shallow rightward (+13 % power at 200 V), so overshoot is cheap and
+undershoot is what the curve punishes.

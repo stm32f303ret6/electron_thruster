@@ -38,6 +38,17 @@ python simulation.py                    # ~5.5 h
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 ```
 
+## results (run `20260807T212500Z_3b73998e`, PASS, promoted)
+
+| | measured | H1 said | H2 said |
+|---|---|---|---|
+| escape | **93.78%** | ≥ 96% | degraded ✓ |
+| φ_body | **21.25 V** | 24.5 V | lower ✓ |
+| delivered F | **13.09 nN** (−4.1%) | on demand | short ✓ |
+| P/F at delivered F | **4.43 mW/nN** | 4.25 | above ✓ |
+
+the measured valley of the curve: 4.79 (92.4 V) > **4.43 (here)** < 5.01 (200 V). the tax's onset is visible (escape below every frontier point) but the demand is still met. see `../UCURVE_PLAN.md` amendment for the campaign resolution.
+
 ## limitations
 
 - reduced ion mass (400 mₑ), electrostatic only, single grid/PPC/seed, finite-time equilibrium
