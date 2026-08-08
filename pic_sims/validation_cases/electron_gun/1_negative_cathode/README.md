@@ -1,61 +1,72 @@
 # emitter.negative_cathode — two-plate diode
 
-![Schematic](viz/schematic_negative_cathode.png)
+a −100 V cathode emits a 10 µA electron beam toward a grounded collector. proves emission, acceleration, scraping, and poisson solve are self-consistent — current, energy, and particle budget all close.
 
-First step of the emitter branch. A simple two-plate RZ diode with no embedded boundaries.
+[![dashboard](viz/20260806T073653Z_52a474f6_dashboard.gif)](viz/20260806T073653Z_52a474f6_dashboard.mp4)
 
-## Setup
+*animated dashboard — click for the full video.*
 
-- **Cathode** (z = −2 mm): held at −100 V, emits a prescribed 10 µA electron beam
-- **Collector** (z = +2 mm): grounded (0 V), absorbs arriving electrons
-- **Domain**: axisymmetric RZ, radius 2 mm, 40 × 80 cells (dr = dz = 0.05 mm)
-- **Beam**: flux-Maxwellian emission from a 0.5 mm disc, thermal spread ~0.25 eV per axis
+## setup
 
-| Boundary | Potential | Particles |
+![schematic](viz/schematic_negative_cathode.png)
+
+- **cathode** (z = −2 mm): −100 V, emits prescribed 10 µA beam
+- **collector** (z = +2 mm): grounded (0 V), absorbs electrons
+- **domain**: RZ, radius 2 mm, 40 × 80 cells (dr = dz = 0.05 mm)
+- **beam**: flux-maxwellian from a 0.5 mm disc, ~0.25 eV/axis
+
+| boundary | potential | particles |
 |---|---|---|
-| z_min (cathode) | −100 V Dirichlet | absorbing |
-| z_max (collector) | 0 V Dirichlet | absorbing |
-| r_max (wall) | Neumann | absorbing |
+| z_min (cathode) | −100 V dirichlet | absorbing |
+| z_max (collector) | 0 V dirichlet | absorbing |
+| r_max (wall) | neumann | absorbing |
 | r = 0 (axis) | — | — |
 
-### What's included
+## how the pic works
 
-- Electrostatic Poisson solve every step (self-consistent space charge)
-- Prescribed-current flux emission (no thermionic/field-emission model)
+- **emission**: prescribed flux $\Phi = I / (e \, \pi r_c^2)$ from disc ($r < 0.5$ mm), flux-maxwellian momenta, 128 macroparticles/cell/step
+- **field solve**: electrostatic poisson (multigrid) every step, self-consistent space charge
+- **push**: shape-1 gather/deposit, dt = 1.5 ps ($v_{max}\,dt \approx 0.18\,dz$)
+- **scraping**: absorbing walls, per-surface scraped counts dumped every 80 steps
+- **diagnostics**: $\phi$/$\rho$ field dumps + reduced particle diagnostics every 80 steps
 
-### What's excluded
+## what this step tests
 
-- Embedded boundaries, magnetic fields, collisions, ions
-
-## What this step tests
-
-| Check | How | Target |
+| check | how | target |
 |---|---|---|
-| Vacuum potential | on-axis φ vs analytic Laplace ramp | ≤ 10 mV error |
-| Arrival energy | energy conservation from emission plane | ~99.25 eV (≤ 0.5 eV error) |
-| Beam transmission | fraction reaching collector | ~100% |
-| Cathode return | fraction reflected back | ~0 |
-| Radial loss | fraction hitting the wall | ~0 |
-| Particle budget | emitted = absorbed + in-domain | ≤ 0.1% |
-| Space-charge dip | φ dip near z ≈ 0 | 0.092 ± 0.04 V (regression*) |
+| vacuum potential | on-axis $\phi$ vs analytic laplace ramp | ≤ 10 mV error |
+| arrival energy | energy conservation from emission plane | ~99.25 eV (≤ 0.5 eV error) |
+| beam transmission | fraction reaching collector | ~100% |
+| cathode return | fraction reflected back | ~0 |
+| radial loss | fraction hitting the wall | ~0 |
+| particle budget | emitted = absorbed + in-domain | ≤ 0.1% |
+| space-charge dip | $\phi$ dip near z ≈ 0 | 0.092 ± 0.04 V (regression*) |
 
-*The space-charge dip target (0.092 V) was measured from the validated baseline run, not predicted from theory. A 1D estimate only brackets it at 0.04–0.09 V.
+*space-charge dip target measured from baseline, not predicted (1D estimate brackets 0.04–0.09 V).
 
-## What this step does NOT test
+## results
 
-- Emission physics (current is prescribed, not self-limiting)
-- Apertures, sheaths, or embedded boundaries (later steps)
-- Grid convergence (single resolution/PPC/seed — deferred to Phase 5)
+reference run `20260801T075244Z_52a474f6`, all gates PASS:
 
-## Dependencies
+| metric | measured | gate |
+|---|---|---|
+| vacuum ramp error | 0.035 mV | ≤ 10 mV |
+| space-charge dip | 0.092 V | 0.092 ± 0.04 V |
+| collector fraction | 100.02% | [99.5, 100.5]% |
+| arrival KE error | 0.028 eV | ≤ 0.5 eV |
+| cathode return | 0 | ≤ 1e-4 |
+| radial wall loss | 3e-7 | ≤ 1e-4 |
+| budget closure | 7.5e-4% | ≤ 0.1% |
 
-None — this is a root stage.
+## dependencies
 
-## Cost
+none — root stage.
 
-~3 min. 4000 steps × 1.5 ps = 6.0 ns. Beam transit ~1.3 ns, so steady state is reached well before the end.
+## cost
 
-## Commands
+~3 min. 4000 steps × 1.5 ps = 6.0 ns.
+
+## commands
 
 ```bash
 python simulation.py
@@ -63,27 +74,12 @@ python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 python animate.py --run outputs/<run-id>
 ```
 
-## Gates
+## validates for capstone
 
-From `acceptance.yaml` (policy: `emitter.negative_cathode.v1`):
+poisson solve, prescribed emission, scraping, and energy/budget conservation — all reused with identical mechanics in the capstone deck.
 
-| Gate | Bound | Why |
-|---|---|---|
-| `collector_current_over_emitted` | [0.995, 1.005] | prescribed current; ±0.5% covers scrape noise |
-| `collector_ke_error_eV` | ≤ 0.5 eV | analytic is 99.25 eV; 0.5 eV ≈ the 2kT launch spread |
-| `cathode_return_fraction` | ≤ 1e-4 | no reflection expected |
-| `radial_wall_fraction` | ≤ 1e-4 | beam stays on axis |
-| `vacuum_ramp_max_abs_error_V` | ≤ 0.01 V | Laplace solve accuracy |
-| `space_charge_depression_V` | 0.092 ± 0.04 V | regression anchor (not a prediction) |
-| `budget_closure_pct` | ≤ 0.1% | conservation check |
+## limitations
 
-## Dashboard
-
-[![Dashboard](viz/20260806T073653Z_52a474f6_dashboard.gif)](viz/20260806T073653Z_52a474f6_dashboard.mp4)
-
-*Animated dashboard — click for the full video.*
-
-## Limitations
-
-- Single grid resolution, PPC, and seed — no convergence study yet (Phase 5)
-- Energy prediction interpolates φ at the emission plane between cell centers; on the ~50 V/mm gradient this adds a fraction of an eV uncertainty, within the 0.5 eV gate
+- single grid resolution, PPC, and seed — no convergence study (phase 5)
+- emission is prescribed, not self-limiting
+- no apertures, sheaths, or embedded boundaries (later steps)

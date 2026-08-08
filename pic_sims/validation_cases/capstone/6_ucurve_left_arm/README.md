@@ -1,53 +1,44 @@
-# capstone.ucurve_left_arm — fixed-thrust throttle curve at 92.4 V
+# capstone.ucurve_left_arm — fixed-thrust at 92.4 V
 
-![Schematic](viz/schematic_6_ucurve_left_arm.png)
+tests whether the U-curve has a left arm. same system as `floating_body` driven at **92.4 V** (*below the 100 V hardware floor on purpose*), with current commanded for 13.65 nN.
 
-Same system as [`capstone.floating_body`](../2_chipsat_thruster/README.md) — identical can, plasma, grid, reservoir, and charge pump — driven at **92.4 V**, *below the 100 V hardware floor on purpose*, with the beam current commanded for the 200 V anchor's measured thrust:
+## setup
 
-```
-F demand = 13.65 nN (the 200 V anchor's measurement)
-model/ucurve_targeting.py (H1 branch)  →  i_beam = 0.601 mA
-I / I_CL(92.4 V) = 8.2  →  5.6× the validated emission ceiling
-```
+![schematic](viz/schematic_6_ucurve_left_arm.png)
 
-## The question
-
-**Does the fixed-thrust left arm exist — and which side of 125 V does the valley sit on?**
-
-The calibrated laws (H1) put the specific-power valley near the self-consistent `V = 3.12·φ` point, **≈ 95 V at this demand** — which would make this stage, not `ucurve_valley`, the cheapest place to hold 13.65 nN. The perveance-tax hypothesis (H2) says beam optics collapse here first: the sign of **P/F(92.4) − P/F(125)** is the single sharpest discriminator the pair produces.
-
-Pre-registered hypotheses and predictions: [`../UCURVE_PLAN.md`](../UCURVE_PLAN.md), committed before the run.
-
-| | H1 — calibrated laws, frontier escape | H2 — perveance tax |
+| | floating_body | this stage |
 |---|---|---|
-| escape | ≥ 96 % | collapses (5.6× past the ceiling) |
-| φ_body | ~32.5 V | low (beam self-scrapes before charging) |
-| delivered F | 13.65 nN (on demand) | short, worse than at 125 V |
-| P/F vs 125 V | **below** (4.07 vs 4.25 mW/nN) | **above** — valley is right of here |
+| `cathode_offset` | −200 V | **−92.4 V** |
+| `i_beam` | 0.342 mA | **0.601 mA** |
+| everything else | — | identical (CFL dt ~7.18 ps, ~111k steps) |
 
-## What changed from the baseline
+$I / I_{CL}(92.4\ \text{V}) = 8.2$ → 5.6× the validated emission ceiling.
 
-| | floating_body (baseline) | ucurve_left_arm (this stage) |
+### hypotheses (pre-registered in `UCURVE_PLAN.md`)
+
+| | H1 — calibrated laws | H2 — perveance tax |
 |---|---|---|
-| `cathode_offset` | −200 V | **−92.4 V** (below the hardware floor by design) |
-| `i_beam` | 0.342 mA | **0.601 mA** (fixed-thrust command) |
-| everything else | — | identical (CFL dt ~7.18 ps; ~111k steps for 800 ns) |
+| escape | ≥ 96% | collapses |
+| φ_body | ~32.5 V | low |
+| delivered F | 13.65 nN | short, worse than 125 V |
+| P/F vs 125 V | **below** (4.07 vs 4.25) | **above** — valley is right |
 
-## What is gated
+## how the pic works
 
-Identical structure to `ucurve_valley`: required gates are the trust set only (current balance, momentum sanity, containment, both ledger cross-checks, frontier tolerances); escape, float, and delivered thrust are reported — they are the measurement.
+same engine as `floating_body` — deck, charge pump, reservoir, observer identical. only the drive point differs.
 
-## Commands
+## what is gated
+
+same structure as `ucurve_valley`: trust set only (current balance ≤ 5%, momentum, containment ≤ 1 V, scrape consistency ≤ 2% ×2).
+
+## commands
 
 ```bash
-python simulation.py                                   # ~4.8 h (111k steps)
+python simulation.py                    # ~4.8 h
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 ```
 
-## Limitations
+## limitations
 
-- Reduced ion mass (400 mₑ, not O⁺)
-- Electrostatic only (no B, no ram drift)
-- Single grid/PPC/seed
-- Finite-time equilibrium on the ion clock
-- Commanded current sits 5.6× outside the validated emission envelope **by design** — that excursion is the object of measurement, not an oversight
+- reduced ion mass (400 mₑ), electrostatic only, single grid/PPC/seed, finite-time equilibrium
+- commanded current 5.6× outside validated envelope **by design**

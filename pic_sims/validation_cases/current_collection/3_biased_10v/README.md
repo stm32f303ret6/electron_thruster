@@ -1,78 +1,74 @@
 # collector.biased_10v — sphere at +10 V (sheath stress test)
 
-![Schematic](viz/schematic_3_biased_10v.png)
+same sphere and plasma, now at +10 V. the main test is **sheath containment** — can the domain hold the thick sheath? electron current checked against OML ceiling with a wider floor (barrier deepening grows with χ).
 
-Third step of the collector branch. Same sphere and plasma, now at a strong attracting bias. The main point here is **sheath containment** — can the domain hold the thick sheath without clipping it?
+[![dashboard](viz/20260806T150359Z_503c1220_dashboard.gif)](viz/20260806T150359Z_503c1220_dashboard.mp4)
 
-## Setup
+*animated dashboard — click for the full video.*
 
-- **Sphere**: 0.75 mm radius, held at +10 V (χ = eV/kTe = 88.0)
-- **Plasma**: same capstone plasma
-- **Domain**: largest of the three collector steps (11 λ_De), because a sheath clipped by the boundary fakes extra current
+## setup
+
+![schematic](viz/schematic_3_biased_10v.png)
+
+- **sphere**: 0.75 mm radius, +10 V ($\chi = eV/kT_e = 88.0$)
+- **plasma**: same as `thermal`
+- **domain**: largest collector step (11 λ_De) — clipped sheath fakes extra current
 
 ### OML theory
 
-```
-I_OML = I_th · (1 + χ) = 0.10393 µA × 89.0 = 9.249 µA
-```
+$$I_{OML} = I_{th}\,(1 + \chi) = 0.10393\ \mu\mathrm{A} \times 89.0 = 9.249\ \mu\mathrm{A}$$
 
-The collected current sits below the +3 V case's OML fraction — barrier deepening grows with χ.
+## how the pic works
 
-### What's included / excluded
+same deck as `thermal` — only config differs (bias +10 V, largest domain, dt = 20 ps):
 
-Same as `collector.biased_3v`, with the probe at +10 V and a larger domain.
+- bulk maxwellian fill at t = 0, flux injection from three open faces
+- electrostatic poisson every step; +10 V sphere against 0 V walls
+- EB collection + scrape buffer; last-40% steady window
 
-## What this step tests
+## what this step tests
 
-| Check | Target |
+| check | target |
 |---|---|
-| Electron current vs OML ceiling | within [0.80, 1.05] of I_OML (floor relaxed vs +3 V) |
-| Far-field density | ≤ 6% off n0 |
-| Quasineutrality | ≤ 2% |
-| Edge potential | ≤ 0.5 V (**the gate to watch** — thick sheath must stay inside the domain) |
+| electron current vs OML ceiling | [0.80, 1.05] of $I_{OML}$ |
+| far-field density | ≤ 6% off n0 |
+| quasineutrality | ≤ 2% |
+| edge potential | ≤ 0.5 V (**the gate to watch**) |
 
-## What this step does NOT test
+## results
 
-- A quantitative sheath-collection law
-- Ion physics (repelled)
-- Grid/domain convergence (Phase 5)
+reference run `20260806T150359Z_503c1220`, all gates PASS:
 
-## Dependencies
+| metric | measured | gate |
+|---|---|---|
+| I_e / I_OML | 0.809 | [0.80, 1.05] |
+| far density vs n0 | 4.6% off | ≤ 6% |
+| quasineutrality | 0.40% | ≤ 2% |
+| edge potential | 2.6 mV | ≤ 0.5 V |
 
-Requires `collector.biased_3v` (this step deepens the bias and enlarges the domain).
+## dependencies
 
-## Cost
+requires `collector.biased_3v`.
 
-~2–4.5 h. 150 000 steps × 20 ps = 3.0 µs. The heaviest collector step.
+## cost
 
-## Commands
+~2–4.5 h. 150k steps × 20 ps = 3.0 µs.
+
+## commands
 
 ```bash
 python simulation.py
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
-python animate.py --run outputs/<run-id>               # optional
+python animate.py --run outputs/<run-id>
 ```
 
-## Gates
+## validates for capstone
 
-From `acceptance.yaml` (policy: `collector.biased_10v.v1`):
+sheath containment at strong bias — stress-tests domain sizing the capstone inherits.
 
-| Gate | Bound | Why |
-|---|---|---|
-| `electron_current_over_oml` | [0.80, 1.05] | deeper barrier → wider floor than +3 V |
-| `far_density_e_over_n0` | ≤ 6% off | looser at this domain size |
-| `quasineutrality` | ≤ 0.02 | far-shell check |
-| `edge_phi_max_V` | ≤ 0.5 V | thick sheath containment |
+## limitations
 
-## Dashboard
-
-[![Dashboard](viz/20260806T150359Z_503c1220_dashboard.gif)](viz/20260806T150359Z_503c1220_dashboard.mp4)
-
-*Animated dashboard — click for the full video.*
-
-## Limitations
-
-- The current shows a **+4% drift** through its declared steady window, not yet caught by a stationarity gate (Phase 5, plan C6)
-- Connected-sheath-edge containment metric is a Phase 5 refinement (plan §10.5); currently just checking max |φ| near the boundary
-- OML is a ceiling; the band is a sanity check
-- EB faceting, RZ radial-face flux quirk, t = 0 spike same as other collector steps; single grid/PPC/seed (Phase 5)
+- +4% current drift in the steady window, no stationarity gate yet (phase 5)
+- OML is a ceiling — the band is a sanity check
+- EB faceting, RZ flux quirk, t = 0 spike same as `thermal`
+- single grid/PPC/seed (phase 5)

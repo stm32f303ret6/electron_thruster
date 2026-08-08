@@ -1,63 +1,65 @@
-# capstone.high_thrust — thruster at the 300 V hardware ceiling
+# capstone.high_thrust — 300 V ceiling
 
-![Schematic](viz/schematic_3_high_thrust.png)
+same system as `floating_body` driven at **300 V** / 0.63 mA. asks: how much thrust at full drive, and does the body still float safely?
 
-Same system as [`capstone.floating_body`](../2_chipsat_thruster/README.md) — identical can, plasma, grid, reservoir, and charge pump — driven at **300 V** with the beam current scaled to the same emission-ceiling ratio:
+[![dashboard](viz/20260804T154756Z_b854dcbe_dashboard.gif)](viz/20260804T154756Z_b854dcbe_dashboard.mp4)
 
-```
-I_CL(300 V, 4.7 mm gap, 0.5 mm spot) = 0.431 mA
-I / I_CL = 1.46 (measured float200 ratio)  →  i_beam = 0.63 mA
-```
+*animated dashboard — click for the full video.*
 
-## The question
+## setup
 
-**How much thrust at full drive, and does the body still float safely?**
+![schematic](viz/schematic_3_high_thrust.png)
 
-### Drag budget from orbit_sims (2024, real F10.7/Ap, 5 mm chipsat)
-
-| Altitude / pose | Drag mean | Drag max | Covered by 13.65 nN (200 V)? |
-|---|---|---|---|
-| 400 km axial | 32.9 nN | 92.4 nN | no |
-| 400 km lateral | 21.7 nN | 60.7 nN | no |
-| 500 km axial | 7.6 nN | 28.4 nN | mean only |
-| 550 km axial | 3.9 nN | 16.3 nN | mean; max barely missed |
-| 600 km axial | 2.0 nN | 9.6 nN | yes |
-
-Scaling the 200 V measurement (13.65 nN at 0.342 mA) by I·√(V − φ) predicts ~30 nN — enough to cover the 500 km worst case (28.4 nN).
-
-## What changed from the baseline
-
-| | floating_body (baseline) | high_thrust (this stage) |
+| | floating_body | this stage |
 |---|---|---|
 | `cathode_offset` | −200 V | **−300 V** |
 | `i_beam` | 0.342 mA | **0.63 mA** |
-| `max_steps` | 160 000 | **200 000** (CFL dt shrinks to ~4.15 ps) |
+| `max_steps` | 160k | **200k** (CFL dt ~4.15 ps) |
 | everything else | — | identical |
 
-The larger current needs roughly twice the ambient electron collection, so the float should settle higher (~+30 V) — still below the 50 V design limit. If the ionosphere can't supply it, the choke watchdog (φ > 100 V sustained) fails the run early.
+$$I / I_{CL} = 1.46 \;\Rightarrow\; i_\text{beam} = 0.63\ \text{mA}$$
 
-## What is gated
+the larger current needs ~2× ambient collection → float settles higher (~+30 V). choke watchdog (φ > 100 V sustained) fails the run if the ionosphere can't supply it.
 
-No regression anchor at 300 V, so the required gates are only the theory-anchored invariants that hold at any operating point: escape ≥ 95%, float ≤ 50 V, current balance ≤ 5%, momentum sanity, containment, and both ledger cross-checks.
+## how the pic works
 
-The mission-coverage question (f_beam_nN ≥ 28.4) is reported, not required — a miss is a finding about the scaling, not an invalid run.
+same engine as `floating_body` — deck, charge pump, reservoir, observer identical. only the drive point differs.
 
-## Dashboard
+## what is gated
 
-[![Dashboard](viz/20260804T154756Z_b854dcbe_dashboard.gif)](viz/20260804T154756Z_b854dcbe_dashboard.mp4)
+no regression anchor at 300 V. required gates are theory-anchored invariants only:
 
-*Animated dashboard — click for the full video.*
+| gate | bound |
+|---|---|
+| escape | ≥ 95% |
+| float | ≤ 50 V |
+| current balance | ≤ 5% |
+| momentum sanity | \|F_net\| ≤ F_beam |
+| edge containment | ≤ 1 V |
+| scrape consistency (×2) | ≤ 2% |
 
-## Commands
+mission-coverage (f_beam ≥ 28.4 nN for 500 km) is reported, not required.
+
+## results
+
+reference run `20260804T154756Z_b854dcbe`, all gates PASS:
+
+| metric | measured |
+|---|---|
+| escape | 99.0% |
+| thrust | 30.13 nN |
+| φ_body | +36.3 V |
+| exhaust KE | 210.1 eV |
+| current balance | 3.5% |
+| edge |φ| | 108 mV |
+
+## commands
 
 ```bash
-python simulation.py                                   # ~8 h (193k steps)
+python simulation.py                    # ~8 h
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 ```
 
-## Limitations
+## limitations
 
-- Reduced ion mass (400 mₑ, not O⁺)
-- Electrostatic only (no B, no ram drift)
-- Single grid/PPC/seed
-- Finite-time equilibrium on the ion clock
+- reduced ion mass (400 mₑ), electrostatic only, single grid/PPC/seed, finite-time equilibrium
