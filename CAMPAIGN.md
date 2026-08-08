@@ -358,6 +358,51 @@ Ranked by how much they threaten the conclusions.
 | 2026-08-04 | collection-law hypotheses pre-registered; 300 V launched; 100 V floor stage added |
 | 2026-08-05 | 300 V and 100 V gated PASS; convergence pair run; minimal model built and swept; paper drafted; slender attempt launched, found invalid, killed |
 | 2026-08-06 | cathode-standoff fix committed and slender relaunched; thin-plasma pre-registered then unchained; `SETUP.md` written; slender gated PASS, hypothesis A confirmed |
+| 2026-08-07 | fixed-thrust throttle stages + gun voltage bracket pre-registered and committed (`UCURVE_PLAN.md`); gun cohort + biased_3v v2 re-gate run |
+| 2026-08-08 | all three throttle runs gated PASS; H2 (perveance tax) wins the discrimination; valley measured at ~125 V; no-go wall at 78 V demonstrated; two-slice α fit committed |
 
 Total: **~50 GPU-hours** across four production runs, two convergence runs, and
 one killed run. One code change. Three pre-registrations, three resolved.
+
+---
+
+## 9. The fixed-thrust throttle campaign (2026-08-07/08)
+
+The frontier of §2 holds perveance fixed and measures the envelope boundary;
+this follow-on campaign holds the **demand** fixed (the anchor's 13.65 nN)
+and measures the cost surface inside it — the slice the §5 flight rule
+actually lives on. Pre-registered in
+`pic_sims/validation_cases/capstone/UCURVE_PLAN.md` (hypotheses H1/H2 and
+numeric predictions committed before any run), resolved in its 2026-08-08
+amendment. Three new capstone stages, each gated PASS on the trust set:
+
+| stage | V | escape | delivered F | P/F at delivered F |
+|---|---|---|---|---|
+| `capstone.ucurve_floor` | 78 V | 57.4 % | 10.38 nN (−24 %) | 6.31 mW/nN |
+| `capstone.ucurve_left_arm` | 92.4 V | 79.9 % | 11.59 nN (−15 %) | 4.79 mW/nN |
+| `capstone.ucurve_valley` | 125 V | 93.8 % | 13.09 nN (−4 %) | **4.43 mW/nN** |
+| (`capstone.floating_body`) | 200 V | 98.4 % | 13.65 nN | 5.01 mW/nN |
+
+Resolutions:
+
+- **The perveance tax is real (H2).** The pre-registered discriminator —
+  the sign of P/F(92.4) − P/F(125) — came out positive: the specific-power
+  valley sits at ~125 V, refuting the calibrated laws' untaxed valley
+  (~95 V). The flight servo's closed form is demoted to a lower bound
+  (`model/MODEL.md` §2).
+- **The no-go wall is measured, with a shape neither branch predicted:** at
+  78 V a steady equilibrium forms but cannot meet the demand (−24 % at 10×
+  the validated emission ceiling, F_net/F_beam = 0.89).
+- **The tax is a can phenomenon.** The new `emitter.voltage_bracket` step
+  ran the same 92.4 V command in the isolated-gun geometry: 0.9999
+  transmission. Beam formation is clean at every capstone drive voltage
+  (closing gap G3); the collapse happens inside the can.
+- **The collection law survives a slice change.** All six committed
+  equilibria — two slices, escape 57–99 % — fit `(1+χ)^α` with
+  α_all = 0.922, residuals ≤ 9.3 %.
+
+Cost: **~13.3 GPU-hours** for the three capstone runs, ~1 h for the gun
+cohort and the collector re-gate. Two acceptance-policy refutations were
+recorded and re-gated on the way (`emitter.voltage_bracket.v1`'s
+current-limiting expectation; `collector.biased_3v.v1`'s rationale) — both
+per the ladder's policy-versioning contract.

@@ -1,0 +1,82 @@
+{
+  "stage_id": "capstone.ucurve_valley",
+  "policy_id": "capstone.ucurve_valley.v1",
+  "status": "PASS",
+  "exit_code": 0,
+  "detail": "all 5 required gate(s) passed",
+  "gates": [
+    {
+      "id": "steady_current_balance",
+      "status": "PASS",
+      "required": true,
+      "metric": "current_balance",
+      "comparison": "at_most",
+      "value": 0.03377197043342801,
+      "detail": "0.033772 <= 0.05"
+    },
+    {
+      "id": "momentum_sanity_bound",
+      "status": "PASS",
+      "required": true,
+      "metric": "f_net_over_f_beam",
+      "comparison": "at_most",
+      "value": 0.06252822852956773,
+      "detail": "0.0625282 <= 1"
+    },
+    {
+      "id": "sheath_and_plume_contained",
+      "status": "PASS",
+      "required": true,
+      "metric": "edge_phi_max_V",
+      "comparison": "at_most",
+      "value": 0.07233669181167025,
+      "detail": "0.0723367 <= 1"
+    },
+    {
+      "id": "scrape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "scrape_charge_consistency",
+      "comparison": "at_most",
+      "value": 7.165706819120372e-10,
+      "detail": "7.16571e-10 <= 0.02"
+    },
+    {
+      "id": "beam_escape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "scrape_charge_consistency_beam_escape",
+      "comparison": "at_most",
+      "value": 1.797249199112789e-09,
+      "detail": "1.79725e-09 <= 0.02"
+    },
+    {
+      "id": "beam_escapes",
+      "status": "FAIL",
+      "required": false,
+      "metric": "escape_fraction_pct",
+      "comparison": "at_least",
+      "value": 93.78346914062502,
+      "detail": "93.7835 >= 95"
+    },
+    {
+      "id": "body_floats_benign",
+      "status": "PASS",
+      "required": false,
+      "metric": "phi_body_V",
+      "comparison": "at_most",
+      "value": 21.25045375,
+      "detail": "21.2505 <= 50"
+    },
+    {
+      "id": "thrust_meets_demand",
+      "status": "PASS",
+      "required": false,
+      "metric": "f_beam_nN",
+      "comparison": "abs_within",
+      "value": 13.092271953125001,
+      "detail": "13.0923 |x - 13.65| <= 2.05"
+    }
+  ],
+  "analysis_id": "20260808T023751Z_4e7cc7e0"
+}

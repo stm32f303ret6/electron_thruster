@@ -1,0 +1,40 @@
+{
+  "20260807T212500Z_3b73998e": {
+    "schema_version": 1,
+    "run_id": "20260807T212500Z_3b73998e",
+    "stage_id": "capstone.ucurve_valley",
+    "scenario": null,
+    "status": "COMPLETE",
+    "created_at_utc": "2026-08-07T21:25:00Z",
+    "completed_at_utc": "2026-08-08T02:37:50Z",
+    "case_sha256": "3b73998e930520d411fb28a0099b5b0837f46cf3a8242c1c9928d39a8921ef3b",
+    "study_sha256": null,
+    "git_commit": "9e1240cb10897d714d41b326750951003e547c96",
+    "git_dirty": false,
+    "python_version": "3.12.13",
+    "warpx_version": "26.5",
+    "mpi_ranks": 1,
+    "omp_threads": null,
+    "random_seed": 42,
+    "expected_final_iteration": 127920,
+    "observed_final_iteration": 127920,
+    "artifacts": [
+      {
+        "path": "diags/fields/*.h5",
+        "bytes": 302421576,
+        "files": 41
+      },
+      {
+        "path": "diags/contactor_log.csv",
+        "bytes": 244794,
+        "files": 1
+      },
+      {
+        "path": "diags/reducedfiles/*.txt",
+        "bytes": 250022,
+        "files": 1
+      }
+    ],
+    "error": null
+  }
+}
