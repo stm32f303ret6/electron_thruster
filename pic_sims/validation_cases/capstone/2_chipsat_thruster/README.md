@@ -32,7 +32,7 @@ a **reservoir** re-injects every EB-collected ambient particle into the outer ra
 - **beam emission**: prescribed 0.342 mA surface-flux source above cathode, on at 150 ns
 - **field solve**: electrostatic poisson (multigrid) every step, two-node EB (BODY, CATHODE)
 - **EB scraping**: per-step observer classifies scraped particles by electrode and species
-- **charge pump**: C from uniform-1 V init solve; every step $dQ = e\,(\text{beam} + \text{escape}) - e\,(\text{amb\_e}) + e\,(\text{amb\_i})$ → $\varphi_\text{body} = \varphi_0 + Q/C$, CATHODE = body − 200 V via `set_potential_on_eb`
+- **charge pump**: C from uniform-1 V init solve; every step $dQ = e\,(\text{beam} + \text{escape}) - e\,(\text{amb}_\text{e}) + e\,(\text{amb}_\text{i})$ → $\varphi_{\text{body}} = \varphi_0 + Q/C$, CATHODE = body − 200 V via `set_potential_on_eb`
 - **measurement**: F_beam = z-momentum of escaped beam; currents and fates logged to `contactor_log.csv` every 100 steps
 - **watchdogs**: non-finite φ_body or φ_body > 100 V sustained 50 ns → FAILED
 
