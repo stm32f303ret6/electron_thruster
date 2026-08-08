@@ -51,6 +51,7 @@ _SCHEMA: dict[str, tuple[str, ...]] = {
 # their case hashes stay valid.
 _OPTIONAL: dict[str, tuple[str, ...]] = {
     "geometry": ("cathode_standoff",),
+    "plasma": ("Bz_T",),
 }
 
 # Research knobs from the pre-ladder research deck, deliberately NOT migrated (the
@@ -310,6 +311,7 @@ class Config:
     Te_K: float
     Ti_K: float
     ion_mass_me: float
+    Bz_T: Optional[float]
     # reservoir
     reservoir_enabled: bool
     reservoir_frac: float
@@ -505,6 +507,8 @@ class Config:
             "plasma": {
                 "n0": self.n0, "Te_K": self.Te_K, "Ti_K": self.Ti_K,
                 "ion_mass_me": self.ion_mass_me,
+                # omitted when unset, so baseline case hashes are unchanged
+                **({} if self.Bz_T is None else {"Bz_T": self.Bz_T}),
             },
             "reservoir": {
                 "enabled": self.reservoir_enabled,
@@ -546,6 +550,17 @@ class Config:
             raise ConfigError("beam.flux_correction must be positive")
         if self.n0 <= 0 or self.Te_K <= 0 or self.Ti_K <= 0:
             raise ConfigError("plasma density/temperatures must be positive")
+        if self.Bz_T is not None:
+            if not (0.0 < abs(self.Bz_T) <= 1.0e-2):
+                raise ConfigError(
+                    f"plasma.Bz_T ({self.Bz_T:g} T) must be a nonzero field "
+                    "within +-10 mT (LEO is ~3e-5 T; larger fields need a "
+                    "gyro-resolving numerics review)")
+            omega_ce_dt = (E * abs(self.Bz_T) / ME) * self.dt
+            if omega_ce_dt >= 0.2:
+                raise ConfigError(
+                    f"omega_ce*dt = {omega_ce_dt:.3g} >= 0.2: the Boris push "
+                    "under-resolves the gyromotion at this Bz/dt")
         if self.dx >= self.lamD:
             raise ConfigError(
                 f"numerics.dx ({self.dx:g}) must resolve lambda_D ({self.lamD:g} m)")
@@ -617,6 +632,7 @@ def load_config(path: Path | str, scenario: str | None = None) -> Config:
                           else float(geo["cathode_standoff"])),
         n0=_f(pla, "n0"), Te_K=_f(pla, "Te_K"), Ti_K=_f(pla, "Ti_K"),
         ion_mass_me=_f(pla, "ion_mass_me"),
+        Bz_T=(_f(pla, "Bz_T") if "Bz_T" in pla else None),
         reservoir_enabled=bool(res["enabled"]),
         reservoir_frac=_f(res, "frac"), reservoir_every=_i(res, "every"),
         rmax_requested=_f(dom, "rmax"), aspect=_f(dom, "aspect"),
