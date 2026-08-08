@@ -242,7 +242,8 @@ def main(argv=None) -> int:
         ax1.set_anchor('C')
         im = ax1.imshow(NE0, origin="lower", extent=d["ext"], aspect="equal",
                         cmap="inferno", vmin=0, vmax=d["ne_vmax"])
-        fig.colorbar(im, ax=ax1, label=r"$n_e$ [m$^{-3}$]", shrink=0.75)
+        fig.colorbar(im, cax=ax1.inset_axes([1.02, 0.1, 0.015, 0.8]),
+                     label=r"$n_e$ [m$^{-3}$]")
         ax1.set_xlabel("z [mm]"); ax1.set_ylabel("r [mm] (mirrored)")
         ax1.set_title("Electron density")
         # draw anode plate
