@@ -1,82 +1,78 @@
 # collector.biased_3v — sphere at +3 V
 
-![Schematic](viz/schematic_2_biased_3v.png)
+same sphere and plasma as `thermal`, biased to +3 V. an attracting sheath forms; electron current checked against the OML ceiling.
 
-Second step of the collector branch. Same sphere and plasma as `collector.thermal`, now biased to attract electrons.
+[![dashboard](viz/20260806T142605Z_1a87cbce_dashboard.gif)](viz/20260806T142605Z_1a87cbce_dashboard.mp4)
 
-## Setup
+*animated dashboard — click for the full video.*
 
-- **Sphere**: 0.75 mm radius (a/λ_De = 0.38), held at +3 V
-- **Plasma**: same capstone plasma as `collector.thermal`
-- **Domain**: enlarged to 7.3 λ_De to hold the sheath
+## setup
+
+![schematic](viz/schematic_2_biased_3v.png)
+
+- **sphere**: 0.75 mm radius (a/λ_De = 0.38), held at +3 V
+- **plasma**: same as `thermal`
+- **domain**: enlarged to 7.3 λ_De to hold the sheath
 
 ### OML theory
 
-For a sub-Debye sphere, the Orbit-Motion-Limited (OML) current is an upper bound:
+$$I_{OML} = I_{th}\,(1 + \chi), \qquad \chi = \frac{eV}{kT_e} = 26.4$$
 
-```
-I_OML = I_th · (1 + χ)     where χ = eV/kTe = 26.4
-I_OML = 0.10393 µA × 27.40 = 2.847 µA
-```
+$$I_{OML} = 0.10393\ \mu\mathrm{A} \times 27.40 = 2.847\ \mu\mathrm{A}$$
 
-OML is a ceiling attained only as a/λ_De → 0 (Mott-Smith & Langmuir 1926); at finite radius the collected fraction falls below it, the reduction growing with a/λ_De and χ (Laframboise 1966). At this step's a/λ_De = 0.38 and χ = 26.4 an ~10% reduction is expected physics: the committed run measured 85% of the ceiling. The gate is a band [0.85, 1.05], not an equality.
+OML is a ceiling (mott-smith & langmuir 1926), attained as a/λ_De → 0. at finite radius the fraction falls below it (laframboise 1966). measured: 85% of ceiling. gate is [0.85, 1.05].
 
-Ions are Boltzmann-repelled by exp(−eV/kTi) ≈ 1e-16. The measured ion trickle comes from ions already inside the domain at t = 0 — reported, not gated.
+## how the pic works
 
-### What's included / excluded
+same deck as `thermal` — only config differs (bias +3 V, larger domain, dt = 30 ps):
 
-Same as `collector.thermal` (two-species RZ electrostatics, EB probe, flux reservoir), with the probe at +3 V so a sheath now forms.
+- bulk maxwellian fill at t = 0, flux injection from three open faces
+- electrostatic poisson every step; +3 V sphere against 0 V walls
+- EB collection + scrape buffer; last-40% steady window
 
-## What this step tests
+## what this step tests
 
-| Check | Target |
+| check | target |
 |---|---|
-| Electron current vs OML ceiling | within [0.85, 1.05] of I_OML |
-| Far-field density | ≤ 5% off n0 |
-| Quasineutrality | ≤ 2% |
-| Edge potential | ≤ 0.5 V (sheath must not reach the boundaries) |
+| electron current vs OML ceiling | [0.85, 1.05] of $I_{OML}$ |
+| far-field density | ≤ 5% off n0 |
+| quasineutrality | ≤ 2% |
+| edge potential | ≤ 0.5 V |
 
-## What this step does NOT test
+## results
 
-- An exact collected-current value (OML is a ceiling, not an equality at this a/λ_De)
-- Ion collection (repelled; start-up biased)
-- Grid convergence (Phase 5)
+reference run `20260806T142605Z_1a87cbce`, all gates PASS:
 
-## Dependencies
+| metric | measured | gate |
+|---|---|---|
+| I_e / I_OML | 0.852 | [0.85, 1.05] |
+| far density vs n0 | 3.0% off | ≤ 5% |
+| quasineutrality | 0.19% | ≤ 2% |
+| edge potential | 2.5 mV | ≤ 0.5 V |
 
-Requires `collector.thermal` (this step adds the attracting sheath).
+## dependencies
 
-## Cost
+requires `collector.thermal`.
 
-~1–2 h. 100 000 steps × 30 ps = 3.0 µs (the sheath's ion response is on the slow ion clock).
+## cost
 
-## Commands
+~1–2 h. 100k steps × 30 ps = 3.0 µs.
+
+## commands
 
 ```bash
 python simulation.py
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
-python animate.py --run outputs/<run-id>               # optional
+python animate.py --run outputs/<run-id>
 ```
 
-## Gates
+## validates for capstone
 
-From `acceptance.yaml` (policy: `collector.biased_3v.v1`):
+OML electron collection at moderate bias — the capstone body floats positive and collects ambient electrons the same way.
 
-| Gate | Bound | Why |
-|---|---|---|
-| `electron_current_over_oml` | [0.85, 1.05] | OML is a ceiling; finite-radius reduction expected (measured 85%) |
-| `far_density_e_over_n0` | ≤ 5% off | flux reservoir intact |
-| `quasineutrality` | ≤ 0.02 | far-shell check |
-| `edge_phi_max_V` | ≤ 0.5 V | sheath containment |
+## limitations
 
-## Dashboard
-
-[![Dashboard](viz/20260806T142605Z_1a87cbce_dashboard.gif)](viz/20260806T142605Z_1a87cbce_dashboard.mp4)
-
-*Animated dashboard — click for the full video.*
-
-## Limitations
-
-- OML is a ceiling; the band is a sanity check, not an identity. Distinguishing OML from the exact sub-Debye theory would need a convergence/geometry study (Phase 5)
-- Ion start-up bias decays on the slow ion clock — ion current is reported, never gated
-- EB faceting, RZ radial-face flux quirk, t = 0 spike same as `collector.thermal`; single grid/PPC/seed (Phase 5)
+- OML is a ceiling, not an equality at this a/λ_De — the band is a sanity check
+- ion current is start-up biased (reported, not gated)
+- EB faceting, RZ flux quirk, t = 0 spike same as `thermal`
+- single grid/PPC/seed (phase 5)
