@@ -20,13 +20,9 @@ BANNED = (
     "electron_thruster/",   # path-style reference to the precursor tree
 )
 
-# Temporary exceptions, each with the action that retires it.
-ALLOWLIST = {
-    # Frozen v1-policy copy; replaced when the collector.biased_3v.v2
-    # re-gate run is promoted (its rationale cited an unpublished study).
-    "pic_sims/validation_cases/current_collection/2_biased_3v/"
-    "reference_results/20260806T142605Z_1a87cbce/acceptance_used.yaml",
-}
+# Temporary exceptions, each with the action that retires it.  Empty since
+# the collector.biased_3v.v2 re-gate run was promoted (2026-08-08).
+ALLOWLIST: set[str] = set()
 
 # This guard's own definition of the banned strings is not a violation.
 SELF = "pic_sims/validation_cases/tests/test_publication_hygiene.py"

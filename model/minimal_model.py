@@ -88,6 +88,29 @@ ANCHORS = [
          phi_settled_V=45.0),
 ]
 
+# The fixed-thrust throttle equilibria (capstone.ucurve_*, one demand level:
+# the 200 V anchor's 13.65 nN).  They extend the COLLECTION-LAW fit to a
+# second slice of the (V, I) plane; they are deliberately NOT part of the
+# esc_of_V interpolation (that curve is the fixed-perveance frontier path,
+# and the throttle points measure exactly its breakdown -- see MODEL.md).
+UCURVE_ANCHORS = [
+    dict(stage="capstone.ucurve_valley",
+         config=CAPSTONE / "5_ucurve_valley" / "config.yaml",
+         metrics=CAPSTONE / "5_ucurve_valley" / "reference_results"
+                 / "20260807T212500Z_3b73998e" / "metrics.json",
+         phi_settled_V=None),
+    dict(stage="capstone.ucurve_left_arm",
+         config=CAPSTONE / "6_ucurve_left_arm" / "config.yaml",
+         metrics=CAPSTONE / "6_ucurve_left_arm" / "reference_results"
+                 / "20260808T023756Z_fc7f1ec6" / "metrics.json",
+         phi_settled_V=None),
+    dict(stage="capstone.ucurve_floor",
+         config=CAPSTONE / "7_ucurve_floor" / "config.yaml",
+         metrics=CAPSTONE / "7_ucurve_floor" / "reference_results"
+                 / "20260808T070147Z_ea2cf8d9" / "metrics.json",
+         phi_settled_V=None),
+]
+
 # Emission geometry (frozen in every capstone config: r_spot 0.5 mm, gap 4.7 mm)
 EMIT_GAP_M = 4.7e-3
 EMIT_R_M = 0.5e-3
@@ -181,7 +204,32 @@ class Calibration:
         for a, Ie in zip(A, Iesc):
             self.phi_resid.append(self.phi_of_Iesc(Ie, self.n0, self.Te0_K) - a[phi_key])
 
+        # Two-slice collection-law fit: the frontier anchors plus the
+        # fixed-thrust throttle equilibria (tail-averaged phi only -- the
+        # settled-phi sensitivity variant stays a frontier-only fit).  Each
+        # throttle run contributes a measured (I_esc, phi) pair at chi beyond
+        # the frontier slice; agreement across slices is the collection law's
+        # strongest in-repo test.
+        self.ucurve = [_load_anchor(a) for a in UCURVE_ANCHORS]
+        chi_all = np.concatenate([chi, [u["phi_V"] / self.kTe0_eV
+                                        for u in self.ucurve]])
+        Iesc_all = np.concatenate([Iesc, [u["esc"] * u["I_mA"] * 1e-3
+                                          for u in self.ucurve]])
+        xa, ya = np.log1p(chi_all), np.log(Iesc_all)
+        self.alpha_all, b_all = np.polyfit(xa, ya, 1)
+        self.alpha_all = float(self.alpha_all)
+        self.betaA_all = float(math.exp(b_all) / j0)
+        self.fit_resid_all_pct = (
+            100.0 * (np.exp(np.polyval([self.alpha_all, b_all], xa)) - Iesc_all)
+            / Iesc_all)
+
         # Flight-rule factor (§7b): V_opt = ((2*alpha + 1)/alpha) * phi
+        # MEASURED CAVEAT (2026-08-08): this closed form is the UNTAXED
+        # marginal-cost balance.  The measured fixed-thrust curve
+        # (capstone.ucurve_*) puts the valley at ~125 V where V/phi = 5.9 --
+        # the escape tax shifts V_opt well above ctrl_factor*phi.  Treat
+        # ctrl_factor*phi as a hard LOWER bound on V, not a target; see
+        # MODEL.md "The measured throttle curve".
         self.ctrl_factor = (2.0 * self.alpha + 1.0) / self.alpha
 
         # chi range actually measured (envelope on the chi axis)
@@ -224,7 +272,15 @@ class Calibration:
               f"{', '.join(f'{r:+.1f} %' for r in self.fit_resid_pct)}",
               f"    phi residuals (model - measured): "
               f"{', '.join(f'{r:+.2f} V' for r in self.phi_resid)}",
-              f"  flight-rule factor (2a+1)/a = {self.ctrl_factor:.2f}",
+              f"  two-slice fit (frontier + fixed-thrust throttle equilibria):",
+              f"    alpha_all = {self.alpha_all:.4f}  beta*A = {self.betaA_all*1e4:.3f} cm^2  "
+              f"(6 equilibria, chi {self.chi_lo:.0f}-{self.chi_hi:.0f}, "
+              f"two slices of the (V, I) plane)",
+              f"    current residuals (3 frontier + 3 throttle): "
+              f"{', '.join(f'{r:+.1f} %' for r in self.fit_resid_all_pct)}",
+              f"  flight-rule factor (2a+1)/a = {self.ctrl_factor:.2f}  "
+              f"(UNTAXED lower bound on V; measured valley at V/phi = 5.9 -- "
+              f"see MODEL.md)",
               f"  emission scale I_CL = {i_cl_mA(1.0)*1e0:.4g} mA * V^1.5;  "
               f"at 100/200/300 V: "
               f"{i_cl_mA(100):.3f} / {i_cl_mA(200):.3f} / {i_cl_mA(300):.3f} mA "

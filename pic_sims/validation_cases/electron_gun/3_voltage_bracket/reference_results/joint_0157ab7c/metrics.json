@@ -1,0 +1,175 @@
+{
+  "analysis_id": "20260808T104718Z_9b72cb0b",
+  "metrics": [
+    {
+      "id": "A_200v_anchor_drive__collector_fraction",
+      "status": "OK",
+      "value": 0.9999904895515399,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/zhi steady current / emitted"
+    },
+    {
+      "id": "A_200v_anchor_drive__anode_fraction",
+      "status": "OK",
+      "value": 0.0,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/eb steady current / emitted"
+    },
+    {
+      "id": "A_200v_anchor_drive__ke_error_eV",
+      "status": "OK",
+      "value": -0.019141901223264313,
+      "unit": "eV",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "collector mean KE minus analytic 196.18 eV"
+    },
+    {
+      "id": "A_200v_anchor_drive__budget_closure_pct",
+      "status": "OK",
+      "value": 0.0006998306250811042,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "reducedfiles/beam_n.txt + scraped weight"
+    },
+    {
+      "id": "A_200v_anchor_drive__cathode_fraction",
+      "status": "OK",
+      "value": 0.0,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/zlo steady current / emitted (space-charge return)"
+    },
+    {
+      "id": "B_300v_ceiling_drive__collector_fraction",
+      "status": "OK",
+      "value": 1.0000475390273458,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/zhi steady current / emitted"
+    },
+    {
+      "id": "B_300v_ceiling_drive__anode_fraction",
+      "status": "OK",
+      "value": 0.0,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/eb steady current / emitted"
+    },
+    {
+      "id": "B_300v_ceiling_drive__ke_error_eV",
+      "status": "OK",
+      "value": -0.044722890374941926,
+      "unit": "eV",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "collector mean KE minus analytic 294.03 eV"
+    },
+    {
+      "id": "B_300v_ceiling_drive__budget_closure_pct",
+      "status": "OK",
+      "value": 0.0006998306250225154,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "reducedfiles/beam_n.txt + scraped weight"
+    },
+    {
+      "id": "B_300v_ceiling_drive__cathode_fraction",
+      "status": "OK",
+      "value": 0.0,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/zlo steady current / emitted (space-charge return)"
+    },
+    {
+      "id": "C_ucurve_overperveance__collector_fraction",
+      "status": "OK",
+      "value": 0.9998844454468859,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/zhi steady current / emitted"
+    },
+    {
+      "id": "C_ucurve_overperveance__anode_fraction",
+      "status": "OK",
+      "value": 9.65804202484718e-07,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/eb steady current / emitted"
+    },
+    {
+      "id": "C_ucurve_overperveance__ke_error_eV",
+      "status": "OK",
+      "value": 0.0274930327930889,
+      "unit": "eV",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "collector mean KE minus analytic 91.80 eV"
+    },
+    {
+      "id": "C_ucurve_overperveance__budget_closure_pct",
+      "status": "OK",
+      "value": 0.0009719372420123585,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "reducedfiles/beam_n.txt + scraped weight"
+    },
+    {
+      "id": "C_ucurve_overperveance__cathode_fraction",
+      "status": "OK",
+      "value": 0.0,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "scrape/zlo steady current / emitted (space-charge return)"
+    },
+    {
+      "id": "transmission_spread_A_to_B",
+      "status": "OK",
+      "value": 5.7049475805870387e-05,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "|A collector fraction - B collector fraction| (both at the frontier perveance fraction; the bracket claims V-independence)"
+    },
+    {
+      "id": "C_collector_drop_vs_A",
+      "status": "OK",
+      "value": 0.00010604410465397951,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "A collector fraction minus C collector fraction (over-ceiling current limiting at the ucurve_left_arm command)"
+    }
+  ]
+}

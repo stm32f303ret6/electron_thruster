@@ -1,0 +1,82 @@
+{
+  "stage_id": "capstone.ucurve_floor",
+  "policy_id": "capstone.ucurve_floor.v1",
+  "status": "PASS",
+  "exit_code": 0,
+  "detail": "all 4 required gate(s) passed",
+  "gates": [
+    {
+      "id": "momentum_sanity_bound",
+      "status": "PASS",
+      "required": true,
+      "metric": "f_net_over_f_beam",
+      "comparison": "at_most",
+      "value": 0.893398318039776,
+      "detail": "0.893398 <= 1"
+    },
+    {
+      "id": "sheath_and_plume_contained",
+      "status": "PASS",
+      "required": true,
+      "metric": "edge_phi_max_V",
+      "comparison": "at_most",
+      "value": 0.0888882351141039,
+      "detail": "0.0888882 <= 1"
+    },
+    {
+      "id": "scrape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "scrape_charge_consistency",
+      "comparison": "at_most",
+      "value": 2.8022459949836735e-09,
+      "detail": "2.80225e-09 <= 0.02"
+    },
+    {
+      "id": "beam_escape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "scrape_charge_consistency_beam_escape",
+      "comparison": "at_most",
+      "value": 1.0072054542916476e-09,
+      "detail": "1.00721e-09 <= 0.02"
+    },
+    {
+      "id": "steady_current_balance",
+      "status": "PASS",
+      "required": false,
+      "metric": "current_balance",
+      "comparison": "at_most",
+      "value": 0.03488544102882221,
+      "detail": "0.0348854 <= 0.05"
+    },
+    {
+      "id": "beam_escapes",
+      "status": "FAIL",
+      "required": false,
+      "metric": "escape_fraction_pct",
+      "comparison": "at_least",
+      "value": 57.430895652173916,
+      "detail": "57.4309 >= 95"
+    },
+    {
+      "id": "body_floats_benign",
+      "status": "PASS",
+      "required": false,
+      "metric": "phi_body_V",
+      "comparison": "at_most",
+      "value": 23.83974492753623,
+      "detail": "23.8397 <= 50"
+    },
+    {
+      "id": "thrust_meets_demand",
+      "status": "FAIL",
+      "required": false,
+      "metric": "f_beam_nN",
+      "comparison": "abs_within",
+      "value": 10.383543555555555,
+      "detail": "10.3835 |x - 13.65| <= 2.05"
+    }
+  ],
+  "analysis_id": "20260808T104340Z_69f040ab"
+}
