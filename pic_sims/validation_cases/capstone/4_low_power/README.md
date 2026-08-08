@@ -28,26 +28,22 @@ $$I / I_{CL} = 1.46 \;\Rightarrow\; i_\text{beam} = 0.121\ \text{mA}$$
 
 $F/P \propto 1/\sqrt{V}$ confirmed. measured float: **5.40 V**, exhaust KE **77.19 eV**.
 
-## results
-
-reference run `20260804T230218Z_0adb478f`, all gates PASS:
-
-| metric | measured |
-|---|---|
-| escape | 96.1% |
-| thrust | 3.42 nN |
-| φ_body | +5.40 V |
-| exhaust KE | 77.19 eV |
-| current balance | 1.5% |
-| edge |φ| | 5.8 mV |
-
 ## how the pic works
 
 same engine as `floating_body` — deck, charge pump, reservoir, observer identical. only the drive point differs.
 
-## what is gated
+## results
 
-same structure as `high_thrust`: required gates are theory-anchored invariants (escape ≥ 95%, float ≤ 50 V, current balance, momentum, containment, ledger checks).
+reference run `20260804T230218Z_0adb478f`, all gates PASS. same gate structure as `high_thrust`.
+
+| check | measured | target |
+|---|---|---|
+| escape | 96.1% | ≥ 95% |
+| thrust | 3.42 nN | reported |
+| φ_body | +5.40 V | ≤ 50 V |
+| exhaust KE | 77.19 eV | reported |
+| current balance | 1.5% | ≤ 5% |
+| edge |φ| | 5.8 mV | ≤ 1 V |
 
 ## commands
 

@@ -25,33 +25,20 @@ the larger current needs ~2× ambient collection → float settles higher (~+30 
 
 same engine as `floating_body` — deck, charge pump, reservoir, observer identical. only the drive point differs.
 
-## what is gated
-
-no regression anchor at 300 V. required gates are theory-anchored invariants only:
-
-| gate | bound |
-|---|---|
-| escape | ≥ 95% |
-| float | ≤ 50 V |
-| current balance | ≤ 5% |
-| momentum sanity | \|F_net\| ≤ F_beam |
-| edge containment | ≤ 1 V |
-| scrape consistency (×2) | ≤ 2% |
-
-mission-coverage (f_beam ≥ 28.4 nN for 500 km) is reported, not required.
-
 ## results
 
-reference run `20260804T154756Z_b854dcbe`, all gates PASS:
+reference run `20260804T154756Z_b854dcbe`, all gates PASS. no regression anchor — gates are theory-anchored invariants only.
 
-| metric | measured |
-|---|---|
-| escape | 99.0% |
-| thrust | 30.13 nN |
-| φ_body | +36.3 V |
-| exhaust KE | 210.1 eV |
-| current balance | 3.5% |
-| edge |φ| | 108 mV |
+| check | measured | target |
+|---|---|---|
+| escape | 99.0% | ≥ 95% |
+| thrust | 30.13 nN | reported |
+| φ_body | +36.3 V | ≤ 50 V |
+| exhaust KE | 210.1 eV | reported |
+| current balance | 3.5% | ≤ 5% |
+| edge |φ| | 108 mV | ≤ 1 V |
+
+mission-coverage (f_beam ≥ 28.4 nN for 500 km): PASS.
 
 ## commands
 

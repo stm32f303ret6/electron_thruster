@@ -18,29 +18,19 @@ the chipsat's two-node EB geometry solved in vacuum (no particles). BODY at +16 
 - **per-step**: 5 multigrid solves; re-imposing unchanged potential tests idempotency
 - **output**: φ dumped every step; analysis gates surface values, maximum principle, independent solver match, rewrite drift
 
-## what this step tests
-
-| check | target |
-|---|---|
-| body surface potential vs assigned | ≤ 1 V error |
-| cathode surface potential vs assigned | ≤ 1 V error |
-| maximum principle | ≤ 0.1 V violation |
-| independent RZ finite-difference solver | ≤ 4 V (away from surface skin) |
-| per-step rewrite idempotency | ≤ 1 mV drift |
-
-the independent solver is a scipy sparse direct factorization with stair-step EB — different representation and solver than warpx. comparison excludes the 3-cell skin near surfaces.
-
 ## results
 
 reference run `20260806T142600Z_f44044c6`, all gates PASS:
 
-| metric | measured | gate |
+| check | measured | target |
 |---|---|---|
-| body surface error | 0.220 V | ≤ 1.0 V |
-| cathode surface error | 0 V | ≤ 1.0 V |
-| max principle violation | 0 V | ≤ 0.1 V |
-| independent solver diff | 1.864 V | ≤ 4.0 V |
-| rewrite drift | 0 V | ≤ 1 mV |
+| body surface potential vs assigned | 0.220 V error | ≤ 1 V |
+| cathode surface potential vs assigned | 0 V error | ≤ 1 V |
+| maximum principle | 0 V violation | ≤ 0.1 V |
+| independent RZ solver | 1.864 V diff | ≤ 4 V |
+| per-step rewrite idempotency | 0 V drift | ≤ 1 mV |
+
+the independent solver is a scipy sparse direct factorization with stair-step EB — different representation and solver than warpx. comparison excludes the 3-cell skin near surfaces.
 
 ## dependencies
 
