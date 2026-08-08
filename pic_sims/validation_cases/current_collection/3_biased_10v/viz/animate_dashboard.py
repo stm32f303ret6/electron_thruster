@@ -102,7 +102,7 @@ def main(argv=None) -> int:
     ax3 = fig.add_subplot(gs[1, 1])
 
     PHI0, NE0, _, _ = get_fields(its[0])
-    imN = ax1.imshow(NE0, origin="lower", extent=ext, aspect="auto",
+    imN = ax1.imshow(NE0, origin="lower", extent=ext, aspect="equal",
                      cmap="inferno", vmin=0, vmax=ne_vmax)
     fig.colorbar(imN, ax=ax1, label="n_e [m⁻³]", shrink=0.75)
     ax1.set_title("Electron density n_e")

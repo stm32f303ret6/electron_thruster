@@ -239,7 +239,7 @@ def main(argv=None) -> int:
         rho0, r0, z0 = field_rz(d["ts"], "rho", its[0])
         ne0 = np.abs(rho0) / scc.e
         NE0 = np.vstack([ne0[::-1], ne0])
-        im = ax1.imshow(NE0, origin="lower", extent=d["ext"], aspect="auto",
+        im = ax1.imshow(NE0, origin="lower", extent=d["ext"], aspect="equal",
                         cmap="inferno", vmin=0, vmax=d["ne_vmax"])
         fig.colorbar(im, ax=ax1, label=r"$n_e$ [m$^{-3}$]", shrink=0.75)
         ax1.set_xlabel("z [mm]"); ax1.set_ylabel("r [mm] (mirrored)")
