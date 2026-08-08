@@ -179,6 +179,7 @@ def main(argv=None) -> int:
 
     # Panel 1: electron density
     NE0, _, _ = get_ne(its[0])
+    ax1.set_anchor('C')
     im = ax1.imshow(NE0, origin="lower", extent=ext, aspect="equal",
                     cmap="inferno", vmin=0, vmax=ne_vmax)
     fig.colorbar(im, ax=ax1, label=r"$n_e$ [m$^{-3}$]", shrink=0.75)
