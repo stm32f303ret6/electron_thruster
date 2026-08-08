@@ -31,28 +31,18 @@ same diode as `negative_cathode`, plus a grounded plate with a hole (embedded bo
 - **push**: shape-1 gather/deposit, dt = 1.5 ps
 - **scraping**: per-surface counts (cathode, collector, wall, anode plate) dumped every 80 steps
 
-## what this step tests
-
-| check | target |
-|---|---|
-| A transmits most of the beam | ≥ 96% to collector, ≤ 4% plate clip |
-| B loses current on the plate | ≥ 3 pp drop vs A, ≥ 4% on anode |
-| C restores transmission | ≥ 98% to collector, plate clip < B's |
-| energy conservation (each) | ≤ 1.5 eV error |
-| particle budget (each) | ≤ 0.1% |
-
 ## results
 
 reference run `joint_5e72702e`, all gates PASS:
 
-| metric | A | B | C |
-|---|---|---|---|
-| collector fraction | 97.3% | 90.0% | 100.0% |
-| anode clip | 2.7% | 10.0% | ~0 |
-| KE error (eV) | −0.025 | −0.025 | 0.022 |
-| budget closure (%) | 7.5e-4 | 7.5e-4 | 7.5e-4 |
+| check | A | B | C | target |
+|---|---|---|---|---|
+| collector fraction | 97.3% | 90.0% | 100.0% | A ≥ 96%, C ≥ 98% |
+| anode clip | 2.7% | 10.0% | ~0 | A ≤ 4% |
+| KE error (eV) | −0.025 | −0.025 | 0.022 | ≤ 1.5 |
+| budget closure (%) | 7.5e-4 | 7.5e-4 | 7.5e-4 | ≤ 0.1 |
 
-B→A collector drop: 7.3 pp (gate ≥ 3 pp). B→C anode reduction: 10.0 pp.
+B→A collector drop: 7.3 pp (target ≥ 3 pp). B→C anode reduction: 10.0 pp.
 
 ## dependencies
 

@@ -30,33 +30,21 @@ a −100 V cathode emits a 10 µA electron beam toward a grounded collector. pro
 - **scraping**: absorbing walls, per-surface scraped counts dumped every 80 steps
 - **diagnostics**: $\phi$/$\rho$ field dumps + reduced particle diagnostics every 80 steps
 
-## what this step tests
-
-| check | how | target |
-|---|---|---|
-| vacuum potential | on-axis $\phi$ vs analytic laplace ramp | ≤ 10 mV error |
-| arrival energy | energy conservation from emission plane | ~99.25 eV (≤ 0.5 eV error) |
-| beam transmission | fraction reaching collector | ~100% |
-| cathode return | fraction reflected back | ~0 |
-| radial loss | fraction hitting the wall | ~0 |
-| particle budget | emitted = absorbed + in-domain | ≤ 0.1% |
-| space-charge dip | $\phi$ dip near z ≈ 0 | 0.092 ± 0.04 V (regression*) |
-
-*space-charge dip target measured from baseline, not predicted (1D estimate brackets 0.04–0.09 V).
-
 ## results
 
 reference run `20260801T075244Z_52a474f6`, all gates PASS:
 
-| metric | measured | gate |
+| check | measured | target |
 |---|---|---|
-| vacuum ramp error | 0.035 mV | ≤ 10 mV |
-| space-charge dip | 0.092 V | 0.092 ± 0.04 V |
-| collector fraction | 100.02% | [99.5, 100.5]% |
-| arrival KE error | 0.028 eV | ≤ 0.5 eV |
+| vacuum potential (on-axis φ vs laplace) | 0.035 mV error | ≤ 10 mV |
+| arrival energy | 0.028 eV error | ≤ 0.5 eV |
+| beam transmission | 100.02% | ~100% |
 | cathode return | 0 | ≤ 1e-4 |
 | radial wall loss | 3e-7 | ≤ 1e-4 |
-| budget closure | 7.5e-4% | ≤ 0.1% |
+| particle budget | 7.5e-4% | ≤ 0.1% |
+| space-charge dip | 0.092 V | 0.092 ± 0.04 V* |
+
+*regression target measured from baseline (1D estimate brackets 0.04–0.09 V).
 
 ## dependencies
 
