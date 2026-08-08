@@ -153,7 +153,7 @@ def main(argv=None) -> int:
     ke_valid = median_ke[np.isfinite(median_ke)]
     ke_ylim = (0, max(ke_valid.max() * 1.15, 1.0)) if len(ke_valid) else (0, cfg.ke_max_ev)
 
-    fig = plt.figure(figsize=(18, 5))
+    fig = plt.figure(figsize=(14, 10))
 
     # title card (on blank figure, before any axes/colorbars)
     anim_writer = FFMpegWriter(fps=args.fps, bitrate=4000)
@@ -170,17 +170,18 @@ def main(argv=None) -> int:
         anim_writer.grab_frame()
     fig.clf()
 
-    # build panels
-    fig.subplots_adjust(wspace=0.35, left=0.05, right=0.97, top=0.88, bottom=0.13)
-    ax1 = fig.add_subplot(1, 3, 1)
-    ax2 = fig.add_subplot(1, 3, 2)
-    ax3 = fig.add_subplot(1, 3, 3)
+    # build panels: density on top row (full width), current + KE on bottom row
+    gs = fig.add_gridspec(2, 2, hspace=0.32, wspace=0.30,
+                          left=0.08, right=0.95, top=0.90, bottom=0.07)
+    ax1 = fig.add_subplot(gs[0, :])
+    ax2 = fig.add_subplot(gs[1, 0])
+    ax3 = fig.add_subplot(gs[1, 1])
 
     # Panel 1: electron density
     NE0, _, _ = get_ne(its[0])
     im = ax1.imshow(NE0, origin="lower", extent=ext, aspect="auto",
                     cmap="inferno", vmin=0, vmax=ne_vmax)
-    fig.colorbar(im, ax=ax1, label=r"$n_e$ [m$^{-3}$]", shrink=0.9)
+    fig.colorbar(im, ax=ax1, label=r"$n_e$ [m$^{-3}$]", shrink=0.75)
     ax1.set_xlabel("z [mm]")
     ax1.set_ylabel("r [mm] (mirrored)")
     ax1.set_title("Electron density")
