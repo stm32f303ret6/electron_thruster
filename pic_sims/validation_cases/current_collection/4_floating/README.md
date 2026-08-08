@@ -36,29 +36,17 @@ same deck as `thermal` (bulk fill + flux injection), plus the charge pump:
 - **charge pump**: per step, $dQ = e\,(w_i - w_e)$ from EB scrape buffers → $\phi = \phi_{init} + Q/C$ via `set_potential_on_eb`
 - **measurement**: CSV ledger records φ, Q, I_e, I_i every 500 steps; gates check last-40% steady window
 
-## what this step tests
-
-| check | target |
-|---|---|
-| floating potential φ_f | [−0.40, −0.19] V |
-| current balance at equilibrium | ≤ 15% |
-| capacitance vs $4\pi\varepsilon_0 a$ | [0.8, 1.4] |
-| ledger vs openpmd dumps | ≤ 2% |
-| far-field density | ≤ 5% off n0 |
-| quasineutrality | ≤ 2% |
-| edge potential | ≤ 0.2 V |
-
 ## results
 
 reference run `20260806T162656Z_40e77ecd`, all gates PASS:
 
-| metric | measured | gate |
+| check | measured | target |
 |---|---|---|
-| φ_f | −0.251 V | [−0.40, −0.19] V |
+| floating potential φ_f | −0.251 V | [−0.40, −0.19] V |
 | current balance | 0.89% | ≤ 15% |
-| C / C_analytic | 1.068 | [0.8, 1.4] |
-| scrape consistency | 2.7e-9 | ≤ 0.02 |
-| far density vs n0 | 0.02% off | ≤ 5% |
+| capacitance vs $4\pi\varepsilon_0 a$ | 1.068 | [0.8, 1.4] |
+| ledger vs openpmd dumps | 2.7e-9 | ≤ 2% |
+| far-field density vs n0 | 0.02% off | ≤ 5% |
 | quasineutrality | 0.13% | ≤ 2% |
 | edge potential | 5.8 mV | ≤ 0.2 V |
 

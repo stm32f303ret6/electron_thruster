@@ -41,28 +41,17 @@ $$I_{th} = n_0 \, e \, \frac{\langle v \rangle}{4} \cdot 4\pi a^2 \qquad \frac{I
 - **collection**: EB absorbs particles, weights saved to scrape buffer
 - **measurement**: collected current = e × scraped weight per window (every 500 steps); gates average over last-40% steady window
 
-## what this step tests
-
-| check | target |
-|---|---|
-| electron current vs exact $I_{th}$ | ≤ 5% error |
-| ion current vs exact $I_{th}$ | ≤ 10% error |
-| species ratio vs 23.74 | ≤ 8% error |
-| far-field density vs n0 | ≤ 5% error |
-| quasineutrality (far shell) | ≤ 2% |
-| edge potential | ≤ 0.2 V |
-
 ## results
 
 reference run `20260801T082253Z_ebb0fae8`, all gates PASS:
 
-| metric | measured | gate |
+| check | measured | target |
 |---|---|---|
-| I_e vs I_th | 0.8% off (0.1031 µA) | ≤ 5% |
-| I_i vs I_th | 1.0% off (4.42 nA) | ≤ 10% |
-| I_e/I_i vs 23.74 | 1.7% off | ≤ 8% |
-| far density vs n0 | 0.3% off | ≤ 5% |
-| quasineutrality | 0.51% | ≤ 2% |
+| electron current vs $I_{th}$ | 0.8% off (0.1031 µA) | ≤ 5% |
+| ion current vs $I_{th}$ | 1.0% off (4.42 nA) | ≤ 10% |
+| species ratio vs 23.74 | 1.7% off | ≤ 8% |
+| far-field density vs n0 | 0.3% off | ≤ 5% |
+| quasineutrality (far shell) | 0.51% | ≤ 2% |
 | edge potential | 2.2 mV | ≤ 0.2 V |
 
 ## dependencies

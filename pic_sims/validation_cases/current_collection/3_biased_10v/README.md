@@ -26,25 +26,16 @@ same deck as `thermal` — only config differs (bias +10 V, largest domain, dt =
 - electrostatic poisson every step; +10 V sphere against 0 V walls
 - EB collection + scrape buffer; last-40% steady window
 
-## what this step tests
-
-| check | target |
-|---|---|
-| electron current vs OML ceiling | [0.80, 1.05] of $I_{OML}$ |
-| far-field density | ≤ 6% off n0 |
-| quasineutrality | ≤ 2% |
-| edge potential | ≤ 0.5 V (**the gate to watch**) |
-
 ## results
 
 reference run `20260806T150359Z_503c1220`, all gates PASS:
 
-| metric | measured | gate |
+| check | measured | target |
 |---|---|---|
-| I_e / I_OML | 0.809 | [0.80, 1.05] |
-| far density vs n0 | 4.6% off | ≤ 6% |
+| electron current vs OML ceiling | 0.809 | [0.80, 1.05] |
+| far-field density vs n0 | 4.6% off | ≤ 6% |
 | quasineutrality | 0.40% | ≤ 2% |
-| edge potential | 2.6 mV | ≤ 0.5 V |
+| edge potential (**the gate to watch**) | 2.6 mV | ≤ 0.5 V |
 
 ## dependencies
 
