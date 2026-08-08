@@ -555,6 +555,12 @@ def build_simulation(cfg: Config, geom: Geometry, run: lc.Run):
         warpx_random_seed=RANDOM_SEED,
         warpx_used_inputs_file=str(run.diags_dir / "used_inputs.txt"))
 
+    # Optional axial external field (plasma.Bz_T; MAGNETIZED_PLAN.md).  The
+    # only externally-appliable B that preserves RZ axisymmetry.  Absent ->
+    # exactly the committed baseline (no applied-field block at all).
+    if cfg.Bz_T is not None:
+        sim.add_applied_field(picmi.ConstantAppliedField(Bz=cfg.Bz_T))
+
     rho_list = ["Er", "Ez", "phi", "rho",
                 "rho_beam_electrons", "rho_ambient_electrons",
                 "rho_ambient_ions"]

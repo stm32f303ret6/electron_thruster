@@ -234,3 +234,36 @@ def test_reject_coarse_grid(tmp_path):
 def test_reject_scenario():
     with pytest.raises(ConfigError):
         load_config(CONFIG, scenario="anything")
+
+
+# ----------------------------------------------------------------------
+# axial external field (magnetized variants; optional key, baseline-preserving)
+# ----------------------------------------------------------------------
+
+def _magnetized(tmp_path, bz):
+    raw = _raw()
+    raw["plasma"]["Bz_T"] = bz
+    return load_config(_write(tmp_path, raw))
+
+
+def test_absent_bz_is_exactly_the_baseline():
+    """The optional key must not perturb the committed anchor: no stray key in
+    the frozen dict, so every existing case hash stays valid."""
+    base = load_config(CONFIG)
+    assert base.Bz_T is None
+    assert "Bz_T" not in base.effective_config()["plasma"]
+
+
+def test_bz_roundtrips_and_validates(tmp_path):
+    cfg = _magnetized(tmp_path, 3.0e-5)          # 1x LEO nominal
+    assert cfg.Bz_T == pytest.approx(3.0e-5)
+    assert cfg.effective_config()["plasma"]["Bz_T"] == pytest.approx(3.0e-5)
+    cfg10 = _magnetized(tmp_path, 3.0e-4)        # 10x amplification
+    assert cfg10.Bz_T == pytest.approx(3.0e-4)
+
+
+def test_bz_rejects_zero_and_oversized(tmp_path):
+    with pytest.raises(ConfigError):
+        _magnetized(tmp_path, 0.0)               # zero field: omit the key
+    with pytest.raises(ConfigError):
+        _magnetized(tmp_path, 0.5)               # far past the gyro-resolving review bound
