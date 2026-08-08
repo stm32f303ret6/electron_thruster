@@ -77,7 +77,7 @@ def main(argv=None) -> int:
     t_max_us = cfg.max_steps * cfg.time_step * 1e6
 
     fps = args.fps
-    fig = plt.figure(figsize=(20, 5.5))
+    fig = plt.figure(figsize=(14, 10))
 
     # title card (on blank figure, before any axes/colorbars)
     writer = FFMpegWriter(fps=fps, bitrate=4000)
@@ -94,29 +94,29 @@ def main(argv=None) -> int:
         writer.grab_frame()
     fig.clf()
 
-    # build panels
-    gs = fig.add_gridspec(1, 3, width_ratios=[1, 1, 1], wspace=0.30,
-                          left=0.04, right=0.97, top=0.85, bottom=0.12)
-    ax1 = fig.add_subplot(gs[0])
-    ax2 = fig.add_subplot(gs[1], sharey=ax1)
-    ax3 = fig.add_subplot(gs[2])
+    # build panels: electron density on top (full width), phi + current on bottom
+    gs = fig.add_gridspec(2, 2, hspace=0.32, wspace=0.30,
+                          left=0.08, right=0.95, top=0.90, bottom=0.07)
+    ax1 = fig.add_subplot(gs[0, :])
+    ax2 = fig.add_subplot(gs[1, 0])
+    ax3 = fig.add_subplot(gs[1, 1])
 
     PHI0, NE0, _, _ = get_fields(its[0])
-    imP = ax1.imshow(PHI0, origin="lower", extent=ext, aspect="auto",
-                     cmap="RdBu_r", vmin=-vlim, vmax=vlim)
-    fig.colorbar(imP, ax=ax1, label="φ [V]", shrink=0.85)
-    ax1.set_title("Potential φ")
-    ax1.set_xlabel("z [mm]"); ax1.set_ylabel("r [mm] (mirrored)")
-
-    imN = ax2.imshow(NE0, origin="lower", extent=ext, aspect="auto",
+    imN = ax1.imshow(NE0, origin="lower", extent=ext, aspect="auto",
                      cmap="inferno", vmin=0, vmax=ne_vmax)
-    fig.colorbar(imN, ax=ax2, label="n_e [m⁻³]", shrink=0.85)
-    ax2.set_title("Electron density n_e")
-    ax2.set_xlabel("z [mm]")
+    fig.colorbar(imN, ax=ax1, label="n_e [m⁻³]", shrink=0.75)
+    ax1.set_title("Electron density n_e")
+    ax1.set_xlabel("z [mm]"); ax1.set_ylabel("r [mm] (mirrored)")
+    ax1.add_patch(plt.Circle((0.0, 0.0), cfg.probe_radius * 1e3,
+                              color="0.4", zorder=6))
 
-    for ax in (ax1, ax2):
-        ax.add_patch(plt.Circle((0.0, 0.0), cfg.probe_radius * 1e3,
-                                color="0.4", zorder=6))
+    imP = ax2.imshow(PHI0, origin="lower", extent=ext, aspect="auto",
+                     cmap="RdBu_r", vmin=-vlim, vmax=vlim)
+    fig.colorbar(imP, ax=ax2, label="φ [V]", shrink=0.85)
+    ax2.set_title("Potential φ")
+    ax2.set_xlabel("z [mm]"); ax2.set_ylabel("r [mm] (mirrored)")
+    ax2.add_patch(plt.Circle((0.0, 0.0), cfg.probe_radius * 1e3,
+                              color="0.4", zorder=6))
 
     line_e, = ax3.plot([], [], color="tab:blue", lw=1.2, label="I_e")
     ax3.axhline(cfg.I_th_e * 1e6, color="gray", ls="--", lw=0.8,
