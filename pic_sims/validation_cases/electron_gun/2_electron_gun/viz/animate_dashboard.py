@@ -198,7 +198,7 @@ def main(argv=None) -> int:
     all_ke_max = max(all_ke_valid.max() * 1.15, 1.0) if len(all_ke_valid) else 120.0
 
     # figure setup
-    fig = plt.figure(figsize=(18, 5))
+    fig = plt.figure(figsize=(14, 10))
 
     writer = FFMpegWriter(fps=fps, bitrate=4000)
     writer.setup(fig, str(out), dpi=150)
@@ -228,12 +228,12 @@ def main(argv=None) -> int:
         # title card
         write_title_card(info["title"], info["desc"], title_frames)
 
-        # set up panels (fig.clf() already called by write_title_card)
-        fig.subplots_adjust(wspace=0.35, left=0.05, right=0.97,
-                            top=0.88, bottom=0.13)
-        ax1 = fig.add_subplot(1, 3, 1)
-        ax2 = fig.add_subplot(1, 3, 2)
-        ax3 = fig.add_subplot(1, 3, 3)
+        # set up panels: density on top row (full width), current + KE on bottom
+        gs = fig.add_gridspec(2, 2, hspace=0.32, wspace=0.30,
+                              left=0.08, right=0.95, top=0.90, bottom=0.07)
+        ax1 = fig.add_subplot(gs[0, :])
+        ax2 = fig.add_subplot(gs[1, 0])
+        ax3 = fig.add_subplot(gs[1, 1])
 
         # panel 1: electron density
         rho0, r0, z0 = field_rz(d["ts"], "rho", its[0])
@@ -241,7 +241,7 @@ def main(argv=None) -> int:
         NE0 = np.vstack([ne0[::-1], ne0])
         im = ax1.imshow(NE0, origin="lower", extent=d["ext"], aspect="auto",
                         cmap="inferno", vmin=0, vmax=d["ne_vmax"])
-        fig.colorbar(im, ax=ax1, label=r"$n_e$ [m$^{-3}$]", shrink=0.9)
+        fig.colorbar(im, ax=ax1, label=r"$n_e$ [m$^{-3}$]", shrink=0.75)
         ax1.set_xlabel("z [mm]"); ax1.set_ylabel("r [mm] (mirrored)")
         ax1.set_title("Electron density")
         # draw anode plate
