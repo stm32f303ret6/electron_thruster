@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Three-panel dashboard animation for capstone.floating_body (200 V baseline).
+"""Four-panel dashboard animation for capstone.floating_body (200 V baseline).
 
-    Panel 1: Thrust [nN] + Power [mW] vs time (twin axes)
-    Panel 2: n_beam(r,z) — beam electron density with can outline
-    Panel 3: beam fates — % escaped vs % returned to spacecraft
+    Panel 1 (top left): n_beam(r,z) — beam electron density with can outline
+    Panel 2 (top right): beam fates — % escaped vs % returned to spacecraft
+    Panel 3 (bottom left): Thrust [nN] vs time
+    Panel 4 (bottom right): Power [mW] vs time
 
     python animate_dashboard.py --run outputs/<run-id> [--out PATH] [--fps 10]
 """
@@ -96,7 +97,7 @@ def main(argv=None) -> int:
     power_max = max(power_mW.max() if len(power_mW) else 1, 70) * 1.3
 
     fps = args.fps
-    fig = plt.figure(figsize=(20, 5.5))
+    fig = plt.figure(figsize=(14, 10))
 
     writer = FFMpegWriter(fps=fps, bitrate=4000)
     writer.setup(fig, str(out), dpi=150)
@@ -112,50 +113,50 @@ def main(argv=None) -> int:
         writer.grab_frame()
     fig.clf()
 
-    gs = fig.add_gridspec(1, 3, width_ratios=[1, 1, 1], wspace=0.35,
-                          left=0.05, right=0.97, top=0.85, bottom=0.12)
-    ax1 = fig.add_subplot(gs[0])
-    ax2 = fig.add_subplot(gs[1])
-    ax3 = fig.add_subplot(gs[2])
+    gs = fig.add_gridspec(2, 2, hspace=0.32, wspace=0.30,
+                          left=0.08, right=0.95, top=0.90, bottom=0.07)
+    ax_d = fig.add_subplot(gs[0, 0])
+    ax_f = fig.add_subplot(gs[0, 1])
+    ax_t = fig.add_subplot(gs[1, 0])
+    ax_p = fig.add_subplot(gs[1, 1])
 
-    # Panel 1: thrust + power (twin y-axes)
-    line_t, = ax1.plot([], [], color="tab:green", lw=1.5, label="Thrust")
-    ax1.set_xlim(0, t_end_ns)
-    ax1.set_ylim(-1, thrust_max)
-    ax1.set_ylabel("Thrust [nN]", color="tab:green")
-    ax1.set_xlabel("time [ns]")
-    ax1.tick_params(axis="y", labelcolor="tab:green")
-    ax1.grid(alpha=0.3)
-
-    ax1p = ax1.twinx()
-    line_p, = ax1p.plot([], [], color="tab:purple", lw=1.0, alpha=0.7,
-                        label="Power")
-    ax1p.set_ylim(0, power_max)
-    ax1p.set_ylabel("Power [mW]", color="tab:purple")
-    ax1p.tick_params(axis="y", labelcolor="tab:purple")
-
-    lines_1 = [line_t, line_p]
-    ax1.legend(lines_1, [l.get_label() for l in lines_1],
-               fontsize=7, loc="center right")
-    ax1.set_title("Thrust & Power")
-
-    # Panel 2: beam density field
+    # Panel 1 (top left): beam density field
     NB0, _, _ = get_fields(its[0])
-    imN = ax2.imshow(NB0, origin="lower", extent=ext, aspect="auto",
-                     cmap="inferno", vmin=0, vmax=nb_vmax)
-    fig.colorbar(imN, ax=ax2, label="n_beam [m⁻³]", shrink=0.85)
-    ax2.set_title("Beam electron density")
-    ax2.set_xlabel("z [mm]"); ax2.set_ylabel("r [mm] (mirrored)")
-    _draw_can(ax2, geom)
+    imN = ax_d.imshow(NB0, origin="lower", extent=ext, aspect="auto",
+                      cmap="inferno", vmin=0, vmax=nb_vmax)
+    fig.colorbar(imN, ax=ax_d, label="n_beam [m⁻³]", shrink=0.85)
+    ax_d.set_title("Beam electron density")
+    ax_d.set_xlabel("z [mm]"); ax_d.set_ylabel("r [mm] (mirrored)")
+    _draw_can(ax_d, geom)
 
-    # Panel 3: beam fates
-    line_esc, = ax3.plot([], [], color="tab:green", lw=1.5, label="% escaped")
-    line_ret, = ax3.plot([], [], color="tab:red", lw=1.2, label="% returned")
-    ax3.set_xlim(0, t_end_ns)
-    ax3.set_ylim(-2, 105)
-    ax3.set_ylabel("beam fraction [%]"); ax3.set_xlabel("time [ns]")
-    ax3.legend(fontsize=8, loc="center right"); ax3.grid(alpha=0.3)
-    ax3.set_title("Beam fates")
+    # Panel 2 (top right): beam fates
+    line_esc, = ax_f.plot([], [], color="tab:green", lw=1.5, label="% escaped")
+    line_ret, = ax_f.plot([], [], color="tab:red", lw=1.2, label="% returned")
+    ax_f.set_xlim(0, t_end_ns)
+    ax_f.set_ylim(-2, 105)
+    ax_f.set_ylabel("beam fraction [%]"); ax_f.set_xlabel("time [ns]")
+    ax_f.legend(fontsize=8, loc="center right"); ax_f.grid(alpha=0.3)
+    ax_f.set_title("Beam fates")
+
+    # Panel 3 (bottom left): thrust
+    line_t, = ax_t.plot([], [], color="tab:blue", lw=1.5, label="Thrust")
+    ax_t.set_xlim(0, t_end_ns)
+    ax_t.set_ylim(-1, thrust_max)
+    ax_t.set_ylabel("Thrust [nN]", color="tab:blue")
+    ax_t.set_xlabel("time [ns]")
+    ax_t.tick_params(axis="y", labelcolor="tab:blue")
+    ax_t.grid(alpha=0.3)
+    ax_t.set_title("Thrust")
+
+    # Panel 4 (bottom right): power consumption
+    line_p, = ax_p.plot([], [], color="tab:red", lw=1.5, label="Power")
+    ax_p.set_xlim(0, t_end_ns)
+    ax_p.set_ylim(0, power_max)
+    ax_p.set_ylabel("Power [mW]", color="tab:red")
+    ax_p.set_xlabel("time [ns]")
+    ax_p.tick_params(axis="y", labelcolor="tab:red")
+    ax_p.grid(alpha=0.3)
+    ax_p.set_title("Power consumption")
 
     sup = fig.suptitle("")
 
