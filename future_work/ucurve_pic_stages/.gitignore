@@ -1,0 +1,7 @@
+# Same policy as pic_sims/validation_cases/.gitignore, carried over when the
+# fixed-thrust throttle stages moved here: generated simulation/analysis
+# output stays out of git; only curated reference_results/ are committed.
+**/outputs/
+**/results/
+**/__pycache__/
+*.log

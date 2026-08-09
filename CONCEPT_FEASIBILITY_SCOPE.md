@@ -131,3 +131,22 @@ So the decision should be:
 > Remove detailed controller optimization from the main contribution. Preserve
 > the U-curve only as geometry-specific supporting evidence, not as part of the
 > universal model.
+
+## Status — executed 2026-08-09
+
+- The fixed-thrust PIC stages, their pre-registration (`UCURVE_PLAN.md`),
+  and the controller review were moved to `future_work/` (power consumption
+  in the concept argument is the analytical model,
+  `model/feasibility_model.py`, validated to 4–6 % against the frontier).
+- The paper and slides carry the throttle principle and the ideal power
+  bound only; the servo/valley material is gone from the main narrative
+  (`SCALING_LAWS.md` §7/7b reframed; `LADDER_SUMMARY.md` stages 13–15
+  replaced by a relocation note).
+- The measured ~1.4–2× overhead against the bound decomposes into
+  non-optimized voltage plus geometry-specific losses (beam interception /
+  plume divergence, energy fraction, emission-type overheads). The
+  attribution is confirmed inside the committed data: the model-optimal
+  voltage for the anchor's 13.65 nN demand is 196 V — the 200 V anchor is
+  that run, closing to 4 % with 98.4 % escape — while the divergent points
+  all commanded 2.7–10× over the emission ceiling, voltages the throttle
+  principle would never select.
