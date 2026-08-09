@@ -40,7 +40,8 @@ STAGES: tuple[Stage, ...] = (
     # 200-300 V -- VALIDATION_GAPS.md G3).  Its scenario C measured that the
     # planar-I_CL scale is conservative here (0.9999 transmission at 133.5%
     # of the scale; the v1 limiting expectation is a recorded refutation),
-    # locating the throttle stages' escape tax inside the can (UCURVE_PLAN.md).
+    # locating the fixed-thrust throttle stages' escape tax inside the can
+    # (future_work/UCURVE_PLAN.md).
     Stage("emitter.voltage_bracket",
           Path("electron_gun/3_voltage_bracket"),
           requires=("emitter.holed_anode",),
@@ -70,20 +71,10 @@ STAGES: tuple[Stage, ...] = (
     Stage("capstone.low_power",
           Path("capstone/4_low_power"),
           requires=("capstone.floating_body",)),
-    # The fixed-thrust throttle curve (pre-registered: capstone/UCURVE_PLAN.md).
-    # The committed frontier holds perveance fixed and measures the envelope
-    # boundary; these three stages hold the DEMAND fixed (the 200 V anchor's
-    # 13.65 nN) and measure the cost surface inside it -- valley location,
-    # left arm, and the no-go wall under the flight rule's voltage floor.
-    Stage("capstone.ucurve_valley",
-          Path("capstone/5_ucurve_valley"),
-          requires=("capstone.floating_body",)),
-    Stage("capstone.ucurve_left_arm",
-          Path("capstone/6_ucurve_left_arm"),
-          requires=("capstone.floating_body",)),
-    Stage("capstone.ucurve_floor",
-          Path("capstone/7_ucurve_floor"),
-          requires=("capstone.floating_body",)),
+    # The fixed-thrust throttle stages (geometry-specific controller work)
+    # were moved out of the concept-feasibility ladder to
+    # future_work/ucurve_pic_stages/ -- power consumption in the concept
+    # argument is now the analytical model (model/feasibility_model.py).
 )
 
 # Fast lookups used by the runner and the tests.

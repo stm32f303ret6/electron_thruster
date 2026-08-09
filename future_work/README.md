@@ -20,16 +20,38 @@ Validated to 4–6 % against the three PIC frontier anchors (100/200/300 V).
 See [`model/feasibility_model.py`](../model/feasibility_model.py) and
 [`model/MODEL.md`](../model/MODEL.md).
 
-The measured overhead factor (P_real / P_ideal ≈ 1.45) accounts for the
-float tax, the 0.81 energy fraction, and sub-unity escape — all measured,
-none optimized here.
+The measured overhead factor against the ideal bound (P_real / P_ideal ≈
+1.4–1.5 at the off-design points) decomposes into exactly two things,
+neither of which belongs in the concept argument:
+
+1. **non-optimized voltage** — the fixed-thrust slice held the demand at
+   voltages away from the minimum-power operating point, so part of the
+   excess is simply operating off the optimum the ideal law would pick;
+2. **real inefficiencies** — beam interception / self-scrape inside the
+   can (plume divergence against the aperture), the 0.81 energy fraction,
+   the float tax, and emission-type overheads (gate power etc.) — all
+   geometry- and cathode-specific.
+
+The theoretical lower bound plus its measured 4–6 % closure in the
+high-escape regime is therefore sufficient for the concept paper. The
+attribution is already confirmed at one demand inside the committed data:
+the model's minimum feasible voltage for the anchor's own 13.65 nN demand
+is 196 V — the 200 V anchor *is* effectively that run — and there the
+bound closes to 4 % with 98.4 % escape, while every 1.5–2× point
+commanded 2.7–10× over the emission ceiling (voltages the throttle
+principle would never select). A cheap targeted PIC run at the
+model-selected optimum for a *different* demand (predicted: escape ≥ 96 %,
+power within ~6 % of the bound) would generalize the confirmation — a good
+first item when this folder's work resumes.
 
 ## The U-curve throttle measurements
 
-The fixed-thrust throttle slice ([`UCURVE_PLAN.md`](../pic_sims/validation_cases/capstone/UCURVE_PLAN.md))
+The fixed-thrust throttle slice ([`UCURVE_PLAN.md`](UCURVE_PLAN.md))
 measured power at a fixed 13.65 nN demand across four voltages. The PIC
-simulation stages remain under `pic_sims/validation_cases/capstone/`
-(stages 5–7) as geometry-specific supporting evidence.
+simulation stages live here under
+[`ucurve_pic_stages/`](ucurve_pic_stages/) (formerly capstone stages 5–7)
+as geometry-specific supporting evidence, with their reference results and
+pre-registration intact.
 
 | V | escape | delivered F (nN) | P/F (mW/nN) |
 |---:|---:|---:|---:|
