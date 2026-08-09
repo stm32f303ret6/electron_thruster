@@ -1,275 +1,181 @@
-# MODEL — the minimal executable model of the electron thruster
+# MODEL — the electron thruster concept feasibility model
 
-`model/minimal_model.py` is the executable form of `SCALING_LAWS.md` §9: one
-file that turns the **measured three-point voltage frontier** into mission
-predictions, with every constant derived from committed `metrics.json` files
-(residuals printed, never hidden) and every out-of-envelope row flagged.
+Two models live in this directory:
 
-It answers, per orbit-CSV row `(n_e, Te, drag)`:
-**what V and I does the controller choose, what does the body float to, what
-does the thrust cost in watts, and is that prediction measured or
-extrapolated?**
+- **`feasibility_model.py`** — the concept-level power prediction used in the
+  paper. One equation, two measured constants, 4–6 % accuracy.
+- **`minimal_model.py`** — the detailed per-row model with self-consistent
+  floating potential, collection law, emission ceiling, and envelope flags.
 
-The §9 contract, restated: this model **never feeds an acceptance gate**. PIC
-stages stay self-contained; fitted constants stay home; physics forms travel.
+The §9 contract: these models **never feed an acceptance gate**. PIC stages
+stay self-contained; fitted constants stay home; physics forms travel.
 
 ---
 
-## 1. The laws and their measured constants
+## 1. The simple power law (concept paper)
+
+For a thrust demand F at acceleration voltage V, the beam-supply power is:
+
+```
+P [mW] = F [nN] · √V [V] / c_eff
+
+c_eff = c_F · √κ = 2.934
+```
+
+This is the φ ≪ V limit of the full thrust law, using two PIC-measured
+constants:
+
+- **c_F = 3.2675** nN/(mA·√eV) — thrust slope (per-anchor 3.216–3.300;
+  ideal 3.372). Holds to ~1 % across the full 3× voltage range.
+- **κ = 0.8063** — energy fraction KE/(V−φ) (per-anchor 0.797–0.816).
+
+Validation against the three frontier anchors:
+
+| V | P_model (mW) | P_measured (mW) | error | float tax V/(V−φ) |
+|---|---|---|---|---|
+| 100 | 11.7 | 12.1 | −3.7 % | 1.057 |
+| 200 | 65.8 | 68.4 | −3.8 % | 1.093 |
+| 300 | 177.9 | 189.0 | −5.9 % | 1.138 |
+
+The model's only approximation is neglecting φ (the floating potential).
+The resulting error is the float tax V/(V−φ), which grows slowly with V.
+
+### Emission ceiling
+
+Maximum current at voltage V: `I_max = 1.46 · I_CL(V)`, where
+`I_CL = 8.298·10⁻⁵ · V^1.5` mA (planar Child–Langmuir scale).
+
+Maximum thrust at voltage V: `F_max = 3.554·10⁻⁴ · V²` nN.
+
+Minimum voltage to deliver thrust F: `V_min = √(F / 3.554·10⁻⁴)`.
+
+### What this law says about the thruster
+
+At fixed thrust, **P ∝ √V**: lower voltage needs more current (slower,
+more numerous electrons) and costs less power. The power-optimal operating
+point is the lowest voltage where the emission ceiling can supply the
+required current. The thrust-to-power ratio `F/P = c_eff / √V` improves
+monotonically as V decreases — 293 µN/W at 100 V, 207 µN/W at 200 V,
+169 µN/W at 300 V.
+
+### What this law does NOT say
+
+- It is not a flight controller. The optimal voltage for a real spacecraft
+  depends on the floating potential, which depends on the plasma environment.
+  Controller optimization is future work (see `future_work/`).
+- `P = V·I` is the beam-supply power only. Real power consumption adds
+  gate/converter/control overheads.
+- The law assumes near-unity escape. Below ~100 V, escape collapses in the
+  measured can geometry (see U-curve validation in `feasibility_model.py`).
+
+---
+
+## 2. The measured frontier
 
 Calibration inputs — the three committed, all-gates-PASS frontier runs
 (single dayside plasma row n₀ = 1.627·10¹² m⁻³, Te = 1318.8 K):
 
-| V | I (mA) | φ (V) | F (nN) | escape | KE (eV) | provenance (run / analysis) |
+| V | I (mA) | φ (V) | F (nN) | escape | KE (eV) | provenance |
 |---|---|---|---|---|---|---|
-| 100 | 0.121 | 5.40 | 3.42 | 96.12 % | 77.2 | `capstone.low_power` `20260804T230218Z_0adb478f` / `20260805T045648Z_ff61c01a` |
-| 200 | 0.342 | 16.98 | 13.65 | 98.44 % | 147.5 | `capstone.floating_body` `20260801T142601Z_2f822a95` (committed reference) |
-| 300 | 0.630 | 36.30 | 30.13 | 98.99 % | 210.1 | `capstone.high_thrust` `20260804T154756Z_b854dcbe` / `20260805T002119Z_d81b7f96` |
+| 100 | 0.121 | 5.40 | 3.42 | 96.12 % | 77.2 | `capstone.low_power` |
+| 200 | 0.342 | 16.98 | 13.65 | 98.44 % | 147.5 | `capstone.floating_body` |
+| 300 | 0.630 | 36.30 | 30.13 | 98.99 % | 210.1 | `capstone.high_thrust` |
 
-**Thrust law** (`SCALING_LAWS` §1) — plasma-independent gun physics:
+The measured power at these points is a nearly constant multiple of the
+ideal lower bound:
+
+| V | P_measured (mW) | P_ideal (mW) | P / P_ideal |
+|---|---|---|---|
+| 100 | 12.1 | 8.5 | 1.42 |
+| 200 | 68.4 | 47.9 | 1.43 |
+| 300 | 189.0 | 126.8 | 1.49 |
+
+Where P_ideal = F²/(3.372²·I). The ~1.45× overhead is the float tax, the
+0.81 energy fraction, and sub-unity escape — all measured, none optimized.
+
+---
+
+## 3. The detailed model (`minimal_model.py`)
+
+The detailed model solves the full thrust law self-consistently with the
+collection law to predict the floating potential per orbit row:
+
+**Thrust law** — plasma-independent gun physics:
 
 ```
-F [nN] = c_F · I [mA] · √KE [eV]        c_F = 3.2675  (per-anchor 3.216–3.300; ideal 3.372)
-KE     = κ_KE · (V − φ)                 κ_KE = 0.8063 (per-anchor 0.797–0.816)
+F [nN] = c_F · I [mA] · √KE [eV]
+KE     = κ · (V − φ)
 ```
 
-Both constants hold to ~1 % across the full 3× voltage range — the beam side
-is solved physics.
-
-**Emission ceiling** (§3) — analytic scale × measured ratio:
-
-```
-I_CL [mA] = 8.298·10⁻⁵ · V^1.5     (planar Child–Langmuir, r=0.5 mm spot, d=4.7 mm gap)
-I_max     = 1.46 · I_CL            (non-planar ratio, measured at 200 V, held by all stages)
-```
-
-Reproduces the quoted 0.083 / 0.235 / 0.431 mA at 100/200/300 V exactly.
-
-**Collection law / floating potential** (§4) — the plasma-dependent return
-circuit:
+**Collection law** — plasma-dependent return circuit:
 
 ```
 I_esc = β·A · j_the(n, Te) · (1 + χ)^α        χ = eφ/kTe
-j_the = e·n·√(kTe / 2π mₑ)
 ```
 
-Fit over the three anchors (log-space least squares):
+Fit over the three anchors: **α = 0.8931**, **βA = 2.51 cm²**, residuals
+within ±0.9 V on φ.
 
-| φ input | α | β·A | φ residuals at 100/200/300 V |
-|---|---|---|---|
-| tail-averaged (policy) — **default** | **0.8931** | 2.51 cm² (β ≈ 0.76) | −0.09 / +0.72 / −0.89 V |
-| settled-extrapolated (late-slope) | 0.8451 | 2.83 cm² (β ≈ 0.86) | −0.26 / +1.96 / −2.44 V |
-
-The fitted α band **0.845–0.893** sits at the upper edge of the
-pre-registered winner α = 0.82 ± 0.06 (the discrete-hypothesis verdict in
-`SCALING_LAWS` §4: linear and √ refuted, 0.82 the surviving form). The two
-fits bracket the tail-vs-equilibrium uncertainty of the 300 V float; closing
-the band needs the longer-tail 300 V run (not scheduled).
-
-**Two-slice extension (2026-08-08).** The three fixed-thrust throttle
-equilibria (`capstone.ucurve_*`, tail-averaged φ) add measured (I_esc, φ)
-pairs on a second slice of the (V, I) plane. Fitting all six equilibria:
-**α_all = 0.922, βA = 2.27 cm²**, every residual within ±9.3 %. The same
-power law describing both the fixed-perveance frontier and the fixed-thrust
-throttle points — reached at very different escape fractions and beam optics
-— is the collection law's strongest in-repo test: collection depends on the
-escaped current and the float, not on how the beam got out.
+**Operating point**: for each orbit row, the model finds the minimum
+feasible voltage (limited by emission ceiling), solves self-consistently
+for φ, and computes power. Rows outside the measured envelope (density,
+χ, φ limits) are flagged.
 
 ---
 
-## 2. The control law (flight rule, §7b) — documented for the paper
+## 4. Mission power predictions
 
-The controller the model applies per row is the two-line servo on the
-spacecraft's own measured float — **no ionosphere model, no lookup table**:
+Generated by `python model/feasibility_model.py --all`. The simple model
+predicts beam-supply power at the minimum feasible voltage:
 
-```
-1.  V = ((2α+1)/α) · φ            servo V to the measured float  (= 3.12·φ at fitted α)
-2.  I = F_required / (c_F·√(κ_KE·(V − φ)))       current from the thrust demand
-    guards:  I ≤ 1.46·I_CL(V)    (emission ceiling)
-             φ ≤ 50 V            (benign-float design limit)
-    infeasible → duty-cycle at the valley; never push V below it
-```
+| altitude | drag mean (nN) | V_min | P_mean (mW) | vs 30 mW harvest |
+|---|---|---|---|---|
+| 400 km axial | 32.9 | 304 V | 195.7 | does not close |
+| 400 km lateral | 21.6 | 247 V | 115.9 | does not close |
+| 500 km | 7.6 | 146 V | 31.3 | marginal |
+| 550 km | 3.8 | 104 V | 13.4 | **closes** |
+| 600 km | 2.0 | 100 V | 6.8 | **closes** |
 
-Why it works: φ is the sensor — density, temperature, day/night, and the
-vehicle's own draw all collapse into where the body floats, which the body
-measures by existing. The 3.12 factor is the **untaxed** marginal-cost
-balance (`V_opt = ((2α+1)/α)·φ_eq`) — see the measured correction below.
-Hardware clamps V to [100, 300] V; where the servo target sits below the
-emission-feasibility floor, the model lifts V to the lowest feasible value —
-"the optimum is the boundary."
+**The feasibility corridor is 500–600 km.** At 550–600 km, mean beam
+power (7–13 mW) sits well below the ~30 mW harvest estimate. At 500 km
+closure is marginal. At 400 km the mean drag exceeds the emission ceiling
+at 300 V.
 
-In the model the rule is solved self-consistently per row (damped fixed
-point over φ → V → I → φ), which is what the real servo does in time.
+## 5. Capability, duty cycle, closure — definitions
 
-### The measured throttle curve (2026-08-08) — the tax correction
+- **Feasible**: the emission ceiling at V = 300 V can supply the demanded
+  thrust (I ≤ 1.46·I_CL(300 V) → F ≤ 32 nN).
+- **Duty cycle needed** = mean(drag)/F_cap: ≤ 100 % means the impulse
+  budget closes by duty-cycling.
+- **Power closure**: mean beam power ≤ harvested power (~30 mW for the
+  chipsat's body-mounted cells).
 
-The fixed-thrust slice at the anchor's 13.65 nN demand
-(`capstone.ucurve_*` + the committed anchor; specific power at **delivered**
-thrust):
-
-| V | escape | delivered F (nN) | P/F (mW/nN) |
-|---|---|---|---|
-| 78 | 57.4 % | 10.38 (−24 %) | 6.31 |
-| 92.4 | 79.9 % | 11.59 (−15 %) | 4.79 |
-| **125** | 93.8 % | 13.09 (−4 %) | **4.43 (valley)** |
-| 200 (anchor) | 98.4 % | 13.65 | 5.01 |
-
-Two corrections the servo must carry:
-
-1. **The untaxed closed form under-shoots V_opt.** At this demand the
-   measured valley sits at 125 V where V/φ = 5.9, not 3.12: the escape tax
-   (perveance-driven, absent from the two-line rule) moves the optimum up.
-   Treat `((2α+1)/α)·φ` as a hard **lower bound** on V, never a target.
-2. **Below the valley the demand becomes unreachable, not just expensive.**
-   At 78 V a steady equilibrium still forms but delivers −24 % at 10× the
-   validated emission ceiling with F_net/F_beam = 0.89 — the no-go wall the
-   hardware floor (100 V) exists to avoid.
-
-The valley remains shallow on its right arm (4.43 → 5.01 over 125 → 200 V,
-+13 %), so overshooting V_opt stays cheap; undershooting is what the curve
-punishes. A tax-aware servo (escape as a function of I/I_CL) is the natural
-next model iteration; it needs the escape–perveance surface, which the three
-throttle points now bracket.
-
-## 3. Capability, duty cycle, closure — definitions
-
-- **Feasible row**: a benign equilibrium exists at the demanded thrust
-  (I ≤ ceiling and φ ≤ 50 V).
-- **Capability F_cap(n, Te)**: max benign thrust at V = 300 V with
-  I = min(emission ceiling, collection limit at φ = 50 V) — what the device
-  could do duty-cycled at full throttle.
-- **Duty cycle needed** = mean(drag)/mean(F_cap): ≤ 100 % means the
-  impulse budget closes by duty-cycling; > 100 % means the altitude is
-  simply beyond the device.
-- Reported φ above the 100 V choke ceiling is **not a physical prediction**
-  (PIC aborts there — the ionosphere cannot neutralize); it appears only in
-  flag accounting as "no benign equilibrium exists on this row."
-
-## 4. Envelope flags — what "measured" means per row
-
-| flag | condition | meaning for the paper |
-|---|---|---|
-| `in_envelope` | none of the below | prediction interpolates measured runs |
-| `extrap_density` | n·√Te outside 0.7–1.3× the anchor row | the collection law's **theory-only axis** (§8): no committed run has measured another density |
-| `extrap_chi` | solved χ outside the measured 47–319 | the (1+χ)^α form extrapolated beyond its fitted range |
-| `phi_over_benign` | φ > 50 V | design limit exceeded — duty-off region |
-| `infeasible_emission` | demand needs I > 1.46·I_CL(300 V) | beyond the hardware's thrust ceiling |
-
-Mission claims must be split into the measured-envelope bucket and the
-flagged bucket; the flagged bucket says exactly where the next GPU-hours go.
-
----
-
-## 5. Mission sweep results (2024 orbit CSVs, real F10.7/Ap, 1 yr @ 5 min)
-
-Generated by `python model/minimal_model.py --all`; machine-readable copies
-in `model/results/` (`MISSION_SUMMARY.md`, `mission_summary.json`, one
-per-row CSV per mission).
-
-| mission | drag mean/max (nN) | feasible % | duty cycle needed | P mean/max (mW) | φ > 50 V % | in-envelope % |
-|---|---|---|---|---|---|---|
-| 400 km axial | 32.9 / 92.4 | 21.0 | **140 %** — does not close | 135.6 / 188.9 | 40.9 | 11.9 |
-| 400 km lateral | 21.7 / 60.7 | 53.8 | 92 % — marginal, no margin | 110.9 / 188.9 | 31.0 | 33.4 |
-| 500 km axial | 7.6 / 28.4 | 80.7 | 45 % | 39.4 / 182.2 | 19.3 | 29.1 |
-| 550 km axial | 3.8 / 16.3 | 91.5 | 32 % | 16.9 / 94.9 | 8.5 | 8.0 |
-| 600 km axial | 2.0 / 9.6 | 97.0 | 25 % | 8.0 / 51.7 | 3.0 | 0.9 |
-
-**Readings:**
-
-- **The feasibility corridor is 500–600 km**, exactly the THESIS altitude
-  honesty: at 400 km the demand exceeds the emission ceiling 63 % of the
-  time and the impulse budget cannot close even duty-cycled (140 %). The
-  model's 400 km mean power (136 mW) independently reproduces the THESIS
-  power-side figure (~110–165 mW) from different inputs.
-- **At 550–600 km the concept closes on harvested power**: mean demand-side
-  power 8–17 mW against the ~30 mW body-mounted harvest estimate, with
-  duty cycles of 25–32 % and >91 % instantaneous feasibility.
-- **500 km is the frontier altitude**: closes on impulse (45 % duty) but the
-  mean power at demand (39 mW) sits above the harvest estimate — closure
-  there relies on thrusting preferentially when the plasma is dense and the
-  charging tax low (the servo does this for free).
-- **The night corner is real and now quantified**: φ exceeds the 50 V benign
-  limit on 19 % of 500 km rows and 8.5 % at 550 km — always the thin, cold
-  night plasma (the 1/(n√Te) stiffness of §8). These rows are also nearly
-  all density-extrapolated.
-
-## 6. What this run decides about the ladder
-
-The night-density PIC run (`SCALING_LAWS` §8's "missing measurement") is now
-**data-motivated, not optional**: the model says the benign-float boundary is
-governed by exactly the plasma rows no committed run has measured (70–99 %
-of rows at 500–600 km are density-extrapolated, and the duty-off fraction is
-set there). One run at a night-row density (~2·10¹¹ m⁻³, fixed V) either
-validates the (1+χ)^α form on the density axis — collapsing most of the
-flagged bucket into the measured one — or moves the corridor. It is the
-highest-value GPU-hour in the campaign.
-
-## 7. Caveats that travel with every number
+## 6. Caveats that travel with every number
 
 Ladder-wide (inherited from the PIC evidence): reduced ion mass (400 mₑ),
 electrostatic (no B, no ram drift), single grid/PPC/seed (convergence pass
-in progress), finite-time equilibrium on the ion clock (tail-vs-settled α
-band above). Model-specific: escape interpolated in V at the measured
-perveance path (1.46·I_CL) only; the density axis of the collection law is
-theory-only until the night-row run; supply power is beam power I·V —
-emitter heating and converter losses are system engineering, not modeled.
+in progress), finite-time equilibrium on the ion clock. Model-specific:
+the simple law neglects φ (4–6 % floor); escape is assumed near-unity (valid
+at 100–300 V, breaks below ~100 V in the capstone can geometry); supply
+power is beam power V·I — emitter heating and converter losses are system
+engineering, not modeled.
 
-**Size/geometry axis — MEASURED to L/r = 6 (updated 2026-08-06).** The
-enhancement exponent is geometry-dependent by theory (OML: sphere α = 1, long
-cylinder α = 0.5; the can's 0.82–0.89 sits between the limits), so the fitted
-law's transfer to other shapes was pre-registered and tested rather than
-assumed. The slender-body run
-(`2_chipsat_thruster/reference_results/20260806T011847Z_5670e54c/`) grew total
-skin 3.24× (3.4 → 11.0 cm²) and the aspect ratio from L/r = 0.6 to 6 at
-identical drive and demand:
+**Scale invariance.** Drag charges for the ram silhouette and harvest pays
+from the skin, so vehicle size cancels. The feasibility condition depends
+on the shape ratio A_skin/A_ram and the altitude, not on how big the craft
+is. See `model/scale_analysis.py` and `model/results/SCALE_ANALYSIS.md`.
 
-| | predicted | measured |
-|---|---|---|
-| area-only scaling (fitted α holds) | 4–5 V (arithmetic: 4.14–4.66 V) | **φ = 4.38 V** |
-| cylinder-limit lateral (α → 0.5) | tens of V | refuted by ~10× |
-
-**So the fitted (α, β·A) pair may be applied to bodies up to L/r ≈ 6 by
-scaling β·A with skin area.** The model's `betaA` is a skin-area-proportional
-quantity within that range; `phi_of_Iesc` and `operating_point` take it as a
-parameter, so a geometry sweep is a `betaA` sweep, not a refit.
-
-Beyond L/r ≈ 6, and for radii approaching λ_D, the cylinder limit must
-eventually bite and the fitted law becomes extrapolation again. There, the
-theory-safe floor remains bare thermal collection (α = 0:
-`I = A_skin · j_the`, validated ±1 % on the ladder), which scales linearly
-with skin area — a 1U CubeSat thermal-collects ~0.9 mA at φ ≈ 0, more than the
-chipsat's entire 300 V demand.
-
-Design consequence worth carrying into any sizing exercise: because
-`KE = κ(V − φ)`, a larger-skinned body floats lower and therefore keeps *more*
-of its drive. The slender run produced **more** thrust than the anchor
-(14.22 vs 13.65 nN) at the same commanded current and the same ram silhouette.
-Growing the collector is not a thrust penalty; it is a thrust bonus.
-
-**Scale invariance — the feasibility condition has no size in it.** Because
-drag charges for the ram silhouette and harvest is paid from the skin, thrust
-demand and power supply are *both* areal, so vehicle size cancels and closure
-depends only on the shape ratio `A_skin/A_ram` and the altitude. (Mass never
-enters either: station-keeping thrust equals drag regardless of mass.)
-`model/scale_analysis.py` computes this from the committed calibration and
-mission CSVs and writes `model/results/SCALE_ANALYSIS.md`; the headline is
-that a slender Ø10 mm can and a 3U CubeSat in end-on flight return
-**identical** power margins, and that nothing closes at 400 km at any size.
-
-For sizing a real spacecraft with this model: scale `betaA` with skin area,
-scale the drag demand with ram silhouette, and read the float off
-`phi_of_Iesc`. **Caveat:** for bodies with `r ≳ 10 λ_D` (any CubeSat) the
-fitted OML-style exponent is the wrong functional form — use the thick-sheath
-estimate in `scale_analysis.py`, and treat the result as an estimate until a
-large-body run exists. See `SCALING_LAWS.md` §8c.
-
-## 8. Usage
+## 7. Usage
 
 ```bash
-python model/minimal_model.py --calibrate            # constants + residuals
-python model/minimal_model.py --all                  # sweep every mission CSV
-python model/minimal_model.py --mission path.csv     # one mission
-python model/minimal_model.py --all --alpha-settled  # sensitivity variant
+# Simple power model (concept paper)
+python model/feasibility_model.py                  # mission predictions
+python model/feasibility_model.py --validate       # validate vs U-curve data
+python model/feasibility_model.py --all            # full output + write results
+
+# Detailed model (per-row with collection law)
+python model/minimal_model.py --calibrate          # constants + residuals
+python model/minimal_model.py --all                # sweep every mission CSV
 ```
 
 Requires only numpy. Outputs to `model/results/` by default (`--out DIR`).

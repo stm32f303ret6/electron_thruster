@@ -88,29 +88,6 @@ ANCHORS = [
          phi_settled_V=45.0),
 ]
 
-# The fixed-thrust throttle equilibria (capstone.ucurve_*, one demand level:
-# the 200 V anchor's 13.65 nN).  They extend the COLLECTION-LAW fit to a
-# second slice of the (V, I) plane; they are deliberately NOT part of the
-# esc_of_V interpolation (that curve is the fixed-perveance frontier path,
-# and the throttle points measure exactly its breakdown -- see MODEL.md).
-UCURVE_ANCHORS = [
-    dict(stage="capstone.ucurve_valley",
-         config=CAPSTONE / "5_ucurve_valley" / "config.yaml",
-         metrics=CAPSTONE / "5_ucurve_valley" / "reference_results"
-                 / "20260807T212500Z_3b73998e" / "metrics.json",
-         phi_settled_V=None),
-    dict(stage="capstone.ucurve_left_arm",
-         config=CAPSTONE / "6_ucurve_left_arm" / "config.yaml",
-         metrics=CAPSTONE / "6_ucurve_left_arm" / "reference_results"
-                 / "20260808T023756Z_fc7f1ec6" / "metrics.json",
-         phi_settled_V=None),
-    dict(stage="capstone.ucurve_floor",
-         config=CAPSTONE / "7_ucurve_floor" / "config.yaml",
-         metrics=CAPSTONE / "7_ucurve_floor" / "reference_results"
-                 / "20260808T070147Z_ea2cf8d9" / "metrics.json",
-         phi_settled_V=None),
-]
-
 # Emission geometry (frozen in every capstone config: r_spot 0.5 mm, gap 4.7 mm)
 EMIT_GAP_M = 4.7e-3
 EMIT_R_M = 0.5e-3
@@ -204,34 +181,6 @@ class Calibration:
         for a, Ie in zip(A, Iesc):
             self.phi_resid.append(self.phi_of_Iesc(Ie, self.n0, self.Te0_K) - a[phi_key])
 
-        # Two-slice collection-law fit: the frontier anchors plus the
-        # fixed-thrust throttle equilibria (tail-averaged phi only -- the
-        # settled-phi sensitivity variant stays a frontier-only fit).  Each
-        # throttle run contributes a measured (I_esc, phi) pair at chi beyond
-        # the frontier slice; agreement across slices is the collection law's
-        # strongest in-repo test.
-        self.ucurve = [_load_anchor(a) for a in UCURVE_ANCHORS]
-        chi_all = np.concatenate([chi, [u["phi_V"] / self.kTe0_eV
-                                        for u in self.ucurve]])
-        Iesc_all = np.concatenate([Iesc, [u["esc"] * u["I_mA"] * 1e-3
-                                          for u in self.ucurve]])
-        xa, ya = np.log1p(chi_all), np.log(Iesc_all)
-        self.alpha_all, b_all = np.polyfit(xa, ya, 1)
-        self.alpha_all = float(self.alpha_all)
-        self.betaA_all = float(math.exp(b_all) / j0)
-        self.fit_resid_all_pct = (
-            100.0 * (np.exp(np.polyval([self.alpha_all, b_all], xa)) - Iesc_all)
-            / Iesc_all)
-
-        # Flight-rule factor (§7b): V_opt = ((2*alpha + 1)/alpha) * phi
-        # MEASURED CAVEAT (2026-08-08): this closed form is the UNTAXED
-        # marginal-cost balance.  The measured fixed-thrust curve
-        # (capstone.ucurve_*) puts the valley at ~125 V where V/phi = 5.9 --
-        # the escape tax shifts V_opt well above ctrl_factor*phi.  Treat
-        # ctrl_factor*phi as a hard LOWER bound on V, not a target; see
-        # MODEL.md "The measured throttle curve".
-        self.ctrl_factor = (2.0 * self.alpha + 1.0) / self.alpha
-
         # chi range actually measured (envelope on the chi axis)
         self.chi_lo, self.chi_hi = float(chi.min()), float(chi.max())
 
@@ -272,15 +221,6 @@ class Calibration:
               f"{', '.join(f'{r:+.1f} %' for r in self.fit_resid_pct)}",
               f"    phi residuals (model - measured): "
               f"{', '.join(f'{r:+.2f} V' for r in self.phi_resid)}",
-              f"  two-slice fit (frontier + fixed-thrust throttle equilibria):",
-              f"    alpha_all = {self.alpha_all:.4f}  beta*A = {self.betaA_all*1e4:.3f} cm^2  "
-              f"(6 equilibria, chi {self.chi_lo:.0f}-{self.chi_hi:.0f}, "
-              f"two slices of the (V, I) plane)",
-              f"    current residuals (3 frontier + 3 throttle): "
-              f"{', '.join(f'{r:+.1f} %' for r in self.fit_resid_all_pct)}",
-              f"  flight-rule factor (2a+1)/a = {self.ctrl_factor:.2f}  "
-              f"(UNTAXED lower bound on V; measured valley at V/phi = 5.9 -- "
-              f"see MODEL.md)",
               f"  emission scale I_CL = {i_cl_mA(1.0)*1e0:.4g} mA * V^1.5;  "
               f"at 100/200/300 V: "
               f"{i_cl_mA(100):.3f} / {i_cl_mA(200):.3f} / {i_cl_mA(300):.3f} mA "
@@ -298,32 +238,30 @@ class Calibration:
 def operating_point(cal: Calibration, F_req_nN, n_m3, Te_K,
                     iters: int = 200, damp: float = 0.35):
     """
-    Vectorized fixed-point solve of the §7b servo:
-      V = ctrl*phi clamped to hardware and to the emission-feasibility floor,
-      I from the thrust demand, phi from the collection law.
+    Simple power-law operating point: find the minimum voltage that
+    satisfies the emission ceiling, then self-consistently solve for phi.
+
     Returns dict of arrays: V, I_mA, phi_V, KE_eV, F_nN, P_mW, flags...
     """
     F = np.asarray(F_req_nN, dtype=float) * 1.0
     n = np.asarray(n_m3, dtype=float)
     Te = np.asarray(Te_K, dtype=float)
-    phi = np.full_like(F, 5.0)
 
+    c_eff = cal.cF * math.sqrt(cal.kappa)
+    K_CL = float(i_cl_mA(1.0))
+    A_coeff = c_eff * R_EMIT * K_CL
+    V_min = np.sqrt(F / A_coeff)
+    V = np.clip(V_min, V_HW[0], V_HW[1])
+
+    phi = np.full_like(F, 5.0)
     for _ in range(iters):
-        V = np.clip(cal.ctrl_factor * phi, V_HW[0], V_HW[1])
         I = F / (cal.cF * np.sqrt(cal.kappa * np.maximum(V - phi, 1.0)))
-        # Emission-feasibility floor: raise V (up to hardware max) where the
-        # demanded current exceeds the ceiling r_emit*I_CL(V).
         over = I > R_EMIT * i_cl_mA(V)
         if np.any(over):
-            Vo, Fo, po = V[over], F[over], phi[over]
-            for _ in range(60):  # bisect-free damped lift; monotone in V
-                need = Fo / (cal.cF * np.sqrt(cal.kappa * np.maximum(Vo - po, 1.0)))
-                cap = R_EMIT * i_cl_mA(Vo)
-                Vo = np.where(need > cap, np.minimum(Vo * 1.05, V_HW[1]), Vo)
-            V[over] = Vo
+            V[over] = np.minimum(V[over] * 1.05, V_HW[1])
             I = F / (cal.cF * np.sqrt(cal.kappa * np.maximum(V - phi, 1.0)))
         infeasible = I > R_EMIT * i_cl_mA(V) * 1.0001
-        I_run = np.minimum(I, R_EMIT * i_cl_mA(V))   # capability where infeasible
+        I_run = np.minimum(I, R_EMIT * i_cl_mA(V))
         phi_new = cal.phi_of_Iesc(cal.esc_of_V(V) * I_run * 1e-3, n, Te)
         step = phi_new - phi
         phi = phi + damp * step
@@ -333,7 +271,7 @@ def operating_point(cal: Calibration, F_req_nN, n_m3, Te_K,
     esc = cal.esc_of_V(V)
     KE = cal.kappa * np.maximum(V - phi, 0.0)
     F_out = cal.thrust_nN(I_run, V, phi)
-    P_mW = I_run * V * 1e-3 * 1e3      # mA * V = mW
+    P_mW = I_run * V * 1e-3 * 1e3
     chi = phi / (Te / K_PER_EV)
     nsq = n * np.sqrt(Te) / (cal.n0 * math.sqrt(cal.Te0_K))
 
