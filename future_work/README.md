@@ -72,6 +72,13 @@ a universal electron-gun limit.
 
 ## Deferred items
 
+- **Optimization levers ledger** —
+  [`OPTIMIZATION_LEVERS.md`](OPTIMIZATION_LEVERS.md): every lever from the
+  measured 1.19–1.22× gap to the ideal bound plus the envelope levers,
+  each with mechanism, measured tax, maximum recovery, campaign cost, and
+  measurability against the ±4–7 % grid band. Priority: emission ceiling
+  first (moves mission verdicts), ideal-constant recovery second.
+
 - **Adaptive controller design** —
   [`UCURVE_CONTROL_REVIEW.md`](UCURVE_CONTROL_REVIEW.md): escaped-current
   estimation from the return-current/charge balance, closed thrust loop,
