@@ -480,7 +480,7 @@ correct or update specific items.
   of the planar I_CL scale — the planar number is conservative for the gun
   geometry. In the capstone's own gap the throttle stages then measured
   where the real ceiling bites (escape 93.8/79.9/57.4 % at 2.7/5.6/10.1×
-  the validated ceiling — `capstone/UCURVE_PLAN.md` amendment).
+  the validated ceiling — `future_work/UCURVE_PLAN.md` amendment).
 - **H6 misses that the second-density run already exists**, pre-registered
   and unexecuted: `capstone/THIN_PLASMA_PLAN.md` (predictions for all four
   α candidates committed 2026-08-06). The envelope-coverage argument here

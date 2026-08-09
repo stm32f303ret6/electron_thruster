@@ -37,9 +37,10 @@ with beam escape $\ge 96\%$ and a benign floating potential
 pre-registered forms of the ambient-electron collection law: the linear and
 square-root laws are refuted and the sub-linear form
 $I \propto (1+e\varphi/kT_e)^{\alpha}$ with $\alpha \approx 0.82$--0.89
-survives, which collapses the optimal throttle policy into a two-line flight
-controller servoed on the spacecraft's own measured floating potential -- no
-ionosphere model on board. A fourth pre-registered run varies body
+survives, which fixes the charging tax and places every gated frontier
+point within 20\% of a parameter-free ideal-beam power bound -- set by
+electron mass and charge alone -- and within 6\% once the two measured
+geometry constants are applied. A fourth pre-registered run varies body
 \emph{shape} at fixed drive: tripling the collecting skin while holding the
 ram silhouette fixed drops the float from 17.0 to 4.38\,V and \emph{raises}
 thrust to 14.22\,nN, because a lower float returns drive energy to the beam.
@@ -108,10 +109,13 @@ of numbers that explains why the device owns the nanonewton regime and
 nothing above it (Sec.~\ref{sec:comparison}). Second, the three frontier
 points discriminate between pre-registered candidate forms of the
 ambient-electron collection law (Sec.~\ref{sec:collection}); the surviving
-sub-linear law collapses the optimal throttle policy into a two-line
-controller servoed on the spacecraft's own floating potential
-(Sec.~\ref{sec:throttle}) -- the device measures its environment by
-existing. Third, because the returning electron current is the natural
+sub-linear law fixes the charging tax, and the measured frontier lands
+within 20\% of a parameter-free power bound set by electron mass and charge
+alone -- within 6\% once two measured geometry constants are applied
+(Sec.~\ref{sec:throttle}). That is the accuracy a feasibility argument
+needs, and it is the role the simulations play throughout: proving the
+concept against a physics bound, not calibrating a mission-ready thruster.
+Third, because the returning electron current is the natural
 objection to calling this thrust real, we summarize the closed
 control-volume momentum ledger and full-return null experiment of the
 predecessor implementation and report the per-run momentum gates of the
@@ -287,36 +291,71 @@ the pre-registered band. The float robs the beam -- the accelerating
 potential is always $V - \varphi$ -- so this law is also the charging tax
 schedule: $\varphi$ eats 5\% of the supply at 100\,V and 12\% at 300\,V.
 
-\section{The throttle rule: a two-line servo on the float}
+\section{The throttle principle and the ideal power bound}
 \label{sec:throttle}
-The predecessor campaign measured what happens at \emph{fixed} thrust as
-voltage drops (five converged runs, 78--300\,V): the required current
-rises, the charging tax and escape collapse explode below $\sim$100\,V, and
-specific power $P/F$ traces a U with a shallow valley. The valley has a
-closed form from the marginal-cost balance of the collection law:
-$V_{\mathrm{opt}} = ((2\alpha+1)/\alpha)\,\varphi_{\mathrm{eq}} =
-3.1$--$3.2\,\varphi_{\mathrm{eq}}$ for the measured $\alpha$. Because
-$\varphi_{\mathrm{eq}}$ already encodes the plasma density, temperature,
-day/night state, and the vehicle's own current draw, the optimal controller
-needs no ionosphere model and no lookup table:
-\begin{quote}
-\begin{tabular}{l}
-1.\quad $V \approx 3.1\,\varphi$ \hfill (servo the supply to the measured float)\\
-2.\quad $I = F_{\mathrm{req}} / \big(c_F\sqrt{\kappa(V-\varphi)}\big)$
-   \hfill (current from the thrust demand)\\
-\quad\ guards: $I \le 1.46\,I_{\mathrm{CL}}(V)$;\quad $\varphi \le 50$\,V;\quad
-   infeasible $\Rightarrow$ duty-cycle at the valley.\\
-\end{tabular}
-\end{quote}
-The spacecraft measures its environment by existing: a different orbit,
-altitude, or solar cycle produces different $\varphi$ readings and the
-servo follows. The constants ($c_F = 3.27$\,nN/(mA$\sqrt{\mathrm{eV}}$),
-$\kappa = 0.81$, the 1.46 emission ratio, $\alpha$) are measured, not
-tuned, and the valley is shallow (flat over $\sim$110--160\,V at the
-dayside row), so a 20\% error in the servo factor costs a few percent in
-power. Simulations under this rule are not a lookup table: they measure the
-few constants, validate the rule's form at stress points, and map the guard
-edges.
+In the ideal limit -- every emitted electron escapes at its full energy
+$e(V-\varphi)$, $\varphi \ll V$ -- the device's operating economics contain
+no free parameters at all. An electron beam of current $I$ and
+per-electron energy $\mathrm{KE}$ carries momentum flux
+$F = \sqrt{2 m_e/e}\; I \sqrt{\mathrm{KE}}$; with $F$ in nN, $I$ in mA and
+energies in eV the constant is
+$\sqrt{2 m_e/e} = 3.37$\,nN/(mA\,$\sqrt{\mathrm{eV}}$) -- electron mass
+and charge, nothing else. With ideal beam-supply power $P = VI$,
+eliminating the current at a demanded thrust gives the fixed-thrust power
+law
+\[
+P \;=\; \frac{F\,\sqrt{V}}{c},
+\qquad c_{\mathrm{ideal}} = \sqrt{2 m_e/e},
+\]
+a geometry-free theoretical lower bound. The minimum-power throttle it
+implies uses the \emph{largest feasible escaped current} and the
+\emph{lowest acceleration voltage} that satisfies the thrust command. The
+feasible current is bounded by the emitter, by ambient return-current
+availability, by acceptable spacecraft potential, and by successful beam
+escape; the concept requires only acknowledging these bounds, not
+optimizing against them.
+
+The gated runs then measure how close a real, deliberately non-optimized
+geometry sits to this bound. Writing the measured beam law as
+$F = c_F\, I \sqrt{\kappa(V-\varphi)}$, the fitted thrust slope is
+$c_F = 3.27 = 0.97\,c_{\mathrm{ideal}}$ (the 3\% deficit is plume
+divergence through the aperture) and the exhaust-energy fraction is
+$\kappa = \mathrm{KE}/(V-\varphi) = 0.81$ (injection-plane space-charge
+depression, Sec.~\ref{sec:principle}), so the effective constant is
+$c_{\mathrm{eff}} = c_F\sqrt{\kappa} = 0.87\,c_{\mathrm{ideal}}$. With
+this measured calibration the law reproduces the gated frontier powers to
+within 4--6\% at all three operating points (model 11.7 / 65.8 /
+177.9\,mW against measured 12.1 / 68.4 / 189\,mW), the residual being
+essentially the charging tax $V/(V-\varphi) = 1.06$--$1.14$, which the
+measured collection law of Sec.~\ref{sec:collection} supplies when a
+tighter number is wanted. The role of the PIC evidence here is to prove
+the concept -- a concrete geometry already operates within
+$\approx$20\% of the parameter-free physics bound (measured/bound
+$= 1.19$--$1.22$ across the frontier), for understood, separable reasons
+-- not to certify a mission-ready thruster; the mission
+projections of Sec.~\ref{sec:application} use the measured (conservative)
+calibration, which is committed with the repository alongside the runs
+that produced it.
+
+Off the optimum the bound degrades for known, separable reasons.
+Fixed-thrust runs of this geometry at low voltage measured powers
+$\approx$1.5--2$\times$ the bound; the excess decomposes into (i) operating
+at a non-optimal voltage for the demanded thrust and (ii) genuine
+inefficiencies -- beam interception on the enclosed body as low-voltage
+optics diverge the plume against the aperture, the sub-unity energy
+fraction, and emission-type overheads. The interception loss is specific to
+the modeled cathode, gap, and aperture -- the identical 92.4\,V command
+transmits 99.99\% in an isolated-gun fixture -- and is not used here as a
+universal control law. The attribution is confirmed within the committed
+data: the model-selected optimum voltage for the anchor's own 13.65\,nN
+demand is 196\,V -- the 200\,V anchor \emph{is} that run -- and there the
+bound closes to 4\% with 98.4\% escape, while the
+$\approx$1.5--2$\times$ excess appears only at voltages the throttle
+principle would never select, where the demand exceeds the emission
+ceiling by 2.7--10$\times$. For concept feasibility the ideal bound with
+its measured 4--6\% closure is therefore sufficient; closed-loop throttle
+optimization for a selected cathode and spacecraft geometry is future
+work.
 
 \section{The momentum ledger: is the thrust real?}
 \label{sec:ledger}
@@ -549,11 +588,13 @@ archived alongside this paper's repository.}
 \section{Application: the mission feasibility corridor}
 \label{sec:application}
 The three gated runs calibrate a minimal executable model (committed with
-the repository) that applies the flight rule of Sec.~\ref{sec:throttle} to
-every row of a year-long orbit propagation: per five-minute timestep, the
-local plasma density and temperature (IRI-2020) and drag (NRLMSISE-00, real
-F10.7/Ap, TudatPy propagation~\cite{tudat}) enter, and the model returns
-the servo's operating point $(V, I, \varphi)$, the power, and -- critically
+the repository) that applies the throttle principle of
+Sec.~\ref{sec:throttle} to every row of a year-long orbit propagation: per
+five-minute timestep, the local plasma density and temperature (IRI-2020)
+and drag (NRLMSISE-00, real F10.7/Ap, TudatPy
+propagation~\cite{tudat}) enter, and the model solves for the minimum-power
+operating point $(V, I, \varphi)$ self-consistently with the measured
+collection law, the power, and -- critically
 -- a per-row envelope flag: any row whose density, $\chi$, or perveance
 falls outside what a committed run has measured is counted as
 \emph{extrapolated}, never silently averaged in. Five missions
@@ -575,7 +616,7 @@ altitude / pose & drag mean/max [nN] & feasible & duty cycle & $P$ mean [mW]
 600 km axial   & 2.0 / 9.6   & 97\% & 25\%  & 8   & 3\%  & 1\%  \\
 \bottomrule
 \end{tabular}
-\caption{Year-long mission sweeps under the flight rule. ``Feasible'' = a
+\caption{Year-long mission sweeps under the throttle principle. ``Feasible'' = a
 benign equilibrium exists at the demanded thrust; ``duty cycle'' =
 mean drag / mean benign capability ($>$100\% cannot close); ``in
 envelope'' = row interpolates committed measurements on every axis.}
@@ -595,7 +636,8 @@ closes on body-mounted solar power (8--17\,mW mean demand against
 $\sim$30\,mW harvest) with 25--32\% duty cycles; \textbf{500\,km} closes on
 impulse but is power-bound at the mean (39\,mW) -- closure there relies on
 thrusting preferentially when the plasma is dense and the charging tax low,
-which the float servo does without being told; \textbf{400\,km does not
+which the per-row minimum-power solution does automatically;
+\textbf{400\,km does not
 close} for this body -- the demand exceeds the emission ceiling 63\% of the
 time -- and we state that plainly rather than average around it. Two
 honesty flags travel with the table. First, the corridor's boundary
@@ -816,9 +858,21 @@ with flagged extrapolation; full mission validation is future work.
   \item \textbf{System power.} All powers are beam power $I\,V$. Cathode
         heating (zero for field emitters, nonzero otherwise) and converter
         efficiency are flight-design quantities outside this paper's scope.
+  \item \textbf{Throttle optimization is deferred.} Quoted powers are the
+        ideal beam-supply bound of Sec.~\ref{sec:throttle}, validated to
+        4--6\% in the high-escape regime. Off-optimum low-voltage
+        operation in this geometry measured up to
+        $\approx$1.5--2$\times$ the bound, an excess attributable to
+        non-optimal voltage plus geometry-specific losses (beam
+        interception, plume divergence, emission-type overheads). The
+        200\,V anchor already sits at the model-selected optimum for its
+        own demand and closes to 4\%, confirming the attribution at one
+        demand; targeted runs at other demands are cheap follow-ons, and
+        closed-loop controller design for a selected cathode and geometry
+        is future engineering work.
   \item \textbf{Full mission simulation.} Battery state of charge, seasonal
         density variation, attitude coupling, and a flight-software
-        implementation of the servo are future work; the model's per-row
+        implementation of the throttle are future work; the model's per-row
         accounting (Sec.~\ref{sec:application}) is the input such a study
         needs, not a substitute for it.
 \end{itemize}
@@ -844,10 +898,11 @@ nothing above it. Second, the returning current does not cancel the
 thrust: a closed momentum ledger with a dedicated full-return null
 experiment establishes it in the predecessor implementation, and per-run
 momentum gates bound the return channel at 1--9\% of beam thrust in the
-present one. Third, the measured collection law collapses optimal
-operation into a two-line servo on the spacecraft's own floating potential,
-and the resulting model, applied to year-long orbit propagations with every
-extrapolated regime flagged, bounds a mission corridor: closure on
+present one. Third, the measured collection law fixes the charging tax, and
+the resulting two-constant analytical power model -- validated to within
+6\% of every gated frontier point -- applied to year-long orbit
+propagations with every extrapolated regime flagged, bounds a mission
+corridor: closure on
 harvested power at 550--600\,km, impulse closure at 500\,km, honest failure
 at 400\,km. The device is inexpensive and low-risk to test -- no hardware
 beyond a high-voltage supply and an electron gun of a kind that already

@@ -216,33 +216,39 @@
               relaxing (settled band $\approx$42--48\,V, inside the 50\,V
               limit) -- carried as uncertainty, not hidden.
         \item This is the physics that sets the operating point -- and it
-              collapses the throttle policy into\ldots\ (next slide)
+              closes the analytical power model to\ldots\ (next slide)
       \end{itemize}
   \end{columns}
 \end{frame}
 
 % 9 ---------------------------------------------------------------------------
-\begin{frame}{The optimal controller is two lines on the spacecraft's own float}
-  \begin{block}{The flight rule (measured constants, no ionosphere model, no lookup table)}
+\begin{frame}{The throttle principle: an ideal power bound, closed to 4--6\%}
+  \begin{block}{The ideal law (measured constants; near-unity escape, $\varphi \ll V$)}
     \centering
     \begin{tabular}{l}
-      1.\quad $V \approx 3.1\,\varphi$ \hfill (servo the supply to the measured float)\\[0.4ex]
-      2.\quad $I = F_{\mathrm{req}} / \big(3.27\sqrt{0.81\,(V-\varphi)}\big)$
-        \hfill (current from thrust demand)\\[0.4ex]
-      \quad\ \ guards: $I \le 1.46\,I_{\mathrm{CL}}(V)$;\quad
-        $\varphi \le 50$\,V;\quad infeasible $\Rightarrow$ duty-cycle\\
+      $F = \sqrt{2m_e/e}\; I\sqrt{\mathrm{KE}}$
+        \hfill (beam momentum flux -- $m_e$ and $e$, nothing else)\\[0.4ex]
+      $P = V I \;\Rightarrow\; P = F\sqrt{V}/c_{\mathrm{ideal}}$,\quad
+        $c_{\mathrm{ideal}} = \sqrt{2m_e/e}$
+        \hfill (fixed-thrust bound)\\[0.4ex]
+      throttle: \emph{largest feasible escaped current, lowest sufficient
+        voltage}\\[0.4ex]
+      \footnotesize PIC proves the concept: measured
+        $c_F = 0.97\,c_{\mathrm{ideal}}$ (divergence),
+        $\kappa = 0.81$ (space charge) $\Rightarrow$ a real geometry runs
+        at 1.19--1.22$\times$ the parameter-free bound\\
     \end{tabular}
   \end{block}
   \begin{itemize}\small
-    \item $\varphi$ is the sensor: density, temperature, day/night, and the
-          craft's own draw all collapse into where the body floats -- which
-          it measures \emph{by existing}.
-    \item The 3.1 is physics: $V_{\mathrm{opt}} = ((2\alpha+1)/\alpha)\,
-          \varphi_{\mathrm{eq}}$ from the U-valley marginal-cost balance
-          (valley measured shallow: $\pm$20\% in the factor costs a few \%
-          in power).
-    \item Simulations measure the constants and map the guard edges;
-          \textbf{the rule flies itself}.
+    \item Validated against the gated frontier: model 11.7 / 65.8 /
+          177.9\,mW vs measured 12.1 / 68.4 / 189\,mW -- within 4--6\%;
+          the residual is the charging tax $V/(V-\varphi)$, supplied by the
+          measured collection law when a tighter number is wanted.
+    \item Feasible current bounded by the emitter, ambient return current,
+          spacecraft potential, and beam escape -- acknowledged, not
+          optimized here.
+    \item Closed-loop optimization for a chosen cathode and geometry:
+          future work.
   \end{itemize}
 \end{frame}
 
@@ -251,7 +257,7 @@
   \includegraphics[width=0.9\linewidth]{missions.pdf}
   \begin{itemize}\small
     \item Year-long propagations, real F10.7/Ap, per-5-min plasma + drag;
-          the servo picks $(V, I)$ each step.
+          the model solves the minimum-power $(V, I, \varphi)$ each step.
     \item \textbf{Closes on skin-harvested power at 550--600\,km}; impulse-%
           closes (power-bound) at 500\,km; \textbf{does not close at 400\,km}
           for this body.
@@ -381,24 +387,24 @@
   \vspace{2ex}
   \centering
   \large\emph{Cheap to test on orbit: it's a gun and a hole.}\\[1ex]
-  \normalsize A propellantless thruster whose optimal controller is a
-  two-line servo on its own floating potential.
+  \normalsize A propellantless thruster whose power budget is an analytical
+  lower bound with measured 4--6\% closure.
 \end{frame}
 
 % ============================ BACKUPS ========================================
 \appendix
-\begin{frame}{Backup: the U-valley and the no-equilibrium boundary}
+\begin{frame}{Backup: off-design low-voltage losses are geometry-specific}
   \begin{itemize}\small
-    \item Predecessor campaign, five converged runs at fixed 13.6\,nN
-          (78--300\,V): specific power $P/F$ = 5.18 / 4.44 / \textbf{4.31} /
-          5.02 / 5.90\,mW/nN -- a shallow U.
-    \item Below $\sim$91\,V at that demand: \textbf{no equilibrium at all}
-          (space charge blows the beam open; the can eats its own beam) --
-          confirmed by a pre-registered counterexample run.
-    \item Left arm taxes: charging ($\varphi/V$: 27.6\% at 78\,V vs 8.7\% at
-          200\,V) and escape collapse (68.6\% at 78\,V).
-    \item Hence the rule: \emph{sit at the valley for the instantaneous
-          demand -- never as low as feasible.}
+    \item Fixed-thrust runs at low voltage measured power up to
+          $\approx$1.5--2$\times$ the ideal bound.
+    \item The excess decomposes into (i) a non-optimal voltage for the
+          demanded thrust and (ii) real losses: beam interception as
+          low-voltage optics diverge the plume against the aperture, the
+          0.81 energy fraction, emission-type overheads.
+    \item The interception is the can's, not the gun's: the identical
+          92.4\,V command transmits 99.99\% in an isolated-gun fixture.
+    \item The concept therefore carries the ideal bound plus its measured
+          closure; loss optimization is engineering future work.
   \end{itemize}
 \end{frame}
 

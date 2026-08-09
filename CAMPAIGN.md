@@ -202,11 +202,12 @@ Calibration: `c_F = 3.2675`, `κ = 0.8063`, `α = 0.8931` (tail) / `0.8451`
 (settled), `βA = 2.507 cm²`. Float residuals across the three anchors:
 −0.09 / +0.72 / −0.89 V.
 
-**The flight rule.** Minimising input power at fixed thrust demand gives a
-U-shaped valley in V, whose floor sits at `V = ctrl_factor · φ` with
-`ctrl_factor = (2α+1)/α ≈ 3.12`. That is a **two-line servo on a quantity the
-spacecraft can actually measure** — the float — with no need to sense plasma
-density or temperature directly. φ is the sensor.
+**The throttle principle.** The concept argument now carries only the
+analytical lower bound `P = F·√V / 2.93`, validated to 4–6 % against the
+frontier anchors: largest feasible escaped current, lowest sufficient
+voltage. The earlier flight-rule/servo formulation and its U-shaped
+fixed-thrust cost surface were demoted to controller-optimization work —
+see `CONCEPT_FEASIBILITY_SCOPE.md` and `future_work/`.
 
 **Mission sweep**, all five committed orbit CSVs, with every row flagged as
 measured or extrapolated:
@@ -370,11 +371,13 @@ one killed run. One code change. Three pre-registrations, three resolved.
 
 The frontier of §2 holds perveance fixed and measures the envelope boundary;
 this follow-on campaign holds the **demand** fixed (the anchor's 13.65 nN)
-and measures the cost surface inside it — the slice the §5 flight rule
-actually lives on. Pre-registered in
-`pic_sims/validation_cases/capstone/UCURVE_PLAN.md` (hypotheses H1/H2 and
-numeric predictions committed before any run), resolved in its 2026-08-08
-amendment. Three new capstone stages, each gated PASS on the trust set:
+and measures the cost surface inside it. Pre-registered in
+`UCURVE_PLAN.md` (hypotheses H1/H2 and numeric predictions committed before
+any run), resolved in its 2026-08-08 amendment. Three capstone stages, each
+gated PASS on the trust set. *(Scope note 2026-08-09: these stages, their
+plan, and the controller work built on them were moved to `future_work/` —
+geometry-specific optimization evidence, no longer part of the concept
+argument.)*
 
 | stage | V | escape | delivered F | P/F at delivered F |
 |---|---|---|---|---|

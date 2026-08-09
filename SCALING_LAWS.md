@@ -125,7 +125,8 @@ potential is whatever makes that balance close.
   | 0.5 (square root) | OML-cylinder / thin-sheath square-root theory | ~90 V — would fail the 50 V gate and approach the 100 V choke |
 
   The 300 V run discriminates, and the fixed-thrust throttle stages
-  (`pic_sims/validation_cases/capstone/UCURVE_PLAN.md`, resolved 2026-08-08)
+  (`future_work/UCURVE_PLAN.md`, resolved 2026-08-08; stages now under
+  `future_work/ucurve_pic_stages/`)
   extended the measured (I_esc, φ) price list to a second slice: all six
   committed equilibria fit `(1+χ)^α` with α_all = 0.922 and residuals
   ≤ 9.3 % (`model/minimal_model.py --calibrate`). A caveat
@@ -158,7 +159,7 @@ potential is whatever makes that balance close.
   - **F/P ∝ 1/√V confirmed across the full hardware range**: measured
     0.283 / 0.200 / 0.159 µN/W at 100 / 200 / 300 V vs 0.283 / (anchor) /
     0.163 predicted from the 200 V anchor — within 2.5 % everywhere.
-  - Escape degrades toward low V exactly as the U-curve tax predicts
+  - Escape degrades toward low V exactly as the low-voltage escape tax predicts
     (96.1 % at 100 V vs 98.4–99.0 % at 200–300 V) but still clears the 95 %
     gate at the cheap end — the floor operating point is feasible.
 
@@ -200,96 +201,60 @@ From the committed 2024 orbit sweep (5 mm chipsat, real F10.7/Ap):
 
 Demand swings ~10× over an orbit (diurnal) and ~15× across 400–600 km.
 
-**The throttle rule — why "as low as feasible" is wrong.**
-The naive rule from §2 alone ("throttle V as low as feasible; P ∝ F·√V")
-assumes escape stays high and current is free. Neither assumption survives
-the measured taxes: at fixed thrust, dropping V raises the required current
-as ~1/√KE while the emission ceiling falls as V^1.5, so perveance I/I_CL
-explodes — and the fixed-thrust slice (`capstone.ucurve_*` at the anchor's
-13.65 nN demand, pre-registered in
-`pic_sims/validation_cases/capstone/UCURVE_PLAN.md` and resolved
-2026-08-08) **measured** what that costs. Specific power at delivered
-thrust:
+**The throttle principle — the analytical lower bound.**
+The concept argument uses the ideal law only: at fixed thrust,
 
-| V | escape | delivered F | P/F (mW/nN) |
-|---|---|---|---|
-| 78 | 57.4 % | 10.38 nN (−24 %) | 6.31 |
-| 92.4 | 79.9 % | 11.59 nN (−15 %) | 4.79 |
-| **125** | 93.8 % | 13.09 nN (−4 %) | **4.43 (valley)** |
-| 200 (anchor) | 98.4 % | 13.65 nN | 5.01 |
+```
+P [mW] = F [nN] · √(V [V]) / c_eff        c_eff = c_F·√κ = 2.93
+```
 
-Escape collapses monotonically with over-ceiling ratio (2.7× → 5.6× →
-10.1×), delivered thrust falls short, and P/F is a measured **U** with its
-valley at ~125 V. Below the arm the demand becomes unreachable, not just
-expensive: at 78 V a steady equilibrium still forms but delivers −24 % at
-10× the validated ceiling with F_net/F_beam = 0.89 — the no-go wall the
-100 V hardware floor exists to avoid. The tax is a *can* phenomenon, not
-generic gun optics: `emitter.voltage_bracket` C ran the same 92.4 V command
-in the clean isolated-gun geometry and transmitted 0.9999 (the planar I_CL
-scale is conservative there — its v2 policy records the refuted
-current-limiting expectation).
+so the minimum-power throttle uses the **largest feasible escaped current**
+and the **lowest acceleration voltage** that satisfies the thrust command.
+The feasible current is bounded by the emitter, ambient return-current
+availability, acceptable spacecraft potential, and successful beam escape —
+bounds the concept acknowledges without optimizing against. The law is
+validated to 4–6 % against the three gated frontier anchors
+(`model/feasibility_model.py`, `model/results/FEASIBILITY_POWER.md`); the
+residual is the charging tax `V/(V−φ)` = 1.06–1.14, supplied by the §4
+collection law when a tighter number is wanted.
 
-> **Sit at the U-valley for the instantaneous demand — not as low as
-> feasible.** The untaxed closed form `V_opt = ((2α+1)/α)·φ_eq ≈ 3.1·φ_eq`
-> is a hard **lower bound**, not a target: the measured valley sits at
-> V/φ = 5.9 (125 V at this demand) because the escape tax moves the optimum
-> up. The valley is shallow rightward (+13 % power from 125 → 200 V), so
-> overshoot is cheap; undershoot is what the curve punishes. Never operate
-> below the no-go wall for the current demand (measured by
-> `capstone.ucurve_floor`: at 78 V the demand has no operating point).
+**Off-design losses are geometry-specific and belong to future work.**
+Fixed-thrust runs of the can at low voltage measured power up to
+~1.5–2× the ideal bound. The excess decomposes into (i) a non-optimal
+voltage for the demanded thrust and (ii) real losses — beam interception as
+low-voltage optics diverge the plume against the aperture, the 0.81 energy
+fraction, emission-type overheads. The interception is a *can* phenomenon,
+not generic gun optics: `emitter.voltage_bracket` C ran the same 92.4 V
+command in the clean isolated-gun geometry and transmitted 0.9999. The full
+fixed-thrust slice (pre-registration, three gated stages, and the
+controller design built on it) lives in `future_work/` (`UCURVE_PLAN.md`,
+`ucurve_pic_stages/`, `UCURVE_CONTROL_REVIEW.md`).
 
 Two slices of the (V, I) plane, not to be confused:
 
-- **Fixed thrust, varying V** (the `capstone.ucurve_*` stages): perveance
-  I/I_CL explodes at low V — this is where the left-arm taxes live.
+- **Fixed thrust, varying V** (the `future_work/ucurve_pic_stages/`
+  stages): perveance I/I_CL explodes at low V — this is where the
+  geometry-specific taxes live.
 - **Fixed I/I_CL = 1.46, varying V** (this repo's frontier stages): the
   perveance-preserving path — beam optics stay self-similar, escape should
   stay high at all three points, and thrust varies as ~V² along it. It
-  measures the *envelope boundary*; the U-curve measures the *cost inside
-  it*.
+  measures the *envelope boundary*; the fixed-thrust slice measures the
+  *cost inside it*.
 
 The feasibility floor is the emission ceiling by day (demand-side) and the
 collection stiffness by night (supply-side) — measured at the frontier's
 ends by `capstone.low_power` and `capstone.high_thrust` respectively.
 
-### 7b. The flight rule — a two-line servo on the spacecraft's own float
+### 7b. Controller design — deferred to future work
 
-The U-valley collapses into a controller that needs **no model of the
-ionosphere and no lookup table**:
+Closed-loop throttle control for a selected cathode and geometry (escaped-
+current estimation, thrust loop, power minimization, guards) is deliberately
+excluded from the concept argument — see `CONCEPT_FEASIBILITY_SCOPE.md` and
+`future_work/UCURVE_CONTROL_REVIEW.md`. The concept paper carries only the
+throttle principle above and its measured 4–6 % closure.
 
-```
-1. V  ≈ 3.2 · φ                                  (servo V to the measured float)
-2. I  = F_required / (c·√(V − φ))                (current from the thrust demand)
-   guards:  I ≤ 1.5·I_CL(V)   and   φ ≤ 50 V
-            infeasible → duty-cycle at the valley; never push V below it
-```
-
-Why this works, and why it is the paper's cleanest claim:
-
-- **φ is the sensor.** Plasma density, electron temperature, day/night, and
-  the vehicle's own current draw all collapse into where the body floats —
-  and the body measures that by existing. Nothing environmental is
-  hardcoded: a different orbit, altitude, or solar cycle just produces
-  different φ readings, and the servo follows. This is the structural
-  answer to the hardcoding trap of §9 — the rule never predicted the
-  environment, so it cannot be wrong about it.
-- **The 3.2 is physics, not tuning:** the marginal-cost balance gives
-  `V_opt = ((2α+1)/α)·φ_eq`, ≈ 3.0–3.25 for α between 1 and 0.82, shifted
-  by the measured injection offset. The only baked-in numbers are this
-  factor and the two guard ceilings (I_CL is analytic; φ_max is a design
-  choice).
-- **The valley is shallow** (measured flat over ~110–160 V on the dayside
-  row), so a 20 % error in the factor costs a few percent in power. Dummy
-  rules work here because the optimum is forgiving.
-- **What simulations are for, under this rule:** not a lookup table — they
-  (a) measure the few constants (offset, α, escape at fixed perveance),
-  (b) validate the rule's form at a stress point per axis (one dayside, one
-  night row), and (c) map the guard edges (the choke boundary, the night
-  stiffness). A handful of runs total; the rule flies itself, the PIC
-  evidence certifies it.
-
-One sentence for the paper: *a propellantless thruster whose optimal
-controller is a two-line servo on its own floating potential.*
+One sentence for the paper: *a propellantless thruster whose power budget
+is an analytical lower bound with measured 4–6 % closure.*
 
 ## 8. Plasma scaling — what one plasma row does and does not cover
 
@@ -453,9 +418,9 @@ hundred lines — that:
   just altitude) changes which rows land in which bucket, never the laws
   themselves, and the flagged bucket says exactly where the next GPU-hours
   go;
-- evaluates optimization rules **per row** (e.g. the §7 U-valley
-  `V_opt ≈ 3.2·φ_eq`), never as frozen numbers: fitted constants stay home,
-  physics forms travel;
+- evaluates optimization rules **per row** (e.g. the §7 minimum-power
+  voltage for the instantaneous demand), never as frozen numbers: fitted
+  constants stay home, physics forms travel;
 - **never feeds an acceptance gate** — PIC stages stay self-contained, and
   the model remains a targeting/analysis tool with no authority over
   evidence.

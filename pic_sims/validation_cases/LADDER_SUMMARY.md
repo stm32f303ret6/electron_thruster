@@ -241,50 +241,19 @@ fitted exponent survives a 3.24× area change.  Thrust *rose* to 14.22 nN
 
 ---
 
-### 13. `capstone.ucurve_valley` — fixed thrust at 125 V (PASS, promoted)
+### 13–15. Fixed-thrust throttle stages — moved to `future_work/`
 
-**The test:** first point of the pre-registered fixed-thrust throttle slice
-(`capstone/UCURVE_PLAN.md`): hold the anchor's 13.65 nN demand at 125 V
-(commanded current 4.0× the planar perveance). Trust gates required; escape,
-float, and delivered thrust are the measurement.
-
-| measured | pre-registered H1 | outcome |
-|---|---|---|
-| escape | ≥ 96 % | **93.78 %** — the tax's onset |
-| φ_body | 24.5 V | **21.25 V** |
-| delivered F | 13.65 nN | **13.09 nN** (−4.1 %) |
-| P/F at delivered F | 4.25 mW/nN | **4.43 mW/nN** — the measured valley |
-
-### 14. `capstone.ucurve_left_arm` — fixed thrust at 92.4 V (PASS, promoted)
-
-**The test:** the discriminator. H1 (untaxed laws) put the valley near 95 V —
-P/F here *below* the 125 V point; H2 (perveance tax) put it right of here.
-
-| measured | H1 | outcome |
-|---|---|---|
-| escape | ≥ 96 % | **79.95 %** — collapse (5.6× over-ceiling) |
-| delivered F | 13.65 nN | **11.59 nN** (−15 %) |
-| P/F at delivered F | 4.07 (below 125 V) | **4.79 — above 125 V: H2 wins** |
-| F_net/F_beam | ~0.06 | **0.30** (self-scraped beam load) |
-
-### 15. `capstone.ucurve_floor` — the no-go wall at 78 V (PASS, promoted)
-
-**The test:** boundary demonstration — does the demand have *any* operating
-point at 78 V? Even current balance is a reported gate here (a policy must
-not gate away its own hypothesis).
-
-| measured | note |
-|---|---|
-| steady equilibrium | **forms** (balance 0.035) — H2's no-steady-state variant refuted |
-| escape | **57.43 %** at 10.1× the validated ceiling |
-| delivered F | **10.38 nN** (−24 %) — the demand is unreachable |
-| F_net/F_beam | **0.89** — self-scrape loads the body almost as hard as the exhaust pushes |
-| φ_body | 23.84 V (H1's 47.3 V never materialized) |
-
-Together with the 200 V anchor (5.01 mW/nN), stages 13–15 measure the
-throttle curve the §7 flight rule optimizes over: a U with its valley at
-~125 V and a no-go wall below the arm — resolved for H2, the perveance tax
-(`UCURVE_PLAN.md` amendment 2026-08-08).
+Three gated runs (fixed 13.65 nN demand at 125 / 92.4 / 78 V) measured the
+geometry-specific cost of off-design low-voltage operation inside the can:
+escape collapses from beam self-scrape (93.8 → 80.0 → 57.4 %), a loss the
+clean isolated-gun geometry does not show (step 3, scenario C: 99.99 %
+transmission at the same 92.4 V command). Power consumption in the concept
+argument is now the analytical model (`model/feasibility_model.py`,
+validated to 4–6 % against the frontier stages above), so these stages —
+valid, PASSed evidence, but controller-optimization work for a specific
+cathode/gap/aperture — live in `future_work/ucurve_pic_stages/` with their
+pre-registration (`future_work/UCURVE_PLAN.md`) and reference results
+intact.
 
 
 ## Cross-stage checks (all green in the suite verdict)
