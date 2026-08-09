@@ -26,10 +26,14 @@ We describe and simulate a spacecraft thruster with no stored propellant, no
 tank, and no neutralizer: a cold electron gun sealed inside a floating
 conducting body emits an electron beam through a single aperture; the body
 charges positive until it recollects ambient ionospheric electrons at exactly
-the emitted rate. Taking a \O10\,mm conducting can at a representative
-dayside ionospheric operating point as a measured anchor, pre-registered and
-acceptance-gated particle-in-cell simulations (WarpX, RZ electrostatic)
-measure the complete thrust--power frontier across the 100--300\,V hardware
+the emitted rate. In the ideal limit the concept's economics are
+parameter-free -- thrust $F = \sqrt{2m_e/e}\,I\sqrt{\mathrm{KE}}$ at beam
+power $P = VI$, a geometry-free lower bound on fixed-thrust power set by
+electron mass and charge alone. Taking a \O10\,mm conducting can at a
+representative dayside ionospheric operating point as a measured anchor,
+pre-registered and acceptance-gated particle-in-cell simulations (WarpX, RZ
+electrostatic) validate that concept under real constraints, measuring the
+complete thrust--power frontier across the 100--300\,V hardware
 range: 3.42\,nN at 12.1\,mW, 13.65\,nN at 68.4\,mW, and 30.13\,nN at
 189\,mW, confirming the $F/P \propto 1/\sqrt{V}$ throttle law within 2.5\%,
 with beam escape $\ge 96\%$ and a benign floating potential
@@ -98,15 +102,18 @@ for a reaction engine, the propellant -- at a mass flow measured in
 nanograms per year. No propellant is carried, stored, or metered; the only
 consumable is electrical power.
 
-This paper makes five contributions. First, we measure the complete
-thrust--power frontier of this mechanism across its full hardware voltage
-range (100--300\,V) with pre-registered, acceptance-gated particle-in-cell
-simulation at a realistic ionospheric operating point
-(Sec.~\ref{sec:frontier}), and show it delivers ion-thruster-class
-\emph{energy} conversion ($\eta \approx 0.73$) at a deliberately tiny
-\emph{momentum} economy ($F/P \approx 0.16$--0.28\,\textmu N/W) -- the pair
-of numbers that explains why the device owns the nanonewton regime and
-nothing above it (Sec.~\ref{sec:comparison}). Second, the three frontier
+This paper makes five contributions. First, we state the concept's
+operating economics in parameter-free form -- an ideal power bound set by
+electron mass and charge alone (Sec.~\ref{sec:throttle}) -- and validate
+it by measuring the complete thrust--power frontier of the mechanism
+across its full hardware voltage range (100--300\,V) with pre-registered,
+acceptance-gated particle-in-cell simulation at a realistic ionospheric
+operating point (Sec.~\ref{sec:frontier}): the measured points land within
+20\% of the bound and deliver ion-thruster-class \emph{energy} conversion
+($\eta \approx 0.73$) at a deliberately tiny \emph{momentum} economy
+($F/P \approx 0.16$--0.28\,\textmu N/W) -- the pair of numbers that
+explains why the device owns the nanonewton regime and nothing above it
+(Sec.~\ref{sec:comparison}). Second, the three frontier
 points discriminate between pre-registered candidate forms of the
 ambient-electron collection law (Sec.~\ref{sec:collection}); the surviving
 sub-linear law fixes the charging tax, and the measured frontier lands
@@ -162,6 +169,40 @@ reference run:
 \end{enumerate}
 No valves, no flow control, no gimbals, no plasma production stage: thrust is
 throttled by the emission current and supply voltage alone.
+
+\section{The ideal operating law}
+\label{sec:throttle}
+Before any simulation, the concept's operating economics can be stated with
+no free parameters at all. In the ideal limit -- every emitted electron
+escapes at its full energy $e(V-\varphi)$, $\varphi \ll V$ -- an electron
+beam of current $I$ and per-electron energy $\mathrm{KE}$ carries momentum
+flux $F = \sqrt{2 m_e/e}\; I \sqrt{\mathrm{KE}}$; with $F$ in nN, $I$ in mA
+and energies in eV the constant is
+$\sqrt{2 m_e/e} = 3.37$\,nN/(mA\,$\sqrt{\mathrm{eV}}$) -- electron mass
+and charge, nothing else. With ideal beam-supply power $P = VI$,
+eliminating the current at a demanded thrust gives the fixed-thrust power
+law
+\[
+P \;=\; \frac{F\,\sqrt{V}}{c_{\mathrm{ideal}}},
+\qquad c_{\mathrm{ideal}} = \sqrt{2 m_e/e},
+\]
+a geometry-free theoretical lower bound. The minimum-power throttle it
+implies uses the \emph{largest feasible escaped current} and the
+\emph{lowest acceleration voltage} that satisfies the thrust command. The
+feasible current is bounded by the emitter, by ambient return-current
+availability, by acceptable spacecraft potential, and by successful beam
+escape; the concept requires only acknowledging these bounds, not
+optimizing against them.
+
+This ideal law is the concept; the rest of the paper is the evidence. The
+pre-registered, acceptance-gated simulations that follow ask how close a
+real, deliberately non-optimized geometry with real constraints -- beam
+space charge, plume divergence, spacecraft charging, finite collection --
+comes to the bound (within 20\%,
+Sec.~\ref{sec:validation}), whether the law's functional form survives
+measurement (the $1/\sqrt{V}$ throttle law, confirmed within 2.5\%,
+Sec.~\ref{sec:frontier}), and what sets the one quantity the ideal limit
+takes for granted, the return current (Sec.~\ref{sec:collection}).
 
 \section{Simulation method and evidence discipline}
 \label{sec:method}
@@ -259,64 +300,11 @@ exactly that boundary: escape degrades to 96.1\% (the space-charge tax of
 low-voltage optics) but clears the 95\% gate -- the power-optimal end of
 the throttle curve is feasible, at 0.283\,\textmu N/W.
 
-\section{The collection law: a pre-registered discrimination}
-\label{sec:collection}
-Every escaping electron must be replaced by a collected ambient one; the
-floating potential is whatever makes that balance close. The collection
-side is therefore the physics that sets the operating point, and its form
-was the campaign's principal open question. Writing the collected current
-as $I = \beta A\, j_{\mathrm{the}}(n_e,T_e)\,(1+\chi)^{\alpha}$ with
-$\chi = e\varphi/kT_e$ and $j_{\mathrm{the}}$ the one-sided thermal flux,
-three candidate exponents existed in the project lineage, all agreeing at
-the 200\,V anchor ($\chi \approx 150$) and diverging at the 300\,V point
-($\chi \approx 320$). Their predictions for the 300\,V float were recorded
-in the repository before the run: $\alpha = 1$ (linear, orbital-motion
-style) predicts $+31$\,V; $\alpha = 0.82 \pm 0.06$ (fitted across six
-equilibria of the predecessor campaign) predicts $+36$\,V; $\alpha = 0.5$
-predicts $+90$\,V, which would fail the benign-float gate.
-
-The measured 300\,V float is $+36.30$\,V (tail-averaged under the
-pre-registered analysis policy): the linear law is refuted (the float
-passes 31\,V and keeps climbing), the square-root law is refuted (nothing
-in the trajectory approaches 90\,V), and $\alpha = 0.82$ survives
-(Fig.~\ref{fig:frontier}, centre). One caveat was pre-registered with the
-test and applies in full: at high $\chi$ the sheath equilibrates on the ion
-timescale, and the run's late slope, though decaying ($+44 \to +27$\,mV/ns
-over the final 200\,ns), had not reached zero; extrapolating the decay
-places the settled float at $\approx$42--48\,V, brushing but not breaking
-the 50\,V design limit. A least-squares fit of $\alpha$ across all three
-measured points gives $\alpha = 0.89$ (tail-averaged floats) to
-$\alpha = 0.85$ (settled-extrapolated floats), bracketing the upper edge of
-the pre-registered band. The float robs the beam -- the accelerating
-potential is always $V - \varphi$ -- so this law is also the charging tax
-schedule: $\varphi$ eats 5\% of the supply at 100\,V and 12\% at 300\,V.
-
-\section{The throttle principle and the ideal power bound}
-\label{sec:throttle}
-In the ideal limit -- every emitted electron escapes at its full energy
-$e(V-\varphi)$, $\varphi \ll V$ -- the device's operating economics contain
-no free parameters at all. An electron beam of current $I$ and
-per-electron energy $\mathrm{KE}$ carries momentum flux
-$F = \sqrt{2 m_e/e}\; I \sqrt{\mathrm{KE}}$; with $F$ in nN, $I$ in mA and
-energies in eV the constant is
-$\sqrt{2 m_e/e} = 3.37$\,nN/(mA\,$\sqrt{\mathrm{eV}}$) -- electron mass
-and charge, nothing else. With ideal beam-supply power $P = VI$,
-eliminating the current at a demanded thrust gives the fixed-thrust power
-law
-\[
-P \;=\; \frac{F\,\sqrt{V}}{c},
-\qquad c_{\mathrm{ideal}} = \sqrt{2 m_e/e},
-\]
-a geometry-free theoretical lower bound. The minimum-power throttle it
-implies uses the \emph{largest feasible escaped current} and the
-\emph{lowest acceleration voltage} that satisfies the thrust command. The
-feasible current is bounded by the emitter, by ambient return-current
-availability, by acceptable spacecraft potential, and by successful beam
-escape; the concept requires only acknowledging these bounds, not
-optimizing against them.
-
-The gated runs then measure how close a real, deliberately non-optimized
-geometry sits to this bound. Writing the measured beam law as
+\subsection{Validation against the ideal law}
+\label{sec:validation}
+The frontier measures how close a real, deliberately non-optimized
+geometry sits to the bound of Sec.~\ref{sec:throttle}. Writing the
+measured beam law as
 $F = c_F\, I \sqrt{\kappa(V-\varphi)}$, the fitted thrust slope is
 $c_F = 3.27 = 0.97\,c_{\mathrm{ideal}}$ (the 3\% deficit is plume
 divergence through the aperture) and the exhaust-energy fraction is
@@ -356,6 +344,38 @@ ceiling by 2.7--10$\times$. For concept feasibility the ideal bound with
 its measured 4--6\% closure is therefore sufficient; closed-loop throttle
 optimization for a selected cathode and spacecraft geometry is future
 work.
+
+\section{The collection law: a pre-registered discrimination}
+\label{sec:collection}
+Every escaping electron must be replaced by a collected ambient one; the
+floating potential is whatever makes that balance close. The collection
+side is therefore the physics that sets the operating point, and its form
+was the campaign's principal open question. Writing the collected current
+as $I = \beta A\, j_{\mathrm{the}}(n_e,T_e)\,(1+\chi)^{\alpha}$ with
+$\chi = e\varphi/kT_e$ and $j_{\mathrm{the}}$ the one-sided thermal flux,
+three candidate exponents existed in the project lineage, all agreeing at
+the 200\,V anchor ($\chi \approx 150$) and diverging at the 300\,V point
+($\chi \approx 320$). Their predictions for the 300\,V float were recorded
+in the repository before the run: $\alpha = 1$ (linear, orbital-motion
+style) predicts $+31$\,V; $\alpha = 0.82 \pm 0.06$ (fitted across six
+equilibria of the predecessor campaign) predicts $+36$\,V; $\alpha = 0.5$
+predicts $+90$\,V, which would fail the benign-float gate.
+
+The measured 300\,V float is $+36.30$\,V (tail-averaged under the
+pre-registered analysis policy): the linear law is refuted (the float
+passes 31\,V and keeps climbing), the square-root law is refuted (nothing
+in the trajectory approaches 90\,V), and $\alpha = 0.82$ survives
+(Fig.~\ref{fig:frontier}, centre). One caveat was pre-registered with the
+test and applies in full: at high $\chi$ the sheath equilibrates on the ion
+timescale, and the run's late slope, though decaying ($+44 \to +27$\,mV/ns
+over the final 200\,ns), had not reached zero; extrapolating the decay
+places the settled float at $\approx$42--48\,V, brushing but not breaking
+the 50\,V design limit. A least-squares fit of $\alpha$ across all three
+measured points gives $\alpha = 0.89$ (tail-averaged floats) to
+$\alpha = 0.85$ (settled-extrapolated floats), bracketing the upper edge of
+the pre-registered band. The float robs the beam -- the accelerating
+potential is always $V - \varphi$ -- so this law is also the charging tax
+schedule: $\varphi$ eats 5\% of the supply at 100\,V and 12\% at 300\,V.
 
 \section{The momentum ledger: is the thrust real?}
 \label{sec:ledger}
