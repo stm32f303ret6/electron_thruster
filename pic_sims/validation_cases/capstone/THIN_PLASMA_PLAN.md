@@ -163,3 +163,62 @@ rather than answering it by computation from existing runs.
 - If the float lands above 50 V, the corridor argument in the paper
   (550–600 km closes on harvested power) gains a *measured* upper edge on the
   density side rather than a modelled one.
+
+## RESULTS — 2026-08-09: executed as pre-registered; float unsettled at 800 ns
+
+Run `2_chipsat_thruster/outputs/20260808T165839Z_41b114e2`
+(config `variants/thin_plasma.yaml`, deltas exactly as pre-registered above;
+grid resolved to 272×440 = 119,680 cells, rmax snapped to 40.8 mm on the
+0.15 mm grid; steps and dt bit-identical to the anchor: 159,160 @
+5.0261e-12 s). 8.4 h wall on the RTX 3060. Analysis
+`results/20260808T165839Z_41b114e2/20260809T012347Z_aae666a6`, exploratory
+policy: **VERDICT PASS — all 6 required gates**. Informational
+`phi_vs_float200_reference` flags, as it must (the float moving off the
+anchor is the experiment).
+
+**The device is healthy at n0/3** — the amendment's realistic deliverable,
+delivered: escape 98.5 %, exhaust KE 132.9 eV, F_beam 12.95 nN (thrust gate
+vs anchor PASSES), current balance closes to 4.9 %, containment margin 10×
+under the gate at the enlarged radius. No breakdown over a 3× step of the
+30× mission density swing.
+
+**The exponent discrimination was NOT achieved.** phi_body read 29.5 V
+(analysis window; final sample 31.6 V) at 800 ns — below the 45–75 V
+pre-registered measurement band — and the tail is still *accelerating*:
+windowed slopes 8.1 → 12.1 → 19.3 → 27.7 → 26.8 V/µs over 300–800 ns.
+Exponential-settle fits diverge (the trace is nowhere near its asymptote),
+so unlike the 300 V run there is no defensible settled bracket, only a hard
+lower bound: **phi_settled > 31.6 V**. For calibration, the anchor's own
+committed trace ends the same way (16.5 V/µs at 800 ns, final 18.3 V) — the
+campaign's "float" has always been an 800 ns read with a disclosed slope,
+and the settle caveat this plan flagged is decisively stronger on the thin
+row, exactly as the `1/(n*sqrt(Te))` stiffness claim predicts (the thin
+trace at 800 ns has covered ~1.7× of a required ≥3× rise in (1+chi); the
+anchor at the same age was substantially closer to its own asymptote).
+
+Scorecard against the pre-registered predictions:
+
+- `alpha = 0.5` (near-choke at 160 V, KE ~32 eV): **disfavored but not
+  refuted.** No choke signature at 800 ns and beam observables are fully
+  healthy — but at phi = 31.6 V the run never entered the regime where that
+  candidate's escape collapse would show, and the accelerating tail cannot
+  exclude a much higher settled float.
+- `alpha = 1 / 0.893 / 0.82` (53.4 / 60.9 / 68.0 V): **undiscriminated.**
+  All three remain consistent with a trace that is still >20 V below the
+  nearest prediction and climbing.
+- Matched-time A/B (the one clean comparison this run gives): at identical
+  demand, steps, and age, `(1+chi)` rose 1.73× for a 3× density drop. Any
+  settled `alpha <= 1` requires >= 3×, so the trace is at most ~55 % of the
+  way to the nearest candidate's asymptote in chi. (A dynamic I–V fit from
+  the climb is NOT usable: in balance the collected current is pinned at
+  the ~330 µA demand — the trace rides the load line, not the collection
+  characteristic. Both runs measure `alpha_dynamic ~ 0` for this reason.)
+
+**Disclosure**: the thin row is compared to the anchor across the
+rmax 30 → 40.8 mm domain change, per the sizing section above.
+
+**What it would take to finish the measurement**: simulated time, not
+resolution — the pre-registered acceptance band sits several spring times
+beyond 800 ns at this stiffness. A t_end ~2.4 µs continuation (~3× cost,
+~25 GPU-h) with the same deck would put the 53–68 V band inside reach, or
+refute alpha = 0.5 by observing saturation well below 160 V.
