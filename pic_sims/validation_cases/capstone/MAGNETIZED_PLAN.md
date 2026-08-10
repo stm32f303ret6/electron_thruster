@@ -1,7 +1,8 @@
 # PLAN — the magnetized axis (pre-registered 2026-08-08)
 
-**Status: tier M1 PLANNED, committed before its runs launched. Tier M2 is a
-design, not a scheduled run.**
+**Status: tier M1 EXECUTED 2026-08-10 — results appended below (H-M1-null
+holds at 1×; H-M1-tax confirmed at 10×). Tier M2 is a design, not a
+scheduled run.**
 
 ## The gap
 
@@ -129,3 +130,71 @@ above become the primary operating-mode evidence.
 2. M2 validation mini-ladder + similarity design (needs its own committed
    plan with numeric pre-registrations before any measurement run).
 3. M2 measurement runs.
+
+---
+
+## RESULTS — 2026-08-10: executed as pre-registered; null at 1×, tax at 10×
+
+Both runs sequential on the reference GPU, configs exactly as committed
+(`variants/m1a_bz_1x.yaml`, `variants/m1b_bz_10x.yaml`), steps and dt
+bit-identical to the anchor (159,160 @ 5.0261e-12 s to 800 ns). M1a
+6.5 h wall, M1b 6.3 h — 12.8 h total, on the ~13 h estimate. Both analyses
+under `capstone.exploratory_axes.v1`: **VERDICT PASS — all 6 required trust
+gates, both runs** (ledger-vs-dump ≤ 2.1e-9, current balance ≤ 3.2 %,
+containment ≥ 7× under the gate).
+
+| observable (800 ns window) | anchor (B = 0) | M1a (1×) | M1b (10×) |
+|---|---|---|---|
+| phi_body [V] | ~16 (final 18.3) | 17.22 (final 18.53) | **48.63 (final 49.81)** |
+| F_beam [nN] | ~13.6 | 13.64 | **12.06 (−11 %)** |
+| escape [%] | ~98.5 | 98.44 | 98.32 |
+| exhaust KE [eV] | ~146 | 147.28 | 115.89 |
+| late dφ/dt [V/µs] | 16.5 | 16.1 | 14.4 |
+
+**M1a — H-M1-null HOLDS at the flight condition.** Every pre-registered
+bound met: Δφ = +1.2 V (≤ 2), ΔF/F = +0.3 % (≤ 5 %), Δescape = 0.06 pp
+(≤ 1). The tail slope (16.1 V/µs) matches the anchor's own (16.5 V/µs) —
+the trace is anchor-identical to within the campaign's read precision.
+Field-aligned firing at 1× LEO leaves the committed operating point
+untouched, as grounds (i)–(iii) predicted.
+
+**M1b — H-M1-tax CONFIRMED at 10×, in the pre-registered direction.** At
+r_g,e ~ 1.4 λ_De, cross-field electron collection stiffens exactly as the
+alternative stated: φ rises +32.6 V over the anchor at fixed emission (the
+collection law's effective βA falls), KE = κ(V−φ) falls 147 → 116 eV, and
+thrust follows, −11 %. The chain is clean: the two-constant thrust law
+`F = 3.2675·I·√KE` reproduces both runs (13.56 / 12.03 nN predicted vs
+13.64 / 12.06 measured), so **the entire tax enters through φ** — c_F is
+untouched by Bz, and κ softens only slightly (0.806 → 0.766). Escape is
+B-independent (98.3 %, Δ ≈ 0.1 pp), confirming beam optics cannot be
+B-limited at r_g,beam ≥ 0.10 m ≫ device scale.
+
+**Disclosures.**
+- The M1b float is an 800 ns read with a disclosed slope, per campaign
+  convention — and it is *not settled*: 14.4 V/µs at the end of the run,
+  final sample 49.8 V. The settled φ is strictly higher and the settled
+  10× tax therefore strictly larger than −11 %; 12.06 nN is an upper bound
+  on settled 10× thrust.
+- The informational `phi_vs_float200_reference` gate flags on M1b, as it
+  must — the float moving off the anchor *is* the experiment. The
+  `benign_float` trust gate passes at 48.63 ≤ 50 V but only marginally,
+  with the final sample at 49.8 V; a continuation would cross the 50 V
+  line. The 100 V choke ceiling was never approached.
+- 10× is an amplification instrument, not a flight condition: the mission
+  flies at 1×, where the null holds.
+
+**Scorecard against the pre-registered hypotheses:**
+
+- **H-M1-null at 1×: CONFIRMED** on all three bounds.
+- **H-M1-null at 10×: REFUTED / H-M1-tax confirmed** — direction as
+  pre-registered (φ up, thrust down), magnitude now measured: ≥ +32 V and
+  ≥ −11 % at r_g,e ≈ 1.4 λ_De.
+- **What M1 cannot decide, unchanged:** the far-field transverse-B
+  coupling (L/r_g). This result closes the *near-field* half of the
+  magnetized question and establishes field-aligned firing as a validated
+  fallback mode at the real LEO field strength; it licenses no claim about
+  transverse-B thrust. Tier M2 remains the open instrument.
+
+Runs: `2_chipsat_thruster/outputs/20260810T064845Z_5e785001` (M1a),
+`.../20260810T131955Z_0b81e70a` (M1b); analyses
+`results/<run>/20260810T131951Z_aae666a6` and `.../20260810T193704Z_aae666a6`.
