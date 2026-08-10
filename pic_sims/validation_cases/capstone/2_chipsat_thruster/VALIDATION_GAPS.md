@@ -119,6 +119,8 @@ and edge containment.
   run is FAILED and rerun (~GPU-hours at stake per interruption).
 - Probe/pinned mode, shroud, ram drift, Bz: research configs are deliberately
   outside the validation ladder; the migrated stage is the float200 baseline only.
+  (The Bz axis has since been run under the exploratory policy — tier M1,
+  2026-08-10, `../MAGNETIZED_PLAN.md` RESULTS — without entering the ladder.)
 
 ## Priority summary
 

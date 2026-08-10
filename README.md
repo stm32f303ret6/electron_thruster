@@ -68,7 +68,7 @@ estimates from an extrapolated collection law, not measurements** — see
 | Simulation | **Nine-stage WarpX PIC validation ladder**, every stage gated against a pre-registered, hash-frozen acceptance policy |
 | Hardware | **One bench experiment.** Rough vacuum (4–5 Pa), collector current measured. Qualitative, not calibrated |
 | Flight cathode | **Not selected.** Beam current is *prescribed* in every simulation |
-| Magnetic field | **Never tested.** Every stage is electrostatic, B = 0 |
+| Magnetic field | **Field-aligned axis only** (tier M1, 2026-08-10): axial Bz at 1× LEO leaves the anchor unchanged; 10× costs ~11 % thrust through the float. Transverse B — the actual flight geometry — is still untested |
 | Flight heritage | **None** |
 
 This is a research repository with a working physics model, not a product. No
@@ -104,12 +104,18 @@ collapse into where the body floats (`model/MODEL.md` §2).
 
 Ordered by how much they could change the answer.
 
-1. **The magnetic field has never been simulated.** Every stage is
-   electrostatic. In LEO the beam's gyroradius is ~1.4 m and the gyroperiod
-   ~1.2 µs, against a 30 mm simulation domain and an 800 ns run — the decks
-   are structurally unable to see magnetization. This is the largest
-   unexamined question in the project and it can move the thrust in either
-   direction. See `OPTIMISTIC_HYPOTHESES.md` H1.
+1. **The transverse magnetic field has never been simulated.** The
+   field-aligned (axial-Bz) half of the question is now measured — tier M1
+   (2026-08-10): at 1× LEO the operating point is unchanged (Δφ +1.2 V,
+   ΔF +0.3 %), and at 10× a real collection tax appears (φ +33 V, thrust
+   −11 %), entirely through the float. But in LEO the geomagnetic field is
+   ~perpendicular to the thrust axis, the beam's gyroradius is ~1.4 m and
+   the gyroperiod ~1.2 µs, against a 30 mm simulation domain and an 800 ns
+   run — the committed decks are structurally unable to see where the
+   emitted momentum ends up once the exhaust gyrates. That far-field
+   coupling remains the largest unexamined question in the project and can
+   move the thrust in either direction. See `OPTIMISTIC_HYPOTHESES.md` H1
+   and `pic_sims/validation_cases/capstone/MAGNETIZED_PLAN.md` (tier M2).
 2. **No flight cathode has been chosen.** The bench emitter is a thermionic
    filament, which is a bench convenience only: its heater alone would consume
    an order of magnitude more power than the entire thruster. A cold cathode

@@ -490,3 +490,16 @@ correct or update specific items.
   remain open. The fixed-thrust throttle curve (this document predates it)
   is measured: valley at ~125 V, no-go wall at 78 V, servo constant demoted
   to a lower bound (`model/MODEL.md` §2).
+
+## MAINTAINER ANNOTATIONS — 2026-08-10
+
+- **H1's near-field half is now measured.** Tier M1 executed
+  (`MAGNETIZED_PLAN.md` RESULTS): at 1× LEO axial Bz the anchor is
+  unchanged (Δφ +1.2 V, ΔF +0.3 %, Δescape 0.06 pp — H-M1-null holds);
+  at 10× a real collection tax appears (φ +33 V, thrust −11 %, entirely
+  through the float; c_F untouched). This retires "magnetization has never
+  been examined at all" (§0) for the field-aligned mode and hardens H1's
+  own framing: the escape/optics upside floor is confirmed (escape is
+  B-independent at both strengths), while the open quantity remains
+  exactly the one this document identified — L/r_g, the tier M2
+  transverse-B measurement, still unexamined.

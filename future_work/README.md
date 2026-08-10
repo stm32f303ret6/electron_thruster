@@ -91,8 +91,10 @@ a universal electron-gun limit.
   ([`MODEL.md` §3](../model/MODEL.md)).
 - **Magnetized axis** —
   [`MAGNETIZED_PLAN.md`](../pic_sims/validation_cases/capstone/MAGNETIZED_PLAN.md):
-  every committed run is electrostatic (B = 0); near-field survival and
-  far-field current closure in the geomagnetic field are open.
+  tier M1 (field-aligned Bz, executed 2026-08-10) closed the near-field
+  half — null at 1× LEO, an ~11 % thrust tax through the float at 10×.
+  Far-field current closure under transverse B (tier M2, the flight
+  geometry) remains open; the plan holds its design.
 - **Cathode selection** — Spindt / field-emitter arrays: emitting area, gate
   power, collimation (single-gate angular spread is appreciable; double-gate
   collimation is only demonstrated at 20 keV), and downstream space-charge
