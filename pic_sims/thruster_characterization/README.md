@@ -36,9 +36,9 @@ record of how they ran. Each folder's `acceptance.yaml` re-identifies the same
 gates (byte-for-byte tolerances) under the new stage id **for future runs**;
 it is not a pre-registration for the migrated evidence.
 
-Historical launch records: `m1_chain.sh` (both magnetized spokes, strictly
-sequential on one GPU), `thin_plasma/thin_plasma_chain.sh`, and each spoke's
-`logs/`. Campaign narrative: `/CAMPAIGN.md`; plans live inside the spokes
+Historical launch records: each spoke's `logs/` (the magnetized pair ran
+strictly sequentially on one GPU; run manifests carry the exact decks).
+Campaign narrative: `/CAMPAIGN.md`; plans live inside the spokes
 (`slender_body/SLENDER_BODY_PLAN.md`, `thin_plasma/THIN_PLASMA_PLAN.md`) and
 at `MAGNETIZED_PLAN.md` here (it spans both M1 spokes and defines tier M2,
 the open transverse-field question).
