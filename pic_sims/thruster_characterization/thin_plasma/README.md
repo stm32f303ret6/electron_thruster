@@ -26,7 +26,7 @@ pre-registered exploratory policy `capstone.exploratory_axes.v1`; frozen run
 config and manifests carry `stage_id: capstone.floating_body`. This
 `config.yaml` is that same deck (git-moved, history intact) under the new
 stage id; `acceptance.yaml` re-identifies the same gates for future runs.
-Launch record: `thin_plasma_chain.sh`, `logs/`.
+Launch record: `logs/`.
 
 **Re-run.** `python simulation.py` then
 `python analyze.py --run outputs/<RUN_ID> --policy acceptance.yaml`
