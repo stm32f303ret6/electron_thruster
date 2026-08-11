@@ -222,3 +222,24 @@ resolution — the pre-registered acceptance band sits several spring times
 beyond 800 ns at this stiffness. A t_end ~2.4 µs continuation (~3× cost,
 ~25 GPU-h) with the same deck would put the 53–68 V band inside reach, or
 refute alpha = 0.5 by observing saturation well below 160 V.
+
+## CONTINUATION — 2026-08-11: the 2.4 µs run, recorded before launch
+
+Launched as the paragraph above prescribes: the same deck re-run from
+scratch with **three** `run:` changes and nothing else —
+
+- `t_end 800 ns → 2.4 µs` (the point of the run);
+- `max_steps 160,000 → 480,000` (cap raised to admit the ~477.5k resolved
+  steps at the anchor dt; the old cap would have truncated at 1/3);
+- `phi_ceiling 100 → 180 V` (disclosed: the alpha = 0.5 candidate predicts
+  a 160.4 V float, which the old ceiling would have aborted as a choke
+  mid-climb; the continuation exists to *observe* that saturation or its
+  absence, so the detector is moved above the highest live prediction.
+  A genuine runaway still trips it).
+
+Physics deck, grid, dt, seed, plasma row, drive: bit-identical to the
+executed 800 ns run. The pre-registered predictions and the 45–75 V
+measurement band stand unchanged; acceptance is the same exploratory
+policy (`acceptance.yaml`). Expected cost ~25 h wall on the RTX 3060
+(measured 8.4 h / 800 ns, ~3× steps at identical per-step cost).
+Launch record: `thin_plasma_continuation_chain.sh`, `logs/`.

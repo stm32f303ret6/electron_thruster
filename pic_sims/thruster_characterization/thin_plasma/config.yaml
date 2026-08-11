@@ -90,13 +90,21 @@ numerics:
                            #     (emitter rungs used 128 -- VALIDATION_GAPS.md G3).
 
 run:
-  t_end: 800.0e-9          # [s] simulated end time (overrides max_steps if fewer).
-  max_steps: 160000        # [-] hard step cap.  The resolved count is floored to a
-                           #     multiple of the diag period (-11 steps for the
-                           #     baseline) so the final dump lands on the last step.
+  t_end: 2.4e-6            # [s] simulated end time (overrides max_steps if fewer).
+                           #     CONTINUATION (2026-08-11): 800 ns -> 2.4 us, the
+                           #     "what it would take to finish the measurement" run of
+                           #     THIN_PLASMA_PLAN.md -- puts the pre-registered
+                           #     53-68 V float band inside reach of the settle.
+  max_steps: 480000        # [-] hard step cap.  The resolved count is floored to a
+                           #     multiple of the diag period so the final dump lands
+                           #     on the last step (~477.5k steps at the anchor dt).
   diag_period_frac: 40     # openPMD field/particle/scrape dumps: ~this many per run.
-  phi_ceiling: 100.0       # [V] choke detector: sustained phi_body above this aborts
+  phi_ceiling: 180.0       # [V] choke detector: sustained phi_body above this aborts
                            #     the run as FAILED (the ionosphere cannot neutralize).
+                           #     CONTINUATION: raised 100 -> 180 so the alpha = 0.5
+                           #     candidate (predicted 160.4 V float) is allowed to
+                           #     saturate and be OBSERVED rather than aborted; a real
+                           #     runaway still trips.  Disclosed numerics change.
   choke_sustain: 50.0e-9   # [s] how long above the ceiling before calling it.
 
 compute:
