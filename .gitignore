@@ -1,3 +1,13 @@
 __pycache__/
 *.pyc
 Backtrace.*
+
+# Generated, regenerable simulation and analysis output stays out of git
+# everywhere (ladder rungs, characterization spokes, future_work stages) --
+# the committed record is each stage's curated reference_results/.  These
+# rules were previously scoped to validation_cases/.gitignore and moved to
+# the root when the spokes split out (2026-08-11).
+**/outputs/
+**/results/
+suite_results/
+*.log

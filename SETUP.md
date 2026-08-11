@@ -5,7 +5,7 @@ evidence, not from documentation. Versions were read out of the live
 environments; build flags were read out of `build/CMakeCache.txt`. Where a
 number is a measurement (wall time, GPU memory) it says so.
 
-For what the ladder *proves*, see `pic_sims/validation_cases/README.md` and
+For what the ladder *proves*, see `pic_sims/ladder/README.md` and
 `LADDER_SUMMARY.md`. This file is only about making it run.
 
 ---
@@ -167,7 +167,7 @@ python -c "from pywarpx import picmi; print('picmi ok')"
 python -c "import importlib.metadata as m; print('pywarpx', m.version('pywarpx'))"   # -> 26.5
 
 # cheapest real check: the vacuum two-node EB stage (seconds, exact references)
-cd electron_thruster_3/pic_sims/validation_cases
+cd electron_thruster_3/pic_sims
 python run_ladder.py --check                       # contract + topology, no GPU
 python run_ladder.py --stages capstone.two_node_laplace
 ```
@@ -181,13 +181,14 @@ If `run_ladder.py --check` passes but a stage aborts with
 
 ```bash
 conda activate warpx-cpu-mpich-dev
-cd pic_sims/validation_cases
+cd pic_sims
 ```
 
 | goal | command |
 |---|---|
 | validate the contract and stage topology, no simulation | `python run_ladder.py --check` |
-| run + analyze everything, in dependency order | `python run_ladder.py` |
+| run + analyze the whole ladder group, in dependency order | `python run_ladder.py` |
+| run a characterization spoke (see `thruster_characterization/`) | `python run_ladder.py --stages characterization.slender_body` |
 | one stage (dependencies must already have passed) | `python run_ladder.py --stages capstone.floating_body` |
 | re-analyze existing runs without re-simulating | `python run_ladder.py --analyze-only` |
 
@@ -207,11 +208,17 @@ current_collection/           COLLECTOR side
   2_biased_3v          collector.biased_3v         OML ceiling, chi = 26.4   ~65 min
   3_biased_10v         collector.biased_10v        sheath growth, chi = 88   ~80 min
   4_floating           collector.floating          charge pump -> phi_f      ~35 min
-capstone/                     THE DEVICE
+capstone/                     THE DEVICE (ladder terminus)
   1_two_node_laplace   capstone.two_node_laplace   two-node EB in vacuum     seconds
   2_chipsat_thruster   capstone.floating_body      200 V anchor              ~6.3 h
-  3_high_thrust        capstone.high_thrust        300 V, 192 680 steps      7 h 14 min
-  4_low_power          capstone.low_power          100 V, 115 480 steps      4 h 56 min
+
+../thruster_characterization/   SPOKES OFF THE ANCHOR (run via --stages)
+  high_thrust          capstone.high_thrust        300 V, 192 680 steps      7 h 14 min
+  low_power            capstone.low_power          100 V, 115 480 steps      4 h 56 min
+  slender_body         characterization.slender_body   geometry, L/r = 6     ~6.5 h
+  thin_plasma          characterization.thin_plasma    density, n0/3         ~7 h
+  magnetized_1x        characterization.magnetized_1x  Bz 30 uT (1x LEO)     ~6.4 h
+  magnetized_10x       characterization.magnetized_10x Bz 300 uT (10x)       ~6.4 h
 ```
 
 A full cold ladder is roughly **20 GPU-hours**, dominated by the three capstone
@@ -223,7 +230,7 @@ and they stay valid until a config or the code changes.
 `run_ladder.py` is a wrapper. A stage is self-contained and runs on its own:
 
 ```bash
-cd capstone/2_chipsat_thruster
+cd ladder/capstone/2_chipsat_thruster
 python simulation.py                                  # uses the committed config.yaml
 python analyze.py --run outputs/<run-id>              # --run is REQUIRED
 python analyze.py --run outputs/<run-id> --policy acceptance_exploratory.yaml
@@ -248,7 +255,7 @@ python simulation.py --config /tmp/my_variant.yaml
 The run freezes its own `config_used.yaml` and hashes it into `case_sha256`, so
 a variant is fully self-describing without touching git. Variants that answer a
 pre-registered question get a plan document committed *before* they run —
-`capstone/SLENDER_BODY_PLAN.md`, `capstone/THIN_PLASMA_PLAN.md` — and, when the
+`pic_sims/thruster_characterization/slender_body/SLENDER_BODY_PLAN.md`, `pic_sims/thruster_characterization/thin_plasma/THIN_PLASMA_PLAN.md` — and, when the
 default gates would gate the answer rather than the trustworthiness of the
 measurement, their own acceptance policy (`acceptance_exploratory.yaml`).
 
@@ -289,17 +296,17 @@ cd paper/slides && pdflatex slides.tex && pdflatex slides.tex
 Stage unit tests (no WarpX, no GPU, ~4 s for all 278):
 
 ```bash
-for d in pic_sims/validation_cases/tests pic_sims/validation_cases/*/*/tests; do
+for d in pic_sims/ladder/tests pic_sims/ladder/*/*/tests; do
     PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest "$d" -q
 done
 ```
 
 **One pytest process per stage is required, not a stylistic choice.** Stage
-self-containment (§Architecture in `pic_sims/validation_cases/README.md`) means
+self-containment (§Architecture in `pic_sims/ladder/README.md`) means
 every stage ships its own `helpers.py`, `tests/test_helpers.py` and
 `tests/test_analysis.py`, and each `tests/conftest.py` puts *its own* stage
 directory on `sys.path`. Collecting them in one process collides on those
-module basenames — `pytest pic_sims/validation_cases` fails with
+module basenames — `pytest pic_sims/ladder` fails with
 `import file mismatch` / wrong-`helpers` errors, and `--import-mode=importlib`
 only fixes half of them. The loop above is the working invocation; it is also
 what `run_ladder.py` effectively does by running each stage in a subprocess.

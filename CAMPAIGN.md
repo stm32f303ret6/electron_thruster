@@ -9,7 +9,7 @@ that tested it.
 - **Reproducing the environment and runs:** `SETUP.md`
 - **The physics reasoning and scaling laws:** `SCALING_LAWS.md`
 - **The executable model and its calibration:** `model/MODEL.md`
-- **The ladder architecture and contract:** `pic_sims/validation_cases/README.md`
+- **The ladder architecture and contract:** `pic_sims/ladder/README.md`
 - **The paper this feeds:** `paper/main.tex`
 
 ---
@@ -176,12 +176,12 @@ verdict it governs.
 - `SETUP.md` + `env/*.yml` — environments, the WarpX version and full build
   flag rationale, how to run the ladder and variant runs, GPU arena sizing, and
   the evidence rules. Every command verified, including the discovery that
-  `pytest pic_sims/validation_cases` does **not** work (stage self-containment
+  `pytest pic_sims/ladder` does **not** work (stage self-containment
   collides on test module basenames) — the per-stage loop does.
 - `model/minimal_model.py` + `model/MODEL.md` — the executable model, calibrated
   from committed `reference_results` only.
-- Plan documents with amendments rather than rewrites: `SLENDER_BODY_PLAN.md`
-  records the killed run and *why* it was invalid; `THIN_PLASMA_PLAN.md`
+- Plan documents with amendments rather than rewrites: `pic_sims/thruster_characterization/slender_body/SLENDER_BODY_PLAN.md`
+  records the killed run and *why* it was invalid; `pic_sims/thruster_characterization/thin_plasma/THIN_PLASMA_PLAN.md`
   records why its run was cut.
 
 ---
