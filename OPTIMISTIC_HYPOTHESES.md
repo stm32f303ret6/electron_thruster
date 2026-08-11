@@ -464,8 +464,9 @@ correct or update specific items.
 - **H1b's anchor table is circular, not confirmatory.** F/(I·B·r_g) with
   r_g built from the same KE is algebraically c_F/c_F_ideal — the same
   divergence loss computed twice. The identity itself stands and is
-  restated (with this caveat) in `pic_sims/validation_cases/capstone/
-  MAGNETIZED_PLAN.md`, which is now the actionable form of H1: tier M1
+  restated (with this caveat) in
+  `pic_sims/thruster_characterization/MAGNETIZED_PLAN.md`, which is now the
+  actionable form of H1: tier M1
   (field-aligned, on the committed deck) is pre-registered; tier M2 (the
   transverse-B far-field run the reviewer asks for) is designed there.
 - **H2 overstates convergence.** The committed late-slope data already
@@ -482,7 +483,7 @@ correct or update specific items.
   where the real ceiling bites (escape 93.8/79.9/57.4 % at 2.7/5.6/10.1×
   the validated ceiling — `future_work/UCURVE_PLAN.md` amendment).
 - **H6 misses that the second-density run already exists**, pre-registered
-  and unexecuted: `capstone/THIN_PLASMA_PLAN.md` (predictions for all four
+  and unexecuted: `pic_sims/thruster_characterization/thin_plasma/THIN_PLASMA_PLAN.md` (predictions for all four
   α candidates committed 2026-08-06). The envelope-coverage argument here
   is a new and independent reason to unchain it.
 - **§8 staleness:** G3's voltage row closed 2026-08-07

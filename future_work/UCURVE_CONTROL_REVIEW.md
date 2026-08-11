@@ -39,7 +39,7 @@ becoming useful exhaust.
 The experiment therefore supports controlling on escaped or return-balanced
 current rather than commanded emission. It does not constitute a globally
 optimized, constant-delivered-thrust surface. See the
-[pre-registered U-curve plan and results](../pic_sims/validation_cases/capstone/UCURVE_PLAN.md).
+[pre-registered U-curve plan and results](../pic_sims/ladder/capstone/UCURVE_PLAN.md).
 
 The same 92.4 V command transmitted 99.99% in the clean isolated-gun geometry.
 The strong left-arm loss is consequently attributable to the capstone can,
@@ -70,7 +70,7 @@ Electrons emitted and subsequently intercepted by the cathode, lid, or body
 remain internal to the spacecraft. They consume electrical power and deposit
 heat or momentum, but they do not constitute exhaust. This separation is
 implemented explicitly in the capstone
-[charge and momentum ledger](../pic_sims/validation_cases/capstone/5_ucurve_valley/simulation.py#L180).
+[charge and momentum ledger](../pic_sims/ladder/capstone/5_ucurve_valley/simulation.py#L180).
 
 The desired-axis thrust is fundamentally
 
@@ -257,7 +257,7 @@ held nominal target—not delivered thrust—constant:
 Finally, every committed result remains electrostatic. The geomagnetic-field
 and far-field current-closure problem is still open and prevents the present
 law from being called globally flight-validated; see
-[MAGNETIZED_PLAN.md](../pic_sims/validation_cases/capstone/MAGNETIZED_PLAN.md).
+[MAGNETIZED_PLAN.md](../pic_sims/thruster_characterization/MAGNETIZED_PLAN.md).
 
 ## Recommended control-law statement
 

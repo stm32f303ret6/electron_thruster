@@ -304,7 +304,7 @@ corner where the concept is most stressed.
 
 **Status (2026-08-06): pre-registered, deliberately not run.** Predictions
 were committed (α = 1 → 53.4 V, 0.893 → 60.9 V, 0.82 → 68.0 V, 0.5 →
-160.4 V) in `pic_sims/validation_cases/capstone/THIN_PLASMA_PLAN.md`, then
+160.4 V) in `pic_sims/thruster_characterization/thin_plasma/THIN_PLASMA_PLAN.md`, then
 the run was cut on re-examination of what it buys. The law's density
 dependence is `I ∝ n·(1+χ)^α`: the `n`-linear term is the one-sided thermal
 flux, **already validated to ±1 % at step `collector.thermal`**, and χ has no
@@ -323,7 +323,7 @@ might not: OML gives α = 1 for a sphere and α = 0.5 for a long cylinder, and
 the squat can's fitted 0.82–0.89 sits between the limits, so a slender body
 should slide toward the cylinder value and pay a hidden charging tax.
 
-Pre-registered (`capstone/SLENDER_BODY_PLAN.md`) and then measured, at
+Pre-registered (`pic_sims/thruster_characterization/slender_body/SLENDER_BODY_PLAN.md`) and then measured, at
 identical drive, commanded current, plasma row, grid and seed:
 
 | hypothesis | predicted φ | measured |
