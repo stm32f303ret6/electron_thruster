@@ -21,7 +21,7 @@ Details: `reference_results/20260810T064845Z_5e785001/REFERENCE.md`.
 
 **Provenance.** Executed 2026-08-10 as a variant deck through the anchor stage
 under the pre-registered exploratory policy `capstone.exploratory_axes.v1`
-(launch record `../m1_chain.sh`, logs in `logs/`); frozen run config and
+(launch record in `logs/`); frozen run config and
 manifests carry `stage_id: capstone.floating_body`. This `config.yaml` is that
 deck (git-moved) under the new stage id; `acceptance.yaml` re-identifies the
 same gates for future runs. `outputs/20260808T130303Z_5e785001` is an earlier
