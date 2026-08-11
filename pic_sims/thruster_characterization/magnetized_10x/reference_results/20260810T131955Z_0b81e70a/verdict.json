@@ -1,0 +1,91 @@
+{
+  "stage_id": "capstone.floating_body",
+  "policy_id": "capstone.exploratory_axes.v1",
+  "status": "PASS",
+  "exit_code": 0,
+  "detail": "all 6 required gate(s) passed",
+  "gates": [
+    {
+      "id": "beam_escapes",
+      "status": "PASS",
+      "required": true,
+      "metric": "escape_fraction_pct",
+      "comparison": "at_least",
+      "value": 98.32377554858934,
+      "detail": "98.3238 >= 95"
+    },
+    {
+      "id": "steady_current_balance",
+      "status": "PASS",
+      "required": true,
+      "metric": "current_balance",
+      "comparison": "at_most",
+      "value": 0.028578378200588186,
+      "detail": "0.0285784 <= 0.05"
+    },
+    {
+      "id": "momentum_sanity_bound",
+      "status": "PASS",
+      "required": true,
+      "metric": "f_net_over_f_beam",
+      "comparison": "at_most",
+      "value": 0.002790985258117529,
+      "detail": "0.00279099 <= 1"
+    },
+    {
+      "id": "sheath_and_plume_contained",
+      "status": "PASS",
+      "required": true,
+      "metric": "edge_phi_max_V",
+      "comparison": "at_most",
+      "value": 0.1407564347456037,
+      "detail": "0.140756 <= 1"
+    },
+    {
+      "id": "scrape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "scrape_charge_consistency",
+      "comparison": "at_most",
+      "value": 7.046558604076541e-10,
+      "detail": "7.04656e-10 <= 0.02"
+    },
+    {
+      "id": "beam_escape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "scrape_charge_consistency_beam_escape",
+      "comparison": "at_most",
+      "value": 1.0949826877797073e-09,
+      "detail": "1.09498e-09 <= 0.02"
+    },
+    {
+      "id": "phi_vs_float200_reference",
+      "status": "FAIL",
+      "required": false,
+      "metric": "phi_body_V",
+      "comparison": "abs_within",
+      "value": 48.63028993730408,
+      "detail": "48.6303 |x - 16| <= 4"
+    },
+    {
+      "id": "benign_float",
+      "status": "PASS",
+      "required": false,
+      "metric": "phi_body_V",
+      "comparison": "at_most",
+      "value": 48.63028993730408,
+      "detail": "48.6303 <= 50"
+    },
+    {
+      "id": "thrust_vs_float200_reference",
+      "status": "PASS",
+      "required": false,
+      "metric": "f_beam_nN",
+      "comparison": "abs_within",
+      "value": 12.060128495297803,
+      "detail": "12.0601 |x - 13.6| <= 2.04"
+    }
+  ],
+  "analysis_id": "20260810T193704Z_aae666a6"
+}

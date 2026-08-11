@@ -4,7 +4,7 @@ A benchtop hardware demonstration of the electrode topology this whole project
 rests on: a cathode held at a **net negative potential** both emits electrons
 and accelerates them away by electrostatic repulsion, toward a grounded
 collector. It is the hardware counterpart of ladder step 1,
-[`emitter.negative_cathode`](../../pic_sims/validation_cases/LADDER_SUMMARY.md)
+[`emitter.negative_cathode`](../../pic_sims/ladder/LADDER_SUMMARY.md)
 (−100 V plane cathode, grounded collector, vacuum gap), run at −56 V in rough
 vacuum on a table.
 
@@ -96,7 +96,7 @@ hot ([full video, 32 s, MP4](assets/current_measurement.mp4)):
 electrode is sufficient to emit electrons and accelerate them across a gap onto
 a grounded collector, with the collected current returning through earth. This
 is the same configuration validated numerically in step 1 of the
-[PIC validation ladder](../../pic_sims/validation_cases/LADDER_SUMMARY.md), which
+[PIC validation ladder](../../pic_sims/ladder/LADDER_SUMMARY.md), which
 this experiment complements from the hardware side.
 
 **Caveats.**

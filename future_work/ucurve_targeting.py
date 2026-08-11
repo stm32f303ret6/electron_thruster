@@ -6,7 +6,7 @@ Solves the calibrated laws of minimal_model.py at FIXED thrust demand
 (the 200 V anchor's measured 13.65 nN) for the throttle-curve voltages
 below the committed frontier: 125 V (predicted specific-power valley),
 92.4 V (left arm), 78 V (floor).  The output table is the pre-registration
-source for `pic_sims/validation_cases/capstone/UCURVE_PLAN.md` and the
+source for `future_work/UCURVE_PLAN.md` and the
 `i_beam` provenance for the three `capstone.ucurve_*` stage configs.
 
 THE DELIBERATE OPTIMISM, stated once and inherited by the plan: the escape

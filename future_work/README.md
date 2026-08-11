@@ -90,7 +90,7 @@ a universal electron-gun limit.
   escape-vs-perveance surface those three points bracket
   ([`MODEL.md` §3](../model/MODEL.md)).
 - **Magnetized axis** —
-  [`MAGNETIZED_PLAN.md`](../pic_sims/validation_cases/capstone/MAGNETIZED_PLAN.md):
+  [`MAGNETIZED_PLAN.md`](../pic_sims/thruster_characterization/MAGNETIZED_PLAN.md):
   tier M1 (field-aligned Bz, executed 2026-08-10) closed the near-field
   half — null at 1× LEO, an ~11 % thrust tax through the float at 10×.
   Far-field current closure under transverse B (tier M2, the flight

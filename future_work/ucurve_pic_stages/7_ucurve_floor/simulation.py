@@ -44,7 +44,7 @@ import numpy as np
 from scipy import constants as scc
 
 CASE_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(CASE_DIR.parents[1]))  # validation_cases/ (ladder_contract)
+sys.path.insert(0, str(CASE_DIR.parents[2] / "pic_sims"))  # shared plumbing (ladder_contract)
 sys.path.insert(0, str(CASE_DIR))             # this stage's helpers.py
 
 import ladder_contract as lc  # noqa: E402

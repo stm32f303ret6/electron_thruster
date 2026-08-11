@@ -115,7 +115,7 @@ Ordered by how much they could change the answer.
    emitted momentum ends up once the exhaust gyrates. That far-field
    coupling remains the largest unexamined question in the project and can
    move the thrust in either direction. See `OPTIMISTIC_HYPOTHESES.md` H1
-   and `pic_sims/validation_cases/capstone/MAGNETIZED_PLAN.md` (tier M2).
+   and `pic_sims/thruster_characterization/MAGNETIZED_PLAN.md` (tier M2).
 2. **No flight cathode has been chosen.** The bench emitter is a thermionic
    filament, which is a bench convenience only: its heater alone would consume
    an order of magnitude more power than the entire thruster. A cold cathode
@@ -133,7 +133,7 @@ Ordered by how much they could change the answer.
 5. **Attitude control does not exist in this repository** — no actuator,
    sensor, mass, or power budget — yet the mission cases assume a held pose.
 
-`pic_sims/validation_cases/capstone/2_chipsat_thruster/VALIDATION_GAPS.md`
+`pic_sims/ladder/capstone/2_chipsat_thruster/VALIDATION_GAPS.md`
 audits the simulation's own gaps (G1–G11) in the same spirit.
 
 ---
@@ -168,7 +168,7 @@ frozen into the stage's own `config.yaml` before the run.
 
 ```bash
 conda activate warpx-cpu-mpich-dev
-cd pic_sims/validation_cases && python run_ladder.py --check
+cd pic_sims/ladder && python run_ladder.py --check
 ```
 
 **Why the dependency is one-way.** The ladder is the evidence, so it must not
@@ -186,7 +186,7 @@ row (sha + timestamp) → frozen `(V, I)` and plasma conditions → PIC verdict
 | `THESIS.md` | the claim stated for a physics reviewer, with the objections and measured answers |
 | `SETUP.md` | reproducing everything: environments, WarpX build flags, how to run |
 | `OPTIMISTIC_HYPOTHESES.md` | the upside cases, pre-registered and falsifiable (external review) |
-| `pic_sims/validation_cases/LADDER_SUMMARY.md` | stage-by-stage verdict |
+| `pic_sims/ladder/LADDER_SUMMARY.md` | stage-by-stage verdict |
 | `lab_experiments/electron_gun/` | the bench experiment, with its caveats |
 
 ## Environments

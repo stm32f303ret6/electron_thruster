@@ -63,7 +63,8 @@ EPS0 = 8.8541878128e-12   # F/m
 K_PER_EV = QE / KB        # 11604.5 K per eV
 
 REPO = Path(__file__).resolve().parent.parent
-CAPSTONE = REPO / "pic_sims" / "validation_cases" / "capstone"
+CAPSTONE = REPO / "pic_sims" / "ladder" / "capstone"
+CHARACTERIZATION = REPO / "pic_sims" / "thruster_characterization"
 
 # ----------------------------------------------------------------------
 # Measured anchors -- the three committed frontier runs (provenance pinned).
@@ -72,8 +73,8 @@ CAPSTONE = REPO / "pic_sims" / "validation_cases" / "capstone"
 # ----------------------------------------------------------------------
 ANCHORS = [
     dict(stage="capstone.low_power",
-         config=CAPSTONE / "4_low_power" / "config.yaml",
-         metrics=CAPSTONE / "4_low_power" / "reference_results"
+         config=CHARACTERIZATION / "low_power" / "config.yaml",
+         metrics=CHARACTERIZATION / "low_power" / "reference_results"
                  / "20260804T230218Z_0adb478f" / "metrics.json",
          phi_settled_V=6.0),   # late-slope extrapolation (sensitivity band)
     dict(stage="capstone.floating_body",
@@ -82,8 +83,8 @@ ANCHORS = [
                  / "20260801T142601Z_2f822a95" / "metrics.json",
          phi_settled_V=18.5),
     dict(stage="capstone.high_thrust",
-         config=CAPSTONE / "3_high_thrust" / "config.yaml",
-         metrics=CAPSTONE / "3_high_thrust" / "reference_results"
+         config=CHARACTERIZATION / "high_thrust" / "config.yaml",
+         metrics=CHARACTERIZATION / "high_thrust" / "reference_results"
                  / "20260804T154756Z_b854dcbe" / "metrics.json",
          phi_settled_V=45.0),
 ]

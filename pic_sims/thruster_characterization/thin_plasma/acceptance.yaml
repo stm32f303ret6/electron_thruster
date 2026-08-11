@@ -1,0 +1,101 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for characterization.thin_plasma -- the density axis (n0/3).
+#
+# Gates inherited BYTE-FOR-BYTE from capstone.exploratory_axes.v1 (sha256
+# aae666a6...), the pre-registered policy the migrated evidence in
+# reference_results/ actually PASSed under while this axis still ran as a
+# variant deck through the anchor stage (ladder/capstone/2_chipsat_thruster).
+# Rationale for the required/reported split lives in that policy's header,
+# preserved at the anchor stage's acceptance_exploratory.yaml.
+#
+# This policy gates FUTURE runs of this stage; relative to the migrated
+# evidence it is post-hoc re-identification, not a new pre-registration.
+# Plan: THIN_PLASMA_PLAN.md.  Changing any tolerance requires a new policy_id.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: characterization.thin_plasma.v1
+stage_id: characterization.thin_plasma
+evidence_kind: exploratory_measurement
+
+gates:
+  # ---- required: does the run measure what it claims to measure? ----
+
+  # A device that scrapes its own beam is not measuring collection physics.
+  # Both stages' pre-registered predictions assume a healthy gun (slender: the
+  # standoff fix pins the gap; thin: V - phi = 132-147 V under every candidate
+  # exponent except alpha = 0.5).  A collapse here means the run left the
+  # regime it was designed to probe -- a FAIL with a clear cause, which for
+  # the thin row is itself the publishable "night corner" result.
+  - id: beam_escapes
+    required: true
+    metric: escape_fraction_pct
+    comparison: at_least
+    minimum: 95.0
+
+  # The floating equilibrium IS a current balance: I_escape == I_amb_e - I_amb_i.
+  - id: steady_current_balance
+    required: true
+    metric: current_balance
+    comparison: at_most
+    maximum: 0.05
+
+  # Momentum sanity: the craft cannot catch more z-momentum than the beam carries.
+  - id: momentum_sanity_bound
+    required: true
+    metric: f_net_over_f_beam
+    comparison: at_most
+    maximum: 1.0
+
+  # Sheath/plume containment (a clipped plume fakes escape).  This one does
+  # real work for the thin row, whose lambda_D is sqrt(3)x the anchor's --
+  # rmax was enlarged 30 -> 40 mm specifically to keep this gate honest, and
+  # the gate is what proves the enlargement was sufficient.
+  - id: sheath_and_plume_contained
+    required: true
+    metric: edge_phi_max_V
+    comparison: at_most
+    maximum: 1.0
+
+  # Per-step scrape-buffer ledger vs post-hoc openPMD dumps (gap G5).
+  - id: scrape_ledger_consistent_with_dumps
+    required: true
+    metric: scrape_charge_consistency
+    comparison: at_most
+    maximum: 0.02
+
+  - id: beam_escape_ledger_consistent_with_dumps
+    required: true
+    metric: scrape_charge_consistency_beam_escape
+    comparison: at_most
+    maximum: 0.02
+
+  # ---- reported, NOT required: these are the measurements ----
+
+  # The float against the float200 baseline.  Slender: hypothesis A predicts a
+  # PASS here (phi ~ 4-5 V is outside 16 +- 4, so in fact both hypotheses show
+  # up as a flag -- read the value, not the flag).  Thin: predicted 53-68 V.
+  - id: phi_vs_float200_reference
+    required: false
+    metric: phi_body_V
+    comparison: abs_within
+    target: 16.0
+    tolerance: 4.0
+
+  # Benign-float reporter.  A flag here is the headline for the thin row: the
+  # first measured confirmation that thin plasma, not emission, ends the
+  # operating envelope.  For the slender row it flags hypothesis B.
+  - id: benign_float
+    required: false
+    metric: phi_body_V
+    comparison: at_most
+    maximum: 50.0
+
+  # Thrust against the float200 baseline.  Both stages hold the drive and the
+  # commanded current fixed, so F_beam moves only through KE = kappa*(V - phi);
+  # it is a readout of the float, not an independent claim.
+  - id: thrust_vs_float200_reference
+    required: false
+    metric: f_beam_nN
+    comparison: abs_within
+    target: 13.6
+    tolerance: 2.04
