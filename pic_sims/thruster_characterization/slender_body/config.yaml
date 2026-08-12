@@ -45,7 +45,7 @@ geometry:                  # all lengths [m]; labelled cross-section in README.m
   z_bot: -30.0e-3          # can floor bottom -- SLENDER variant: Ø10 x 30.5 mm, L/r = 6.
   cathode_standoff: 4.7e-3 # [m] cathode held at the SHORT design gap below the lid
                            #     (the 2026-08-06 fix: grow the body around the gun,
-                           #     never stretch the gun -- SLENDER_BODY_PLAN.md).
+                           #     never stretch the gun -- README.md, first-attempt section).
   z_top: 0.5e-3            # lid top (capstone short-drift geometry).
   r_slit: 2.0e-3           # lid exhaust-hole radius -- the escape lever.
   r_cathode: 1.5e-3        # cathode-disk radius (the emitting electrode).
