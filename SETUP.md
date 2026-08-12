@@ -255,7 +255,9 @@ python simulation.py --config /tmp/my_variant.yaml
 The run freezes its own `config_used.yaml` and hashes it into `case_sha256`, so
 a variant is fully self-describing without touching git. Variants that answer a
 pre-registered question get a plan document committed *before* they run —
-`pic_sims/thruster_characterization/slender_body/SLENDER_BODY_PLAN.md`, `pic_sims/thruster_characterization/thin_plasma/THIN_PLASMA_PLAN.md` — and, when the
+`pic_sims/thruster_characterization/slender_body/README.md` (plan section; the pre-run
+file `SLENDER_BODY_PLAN.md` is preserved in git history),
+`pic_sims/thruster_characterization/thin_plasma/THIN_PLASMA_PLAN.md` — and, when the
 default gates would gate the answer rather than the trustworthiness of the
 measurement, their own acceptance policy (`acceptance_exploratory.yaml`).
 
@@ -364,6 +366,8 @@ citable.
 4. **Commit before launching a production run.** The manifest records
    `git_commit` and `git_dirty`; a dirty tree makes the run unciteable.
 5. **Pre-register predictions before the run that tests them**, in a committed
-   plan document. `SLENDER_BODY_PLAN.md` also carries an *amendment* recording a
-   killed, invalid run rather than quietly rewriting the original plan.
+   plan document. The slender-body plan (now the plan section of
+   `slender_body/README.md`; pre-run file in git history) also carries an
+   *amendment* recording a killed, invalid run rather than quietly rewriting
+   the original plan.
 6. `random_seed: 42` everywhere; it is recorded in every manifest.
