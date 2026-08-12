@@ -4,7 +4,8 @@
 % Status: DRAFT. Measured numbers from the gated capstone frontier
 % (100/200/300 V, reference_results/) + minimal model mission sweeps.
 % TODO markers where inputs are pending (lab experiment, author list,
-% chipsat convergence pair now running, final lit refs).
+% final lit refs). Characterization spokes (density, magnetized) folded
+% in 2026-08-12.
 % Lineage: reworked from an earlier internal draft (O14 mm / 800 V
 % skeleton); predecessor results retained as supporting evidence.
 % =============================================================================
@@ -44,7 +45,15 @@ $I \propto (1+e\varphi/kT_e)^{\alpha}$ with $\alpha \approx 0.82$--0.89
 survives, which fixes the charging tax and places every gated frontier
 point within 20\% of a parameter-free ideal-beam power bound -- set by
 electron mass and charge alone -- and within 6\% once the two measured
-geometry constants are applied. A fourth pre-registered run varies body
+geometry constants are applied. A pre-registered run at one-third ambient
+density, continued to 2.4\,\textmu s -- the campaign's only fully settled
+floating potential -- discriminates the collection law on a second axis:
+the square-root form is refuted again, and every fixed-exponent
+prediction \emph{overshoots} the measured 42.5\,V float, so the fitted
+law is conservative along the density axis. A field-aligned geomagnetic
+pair measures a null at flight field strength -- the operating point is
+unchanged at 30\,\textmu T -- and a collection tax only at ten times it.
+A further pre-registered run varies body
 \emph{shape} at fixed drive: tripling the collecting skin while holding the
 ram silhouette fixed drops the float from 17.0 to 4.38\,V and \emph{raises}
 thrust to 14.22\,nN, because a lower float returns drive energy to the beam.
@@ -115,7 +124,10 @@ operating point (Sec.~\ref{sec:frontier}): the measured points land within
 explains why the device owns the nanonewton regime and nothing above it
 (Sec.~\ref{sec:comparison}). Second, the three frontier
 points discriminate between pre-registered candidate forms of the
-ambient-electron collection law (Sec.~\ref{sec:collection}); the surviving
+ambient-electron collection law (Sec.~\ref{sec:collection}), and a
+pre-registered one-third-density run -- the campaign's only fully settled
+equilibrium -- confirms the discrimination on a second axis and shows the
+fitted law is conservative there (Sec.~\ref{sec:density}); the surviving
 sub-linear law fixes the charging tax, and the measured frontier lands
 within 20\% of a parameter-free power bound set by electron mass and charge
 alone -- within 6\% once two measured geometry constants are applied
@@ -220,7 +232,8 @@ depletion, not physics); grid $dr = dz = 0.15$\,mm sized to the Debye length
 (1.97\,mm); CFL-derived time step; 16 particles per cell per species;
 reduced ion mass ($400\,m_e$, caveat in Sec.~\ref{sec:limitations});
 800\,ns simulated per run ($\approx$29 capacitive settle times at the
-reference point).
+reference point; the density-axis continuation of Sec.~\ref{sec:density}
+extends to 2.4\,\textmu s).
 
 Because this paper's claims rest on a small number of expensive runs, the
 campaign enforces an explicit evidence contract. Every run freezes and
@@ -231,9 +244,10 @@ Acceptance gates (escape fraction, benign float, steady current balance,
 momentum bound, sheath containment, and two independent ledger-vs-particle-dump
 charge cross-checks, which close to $\sim$$10^{-9}$) are fixed in versioned
 policy files \emph{before} each run; the scaling-law predictions for the
-100\,V and 300\,V points, and the competing collection-law hypotheses of
-Sec.~\ref{sec:collection}, were pre-registered in the repository before
-those runs completed. Below the production stages sits a validation ladder
+100\,V and 300\,V points, the competing collection-law hypotheses of
+Sec.~\ref{sec:collection} (on both the voltage and the density axis),
+and the magnetized-axis expectations of Sec.~\ref{sec:magnetized} were
+pre-registered in the repository before those runs completed. Below the production stages sits a validation ladder
 run under the same contract: an analytic two-electrode Laplace rung, thermal
 collection against one-sided flux theory (closes to $\pm$1\%), biased
 collection at two potentials, a bare floating body, and electron-gun
@@ -376,6 +390,85 @@ $\alpha = 0.85$ (settled-extrapolated floats), bracketing the upper edge of
 the pre-registered band. The float robs the beam -- the accelerating
 potential is always $V - \varphi$ -- so this law is also the charging tax
 schedule: $\varphi$ eats 5\% of the supply at 100\,V and 12\% at 300\,V.
+
+\subsection{The density axis: a second discrimination, and a conservative
+law}
+\label{sec:density}
+All three frontier points share one dayside plasma row, so the law's
+density dependence -- the $n_e\sqrt{T_e}$ prefactor, and the assumption
+that $\alpha$ and $\beta$ do not drift as $r/\lambda_D$ changes -- rested
+on theory and on the thermal-collection rung. A pre-registered run at
+one-third density ($n_e/3 = 5.42\times10^{11}$\,m$^{-3}$; containment
+radius enlarged from 30 to 40.8\,mm for the $\sqrt{3}\times$ larger Debye
+length, otherwise the anchor deck unchanged) recorded per-exponent float
+predictions before launch: $\alpha = 1$ predicts $+53.4$\,V, $0.893$
+predicts $+60.9$\,V, $0.82$ predicts $+68.0$\,V, and $0.5$ predicts
+$+160.4$\,V. The 800\,ns run passed every trust gate -- no gross
+breakdown of collection in thin plasma -- but its float was still
+climbing at run end, so a pre-registered continuation extended the same
+run to 2.4\,\textmu s (three times the anchor duration, with the abort
+ceiling raised to 180\,V so that no candidate law's prediction could be
+clipped by a safety gate).
+
+The continuation delivers the campaign's only fully \emph{settled}
+floating potential -- $\varphi = +42.5$\,V with a late slope of
+$-0.14$\,V/\textmu s, flat to within noise -- and the verdict surprises
+on both ends. The square-root law is refuted a second time,
+independently of the voltage axis: the float saturates at 42.5\,V with
+the ceiling parked above 160\,V. But every fixed exponent
+$\alpha \le 1$ \emph{overshoots}: the enhancement factor $(1+\chi)$ rose
+only $2.39\times$ for the $3\times$ density drop, where any fixed
+$\alpha \le 1$ requires at least $3\times$. Read as an exponent this is
+a two-point secant, $\alpha_{\mathrm{eff}} = \ln 3/\ln 2.39 = 1.26$;
+read at the fitted $\alpha$ it is a $\approx$38\% rise in the effective
+collection area $\beta A$ -- the direction sheath expansion toward the
+orbital-motion limit predicts as $r/\lambda_D$ falls from 2.5 to 1.5.
+Operationally the sign is what matters: the fitted law
+\emph{over-predicts} the float cost of thin plasma, so the mission
+model's density extrapolations (Table~\ref{tab:missions}) err toward
+pessimism, and $n_e/3$ does not end the operating envelope at the anchor
+drive -- the settled 42.5\,V clears the 50\,V design limit that the
+pre-registration expected this run to break. Exhaust energy and thrust
+follow the float exactly as the two-constant law demands (measured KE
+$= 122.0$\,eV against 122.6 predicted from the injection-plane
+potential; $F = 12.39$\,nN; escape 99.1\%). The measurement is one
+$3\times$ step, not a sweep: the secant cannot separate exponent drift
+from area drift, and densities below $n_e/3$ remain extrapolation --
+now with a measured directional bias.
+
+\subsection{Robustness to the geomagnetic field}
+\label{sec:magnetized}
+Every run above is unmagnetized, while flight is in $\sim$30\,\textmu T.
+The only external field orientation compatible with the RZ deck is axial
+-- which is precisely the field-aligned-firing flight configuration. A
+pre-registered pair added a uniform axial $B_z$ at flight strength
+(30\,\textmu T) and at ten times it (300\,\textmu T), with a null
+hypothesis bounded in advance at 1$\times$ ($|\Delta\varphi| \le 2$\,V,
+$|\Delta F|/F \le 5\%$, $\Delta$escape $\le 1$\,pp) and only the
+\emph{direction} of the alternative pre-registered at 10$\times$. At
+flight strength the null holds on every bound: float $+17.22$\,V against
+the anchor's $+16.98$\,V, thrust 13.64 against 13.65\,nN, escape
+unchanged within 0.06\,pp -- the committed operating point is untouched,
+as the scale separation predicts (the beam gyroradius, $\ge$0.10\,m, far
+exceeds every device dimension, and the Parker--Murphy collection
+ceiling sits far above the OML capture radius). At 10$\times$ -- an
+amplification instrument, not a flight condition, chosen to push the
+thermal-electron gyroradius down to sheath scale -- a collection tax
+appears, and it enters entirely through the float: beam formation is
+unaffected (escape 98.3\%), but the magnetized skin collects less
+effectively, the float rises 32.6\,V over the anchor (still climbing at
+run end, so a lower bound on the settled tax), and by
+$\mathrm{KE} = \kappa(V-\varphi)$ the exhaust energy falls from 147 to
+116\,eV with thrust down 11\%. The two-constant thrust law reproduces
+both magnetized points (13.56 and 12.03\,nN predicted against 13.64 and
+12.06 measured): $c_F$ is untouched by the field, so the entire effect
+is a collection-side tax, consistent with this section's premise that
+collection is the physics that sets the operating point. What the pair
+does not license is the transverse-field, far-field question -- where
+the emitted momentum ends up once the exhaust gyrates at
+$r_g \approx 1.4$\,m, four orders of magnitude beyond the simulated
+domain -- which cannot be posed in RZ and remains open
+(Sec.~\ref{sec:limitations}).
 
 \section{The momentum ledger: is the thrust real?}
 \label{sec:ledger}
@@ -663,13 +756,15 @@ time -- and we state that plainly rather than average around it. Two
 honesty flags travel with the table. First, the corridor's boundary
 behaviour is set by the night-side rows -- thin, cold plasma where the
 collection stiffness $\propto 1/(n_e\sqrt{T_e})$ drives the float toward
-the 50\,V limit -- and these are exactly the rows the PIC evidence has not
-measured: the collection law's density axis is theory-anchored at one
-dayside row. A single fixed-voltage run at a night-row density
-($\sim$$2\times10^{11}$\,m$^{-3}$) is the targeted measurement that either
-validates the corridor's edge or moves it, and is the first item of future
-work. Second, power here is beam power $I\,V$; converter and cathode
-overheads belong to the flight design and are not modelled.
+the 50\,V limit. The density axis now carries one settled measurement
+(Sec.~\ref{sec:density}): at one-third density the fitted law
+\emph{over-predicts} the float by 10--25\,V, so the corridor's
+night-side edge is biased conservative -- the model retires rows the
+device could in fact serve. Rows below $n_e/3$, down to the
+$\sim$$2\times10^{11}$\,m$^{-3}$ night minimum, remain extrapolation,
+now with a measured directional bias rather than none. Second, power
+here is beam power $I\,V$; converter and cathode overheads belong to the
+flight design and are not modelled.
 
 \subsection{The geometry lever: slender bodies}
 \label{sec:slender}
@@ -827,13 +922,16 @@ contract of Sec.~\ref{sec:method}; the mission projection is model-based
 with flagged extrapolation; full mission validation is future work.
 
 \begin{itemize}
-  \item \textbf{The collection law's density axis is unmeasured.} All three
-        frontier runs share one dayside plasma row; the
-        $n_e\sqrt{T_e}$ scaling under the fitted $(1+\chi)^\alpha$ law is
-        standard sheath theory but no committed run has confirmed it at
-        another density. The model flags every such row
-        (Table~\ref{tab:missions}); the night-row run is the single
-        highest-value follow-on measurement.
+  \item \textbf{The collection law's density axis is measured at one
+        $3\times$ step.} A pre-registered one-third-density run, continued
+        to a settled equilibrium, shows the fitted law is
+        \emph{conservative} there -- it over-predicts the float
+        (Sec.~\ref{sec:density}). The step is a two-point secant: exponent
+        drift ($\alpha_{\mathrm{eff}} = 1.26$) cannot be separated from
+        area drift ($\beta A$ up $\approx$38\%) with one step, and
+        densities below $n_e/3$ -- the deepest night rows -- remain
+        extrapolation, with a measured directional bias. The model still
+        flags every such row (Table~\ref{tab:missions}).
   \item \textbf{The collection law's geometry axis is measured at two
         points, not mapped.} The exponent is geometry-dependent by theory
         (sphere 1, long cylinder 0.5; measured 0.82--0.89 for the can), and
@@ -863,7 +961,11 @@ with flagged extrapolation; full mission validation is future work.
   \item \textbf{Finite-time equilibrium on the ion clock.} The 300\,V float
         was still relaxing at run end (Sec.~\ref{sec:collection}); the
         settled-value band (42--48\,V) is carried through the $\alpha$ fit
-        rather than hidden, and brushes the 50\,V design limit.
+        rather than hidden, and brushes the 50\,V design limit. The
+        2.4\,\textmu s density-axis continuation is the only fully settled
+        float (Sec.~\ref{sec:density}) and measures the settle time for
+        its row at $\sim$2\,\textmu s; the anchor-row floats remain
+        800\,ns reads with disclosed slopes.
   \item \textbf{Reduced ion mass.} Simulations use $400\,m_e$ rather than
         real O$^+$ ($29{,}166\,m_e$) to keep ion timescales affordable; the
         sensitivity of the float to ion mass has not been measured.
@@ -872,9 +974,13 @@ with flagged extrapolation; full mission validation is future work.
         ($v_{\mathrm{orb}}/v_{\mathrm{th},e} \approx 5\%$); for a body
         flying end-on the ram-ion wake is the largest unmodelled effect and
         is deferred, not estimated.
-  \item \textbf{Two-dimensional axisymmetry, no geomagnetic field.} A real
-        flight geometry sees a transverse geomagnetic field component this
-        model omits.
+  \item \textbf{Two-dimensional axisymmetry; transverse geomagnetic field
+        unmodelled.} The field-aligned (axial) component is measured: a
+        null at flight strength and a collection tax only at $10\times$
+        (Sec.~\ref{sec:magnetized}). The transverse component -- and with
+        it the far-field fate of the emitted momentum, which gyrates at
+        $r_g \approx 1.4$\,m against a 30\,mm domain -- cannot be posed
+        in RZ and is the largest unexamined question.
   \item \textbf{System power.} All powers are beam power $I\,V$. Cathode
         heating (zero for field emitters, nonzero otherwise) and converter
         efficiency are flight-design quantities outside this paper's scope.
@@ -918,7 +1024,10 @@ nothing above it. Second, the returning current does not cancel the
 thrust: a closed momentum ledger with a dedicated full-return null
 experiment establishes it in the predecessor implementation, and per-run
 momentum gates bound the return channel at 1--9\% of beam thrust in the
-present one. Third, the measured collection law fixes the charging tax, and
+present one. Third, the measured collection law -- discriminated on both
+the voltage and the density axis, settled on the latter, conservative
+where it extrapolates, and undisturbed by a flight-strength field-aligned
+geomagnetic field -- fixes the charging tax, and
 the resulting two-constant analytical power model -- validated to within
 6\% of every gated frontier point -- applied to year-long orbit
 propagations with every extrapolated regime flagged, bounds a mission
