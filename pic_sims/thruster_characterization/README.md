@@ -8,7 +8,7 @@ hub-and-spoke, not a ladder. `../run_ladder.py` runs the ladder group by
 default; spokes run only when named (`--stages characterization.slender_body`).
 
 Every folder is self-contained per the architecture contract
-(`../ladder/ARCHITECTURE_REFACTOR_PLAN.md` decision 1): its own
+(`../ARCHITECTURE.md` decision 1): its own
 `simulation.py`, `config.yaml`, `helpers.py`, `analyze.py`, `acceptance.yaml`,
 tests, and committed evidence under `reference_results/`.
 
@@ -39,6 +39,6 @@ it is not a pre-registration for the migrated evidence.
 Historical launch records: each spoke's `logs/` (the magnetized pair ran
 strictly sequentially on one GPU; run manifests carry the exact decks).
 Campaign narrative: `/CAMPAIGN.md`; plans live inside the spokes
-(`slender_body/README.md` plan section, `thin_plasma/THIN_PLASMA_PLAN.md`) and
-at `MAGNETIZED_PLAN.md` here (it spans both M1 spokes and defines tier M2,
-the open transverse-field question).
+(`slender_body/README.md` and the magnetized READMEs' plan sections,
+`thin_plasma/THIN_PLASMA_PLAN.md`); the open tier-M2 transverse-field design
+is at `/future_work/M2_TRANSVERSE_B.md`.

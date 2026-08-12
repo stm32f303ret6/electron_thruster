@@ -1,11 +1,26 @@
 # Future work — controller optimization and geometry-specific studies
 
 This folder holds engineering work deliberately **excluded from the
-concept-feasibility argument** (see
-[`CONCEPT_FEASIBILITY_SCOPE.md`](../CONCEPT_FEASIBILITY_SCOPE.md)). The main
+concept-feasibility argument** (scope decision below). The main
 contribution claims only that the thruster mechanism is physically and
 energetically plausible; everything here is about *optimizing* it for a
 selected cathode, geometry, and mission.
+
+## The scope decision (2026-08-09)
+
+The concept paper presents the throttle as a **theoretical principle, not a
+validated flight controller**: use the largest feasible *useful* (escaped)
+current, then apply only enough acceleration voltage to reach the thrust
+target — `F = K·I_esc·√(V−φ)`, `P_ideal = V·I` as the ideal beam-supply
+power (never "spacecraft power": gate power, converter losses, control
+electronics, and intercepted current are future engineering). "Feasible
+current" is bounded by the emitter, ambient return-current availability,
+acceptable spacecraft potential, and beam escape — acknowledged, not
+modeled. Demoted from the main narrative accordingly: the 125 V universal
+optimum, V ≈ 3.1φ as a global controller, the adaptive-controller design,
+and geometry-specific escape-vs-perveance fits. The U-curve stays as
+geometry-specific supporting evidence only (below). The full decision memo
+(`CONCEPT_FEASIBILITY_SCOPE.md`) is preserved in git history.
 
 ## The simple power law used for the concept paper
 
@@ -89,12 +104,12 @@ a universal electron-gun limit.
 - **The U-curve as a control surface** — a tax-aware servo needs the
   escape-vs-perveance surface those three points bracket
   ([`MODEL.md` §3](../model/MODEL.md)).
-- **Magnetized axis** —
-  [`MAGNETIZED_PLAN.md`](../pic_sims/thruster_characterization/MAGNETIZED_PLAN.md):
-  tier M1 (field-aligned Bz, executed 2026-08-10) closed the near-field
-  half — null at 1× LEO, an ~11 % thrust tax through the float at 10×.
-  Far-field current closure under transverse B (tier M2, the flight
-  geometry) remains open; the plan holds its design.
+- **Magnetized axis** — tier M1 (field-aligned Bz, executed 2026-08-10)
+  closed the near-field half — null at 1× LEO, an ~11 % thrust tax through
+  the float at 10× (`../pic_sims/thruster_characterization/magnetized_1x/`,
+  `magnetized_10x/`). Far-field current closure under transverse B (tier
+  M2, the flight geometry) remains open;
+  [`M2_TRANSVERSE_B.md`](M2_TRANSVERSE_B.md) holds its design.
 - **Cathode selection** — Spindt / field-emitter arrays: emitting area, gate
   power, collimation (single-gate angular spread is appreciable; double-gate
   collimation is only demonstrated at 20 keV), and downstream space-charge

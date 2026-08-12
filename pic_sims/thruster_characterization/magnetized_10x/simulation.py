@@ -22,7 +22,7 @@ Everything that makes this stage what it is lives in this one file:
 
 The dQ accounting and the Gauss-law C are transcribed verbatim from the
 validated deck -- do not "simplify" them.  Checkpoint/restart is deliberately
-not migrated (an interrupted run is FAILED and rerun; see MIGRATION_PLAN.md).
+not migrated (an interrupted run is FAILED and rerun; see pic_sims/ARCHITECTURE.md).
 
 Each execution creates a fresh immutable run directory under ``outputs/`` and
 is COMPLETE only after artifact and final-iteration verification:
@@ -558,7 +558,7 @@ def build_simulation(cfg: Config, geom: Geometry, run: lc.Run):
         warpx_random_seed=RANDOM_SEED,
         warpx_used_inputs_file=str(run.diags_dir / "used_inputs.txt"))
 
-    # Optional axial external field (plasma.Bz_T; MAGNETIZED_PLAN.md).  The
+    # Optional axial external field (plasma.Bz_T; magnetized characterization spokes).  The
     # only externally-appliable B that preserves RZ axisymmetry.  Absent ->
     # exactly the committed baseline (no applied-field block at all).
     if cfg.Bz_T is not None:

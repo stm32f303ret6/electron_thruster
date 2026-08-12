@@ -8,7 +8,9 @@ build, **PASS — all 6 required gates** under policy
 
 ## The pre-registered hypothesis, and the answer
 
-`MAGNETIZED_PLAN.md` recorded H-M1-null before the run: at 1× LEO field
+The magnetized-axis plan (now the plan section of `../../README.md`; the
+pre-run `MAGNETIZED_PLAN.md` is preserved in git history) recorded H-M1-null
+before the run: at 1× LEO field
 strength the anchor's operating point does not move outside its own bands.
 
 | metric | this run | unmagnetized anchor |

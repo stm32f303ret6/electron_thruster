@@ -1,8 +1,7 @@
 # THESIS
 
-The repository currently proves physics but never states its thesis. The README
-leads with architecture; the actual discovery — a propulsion regime nothing else
-occupies — exists only in conversation.
+The claim stated for a physics reviewer — with the agreed wording guardrails
+and the anticipated objections answered from measured, committed evidence.
 
 ---
 

@@ -270,7 +270,7 @@ intact.
 
 ## What this ladder does NOT yet establish
 
-Kept visible on purpose (details: `ARCHITECTURE_REFACTOR_PLAN.md` §13,
+Kept visible on purpose (details: `../ARCHITECTURE.md` open items,
 `capstone/2_chipsat_thruster/VALIDATION_GAPS.md`):
 
 - **Convergence** (C12): every number above is one grid, one ppc, one domain,
