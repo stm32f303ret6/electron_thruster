@@ -11,7 +11,7 @@ same system as the anchor in a **3× thinner ionosphere**. asks: do the collecti
 | gpu arena | — | enlarged (disclosed numerics) |
 | everything else | — | identical |
 
-the deck as committed now carries the pre-registered **2.4 µs continuation** (`t_end` 800 ns → 2.4 µs, `max_steps` 480k, `phi_ceiling` 100 → 180 V — see `THIN_PLASMA_PLAN.md` §CONTINUATION; run `20260811T213635Z_acc8f8f9` in flight). the results below are the executed 800 ns reference.
+the deck as committed carries the pre-registered **2.4 µs continuation** (`t_end` 800 ns → 2.4 µs, `max_steps` 480k, `phi_ceiling` 100 → 180 V — see `THIN_PLASMA_PLAN.md` §CONTINUATION; run `20260811T213635Z_acc8f8f9`, gated PASS 2026-08-12). results for both the 800 ns reference and the continuation are below.
 
 ## how the pic works
 
@@ -33,9 +33,30 @@ reference run `20260808T165839Z_41b114e2`, all 6 required gates PASS. under the 
 | beam thrust | **13.04 nN** | — | reported |
 | exhaust KE | **135.1 eV** (KE = κ(V − φ) predicts 135.6) | — | reported |
 
-device **healthy at n0/3**: no gross breakdown of the collection law. the float is unsettled at 800 ns (run-end above the tail mean), so the α discrimination was **not achieved**; the recorded hard bound is **φ_settled > 31.6 V**. the in-flight 2.4 µs continuation exists to close exactly this gap. full detail: `reference_results/20260808T165839Z_41b114e2/REFERENCE.md`.
+device **healthy at n0/3**: no gross breakdown of the collection law. the float is unsettled at 800 ns (run-end above the tail mean), so the α discrimination was **not achieved**; the recorded hard bound is **φ_settled > 31.6 V**. the 2.4 µs continuation exists to close exactly this gap. full detail: `reference_results/20260808T165839Z_41b114e2/REFERENCE.md`.
 
-![body potential vs time](reference_results/20260808T165839Z_41b114e2/figures/phi_vs_time.png)
+### continuation: the float settled, and it settled low
+
+run `20260811T213635Z_acc8f8f9` (2.4 µs, 477,480 steps, 22.4 h wall; analysis `results/20260811T213635Z_acc8f8f9/20260812T200258Z_aef34e72`), all 6 required gates PASS:
+
+| check | measured | target | type |
+|---|---|---|---|
+| escape fraction | 99.13% | ≥ 95% | required |
+| current balance | 0.10% | ≤ 5% | required |
+| net-force sanity | 0.029 | ≤ 1 | required |
+| edge potential | 188 mV | ≤ 1 V | required |
+| scrape ledgers vs dumps | ~1e-10 | ≤ 2% | required |
+| body float φ | **+42.5 V, SETTLED** (late slope ≈ −0.14 V/µs) | — | reported |
+| beam thrust | **12.39 nN** | — | reported |
+| exhaust KE | **122.0 eV** (injection-plane φ predicts 122.6) | — | reported |
+
+the campaign's first **settled** float, and the verdict on the pre-registered predictions is a surprise on both ends:
+
+- **α = 0.5 refuted** on the density axis — the float saturated at 42.5 V with the choke ceiling parked above 160 V; nothing heads there.
+- **α = 1 / 0.893 / 0.82 all overshoot** (53.4 / 60.9 / 68.0 V predicted): the settled float lands *below* the entire 45–75 V measurement band. \((1+\chi)\) rose 2.39× for the 3× density drop, where any fixed α ≤ 1 requires ≥ 3× — a secant exponent \(\alpha_{\rm eff} = \ln 3 / \ln 2.39 = 1.26\), or equivalently a ~38% β rise at the model's default α, the direction sheath expansion toward OML predicts as r_probe/λ_D falls 2.5 → 1.5.
+- **benign-float gate (φ < 50 V) passes**, contrary to the plan's expectation: thin plasma at n0/3 does *not* end the envelope at the anchor's drive. the fitted law is **conservative along the density axis** — it over-predicts the float cost of thin plasma.
+
+caveat: a two-point A/B (one 3× step) across the disclosed rmax change; α_eff is a secant, not a fit, and says nothing beyond n0/3 toward the ~1e11 m⁻³ night minimum.
 
 ## provenance
 
@@ -58,6 +79,7 @@ python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 
 ## limitations
 
-- float unsettled at 800 ns — only a hard lower bound on φ_settled; α not discriminated (continuation in flight)
-- single density point (n0/3), no sweep down to CubeSat-regime r/λ_D
+- the α discrimination is a two-point secant along density, not a fit: α_eff = 1.26 (or β drift) cannot be separated into exponent vs area with one step
+- single density point (n0/3), no sweep down to CubeSat-regime r/λ_D — behavior toward the ~1e11 m⁻³ night minimum remains extrapolated (now with a measured conservative bias)
 - anchor limitations inherited: single grid/PPC/seed, reduced ion mass 400 mₑ
+- the anchor's own float is still an 800 ns read with a disclosed slope; only the thin row is settled

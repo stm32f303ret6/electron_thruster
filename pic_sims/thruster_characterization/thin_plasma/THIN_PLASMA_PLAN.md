@@ -243,3 +243,49 @@ measurement band stand unchanged; acceptance is the same exploratory
 policy (`acceptance.yaml`). Expected cost ~25 h wall on the RTX 3060
 (measured 8.4 h / 800 ns, ~3× steps at identical per-step cost).
 Launch record: `thin_plasma_continuation_chain.sh`, `logs/`.
+
+### RESULTS — 2026-08-12: the float SETTLED, and it settled LOW
+
+Run `outputs/20260811T213635Z_acc8f8f9` (477,480 steps @ the anchor dt,
+2399.9 ns, 22.4 h wall). Analysis
+`results/20260811T213635Z_acc8f8f9/20260812T200258Z_aef34e72`:
+**VERDICT PASS — all 6 required gates.** Escape 99.13 %, F_beam 12.39 nN
+(thrust gate vs anchor passes), exhaust KE 122.0 eV vs 122.6 eV predicted
+from the injection-plane potential, current balance closes to 0.10 %,
+edge phi 0.19 V (5× under the gate at the enlarged radius).
+
+**phi_body = 42.5 V, settled.** Tail mean 42.47 V, final sample 42.59 V,
+late slope −0.00014 V/ns — i.e. flat to within noise, versus +27 V/µs and
+climbing when the 800 ns run ended. This is the campaign's first *settled*
+float: the finite-time-equilibrium caveat does not apply to this row.
+
+Scorecard against the pre-registered predictions:
+
+- **alpha = 0.5 (160.4 V): REFUTED.** The float saturated at 42.5 V with
+  the choke detector deliberately parked above 160 V; nothing heads there.
+  The density axis now refutes it independently of the voltage axis.
+- **alpha = 1 / 0.893 / 0.82 (53.4 / 60.9 / 68.0 V): ALL OVERSHOOT.** The
+  settled float lands *below* the entire 45–75 V measurement band. At
+  fixed demand, `(1+chi)` rose 2.39× for the 3× density drop, where any
+  fixed alpha <= 1 requires >= 3×. Read as an exponent, the density axis
+  measures **alpha_eff = ln 3 / ln 2.39 = 1.26**; read at the model's
+  default alpha = 0.893, it is a **~38 % rise in beta** (effective
+  collection area) as `r_probe/lambda_D` fell 2.5 → 1.5 — the direction
+  sheath-expansion toward the OML limit predicts.
+- **The benign-float gate (phi < 50 V) PASSES** — the plan expected it to
+  flag. Thin plasma at n0/3 does *not* end the operating envelope at the
+  anchor's drive; the fitted law is **conservative along the density
+  axis** (it over-predicts the float cost of thin plasma).
+
+Caveats, disclosed: this is a two-point A/B along density (one 3× step),
+compared across the rmax 30 → 40.8 mm domain change per the sizing
+section; alpha_eff = 1.26 is a secant exponent between those two points,
+not a fit, and says nothing about behavior beyond n0/3 toward the
+`~1e11 m^-3` night minimum where `r_probe/lambda_D` keeps falling.
+
+What it changes: mission rows carrying `extrap_density` are now bounded
+by a *measured, conservative* law over a 3× band — the model's density
+extrapolations err toward pessimism (predict more float than occurs); the
+`1/(n*sqrt(Te))` stiffness claim gets its settle time (~2 µs to flat at
+n0/3); and the corridor argument gains a measured density-side data point
+*inside* the benign envelope rather than a modelled edge.
