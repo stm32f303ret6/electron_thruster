@@ -22,7 +22,9 @@ edit here first, port to prose after.
   ~ng/year, all from the ionosphere.
 - five contributions:
   1. parameter-free ideal law + measured frontier validates it (within 20 %)
-  2. collection law discriminated (pre-registered) → charging tax fixed
+  2. collection law discriminated (pre-registered) on **two axes** —
+     voltage and density — → charging tax fixed, measured conservative
+     along density
   3. momentum ledger: the return current does not cancel thrust
   4. mission corridor from year-long propagations, extrapolation flagged
   5. shape run → size cancels; corridor carries to cubesats unchanged
@@ -71,7 +73,7 @@ $$P = \frac{F \sqrt{V}}{c_{ideal}}, \qquad c_{ideal} = \sqrt{2 m_e/e}$$
 - deck: ⌀10 mm × 5.9 mm can, 4 mm aperture, internal cathode disk.
   plasma row: $n_e = 1.627{\cdot}10^{12}$ m⁻³, $kT_e = 113.6$ meV,
   reservoir recycle. dx = 0.15 mm (debye 1.97 mm), CFL dt, 16 ppc,
-  reduced ion mass 400 $m_e$, 800 ns/run.
+  reduced ion mass 400 $m_e$, 800 ns/run (density continuation: 2.4 µs).
 - evidence contract:
   - frozen + hashed configs, atomic manifests, interrupted runs discarded
   - gates fixed in versioned policy files **before** each run
@@ -139,6 +141,48 @@ predictions recorded before the 300 V run (all agree at 200 V anchor):
 - this law = the charging tax schedule: φ eats 5 % of supply at 100 V,
   12 % at 300 V.
 
+### 6.1 the density axis (second pre-registered discrimination)
+
+- thin plasma spoke: n0/3 (5.42e11 m⁻³), rmax 30 → 40.8 mm for the √3×
+  larger λ_D, everything else the anchor deck. predictions committed
+  before launch: α = 1 → 53.4 V, 0.893 → 60.9, 0.82 → 68.0, 0.5 → 160.4.
+- 800 ns run: healthy (all trust gates), but unsettled — only a bound,
+  φ_settled > 31.6 V. pre-registered 2.4 µs continuation closed it:
+  **first settled float of the campaign** — φ = 42.5 V, late slope
+  −0.14 V/µs, escape 99.1 %, balance 0.10 %, F 12.39 nN, KE 122.0 eV
+  (injection-plane prediction 122.6).
+- scorecard, a surprise on both ends:
+  - **α = 0.5 refuted again**, independently of the voltage axis (choke
+    ceiling parked above 160 V; float saturates at 42.5).
+  - **every fixed α ≤ 1 overshoots**: (1+χ) rose 2.39× for the 3× density
+    drop where fixed α ≤ 1 needs ≥ 3×. secant α_eff = ln 3/ln 2.39 =
+    **1.26**, or equivalently β +38 % at the default α — the direction
+    sheath expansion toward OML predicts as r/λ_D falls 2.5 → 1.5.
+  - **benign gate passes** (42.5 < 50 V): thin plasma does *not* end the
+    envelope at the anchor drive. the fitted law **over-predicts the
+    float cost of thin plasma** → conservative along density.
+- caveat: one 3× step (secant, not a fit), across the disclosed rmax
+  change; beyond n0/3 toward the ~1e11 night minimum stays extrapolated —
+  now with a measured directional bias.
+
+### 6.2 robustness: the geomagnetic field (M1, field-aligned)
+
+- only axial B fits the RZ deck = exactly the field-aligned-firing flight
+  mode. pre-registered null bounds at 1×; tax direction (not magnitude)
+  at 10×.
+- **1× LEO (30 µT): null holds on every bound** — φ 17.22 V (anchor
+  16.98), F 13.64 nN (anchor 13.65), escape Δ 0.06 pp. flight field
+  leaves the operating point untouched.
+- **10× (300 µT): a collection tax, entirely through φ** — magnetized
+  skin collects less: φ +32.6 V over the anchor (unsettled → lower
+  bound), KE 147 → 116 eV, F −11 %. beam formation B-independent (escape
+  98.3 %; r_g,beam ≥ 0.10 m ≫ device). two-constant law reproduces both
+  runs (13.56/12.03 predicted vs 13.64/12.06 measured): c_F untouched,
+  whole tax enters via collection.
+- mission flies at 1×, where the null holds. transverse B (far field,
+  r_g ≈ 1.4 m ≫ 30 mm domain) not answerable in RZ → tier M2, future
+  work.
+
 ## 7. momentum ledger — is the thrust real?
 
 - objection: emitted current *returns*. does it cancel?
@@ -192,9 +236,11 @@ never averaged in.
 | 550 axial | 3.8 / 16.3 | 92 % | 32 % | 17 | **closes** (~30 mW harvest) |
 | 600 axial | 2.0 / 9.6 | 97 % | 25 % | 8 | **closes** |
 
-- honesty flags: night rows drive the boundary and are exactly the
-  unmeasured density axis (thin-plasma run = first item of future work);
-  powers are beam power $VI$ only.
+- honesty flags: night rows drive the boundary; the density axis now has
+  one measured, settled 3× step (§6.1) showing the law *over-predicts*
+  the float there → the corridor's night edge is biased conservative;
+  rows below n0/3 toward the ~2e11 night minimum remain extrapolated
+  (with measured directional bias); powers are beam power $VI$ only.
 - why 400 km fails even ideally:
   1. impulse: peak drag needs 510 V; demand > ceiling 63 % of the time;
      duty 140 % — no battery fixes >100 %.
@@ -239,15 +285,20 @@ never averaged in.
 
 ## 13. limitations (state plainly)
 
-1. collection law's density axis: one dayside row measured. night rows =
-   extrapolation (thin-plasma run pending settle).
+1. collection law's density axis: one 3× step measured, settled,
+   conservative (§6.1) — a secant, not a fit; α_eff vs β drift not
+   separable with one step. below n0/3 = extrapolation with measured
+   directional bias.
 2. geometry axis: two points (L/r 0.6 and 6), not a map.
 3. no run in the cubesat sheath regime (r/λ_D ≈ 2.5 measured vs 25–60).
 4. grid resolution ±4–7 %, sign conservative.
-5. 300 V float unsettled at 800 ns (42–48 V band carried).
+5. anchor-row floats unsettled at 800 ns (300 V: 42–48 V band carried);
+   only the thin-plasma row is settled (2.4 µs).
 6. reduced ion mass 400 $m_e$ (not O⁺).
 7. stationary plasma (no ram wake — deferred, not estimated).
-8. RZ axisymmetric, no geomagnetic field.
+8. RZ axisymmetric. geomagnetic field: field-aligned measured (1× null,
+   10× tax = lower bound, §6.2); transverse B not answerable in RZ →
+   open (tier M2).
 9. beam power only (no gate/converter overheads).
 10. throttle optimization deferred: quoted powers = ideal bound + measured
     closure; off-optimum losses geometry-specific
@@ -258,7 +309,9 @@ never averaged in.
 1. measured frontier validates the parameter-free law: within 20 % of the
    bound, $1/\sqrt{V}$ within 2.5 %, η ≈ 0.73 at 0.16–0.28 µN/W.
 2. the thrust is real: ledger + full-return null + per-run gates (1–9 %).
-3. collection law fixes the charging tax → conservative model → corridor:
+3. collection law fixes the charging tax — discriminated on voltage *and*
+   density (settled), measured conservative along density; flight-strength
+   field-aligned B is a null → conservative model → corridor:
    closes 550–600, impulse 500, fails 400 — and by the areal argument the
    corridor is a statement about shape and altitude, not size.
 
