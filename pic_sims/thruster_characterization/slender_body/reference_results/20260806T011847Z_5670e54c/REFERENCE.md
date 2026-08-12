@@ -8,8 +8,9 @@ passed** under policy `capstone.exploratory_axes.v1`.
 
 ## The pre-registered question, and the answer
 
-`capstone/SLENDER_BODY_PLAN.md` recorded two competing hypotheses **before the
-run**, for where the float settles when total skin area grows 3.24×
+The stage plan (now the plan section of `../../README.md`; the pre-run
+`SLENDER_BODY_PLAN.md` is preserved in git history) recorded two competing
+hypotheses **before the run**, for where the float settles when total skin area grows 3.24×
 (3.4 → 11.0 cm²) at fixed escaped current:
 
 | hypothesis | predicted φ | outcome |
@@ -72,7 +73,7 @@ This run required a code change, committed **before** it launched: the optional
 `geometry.cathode_standoff` key (`helpers.py`), which pins the cathode–lid gun
 gap while the can grows around it. Without it, lengthening the can stretches the
 gap and Child–Langmuir (`I_CL ∝ 1/d²`) chokes the emitter — the failure mode
-that killed the first attempt (see the AMENDMENT in `SLENDER_BODY_PLAN.md`).
+that killed the first attempt (see the first-attempt section in `../../README.md`).
 Here the gap is 4.70 mm and the demand/ceiling ratio is 1.457, matching the
 anchor's measured 1.46.
 

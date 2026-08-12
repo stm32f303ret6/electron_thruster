@@ -10,7 +10,8 @@
 #
 # This policy gates FUTURE runs of this stage; relative to the migrated
 # evidence it is post-hoc re-identification, not a new pre-registration.
-# Plan: SLENDER_BODY_PLAN.md.  Changing any tolerance requires a new policy_id.
+# Plan: README.md (plan section; pre-run SLENDER_BODY_PLAN.md in git history).
+# Changing any tolerance requires a new policy_id.
 # ----------------------------------------------------------------------
 schema_version: 1
 policy_id: characterization.slender_body.v1

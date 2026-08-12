@@ -233,7 +233,7 @@ so the can grows without stretching the gun gap.
 `../thruster_characterization/slender_body/reference_results/20260806T011847Z_5670e54c/` — 159,160
 steps, **all 6 required gates PASS** under `capstone.exploratory_axes.v1`.
 
-Pre-registered hypotheses (`../thruster_characterization/slender_body/SLENDER_BODY_PLAN.md`): area-only
+Pre-registered hypotheses (`../thruster_characterization/slender_body/README.md`, plan section): area-only
 scaling predicted φ ≈ 4–5 V, cylinder-limit lateral predicted tens of volts.
 **Measured φ = 4.38 V — hypothesis A confirmed, B refuted by ~10×.**  The
 fitted exponent survives a 3.24× area change.  Thrust *rose* to 14.22 nN

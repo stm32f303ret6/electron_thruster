@@ -180,8 +180,11 @@ verdict it governs.
   collides on test module basenames) — the per-stage loop does.
 - `model/minimal_model.py` + `model/MODEL.md` — the executable model, calibrated
   from committed `reference_results` only.
-- Plan documents with amendments rather than rewrites: `pic_sims/thruster_characterization/slender_body/SLENDER_BODY_PLAN.md`
-  records the killed run and *why* it was invalid; `pic_sims/thruster_characterization/thin_plasma/THIN_PLASMA_PLAN.md`
+- Plan documents with amendments rather than rewrites: the slender-body plan
+  (`pic_sims/thruster_characterization/slender_body/README.md`, plan and
+  first-attempt sections; the pre-run `SLENDER_BODY_PLAN.md` is in git history)
+  records the killed run and *why* it was invalid;
+  `pic_sims/thruster_characterization/thin_plasma/THIN_PLASMA_PLAN.md`
   records why its run was cut.
 
 ---

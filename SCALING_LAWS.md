@@ -323,7 +323,7 @@ might not: OML gives α = 1 for a sphere and α = 0.5 for a long cylinder, and
 the squat can's fitted 0.82–0.89 sits between the limits, so a slender body
 should slide toward the cylinder value and pay a hidden charging tax.
 
-Pre-registered (`pic_sims/thruster_characterization/slender_body/SLENDER_BODY_PLAN.md`) and then measured, at
+Pre-registered (`pic_sims/thruster_characterization/slender_body/README.md`, plan section) and then measured, at
 identical drive, commanded current, plasma row, grid and seed:
 
 | hypothesis | predicted φ | measured |

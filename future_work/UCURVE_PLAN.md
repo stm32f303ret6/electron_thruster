@@ -66,7 +66,7 @@ evidence say that is not free:
 
 - `emitter.holed_anode` scenario B: at 79 % of planar I_CL the beam already
   blows open radially and transmission collapses until the aperture is doubled.
-- The killed first slender attempt (`SLENDER_BODY_PLAN.md` amendment): a
+- The killed first slender attempt (`slender_body/README.md`, first-attempt section): a
   commanded current far over the gap's ceiling self-scraped 91 % of the beam
   inside the can — the float never charged past 0.3 V.
 - `capstone.low_power`: even at the *validated* perveance, escape already
