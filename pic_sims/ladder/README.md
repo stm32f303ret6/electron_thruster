@@ -40,7 +40,7 @@ as hub-and-spoke stages that each depend only on `capstone.floating_body`.
 
 ## Architecture
 
-See `ARCHITECTURE_REFACTOR_PLAN.md` for details. Two key decisions:
+See `../ARCHITECTURE.md` for details. Two key decisions:
 
 1. **Each stage is a self-contained folder** with its own simulation, config, helpers, analysis, animation, and tests. Physics duplication is deliberate — a reviewer reads one folder and sees the whole model.
 2. **Shared plumbing** (run IDs, manifests, immutable directories, gate evaluation) lives in `../ladder_contract.py`, one level up, serving the ladder and the characterization spokes alike. No physics, no pywarpx, no plotting.
@@ -107,4 +107,4 @@ Run one WarpX case at a time. Deleting any `outputs/<run-id>/` or `results/` sub
 
 **Milestone A (Phases 0–4): done.** All 10 stages run and PASS. All carry verified `reference_results/`; numbers are in `LADDER_SUMMARY.md`.
 
-**Milestone B (Phase 5): not done.** Stationarity gates, consistent ensembles, corrected Child-Langmuir narratives, convergence sweeps. See `ARCHITECTURE_REFACTOR_PLAN.md` §13 (C1–C12).
+**Milestone B (Phase 5): not done.** Stationarity gates, consistent ensembles, corrected Child-Langmuir narratives, convergence sweeps. See `../ARCHITECTURE.md` (open items).

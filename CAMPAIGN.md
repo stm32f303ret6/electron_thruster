@@ -210,7 +210,7 @@ analytical lower bound `P = F·√V / 2.93`, validated to 4–6 % against the
 frontier anchors: largest feasible escaped current, lowest sufficient
 voltage. The earlier flight-rule/servo formulation and its U-shaped
 fixed-thrust cost surface were demoted to controller-optimization work —
-see `CONCEPT_FEASIBILITY_SCOPE.md` and `future_work/`.
+see the scope decision in `future_work/README.md`.
 
 **Mission sweep**, all five committed orbit CSVs, with every row flagged as
 measured or extrapolated:

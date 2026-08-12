@@ -53,7 +53,7 @@ plasma:                    # capstone "PLASMA_MAX" row -- IDENTICAL to collector
   Te_K: 1318.8             # [K]  (kTe = 113.6 meV)
   Ti_K: 936.2              # [K]
   ion_mass_me: 400.0       # [-] reduced ion mass (NOT real O+; ladder-wide caveat).
-  Bz_T: 3.0e-4            # [T] axial external field -- MAGNETIZED_PLAN.md tier M1
+  Bz_T: 3.0e-4            # [T] axial external field -- tier M1 (README.md plan section)
                            #     (10x amplification: thermal-e r_g -> sheath scale).
 
 reservoir:                 # infinite-ionosphere recycle.  REQUIRED for the floating

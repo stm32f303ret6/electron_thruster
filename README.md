@@ -115,7 +115,7 @@ Ordered by how much they could change the answer.
    emitted momentum ends up once the exhaust gyrates. That far-field
    coupling remains the largest unexamined question in the project and can
    move the thrust in either direction. See `OPTIMISTIC_HYPOTHESES.md` H1
-   and `pic_sims/thruster_characterization/MAGNETIZED_PLAN.md` (tier M2).
+   and `future_work/M2_TRANSVERSE_B.md` (tier M2).
 2. **No flight cathode has been chosen.** The bench emitter is a thermionic
    filament, which is a bench convenience only: its heater alone would consume
    an order of magnitude more power than the entire thruster. A cold cathode

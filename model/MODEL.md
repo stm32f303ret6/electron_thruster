@@ -155,8 +155,9 @@ at 300 V.
 Ladder-wide (inherited from the PIC evidence): reduced ion mass (400 mₑ),
 electrostatic (no B, no ram drift; field-aligned Bz since probed under the
 exploratory policy — null at 1× LEO, ~11 % thrust tax at 10× via the float,
-`pic_sims/thruster_characterization/MAGNETIZED_PLAN.md` — transverse B
-still open), single grid/PPC/seed (convergence pass in progress),
+`pic_sims/thruster_characterization/magnetized_1x/`+`magnetized_10x/` —
+transverse B still open, `future_work/M2_TRANSVERSE_B.md`), single
+grid/PPC/seed (convergence pass in progress),
 finite-time equilibrium on the ion clock. Model-specific:
 the simple law neglects φ (4–6 % floor); escape is assumed near-unity (valid
 at 100–300 V, breaks below ~100 V in the capstone can geometry); supply

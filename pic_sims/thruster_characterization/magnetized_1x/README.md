@@ -1,6 +1,14 @@
 # characterization.magnetized_1x — field-aligned B at 1× LEO
 
-same system as the anchor with a uniform **axial magnetic field at flight strength**, Bz = 30 µT. tier M1a of `../MAGNETIZED_PLAN.md`, which pre-registered H-M1-null before the run: at 1× LEO field the anchor's operating point does not move outside its own bands.
+same system as the anchor with a uniform **axial magnetic field at flight strength**, Bz = 30 µT. tier M1a of the magnetized axis, pre-registered 2026-08-08 before the run (plan section below; the shared pre-run `MAGNETIZED_PLAN.md` is preserved in git history — its never-run tier-M2 design moved to `/future_work/M2_TRANSVERSE_B.md`).
+
+## plan — pre-registered 2026-08-08, before the run
+
+every committed run is electrostatic with B = 0, while the mission flies in the LEO geomagnetic field. two distinct physics questions hide in "what does B do": the **near field** (does the committed operating point — collection, float, escape, thrust production — survive magnetization?), answerable on the existing RZ deck; and the **far field** (where does the emitted momentum end up once the exhaust gyrates at r_g ≈ 1.4 m?), not answerable in RZ at 30 mm — that is tier M2, still open (`/future_work/M2_TRANSVERSE_B.md`). the only external B compatible with the RZ deck is **axial** — which is exactly the field-aligned-firing configuration, the fallback operating mode if the far-field answer ever comes back unfavorable.
+
+**H-M1-null (expected):** every anchor observable inside its exploratory trust gates and close to the B = 0 anchor — |Δφ| ≤ 2 V, |ΔF|/F ≤ 5%, Δescape ≤ 1 pp — at both field strengths. grounds: (i) the beam is axially field-aligned and r_g ≥ 0.10 m ≫ every device scale, so beam optics and escape cannot be B-limited; (ii) the Parker–Murphy ceiling (963 mm at 1×) sits far above the OML capture radius (61 mm), so magnetized collection is not flux-starved; (iii) ions stay unmagnetized at 1×.
+
+**what M1 cannot decide, stated up front:** the far-field coupling — even at 10×, domain/r_g,beam ≈ 0.22; the exhaust leaves the box long before it gyrates. a null here closes the *near-field* half and establishes the field-aligned mode; it licenses no claim about transverse-B thrust.
 
 ## setup
 
@@ -31,7 +39,7 @@ reference run `20260810T064845Z_5e785001`, all 6 required gates PASS. under the 
 | beam thrust | **13.64 nN** (anchor: 13.65 nN) | — | reported |
 | exhaust KE | **147.3 eV** (anchor: 147.5 eV) | — | reported |
 
-**H-M1-null holds** — a genuine null at flight field strength: gun optics, containment, collection and the operating point are the anchor's (the informational float/thrust regression bands vs the anchor also pass). together with the 10× companion (`../magnetized_10x/`) this closes the near-field, field-aligned half of the magnetized question. full detail: `reference_results/20260810T064845Z_5e785001/REFERENCE.md`.
+**H-M1-null holds on every pre-registered bound**: Δφ = +1.2 V (≤ 2), ΔF/F = +0.3% (≤ 5%), Δescape = 0.06 pp (≤ 1). the tail slope (16.1 V/µs) matches the anchor's own (16.5 V/µs) — the trace is anchor-identical to within the campaign's read precision, as grounds (i)–(iii) predicted. field-aligned firing at 1× LEO leaves the committed operating point untouched; the informational float/thrust regression bands vs the anchor also pass. together with the 10× companion (`../magnetized_10x/`) this closes the near-field, field-aligned half of the magnetized question. full detail: `reference_results/20260810T064845Z_5e785001/REFERENCE.md`.
 
 ![body potential vs time](reference_results/20260810T064845Z_5e785001/figures/phi_vs_time.png)
 

@@ -10,7 +10,8 @@
 #
 # This policy gates FUTURE runs of this stage; relative to the migrated
 # evidence it is post-hoc re-identification, not a new pre-registration.
-# Plan: ../MAGNETIZED_PLAN.md.  Changing any tolerance requires a new policy_id.
+# Plan: README.md (plan section; pre-run MAGNETIZED_PLAN.md in git history).
+# Changing any tolerance requires a new policy_id.
 # ----------------------------------------------------------------------
 schema_version: 1
 policy_id: characterization.magnetized_10x.v1

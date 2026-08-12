@@ -8,7 +8,9 @@ build, **PASS — all 6 required gates** under policy
 
 ## The pre-registered hypothesis, and the answer
 
-`MAGNETIZED_PLAN.md` recorded H-M1-tax before the run: overdriving the axial
+The magnetized-axis plan (now the plan section of `../../README.md`; the
+pre-run `MAGNETIZED_PLAN.md` is preserved in git history) recorded H-M1-tax
+before the run: overdriving the axial
 field to 10× LEO locates the mechanism that eventually bites.
 
 | metric | this run | unmagnetized anchor |

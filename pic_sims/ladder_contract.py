@@ -2,7 +2,7 @@
 """Shared, physics-free plumbing for the validation ladder.
 
 This is the ONLY code shared between validation stages (see
-``ARCHITECTURE_REFACTOR_PLAN.md``).  A stage duplicates its physics deliberately
+``ARCHITECTURE.md``).  A stage duplicates its physics deliberately
 so a reviewer can read one folder and see the whole model; the lifecycle
 plumbing -- run/analysis IDs, immutable directories, manifests, strict JSON,
 gate evaluation -- lives here so it is written and tested exactly once.

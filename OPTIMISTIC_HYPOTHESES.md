@@ -465,7 +465,7 @@ correct or update specific items.
   r_g built from the same KE is algebraically c_F/c_F_ideal — the same
   divergence loss computed twice. The identity itself stands and is
   restated (with this caveat) in
-  `pic_sims/thruster_characterization/MAGNETIZED_PLAN.md`, which is now the
+  `future_work/M2_TRANSVERSE_B.md`, which is now the
   actionable form of H1: tier M1
   (field-aligned, on the committed deck) is pre-registered; tier M2 (the
   transverse-B far-field run the reviewer asks for) is designed there.
@@ -495,7 +495,8 @@ correct or update specific items.
 ## MAINTAINER ANNOTATIONS — 2026-08-10
 
 - **H1's near-field half is now measured.** Tier M1 executed
-  (`MAGNETIZED_PLAN.md` RESULTS): at 1× LEO axial Bz the anchor is
+  (`pic_sims/thruster_characterization/magnetized_1x/` and `magnetized_10x/`
+  results): at 1× LEO axial Bz the anchor is
   unchanged (Δφ +1.2 V, ΔF +0.3 %, Δescape 0.06 pp — H-M1-null holds);
   at 10× a real collection tax appears (φ +33 V, thrust −11 %, entirely
   through the float; c_F untouched). This retires "magnetization has never
