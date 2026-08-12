@@ -22,7 +22,7 @@ Everything that makes this stage what it is lives in this one file:
 
 The dQ accounting and the Gauss-law C are transcribed verbatim from the
 validated deck -- do not "simplify" them.  Checkpoint/restart is deliberately
-not migrated (an interrupted run is FAILED and rerun; see MIGRATION_PLAN.md).
+not migrated (an interrupted run is FAILED and rerun; see pic_sims/ARCHITECTURE.md).
 
 Each execution creates a fresh immutable run directory under ``outputs/`` and
 is COMPLETE only after artifact and final-iteration verification:

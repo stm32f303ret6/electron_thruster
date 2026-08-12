@@ -238,7 +238,7 @@ class Config:
 
     All derivations are transcribed from the float200 config derivations
     (_derive_plasma + finalize); the one deviation is documented in
-    MIGRATION_PLAN.md: max_steps is floored to a multiple of diag_period so
+    max_steps is floored to a multiple of diag_period so
     the final dump lands exactly on the last iteration.
     """
     stage_id: str

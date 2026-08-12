@@ -1,6 +1,12 @@
 # characterization.magnetized_10x — field-aligned B at 10× LEO
 
-same system as the anchor with the axial field **overdriven to 10× flight strength**, Bz = 300 µT. tier M1b of `../MAGNETIZED_PLAN.md`, which pre-registered H-M1-tax before the run: overdriving the axial field locates the mechanism that eventually bites.
+same system as the anchor with the axial field **overdriven to 10× flight strength**, Bz = 300 µT. tier M1b of the magnetized axis, pre-registered 2026-08-08 before the run (plan section below; the shared pre-run `MAGNETIZED_PLAN.md` is preserved in git history — its never-run tier-M2 design moved to `/future_work/M2_TRANSVERSE_B.md`).
+
+## plan — pre-registered 2026-08-08, before the run
+
+the 1× companion (`../magnetized_1x/`, whose README carries the shared near-field/far-field framing) tests the flight condition; this run is the **amplification instrument**: at 10× the thermal-electron gyroradius is pushed to sheath scale (2.7 mm ≈ 1.4 λ_De), so if cross-field transport ever bites collection, it bites here first.
+
+**H-M1-tax (the alternative to the null):** at 10×, cross-field electron transport stiffens collection once r_g,e ~ λ_De: φ rises by > 2 V at fixed emission (the collection law's effective βA falls), KE = κ(V − φ) and thrust fall correspondingly. **direction pre-registered, magnitude not.**
 
 ## setup
 
@@ -31,7 +37,9 @@ reference run `20260810T131955Z_0b81e70a`, all 6 required gates PASS. under the 
 | beam thrust | **12.06 nN** (−11%; anchor: 13.65 nN) | — | reported |
 | exhaust KE | **115.9 eV** (KE = κ(V − φ) predicts 116.5) | — | reported |
 
-**H-M1-tax confirmed, entirely through the float**: beam formation is unharmed (escape essentially unchanged), but the magnetized skin collects less effectively, the float rises ~+33 V, and the thrust loss follows KE = κ(V − φ) exactly. the tax is a *collection* effect, not a gun effect. the caveat travels with the number: the float had not settled at 800 ns, so +33 V is a **lower bound** on the settled tax at this field. full detail: `reference_results/20260810T131955Z_0b81e70a/REFERENCE.md`.
+**H-M1-tax confirmed in the pre-registered direction, entirely through the float**: beam formation is unharmed (escape 98.3%, Δ ≈ 0.1 pp — B-independent, as r_g,beam ≥ 0.10 m ≫ device scale requires), but the magnetized skin collects less effectively: φ rises +32.6 V over the anchor at fixed emission, KE = κ(V − φ) falls 147 → 116 eV, and thrust follows, −11%. the chain is clean: the two-constant thrust law `F = 3.2675·I·√KE` reproduces both M1 runs (13.56 / 12.03 nN predicted vs 13.64 / 12.06 measured), so the entire tax enters through φ — c_F is untouched by Bz, and κ softens only slightly (0.806 → 0.766).
+
+disclosures that travel with the number: the float had not settled at 800 ns (14.4 V/µs at run end, final sample 49.8 V), so the settled φ is strictly higher, +33 V is a **lower bound** on the settled tax, and 12.06 nN is an **upper bound** on settled 10× thrust. the `benign_float` trust gate passes at 48.63 ≤ 50 V only marginally — a continuation would cross the line; the 100 V choke ceiling was never approached. the informational `phi_vs_float200_reference` gate flags, as it must — the float moving off the anchor *is* the experiment. and 10× is an amplification instrument, not a flight condition: the mission flies at 1×, where the null holds. full detail: `reference_results/20260810T131955Z_0b81e70a/REFERENCE.md`.
 
 ![body potential vs time](reference_results/20260810T131955Z_0b81e70a/figures/phi_vs_time.png)
 

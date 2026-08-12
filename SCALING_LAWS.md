@@ -249,8 +249,9 @@ ends by `capstone.low_power` and `capstone.high_thrust` respectively.
 
 Closed-loop throttle control for a selected cathode and geometry (escaped-
 current estimation, thrust loop, power minimization, guards) is deliberately
-excluded from the concept argument — see `CONCEPT_FEASIBILITY_SCOPE.md` and
-`future_work/UCURVE_CONTROL_REVIEW.md`. The concept paper carries only the
+excluded from the concept argument — see the scope decision in
+`future_work/README.md` and `future_work/UCURVE_CONTROL_REVIEW.md`. The
+concept paper carries only the
 throttle principle above and its measured 4–6 % closure.
 
 One sentence for the paper: *a propellantless thruster whose power budget

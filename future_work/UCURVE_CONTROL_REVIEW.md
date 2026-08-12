@@ -257,7 +257,7 @@ held nominal target—not delivered thrust—constant:
 Finally, every committed result remains electrostatic. The geomagnetic-field
 and far-field current-closure problem is still open and prevents the present
 law from being called globally flight-validated; see
-[MAGNETIZED_PLAN.md](../pic_sims/thruster_characterization/MAGNETIZED_PLAN.md).
+[M2_TRANSVERSE_B.md](M2_TRANSVERSE_B.md).
 
 ## Recommended control-law statement
 
