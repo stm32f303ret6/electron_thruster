@@ -112,7 +112,7 @@ The area arithmetic brackets the measurement: 4.66 V at α = 0.893 (tail fit),
 4.14 V at α = 0.82 (settled fit), measured 4.38 V. **The fitted exponent
 survives a 3.24× area change and an aspect-ratio change from L/r = 0.6 to 6.**
 
-### 3.3 The thin-plasma density axis (pre-registered 2026-08-06, never run)
+### 3.3 The thin-plasma density axis (pre-registered 2026-08-06; later executed — see §10)
 
 Predictions were recorded — α = 1 → 53.4 V, 0.893 → 60.9 V, 0.82 → 68.0 V,
 0.5 → 160.4 V — and the run was then **unchained before launch by scope
@@ -126,6 +126,13 @@ detector, not a measurement.**
 
 The pre-registration remains committed and unexecuted — a ready, un-p-hacked
 run if a reviewer challenges the density extrapolation.
+
+*Resolution (2026-08-08 → 08-12, after this section was written):* the run
+was relaunched as exactly the gross-breakdown detector described above,
+found healthy but unsettled at 800 ns, then continued to 2.4 µs under a
+pre-registered continuation — producing the campaign's **first settled
+float** and an unexpected verdict: every fixed-α prediction overshoots, and
+the law is *conservative* along density. Full account in §10.
 
 ---
 
@@ -336,9 +343,17 @@ Ranked by how much they threaten the conclusions.
    `n`-linear term is validated at ±1 % on a lower step and α is discriminated
    on the voltage axis, so the exposure is narrow — but "untested" is the word.
    The pre-registered run is ready.
+   *Update 2026-08-12: measured (§10). One 3× step, settled at 2.4 µs:
+   φ = 42.5 V against 53–68 V predicted — the fitted law is conservative
+   along density. What remains extrapolated is the regime beyond n0/3
+   toward the ~1e11 m⁻³ night minimum, now with a measured directional
+   bias.*
 2. **Nothing is fully settled.** Every float is still drifting at 800 ns
    (+4 to +27 mV/ns). Every φ should be quoted as a band. Settle time scales
    with ion transit, not with run length, so this is expensive to close.
+   *Update 2026-08-12: the thin-plasma continuation is the first settled
+   float (2.4 µs, late slope −0.14 V/µs). The anchor-row floats remain
+   800 ns reads with disclosed slopes.*
 3. **The reduced ion mass (400 mₑ, not O⁺)** is a ladder-wide caveat that no
    run in this campaign removes.
 4. **Grid resolution** is the leading numerical uncertainty (F +4.0 %,
@@ -364,9 +379,17 @@ Ranked by how much they threaten the conclusions.
 | 2026-08-06 | cathode-standoff fix committed and slender relaunched; thin-plasma pre-registered then unchained; `SETUP.md` written; slender gated PASS, hypothesis A confirmed |
 | 2026-08-07 | fixed-thrust throttle stages + gun voltage bracket pre-registered and committed (`UCURVE_PLAN.md`); gun cohort + biased_3v v2 re-gate run |
 | 2026-08-08 | all three throttle runs gated PASS; H2 (perveance tax) wins the discrimination; valley measured at ~125 V; no-go wall at 78 V demonstrated; two-slice α fit committed |
+| 2026-08-08 | thin-plasma n0/3 relaunched as the gross-breakdown detector; magnetized M1 axis pre-registered (`plasma.Bz_T`) |
+| 2026-08-09 | thin-plasma 800 ns gated PASS — healthy, unsettled (φ_settled > 31.6 V); throttle/U-curve work rescoped to `future_work/` |
+| 2026-08-10 | M1 pair gated PASS, run sequentially on one GPU: 1× LEO null (anchor unchanged), 10× collection tax (φ +33 V lower bound, F −11 %) |
+| 2026-08-11 | thin-plasma 2.4 µs continuation pre-registered, then launched |
+| 2026-08-12 | continuation gated PASS — the campaign's first settled float: 42.5 V, below every fixed-α prediction; the law is conservative along density |
 
 Total: **~50 GPU-hours** across four production runs, two convergence runs, and
 one killed run. One code change. Three pre-registrations, three resolved.
+The follow-on campaigns add ~14 GPU-hours (throttle, §9) and ~44 GPU-hours
+(characterization spokes, §10); with them, every pre-registration made in
+this repository has been resolved or explicitly rescoped.
 
 ---
 
@@ -412,3 +435,89 @@ cohort and the collector re-gate. Two acceptance-policy refutations were
 recorded and re-gated on the way (`emitter.voltage_bracket.v1`'s
 current-limiting expectation; `collector.biased_3v.v1`'s rationale) — both
 per the ladder's policy-versioning contract.
+
+---
+
+## 10. The characterization spokes: density and magnetization (2026-08-08 → 08-12)
+
+Two axes the frontier left open — ambient density and the geomagnetic
+field — were measured as spokes off the 200 V anchor
+(`pic_sims/thruster_characterization/`), each pre-registered before its
+run, each gated PASS on the trust set under
+`capstone.exploratory_axes.v1`.
+
+### 10.1 The density axis, closed by a continuation
+
+The §3.3 pre-registration was relaunched 2026-08-08 as a gross-breakdown
+detector: same deck at **n0/3** (5.42e11 m⁻³), rmax 30 → 40.8 mm for the
+√3× larger λ_D. The 800 ns reference run passed all six required gates —
+device healthy, no breakdown — but the float was still climbing, so the α
+discrimination failed with only a hard bound, φ_settled > 31.6 V.
+
+A **2.4 µs continuation** (3× the anchor's duration; `t_end`, `max_steps`,
+and `phi_ceiling` 100 → 180 V pre-registered in the plan's §CONTINUATION
+before launch) closed it:
+
+| run | steps | escape % | φ_body (V) | F_beam (nN) | exhaust KE (eV) | late slope |
+|---|---|---|---|---|---|---|
+| 800 ns reference `41b114e2` | 159,160 | 98.39 | 29.47 (unsettled) | 13.04 | 135.1 | climbing |
+| 2.4 µs continuation `acc8f8f9` | 477,480 | 99.13 | **42.5 — SETTLED** | 12.39 | 122.0 | −0.14 V/µs |
+
+The campaign's **first settled float**, and the scorecard surprised on
+both ends:
+
+- **α = 0.5 refuted a second time**, now on the density axis, independent
+  of the voltage-axis refutation (§3.1): the float saturated at 42.5 V
+  with the choke ceiling parked above 160 V.
+- **Every fixed α ≤ 1 overshoots** (predictions 53.4 / 60.9 / 68.0 V):
+  `(1+χ)` rose only 2.39× for the 3× density drop, where any fixed
+  α ≤ 1 requires ≥ 3×. Read as an exponent, the secant is
+  α_eff = ln 3 / ln 2.39 = **1.26**; read at the model's default α, a
+  **~38 % rise in βA** — the direction sheath expansion toward OML
+  predicts as r_probe/λ_D falls 2.5 → 1.5.
+- **The benign-float gate passes** (42.5 < 50 V), contrary to the plan's
+  expectation. n0/3 does not end the envelope at the anchor's drive: the
+  fitted law **over-predicts the float cost of thin plasma**. Every
+  mission row flagged `extrap_density` is now bounded by a measured,
+  conservative law over a 3× band.
+
+Caveats carried: a two-point A/B (one 3× step) across the disclosed rmax
+change; α_eff is a secant, not a fit; behavior beyond n0/3 toward the
+~1e11 m⁻³ night minimum remains extrapolated — now with a measured
+directional bias.
+
+### 10.2 The magnetized axis (tier M1, field-aligned)
+
+Pre-registered 2026-08-08 (H-M1-null at flight strength, H-M1-tax as the
+alternative at 10×), run strictly sequentially on one GPU 2026-08-10.
+The only external B compatible with the RZ deck is axial — exactly the
+field-aligned-firing flight configuration.
+
+| stage | Bz | escape % | φ_body (V) | F_beam (nN) | exhaust KE (eV) |
+|---|---|---|---|---|---|
+| `magnetized_1x` | 30 µT (1× LEO) | 98.44 | +17.22 | 13.64 | 147.3 |
+| `magnetized_10x` | 300 µT (10×) | 98.32 | +48.63 (climbing) | 12.06 | 115.9 |
+
+- **1× LEO: the null holds** on every pre-registered bound (Δφ ≤ 2 V,
+  ΔF/F ≤ 5 %, Δescape ≤ 1 pp — measured +1.2 V, +0.3 %, 0.06 pp). The
+  committed operating point is untouched by the flight-strength field;
+  field-aligned firing is established as the baseline mode.
+- **10×: a collection tax, entirely through the float.** Beam formation
+  is B-independent (escape Δ ≈ 0.1 pp; r_g,beam ≥ 0.10 m ≫ device
+  scale), but the magnetized skin collects less: φ rises +32.6 V over
+  the anchor, KE = κ(V − φ) falls 147 → 116 eV, thrust follows at −11 %.
+  The two-constant thrust law reproduces both runs (13.56 / 12.03 nN
+  predicted vs 13.64 / 12.06 measured) — c_F is untouched by Bz; the
+  entire tax enters through the collection side. The float had not
+  settled, so +33 V is a lower bound on the tax; 10× is an amplification
+  instrument, not a flight condition.
+
+What M1 does *not* close, stated up front in its plan: the far-field
+transverse case — where the emitted momentum ends up once the exhaust
+gyrates at r_g ≈ 1.4 m, unanswerable in an RZ domain of 30 mm. That is
+tier M2, the project's largest unexamined question
+(`future_work/M2_TRANSVERSE_B.md`).
+
+Cost: **~44 GPU-hours** — thin-plasma 8.4 (reference) + ~22 (continuation),
+the M1 pair 12.8. No code changes beyond the pre-registered `plasma.Bz_T`
+key; every run a variant deck through the anchor stage.
