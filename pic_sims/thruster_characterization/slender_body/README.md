@@ -2,6 +2,14 @@
 
 same drive and commanded current as the anchor, but the can lengthened from Ø10 × 5.5 mm to **Ø10 × 30.5 mm** (L/r = 6, total skin 3.17 → 11.0 cm²). identical demand makes the run a clean A/B against the anchor: the only physics change is where and how the return current is collected.
 
+![the Ø10 mm anchor vs the slender can, to scale](viz/size_comparison_anchor_vs_slender.png)
+
+*to-scale cutaways (`viz/size_comparison.py`, data-driven from the two `config.yaml`s and the reference run's `metrics.json`). the gun assembly sits at identical z in both decks — the `cathode_standoff` pedestal keeps the 4.7 mm gap while the body grows around it.*
+
+[![dashboard](viz/20260806T011847Z_5670e54c_dashboard.gif)](viz/20260806T011847Z_5670e54c_dashboard.mp4)
+
+*reference-run dashboard (click through for the mp4).*
+
 *(this file also carries the stage's plan, amendment and result record — formerly `SLENDER_BODY_PLAN.md`, unified 2026-08-11; the pre-run pre-registration is preserved verbatim in that file's git history.)*
 
 ## plan — pre-registered 2026-08-05, before the run
@@ -25,7 +33,7 @@ the design rule it establishes (derivable from the measured emission-ceiling law
 
 | | anchor (floating_body) | this spoke |
 |---|---|---|
-| `z_bot` | −5.5 mm | **−30.0 mm** |
+| `z_bot` | −5.0 mm | **−30.0 mm** |
 | `cathode_standoff` | floor-tied | **4.7 mm** |
 | grid | 200 × 440 | **200 × 608** (~122k cells) |
 | everything else | — | identical |
@@ -52,7 +60,7 @@ reference run `20260806T011847Z_5670e54c` (159,160 steps, 800 ns), all 6 require
 | beam thrust | **14.22 nN** | — | reported |
 | exhaust KE | **159.7 eV** (KE = κ(V − φ) predicts 160.5) | — | reported |
 
-**hypothesis A confirmed, B refuted by ~10×.** the area arithmetic brackets it: 4.66 V at α = 0.893, 4.14 V at α = 0.82 — the can's fitted collection exponent survives a 3.24× area change and an aspect-ratio change from L/r = 0.6 to 6. the theoretical worry that motivated the stage — sliding toward the long-cylinder OML limit and paying a hidden charging tax — did not materialise at L/r = 6.
+**hypothesis A confirmed, B refuted by ~10×.** the area arithmetic brackets it: 4.66 V at α = 0.893, 4.14 V at α = 0.82 — the can's fitted collection exponent survives a 3.24× area change and an aspect-ratio change from L/r ≈ 1.1 to 6. the theoretical worry that motivated the stage — sliding toward the long-cylinder OML limit and paying a hidden charging tax — did not materialise at L/r = 6.
 
 settle caveat, as pre-registered: φ still rises at run end (+3.7/+4.7/+7.3/+4.4 mV/ns over 400–600/600–700/700–750/750–800 ns), so quote **~5–6 V settled** as a band. the discrimination is robust to this — the hypothesis separation is an order of magnitude.
 

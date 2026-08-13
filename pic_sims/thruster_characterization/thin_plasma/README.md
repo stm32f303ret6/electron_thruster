@@ -2,6 +2,10 @@
 
 same system as the anchor in a **3× thinner ionosphere**. asks: do the collection law's fitted exponents (α, β) hold as r_probe/λ_D drops 2.5 → 1.5? pre-registered 2026-08-06 in `THIN_PLASMA_PLAN.md` with per-α float predictions (α = 1 → 53.4 V, 0.893 → 60.9 V, 0.82 → 68.0 V, 0.5 → 160.4 V), then **unchained before launch by scope decision** (the n-linear term was already validated ±1% at `collector.thermal`, and the settle limit would blur a 53–68 V discrimination); relaunched 2026-08-08 as a gross-breakdown detector.
 
+[![dashboard](viz/20260811T213635Z_acc8f8f9_dashboard.gif)](viz/20260811T213635Z_acc8f8f9_dashboard.mp4)
+
+*dashboard of the 2.4 µs continuation run (click through for the mp4).*
+
 ## setup
 
 | | anchor (floating_body) | this spoke |
@@ -57,6 +61,8 @@ the campaign's first **settled** float, and the verdict on the pre-registered pr
 - **benign-float gate (φ < 50 V) passes**, contrary to the plan's expectation: thin plasma at n0/3 does *not* end the envelope at the anchor's drive. the fitted law is **conservative along the density axis** — it over-predicts the float cost of thin plasma.
 
 caveat: a two-point A/B (one 3× step) across the disclosed rmax change; α_eff is a secant, not a fit, and says nothing beyond n0/3 toward the ~1e11 m⁻³ night minimum.
+
+![body potential vs time, 2.4 µs continuation](viz/20260811T213635Z_acc8f8f9_phi_vs_time.png)
 
 ## provenance
 
