@@ -189,7 +189,7 @@ regime, the first is why it deserves to.
 
 ## 7. Mission coupling — the throttle strategy
 
-From the committed 2024 orbit sweep (5 mm chipsat, real F10.7/Ap):
+From the committed 2024 orbit sweep (Ø10 mm anchor body, real F10.7/Ap):
 
 | altitude / pose | drag mean | drag max |
 |---|---|---|
@@ -347,7 +347,7 @@ Still extrapolation: L/r beyond 6, where the cylinder limit must eventually
 bite, and radii approaching λ_D, which converge on bare-tether collection
 (Sanmartín 1993).
 
-## 8c. Scale invariance — why this is not a chipsat result
+## 8c. Scale invariance — the corridor carries to CubeSats
 
 The measured bodies are Ø10 mm. The mission table is a 100 g craft. Neither is
 a useful spacecraft, so the question that decides whether any of this matters
@@ -388,7 +388,7 @@ is scale-free too: nothing closes there. In absolute terms a 3U end-on needs
 
 **Two things get easier with size.** The enhancement demanded over bare
 thermal collection *falls* as skin grows — a 3U needs 4.3× the thermal flux at
-600 km where the chipsat needs 15×, and the chipsat frontier runs at
+600 km where the Ø10 mm anchor needs 15×, and the anchor frontier runs at
 χ ≈ 150–320. Since bare thermal collection is the step validated to ±1 % and
 the enhancement exponent is the fitted quantity, **larger bodies rest on less
 extrapolation, not more.** And lower χ means a lower float, which by

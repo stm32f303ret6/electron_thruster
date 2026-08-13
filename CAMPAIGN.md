@@ -263,11 +263,13 @@ Two efficiencies must be quoted side by side, and only one is flattering:
   *worse* with voltage.
 
 So this will never be an efficient thruster, and the paper should say so
-plainly. The honest claim is different: **at gram scale there is no incumbent.**
-Cold gas, PPT, electrospray and FEEP all carry a dry-system floor — tank, valve,
-plumbing, PPU — that a gram-class craft cannot. This device's propellant is the
+plainly. The honest claim is different: **in the nanonewton corner there is no
+incumbent.** Cold gas, PPT, electrospray and FEEP all carry a dry-system floor
+— tank, valve, plumbing, PPU, ~0.3–1 kg — a large share of a kilogram-class
+CubeSat before the first newton-second. This device's propellant is the
 ionosphere, so its dry floor is a gun and a wire. The thrust–power plane has an
-empty corner below ~10 nN, and that is the niche.
+empty corner below ~10 nN, and that is the niche — one the scale-free result
+(§6.5) hands to CubeSat-class craft, not to gram-scale curiosities.
 
 ### 6.3 The mission corridor is real and narrow
 
@@ -314,7 +316,7 @@ end-on flight return **identical** margins — 1.4× / 2.8× / 5.4× at
 **8.8 mA at 0.88 W to hold 600 km**, 17 mA / 1.7 W at 550 km, 34 mA / 3.4 W at
 500 km. The 400 km wall is scale-free too, and closes for nothing.
 
-Larger bodies also need **less** extrapolation. The chipsat frontier runs at
+Larger bodies also need **less** extrapolation. The Ø10 mm anchor frontier runs at
 χ ≈ 150–320, deep in the fitted enhancement regime; a 3U needs only ~4× the
 bare thermal flux, which is the step validated to ±1 %. The unmeasured piece
 is a *regime* change, not a size problem: CubeSat radii are 25–60 λ_D against
