@@ -1,5 +1,5 @@
 % =============================================================================
-% Ambient-electron exchange thruster -- arXiv preprint (v2, chipsat campaign)
+% Ambient-electron exchange thruster -- arXiv preprint (v2, characterization campaign)
 % Build: pdflatex main.tex  (twice for refs)
 % Status: DRAFT. Measured numbers from the gated capstone frontier
 % (100/200/300 V, reference_results/) + minimal model mission sweeps.
@@ -11,7 +11,7 @@
 % =============================================================================
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
-\usepackage{amsmath,graphicx,booktabs,hyperref,xcolor,rotating}
+\usepackage{amsmath,amssymb,graphicx,booktabs,hyperref,xcolor,rotating}
 \newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
 
 \title{Propellantless Drag Compensation by Ambient-Electron Exchange:\\
@@ -69,7 +69,7 @@ body-mounted solar power at 550--600\,km, closes on impulse (duty-cycled,
 power-bound) at 500\,km, and does not close at 400\,km at any size. For
 CubeSat-class craft this corresponds to 0.9--3.4\,W and 9--34\,mA, and the
 required collection sits only a few times above the bare thermal flux --
-markedly less extrapolation than the chipsat anchor itself demands. In an independent predecessor implementation of the same mechanism
+markedly less extrapolation than the \O10\,mm anchor itself demands. In an independent predecessor implementation of the same mechanism
 (\O14\,mm body, 800\,V) a closed control-volume momentum ledger, validated
 on an analytic vacuum fixture and a dedicated full-return null experiment,
 established that the recollected return current does not cancel the thrust
@@ -222,7 +222,7 @@ All production runs use WarpX~\cite{warpx22} (v26.5, GPU), RZ electrostatic,
 with the spacecraft as an embedded-boundary conductor whose floating
 potential is driven each step by the measured charge balance (a
 ``charge-pump'' update: emitted charge out, collected charge in, body
-capacitance from a Gauss-law probe). The chipsat deck: a \O10\,mm
+capacitance from a Gauss-law probe). The anchor deck: a \O10\,mm
 $\times$\,5.9\,mm closed can with a 4\,mm exhaust aperture and an internal
 cathode disk; ambient plasma at a dayside 400\,km-class row
 ($n_e = 1.627\times10^{12}$\,m$^{-3}$, $T_e = 1318.8$\,K,
@@ -269,7 +269,7 @@ $V$ [V] & $I$ [mA] & $\varphi$ [V] & $F$ [nN] & $P$ [mW] & $F/P$ [\textmu N/W]
 300 & 0.630 & $+36.30$ & 30.13 & 189  & 0.159 & 99.0\% & 210.1 \\
 \bottomrule
 \end{tabular}
-\caption{The measured voltage frontier of the \O10\,mm chipsat device at the
+\caption{The measured voltage frontier of the \O10\,mm anchor device at the
 dayside plasma row, all runs PASS on all pre-registered acceptance gates.
 Each point holds the same emission ratio $I/I_{\mathrm{CL}} = 1.46$ (the
 space-charge-limited ceiling measured at 200\,V), so beam optics stay
@@ -543,7 +543,7 @@ to the measured percent level.
         change every reported quantity by $\le$0.5\%; grid refinement from
         0.30 to 0.20\,mm cells shifted thrust $+4$--5\% and exhaust energy
         $+10\%$, reported there as the leading open numerical question. For
-        the present chipsat deck (0.15\,mm cells -- already finer than
+        the present anchor deck (0.15\,mm cells -- already finer than
         both predecessor grids) we ran a two-axis convergence pair at the
         200\,V anchor. Doubling particles-per-cell (ambient and beam)
         changes every reported quantity by $\le$0.05\% over the full
@@ -648,7 +648,7 @@ at our thrust and power scale. Second, where an explicit or computable jet
 efficiency exists, it clusters at 28--45\% for
 electrospray~\cite{busekbetmax21}, $\approx$35\% for FEEP~\cite{krejci19},
 and $\approx$31--44\% for Hall thrusters~\cite{busekbht200}; our measured
-energy conversion (68\% at the predecessor point, 73\% at the chipsat
+energy conversion (68\% at the predecessor point, 73\% at the anchor
 reference) exceeds every value found. Third -- and this is a boundary, not
 a boast -- our thrust-per-watt is $\sim$200$\times$ below gridded ion: the
 efficiency-indifference boundary is real. The $F/P$ penalty is invisible at
@@ -663,8 +663,9 @@ the drag demand of the bodies considered here, in packages heavier than the
 smaller of them; ``continuous'' thrust at
 nanonewtons is not a propellant-mass argument (five years of nanonewton
 thrust is $\sim$0.3\,g of electrospray propellant) but a \emph{dry-system
-floor} argument: tank + feed + valves + PPU is $\sim$0.3--1\,kg and does
-not shrink to gram scale, while this concept's floor is a cathode, a boost
+floor} argument: tank + feed + valves + PPU is $\sim$0.3--1\,kg -- a
+substantial fraction of a kilogram-class CubeSat's total mass before the
+first newton-second -- while this concept's floor is a cathode, a boost
 converter, and the spacecraft's own skin.
 
 \begin{sidewaystable}
@@ -673,7 +674,7 @@ converter, and the spacecraft's own skin.
 \toprule
 System & Example & Thrust & Power & Isp & Energy eff. & Hardware & Ref.\\
 \midrule
-\textbf{This work} & Ambient-electron exchange & 3.4--30\,nN (chipsat, 100--300\,V); 17\,nN (\O14\,mm, 800\,V) & 12--189\,mW; 174\,mW & $0.7$--$1.5{\times}10^6$\,s & \textbf{68--73\%} ($F/P$ 0.16--0.28\,\textmu N/W) & HV supply + cold gun + aperture. No tank, valves, feed, neutralizer, gimbal & -- \\
+\textbf{This work} & Ambient-electron exchange & 3.4--30\,nN (\O10\,mm, 100--300\,V); 17\,nN (\O14\,mm, 800\,V) & 12--189\,mW; 174\,mW & $0.7$--$1.5{\times}10^6$\,s & \textbf{68--73\%} ($F/P$ 0.16--0.28\,\textmu N/W) & HV supply + cold gun + aperture. No tank, valves, feed, neutralizer, gimbal & -- \\
 Cold gas & GomSpace NanoProp 6U (GOMX-4B)$^\ddagger$ & 0.1--10\,mN & $<$2\,W & 60--110\,s & n/s & Dual tanks, fill valves, filters, 2--3 isolation valves/line, heaters, 4 nozzles & \cite{nasasoa26,gomx4eop} \\
 PPT & Mars Space PPTCUP (qualified)$^\ddagger$ & 40\,\textmu N avg & $\sim$2\,W & 655\,s & n/s ($<$20\% typ.) & Cu--W chamber, HV cap bank, EMI box; no tank/valves & \cite{cia15,cia16,nasasoa26} \\
 Electrospray & Busek CMNT (LISA Pathfinder) & 4$\times$20\,\textmu N & 16.5\,W & 225\,s & 28/45\%$^\dagger$ (BET-300-P) & Propellant-less CNT neutralizer, low-pressure tanks, PPU & \cite{nasasoa26,busekbetmax21} \\
@@ -772,14 +773,14 @@ The mission table above holds the body shape fixed, but drag and collection
 scale with \emph{different} areas: drag buys the ram silhouette, while
 collection and solar harvest buy the total skin. A slender body flying
 end-on decouples them. A \O10\,mm\,$\times$\,100\,mm cylinder presents the
-same end cap as the chipsat -- the same nanonewton-class drag -- while its
-lateral skin ($\sim$31\,cm$^2$, ten times the chipsat's total surface)
+same end cap as the anchor body -- the same nanonewton-class drag -- while its
+lateral skin ($\sim$31\,cm$^2$, ten times the anchor's total surface)
 collects $\sim$46\,\textmu A of bare thermal current before any float
 enhancement and carries enough solar cell area to push harvest from
 $\sim$30 toward 100--200\,mW, at a mass of tens of grams. The niche
 therefore extends up-mass along the rod (or plate) direction, not the cube:
 payload, power, and return current grow with length while the drag bill
-does not, and 400\,km -- infeasible for the chipsat in
+does not, and 400\,km -- infeasible for the squat anchor in
 Table~\ref{tab:missions} -- reopens for slender geometries on the power
 side.
 
@@ -795,7 +796,7 @@ at 4--5\,V) against a cylinder-limit lateral wall (float in the tens of
 volts, possibly past the benign gate).
 
 The measurement settles it. A \O10\,mm\,$\times$\,30.5\,mm can
-($L/r = 6$, skin $3.24\times$ the chipsat's) at the identical 200\,V drive,
+($L/r = 6$, skin $3.24\times$ the anchor's) at the identical 200\,V drive,
 commanded current, plasma row, grid and seed floats to
 $\phi = 4.38$\,V tail-averaged (4.79\,V at run end, still rising at
 $+4.4$\,mV/ns, so $\sim$5--6\,V settled), against the area arithmetic's
@@ -866,16 +867,16 @@ power demand per m$^2$ of ram & 1451\,W & 335\,W & 170\,W & 88\,W \\
 The slender \O10\,mm can and the 3U CubeSat return \emph{identical} margins,
 because they have the same shape ratio; the 400\,km wall is equally
 scale-free and closes for nothing. Read the other way, the corridor of
-Table~\ref{tab:missions} is not a chipsat result at all -- it is a statement
-about aspect ratio and altitude that a payload-carrying spacecraft inherits
-unchanged. In absolute terms a 3U in end-on flight needs 8.8\,mA at 0.88\,W
+Table~\ref{tab:missions} is not a small-body result at all -- it is a
+statement about aspect ratio and altitude that a kilogram-class,
+payload-carrying CubeSat inherits unchanged. In absolute terms a 3U in end-on flight needs 8.8\,mA at 0.88\,W
 to hold 600\,km, 17\,mA at 1.7\,W at 550\,km, and 33\,mA at 3.4\,W at
 500\,km: values a CubeSat power system can supply.
 
 Two things become \emph{easier} with size. First, larger skins collect more,
 so the enhancement demanded over bare thermal collection falls -- a 3U needs
-$4.3\times$ the thermal flux at 600\,km where the chipsat anchor needs
-$15\times$, and the chipsat frontier runs at $\chi \approx 150$--320. Since
+$4.3\times$ the thermal flux at 600\,km where the \O10\,mm anchor needs
+$15\times$, and the anchor frontier runs at $\chi \approx 150$--320. Since
 bare thermal collection is the rung validated to $\pm1\%$ and the enhancement
 exponent is the fitted quantity, \textbf{larger bodies rest on less
 extrapolation, not more}. Second, lower $\chi$ means a lower float, which by
@@ -897,11 +898,12 @@ settles faster.
 \label{sec:practical}
 \subsection{Bill of materials}
 A conducting structure, a milliwatt-class high-voltage supply (100--300\,V
-for the chipsat design; up to 800\,V demonstrated in simulation at larger
+for the measured design; up to 800\,V demonstrated in simulation at larger
 scale), a cold electron gun with its cathode at $-V$, and an aperture. No
 tank, valves, feed lines, RF stages, or gimbals. The dry-system floor is a
-cathode, a boost converter, and the spacecraft's own skin -- which is what
-lets the concept shrink to gram scale where every tanked system cannot.
+cathode, a boost converter, and the spacecraft's own skin -- grams of added
+hardware on a kilogram-class CubeSat, where every tanked system starts at
+0.3--1\,kg of dry mass before the first newton-second.
 \todo{cost estimate}
 \subsection{Retrofit path}
 Gridded-ion and Hall thrusters already fly hollow-cathode/filament electron
@@ -1008,8 +1010,9 @@ with flagged extrapolation; full mission validation is future work.
 Drag compensation for small spacecraft at 450--600\,km requires
 nanonewtons to micronewtons of continuous thrust from milliwatts to a few
 watts of power -- a slot no flight propulsion system occupies: the smallest
-controllable flight EP sits orders of magnitude above the demand, in packages
-that for the smaller vehicles outweigh the spacecraft entirely. We have measured, under a pre-registered evidence
+controllable flight EP sits orders of magnitude above the demand, in
+kilogram-scale packages that claim a large share of a CubeSat's mass and
+power budget. We have measured, under a pre-registered evidence
 contract, the complete thrust--power frontier of a device that fills the
 slot with zero propellant and zero net mass flux: a sealed conducting body,
 a cold electron gun, and the ionosphere as both propellant reservoir and
@@ -1033,7 +1036,9 @@ the resulting two-constant analytical power model -- validated to within
 propagations with every extrapolated regime flagged, bounds a mission
 corridor: closure on
 harvested power at 550--600\,km, impulse closure at 500\,km, honest failure
-at 400\,km. The device is inexpensive and low-risk to test -- no hardware
+at 400\,km -- a corridor that, by the measured size-cancellation argument,
+a 3U CubeSat in end-on flight inherits unchanged at 0.9--3.4\,W and
+9--34\,mA. The device is inexpensive and low-risk to test -- no hardware
 beyond a high-voltage supply and an electron gun of a kind that already
 flies as a neutralizer -- which suggests both a rapid path to an on-orbit
 demonstration and a retrofit use for existing propulsion systems after

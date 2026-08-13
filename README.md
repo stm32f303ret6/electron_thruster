@@ -38,8 +38,8 @@ number and it is good — around 73 %, ion-thruster-class.
 
 Measured thrust at the validated operating point is **13.65 nN** (200 V,
 0.342 mA, ~68 mW), rising to **30.13 nN** at the 300 V ceiling. Against real
-2024 drag (NRLMSISE-00, real F10.7/Ap, solar-cycle-25 maximum) for a 5 mm
-chipsat:
+2024 drag (NRLMSISE-00, real F10.7/Ap, solar-cycle-25 maximum) for the
+Ø10 mm anchor body:
 
 | case | drag mean | drag max | 13.65 nN covers |
 |---|---|---|---|

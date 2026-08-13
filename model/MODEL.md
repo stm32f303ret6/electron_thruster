@@ -148,7 +148,7 @@ at 300 V.
 - **Duty cycle needed** = mean(drag)/F_cap: ≤ 100 % means the impulse
   budget closes by duty-cycling.
 - **Power closure**: mean beam power ≤ harvested power (~30 mW for the
-  chipsat's body-mounted cells).
+  anchor body's body-mounted cells).
 
 ## 6. Caveats that travel with every number
 

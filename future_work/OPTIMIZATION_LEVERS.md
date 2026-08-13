@@ -23,7 +23,7 @@ Reference point (200 V anchor, 13.65 nN): ideal bound 57 mW, measured
 ## 1. Emission ceiling — the conclusion-moving lever
 
 - **Mechanism**: the gun's space-charge ceiling `I_max = 1.46·I_CL(V) ∝
-  V^1.5/d²` decides which (V, F) points are *reachable*. The chipsat fails
+  V^1.5/d²` decides which (V, F) points are *reachable*. The anchor body fails
   at 400 km because demand exceeds this ceiling 63 % of the time — an
   envelope failure, not an efficiency failure.
 - **Optimization**: more emitting area at the same short gap — multiple
