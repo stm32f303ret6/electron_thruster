@@ -143,7 +143,7 @@ term from `lateral` while keeping it in `axial` would make the two poses an
 apples-to-oranges comparison (~10 % on this squat body).
 
 **Worth knowing, because it surprises people:** at r = h the cap disc πr² is
-*larger* than the side rectangle 2rh, so for the chipsat **broadside is the
+*larger* than the side rectangle 2rh, so for the squat anchor body **broadside is the
 LOW-drag pose**. A slender body (h > 1.571·r) reverses it.
 
 ## What was left out of the port

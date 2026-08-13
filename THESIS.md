@@ -7,17 +7,23 @@ and the anticipated objections answered from measured, committed evidence.
 
 ## The claim
 
-> Drag compensation for gram-class spacecraft at 450–600 km requires 1–100 nN
-> of continuous thrust. No flight propulsion system can supply it: the smallest
-> controllable flight EP (precision electrosprays/FEEP, ~5–30 µN) sits two to
-> three orders of magnitude above the demand, in packages heavier than the
-> entire spacecraft. This device fills that slot with ion-thruster-class energy
-> conversion (~73 %), zero propellant and zero net mass flux, at 10–100 mW — a
-> power level the spacecraft's own skin can harvest — using no tank, no feed
-> system, no discharge chamber, and no neutralizer, because the ionosphere is
-> the propellant reservoir and the spacecraft surface is the return electrode.
-> Its thrust-per-watt is ~200× below an ion thruster's, which is precisely why
-> it only owns the nN regime — and why nothing else does.
+> Drag compensation for small spacecraft at 450–600 km requires continuous
+> thrust in the nanonewton range — a few nN for the centimetre-class bodies
+> measured here, a few hundred nN for a CubeSat flying end-on. No flight
+> propulsion system can supply it: the smallest controllable flight EP
+> (precision electrosprays/FEEP, ~5–30 µN) sits orders of magnitude above the
+> demand, in kilogram-scale packages that claim a large share of a CubeSat's
+> mass budget. This device fills that slot with ion-thruster-class energy
+> conversion (~73 %), zero propellant and zero net mass flux, at 10–100 mW
+> for the measured Ø10 mm anchor and 0.9–3.4 W for a 3U CubeSat — power the
+> spacecraft's own skin can harvest — using no tank, no feed system, no
+> discharge chamber, and no neutralizer, because the ionosphere is the
+> propellant reservoir and the spacecraft surface is the return electrode.
+> The measured size-cancellation result makes the feasibility condition
+> scale-free: a kilogram-class CubeSat in end-on flight inherits the mission
+> corridor unchanged. Its thrust-per-watt is ~200× below an ion thruster's,
+> which is precisely why it only owns the nN regime — and why nothing else
+> does.
 
 ### Wording guardrails (agreed, do not regress)
 
@@ -27,13 +33,15 @@ and the anticipated objections answered from measured, committed evidence.
 - **"Continuous" means no total-impulse limit, argued via the system floor,
   not propellant mass.** At nN scale, 5 years of thrust is ~5 N·s ≈ 0.3 g of
   electrospray propellant — propellant *mass* is not the argument. The argument
-  is the dry-system floor: tank + feed + valves + PPU is ~0.3–1 kg and does not
-  shrink to gram scale; this concept's floor is a cathode, a boost converter,
+  is the dry-system floor: tank + feed + valves + PPU is ~0.3–1 kg — a
+  substantial fraction of a kilogram-class CubeSat before the first
+  newton-second; this concept's floor is a cathode, a boost converter,
   and the spacecraft skin.
 - **The nuance on "no ion thruster goes that low":** gridded ion/Hall bottom
   out ~mN; LISA-Pathfinder-class colloids/FEEP reach 5–30 µN with ~0.1 µN
-  resolution — still 100–1000× above chipsat drag, in kg-class systems. State
-  it that way so the claim is armored.
+  resolution — still orders of magnitude above the nN-class demand of the
+  measured bodies and well above an end-on CubeSat's few-hundred-nN demand,
+  in kg-class packages. State it that way so the claim is armored.
 - **The efficiency-indifference boundary is real and must be stated:** the
   F/P penalty is invisible at nN (mW), noticeable at µN (~10 W for CubeSat
   drag — disqualifying), decisive at mN. The handoff — electron thruster below
@@ -79,8 +87,9 @@ beam). 300 V run `20260804T154756Z_b854dcbe`, steady tail:
 ### "An electrodynamic tether does the same thing far more efficiently."
 
 Concede F/P at km scale — Lorentz force pays no exhaust-energy cost. The
-claim breaks at chipsat scale: a 5 mm vehicle vs a deployed, gravity-gradient
-stabilized conductor 4–6 orders of magnitude longer than the spacecraft,
+claim breaks at the scales considered here: a centimetre-class body or a 3U
+CubeSat vs a deployed, gravity-gradient
+stabilized conductor 3–6 orders of magnitude longer than the spacecraft,
 plus libration control, meteoroid survivability, and thrust constrained to
 the IL×B direction. And a bare EDT's endpoints still require the same
 electron collection/emission contactor physics this device *is*. The thesis

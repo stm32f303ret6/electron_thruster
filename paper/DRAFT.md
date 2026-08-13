@@ -9,7 +9,8 @@ edit here first, port to prose after.
   inside a sealed floating body, one aperture, ionosphere closes the circuit.
 - concept = a parameter-free ideal law; pic runs = evidence that a real
   geometry sits within ~20 % of it.
-- mission corridor (chipsat + any same-shape body): closes on skin-harvested
+- mission corridor (anchor body + any same-shape body, CubeSats included):
+  closes on skin-harvested
   power at 550–600 km, impulse-closes at 500 km, fails honestly at 400 km.
 
 ## 1. why (intro)
