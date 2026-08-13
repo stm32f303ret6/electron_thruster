@@ -38,6 +38,8 @@ def parse_args(argv=None):
     ap.add_argument("--run", type=Path, required=True)
     ap.add_argument("--out", type=Path, default=None)
     ap.add_argument("--fps", type=float, default=10.0)
+    ap.add_argument("--title", default="Chipsat 200 V",
+                    help="dashboard suptitle prefix")
     return ap.parse_args(argv)
 
 
@@ -181,7 +183,7 @@ def main(argv=None) -> int:
             line_esc.set_data([], [])
             line_ret.set_data([], [])
 
-        sup.set_text(f"Chipsat 200 V    step {it}    t = {t_ns:.1f} ns")
+        sup.set_text(f"{args.title}    step {it}    t = {t_ns:.1f} ns")
         writer.grab_frame()
 
     for _ in range(int(round(fps))):

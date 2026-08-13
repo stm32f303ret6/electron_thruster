@@ -2,6 +2,10 @@
 
 same system as the anchor with a uniform **axial magnetic field at flight strength**, Bz = 30 µT. tier M1a of the magnetized axis, pre-registered 2026-08-08 before the run (plan section below; the shared pre-run `MAGNETIZED_PLAN.md` is preserved in git history — its never-run tier-M2 design moved to `/future_work/M2_TRANSVERSE_B.md`).
 
+[![dashboard](viz/20260810T064845Z_5e785001_dashboard.gif)](viz/20260810T064845Z_5e785001_dashboard.mp4)
+
+*reference-run dashboard (click through for the mp4).*
+
 ## plan — pre-registered 2026-08-08, before the run
 
 every committed run is electrostatic with B = 0, while the mission flies in the LEO geomagnetic field. two distinct physics questions hide in "what does B do": the **near field** (does the committed operating point — collection, float, escape, thrust production — survive magnetization?), answerable on the existing RZ deck; and the **far field** (where does the emitted momentum end up once the exhaust gyrates at r_g ≈ 1.4 m?), not answerable in RZ at 30 mm — that is tier M2, still open (`/future_work/M2_TRANSVERSE_B.md`). the only external B compatible with the RZ deck is **axial** — which is exactly the field-aligned-firing configuration, the fallback operating mode if the far-field answer ever comes back unfavorable.
