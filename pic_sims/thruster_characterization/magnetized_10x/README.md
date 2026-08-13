@@ -2,6 +2,10 @@
 
 same system as the anchor with the axial field **overdriven to 10× flight strength**, Bz = 300 µT. tier M1b of the magnetized axis, pre-registered 2026-08-08 before the run (plan section below; the shared pre-run `MAGNETIZED_PLAN.md` is preserved in git history — its never-run tier-M2 design moved to `/future_work/M2_TRANSVERSE_B.md`).
 
+[![dashboard](viz/20260810T131955Z_0b81e70a_dashboard.gif)](viz/20260810T131955Z_0b81e70a_dashboard.mp4)
+
+*reference-run dashboard (click through for the mp4).*
+
 ## plan — pre-registered 2026-08-08, before the run
 
 the 1× companion (`../magnetized_1x/`, whose README carries the shared near-field/far-field framing) tests the flight condition; this run is the **amplification instrument**: at 10× the thermal-electron gyroradius is pushed to sheath scale (2.7 mm ≈ 1.4 λ_De), so if cross-field transport ever bites collection, it bites here first.
