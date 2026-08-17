@@ -1,4 +1,4 @@
-# capstone.high_thrust — 300 V ceiling
+# capstone.high_thrust — 300 V (the tested ceiling until 2026-08-17; since extended by `../350V_400km/`)
 
 same system as `floating_body` driven at **300 V** / 0.63 mA. asks: how much thrust at full drive, and does the body still float safely?
 

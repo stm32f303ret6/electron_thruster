@@ -360,6 +360,10 @@ that trade.
 
 From `model/MODEL.md` §5:
 
+*(table computed against the 300 V envelope; the 2026-08-17 extension to
+350 V moved 400 km axial to ~76–81 % duty — see `CAMPAIGN.md`. The density
+axis this hypothesis is actually about remains as stated.)*
+
 | altitude | duty cycle needed | **in-envelope %** |
 |---|---|---|
 | 400 km axial | 140 % — does not close | 11.9 |
