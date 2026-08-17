@@ -58,15 +58,19 @@ A further pre-registered run varies body
 ram silhouette fixed drops the float from 17.0 to 4.38\,V and \emph{raises}
 thrust to 14.22\,nN, because a lower float returns drive energy to the beam.
 This exposes the governing scaling. Drag charges for the ram silhouette while
-collection and solar harvest are paid from the skin, so thrust demand and
+collection and any body-mounted power supply are paid from the skin, so
+thrust demand and
 power supply are both areal and vehicle size cancels: the feasibility
 condition reduces to the shape ratio (skin\,/\,ram) and the altitude, and is
 independent of scale. A minimal executable model calibrated only from the
 gated runs, applied to year-long orbit propagations with real solar-activity
 and ionosphere data, therefore bounds a corridor that a \O10\,mm body and a
-3U CubeSat in end-on flight share identically: drag compensation closes on
-body-mounted solar power at 550--600\,km, closes on impulse (duty-cycled,
-power-bound) at 500\,km, and does not close at 400\,km at any size. For
+3U CubeSat in end-on flight share identically: at 550--600\,km drag
+compensation demands 7--17\,mW mean at 25--32\% duty for the \O10\,mm body;
+at 500\,km it remains inside the measured envelope at 39\,mW mean; at
+400\,km the demand exceeds the 300\,V emission ceiling for this shape at
+any size. Supplying the demand is mission design rather than part of the
+device -- body-mounted solar cells are the worked example throughout. For
 CubeSat-class craft this corresponds to 0.9--3.4\,W and 9--34\,mA, and the
 required collection sits only a few times above the bare thermal flux --
 markedly less extrapolation than the \O10\,mm anchor itself demands. In an independent predecessor implementation of the same mechanism
@@ -741,19 +745,21 @@ envelope'' = row interpolates committed measurements on every axis.}
 \includegraphics[width=0.95\linewidth]{figs/missions.pdf}
 \caption{The feasibility corridor. Left: duty cycle needed to cancel mean
 drag; above the dashed line the impulse budget cannot close. Right: mean
-power at demanded thrust against the body-mounted solar harvest estimate.}
+power at demanded thrust; the body-mounted solar harvest line is an example
+supply, not a device requirement.}
 \label{fig:missions}
 \end{figure}
 
-The corridor reads directly: at \textbf{550--600\,km} drag compensation
-closes on body-mounted solar power (8--17\,mW mean demand against
-$\sim$30\,mW harvest) with 25--32\% duty cycles; \textbf{500\,km} closes on
-impulse but is power-bound at the mean (39\,mW) -- closure there relies on
-thrusting preferentially when the plasma is dense and the charging tax low,
-which the per-row minimum-power solution does automatically;
-\textbf{400\,km does not
-close} for this body -- the demand exceeds the emission ceiling 63\% of the
-time -- and we state that plainly rather than average around it. Two
+The corridor reads directly as power demand: at \textbf{550--600\,km} drag
+compensation costs 8--17\,mW mean at 25--32\% duty cycles; at
+\textbf{500\,km} the impulse budget closes at 45\% duty and the mean demand
+is 39\,mW -- the per-row minimum-power solution automatically thrusts
+preferentially when the plasma is dense and the charging tax low; at
+\textbf{400\,km the demand leaves the measured envelope} -- it exceeds the
+emission ceiling 63\% of the time for this body -- and we state that plainly
+rather than average around it. Supplying these demands is mission design,
+not part of the device; for scale, body-mounted cells on this body harvest
+roughly 10--30\,mW depending on cell coverage. Two
 honesty flags travel with the table. First, the corridor's boundary
 behaviour is set by the night-side rows -- thin, cold plasma where the
 collection stiffness $\propto 1/(n_e\sqrt{T_e})$ drives the float toward
@@ -771,13 +777,14 @@ flight design and are not modelled.
 \label{sec:slender}
 The mission table above holds the body shape fixed, but drag and collection
 scale with \emph{different} areas: drag buys the ram silhouette, while
-collection and solar harvest buy the total skin. A slender body flying
+collection and any body-mounted power supply buy the total skin. A slender body flying
 end-on decouples them. A \O10\,mm\,$\times$\,100\,mm cylinder presents the
 same end cap as the anchor body -- the same nanonewton-class drag -- while its
 lateral skin ($\sim$31\,cm$^2$, ten times the anchor's total surface)
 collects $\sim$46\,\textmu A of bare thermal current before any float
-enhancement and carries enough solar cell area to push harvest from
-$\sim$30 toward 100--200\,mW, at a mass of tens of grams. The niche
+enhancement and carries skin for an order-of-magnitude larger body-mounted
+supply (100--200\,mW of solar cells, as one example), at a mass of tens of
+grams. The niche
 therefore extends up-mass along the rod (or plate) direction, not the cube:
 payload, power, and return current grow with length while the drag bill
 does not, and 400\,km -- infeasible for the squat anchor in
@@ -836,16 +843,18 @@ device is for. Drag charges for the ram silhouette $A_{\mathrm{ram}}$, so the
 thrust demand, the beam current and hence the input power are all
 proportional to $A_{\mathrm{ram}}$; power \emph{per unit ram area} is
 therefore a property of altitude and drive voltage alone
-(Table~\ref{tab:scalefree}, top). Solar harvest per unit skin area is
-likewise a property of the cells, not of the vehicle. \textbf{Vehicle size
+(Table~\ref{tab:scalefree}, top). Any body-mounted power supply is likewise
+areal on the skin -- solar cells, the worked example here, deliver a fixed
+power per unit cell area whatever the vehicle. \textbf{Vehicle size
 cancels from both sides of the power balance}, and what survives is the shape
 ratio $A_{\mathrm{skin}}/A_{\mathrm{ram}}$ together with the altitude.
 
 \begin{table}[t]\centering\small
 \caption{The power balance is areal on both sides, so feasibility is set by
-shape and altitude, not by size. Margin = harvest\,/\,demand at 100\,V;
-$>1$ closes. Harvest assumes 30\% cells over one third of the skin at 25\%
-orbit-average illumination (102\,W/m$^2$ of cell area). Generated by
+shape and altitude, not by size. Margin = example supply\,/\,demand at
+100\,V; the example supply is body-mounted solar, 30\% cells over one third
+of the skin at 25\% orbit-average illumination (102\,W/m$^2$ of cell area) --
+the size-free ratio is the result, not the absolute number. Generated by
 \texttt{model/scale\_analysis.py}.}
 \label{tab:scalefree}
 \begin{tabular}{lrrrr}
@@ -1034,8 +1043,8 @@ geomagnetic field -- fixes the charging tax, and
 the resulting two-constant analytical power model -- validated to within
 6\% of every gated frontier point -- applied to year-long orbit
 propagations with every extrapolated regime flagged, bounds a mission
-corridor: closure on
-harvested power at 550--600\,km, impulse closure at 500\,km, honest failure
+corridor stated as power demand: 7--17\,mW at 550--600\,km, 39\,mW at
+500\,km, and an honest envelope exit
 at 400\,km -- a corridor that, by the measured size-cancellation argument,
 a 3U CubeSat in end-on flight inherits unchanged at 0.9--3.4\,W and
 9--34\,mA. The device is inexpensive and low-risk to test -- no hardware

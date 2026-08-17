@@ -1,0 +1,90 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for characterization.350V_400km (350 V).
+#
+# Like the high_thrust policy there is no regression anchor at this
+# operating point -- no prior run at 350 V / 0.793 mA exists.  The REQUIRED
+# gates are the theory-anchored invariants that hold at any operating
+# point: the steady-state current balance (the floating equilibrium IS a
+# current balance), the momentum sanity bound, sheath/plume containment,
+# the ledger-vs-dump charge cross-checks, escape >= 95 %, and the
+# benign-float design limit (phi <= 50 V; the run itself aborts at 100 V).
+#
+# Note on the benign-float gate: the fitted collection law PREDICTS
+# phi ~ 47 V here -- inside the 50 V limit but with little margin.  That is
+# deliberate and is the question: 350 V is the drive that would put the
+# model's 400 km axial row (V_min = 304 V) inside the measured envelope,
+# and whether that drive still floats benignly is exactly what this run
+# must answer.  A FAIL on this gate is the honest negative result: the
+# 400 km-enabling drive carries a charging tax past the design limit.
+#
+# The MISSION question -- does 350 V cover the 400 km axial mean drag of
+# 32.9 nN (orbit_sims 400km case, 2024)? -- is a reported, non-required
+# gate: measuring 35 nN would be a finding about the frontier scaling,
+# not an invalid run.
+#
+# Changing any tolerance requires a new policy_id; every verdict records
+# this file's SHA-256.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: characterization.350V_400km.v1
+stage_id: characterization.350V_400km
+evidence_kind: operating_point_extension
+
+gates:
+  - id: beam_escapes
+    required: true
+    metric: escape_fraction_pct
+    comparison: at_least
+    minimum: 95.0
+
+  # The design limit on the float; the deck's own choke watchdog sits at 100 V.
+  # Predicted ~47 V by the fitted collection law -- see the header note.
+  - id: body_floats_benign
+    required: true
+    metric: phi_body_V
+    comparison: at_most
+    maximum: 50.0
+
+  # The floating equilibrium is a current balance: I_escape == I_amb_e - I_amb_i.
+  - id: steady_current_balance
+    required: true
+    metric: current_balance
+    comparison: at_most
+    maximum: 0.05
+
+  # Momentum sanity: the craft cannot catch more z-momentum than the beam carries.
+  - id: momentum_sanity_bound
+    required: true
+    metric: f_net_over_f_beam
+    comparison: at_most
+    maximum: 1.0
+
+  # Sheath/plume containment (collector-rung style; a clipped plume fakes escape).
+  - id: sheath_and_plume_contained
+    required: true
+    metric: edge_phi_max_V
+    comparison: at_most
+    maximum: 1.0
+
+  # Per-step scrape-buffer ledger vs post-hoc openPMD dumps.
+  - id: scrape_ledger_consistent_with_dumps
+    required: true
+    metric: scrape_charge_consistency
+    comparison: at_most
+    maximum: 0.02
+
+  - id: beam_escape_ledger_consistent_with_dumps
+    required: true
+    metric: scrape_charge_consistency_beam_escape
+    comparison: at_most
+    maximum: 0.02
+
+  # THE MISSION QUESTION (reported, not required): 350 V must cover the mean
+  # drag of the 2024 year at 400 km axial (32.9 nN; the pose the model's
+  # V_min = 304 V row describes).  The frontier scaling F ~ V^2 predicts
+  # ~40.5 nN; a miss is a finding about the scaling, not a bad run.
+  - id: covers_400km_mean_drag
+    required: false
+    metric: f_beam_nN
+    comparison: at_least
+    minimum: 32.9

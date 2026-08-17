@@ -2,7 +2,7 @@
 
 Extracted from the magnetized-axis plan (pre-registered 2026-08-08 as
 `MAGNETIZED_PLAN.md`, preserved in git history) when tier M1 was unified into
-the executed spokes (`pic_sims/thruster_characterization/magnetized_1x/`,
+the executed spokes (`pic_sims/characterization/magnetized_1x/`,
 `magnetized_10x/`). Tier M1 closed the *near-field* half of the magnetized
 question — null at 1× LEO, a collection tax at 10×. This document holds the
 open half: the far-field design. It is the project's largest unexamined

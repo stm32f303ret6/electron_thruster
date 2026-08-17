@@ -15,8 +15,8 @@ and the anticipated objections answered from measured, committed evidence.
 > demand, in kilogram-scale packages that claim a large share of a CubeSat's
 > mass budget. This device fills that slot with ion-thruster-class energy
 > conversion (~73 %), zero propellant and zero net mass flux, at 10–100 mW
-> for the measured Ø10 mm anchor and 0.9–3.4 W for a 3U CubeSat — power the
-> spacecraft's own skin can harvest — using no tank, no feed system, no
+> for the measured Ø10 mm anchor and 0.9–3.4 W for a 3U CubeSat — a demand
+> modest enough for body-mounted power — using no tank, no feed system, no
 > discharge chamber, and no neutralizer, because the ionosphere is the
 > propellant reservoir and the spacecraft surface is the return electrode.
 > The measured size-cancellation result makes the feasibility condition
@@ -47,10 +47,13 @@ and the anticipated objections answered from measured, committed evidence.
   drag — disqualifying), decisive at mN. The handoff — electron thruster below
   ~0.1 µN, electrospray at µN, ion/Hall at mN — is part of the claim, not a
   concession.
-- **Altitude honesty:** at 400 km / solar max the *power* side does not close
-  on the can's body-mounted cells (~110–165 mW mean demand vs ~30 mW
-  harvest). The unconditional claim lives at ~450–600 km (or 400 km with a
-  plate geometry).
+- **Altitude honesty:** at 400 km / solar max the demand leaves the tested
+  envelope — the axial pose needs ~304 V (above the 300 V ceiling) at
+  ~120–200 mW mean, and the lateral pose fits the envelope only with a
+  redesign of the thrust axis. The unconditional claim lives at ~450–600 km;
+  400 km is a design target (higher voltage, emitter placement, slender or
+  plate geometry). Supplying the power is mission design, not part of the
+  device claim.
 
 ## Anticipated reviewer objections (with measured answers)
 

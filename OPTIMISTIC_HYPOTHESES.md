@@ -483,7 +483,7 @@ correct or update specific items.
   where the real ceiling bites (escape 93.8/79.9/57.4 % at 2.7/5.6/10.1×
   the validated ceiling — `future_work/UCURVE_PLAN.md` amendment).
 - **H6 misses that the second-density run already exists**, pre-registered
-  and unexecuted: `pic_sims/thruster_characterization/thin_plasma/THIN_PLASMA_PLAN.md` (predictions for all four
+  and unexecuted: `pic_sims/characterization/thin_plasma/THIN_PLASMA_PLAN.md` (predictions for all four
   α candidates committed 2026-08-06). The envelope-coverage argument here
   is a new and independent reason to unchain it.
 - **§8 staleness:** G3's voltage row closed 2026-08-07
@@ -495,7 +495,7 @@ correct or update specific items.
 ## MAINTAINER ANNOTATIONS — 2026-08-10
 
 - **H1's near-field half is now measured.** Tier M1 executed
-  (`pic_sims/thruster_characterization/magnetized_1x/` and `magnetized_10x/`
+  (`pic_sims/characterization/magnetized_1x/` and `magnetized_10x/`
   results): at 1× LEO axial Bz the anchor is
   unchanged (Δφ +1.2 V, ΔF +0.3 %, Δescape 0.06 pp — H-M1-null holds);
   at 10× a real collection tax appears (φ +33 V, thrust −11 %, entirely

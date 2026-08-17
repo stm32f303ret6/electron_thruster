@@ -26,7 +26,7 @@ pic_sims/
 |-- tests/                     # contract + registry tests
 |-- ladder/                    # validation rungs, ending at the 200 V anchor
 |   |-- electron_gun/  current_collection/  capstone/
-`-- thruster_characterization/ # spokes off the anchor; no spoke depends on a spoke
+`-- characterization/ # spokes off the anchor; no spoke depends on a spoke
 ```
 
 The ladder is a DAG that terminates at `capstone.floating_body` (the anchor).

@@ -20,6 +20,16 @@ tests, and committed evidence under `reference_results/`.
 | `thin_plasma/` | density: n0/3 (+ rmax 30→40 mm containment) | `characterization.thin_plasma` | PASS 2026-08-09 — trust gates only; φ unsettled, > 31.6 V bound |
 | `magnetized_1x/` | field-aligned Bz = 30 µT (1× LEO) | `characterization.magnetized_1x` | PASS 2026-08-10 — null: anchor unchanged |
 | `magnetized_10x/` | field-aligned Bz = 300 µT (10×) | `characterization.magnetized_10x` | PASS 2026-08-10 — collection tax: φ +33 V, F −11 % |
+| `350V_400km/` | drive voltage 350 V (400 km-enabling envelope step) | `characterization.350V_400km` | PASS 2026-08-17 — φ 48.29 V (tail; 51.1 V endpoint still rising), F 40.48 nN vs 40.5 predicted |
+| `350V_400km_slender/` | voltage 350 V **and** slender geometry — the 2×2 factorial corner | `characterization.350V_400km_slender` | PASS 2026-08-17 — φ 14.00 V (predicted 11–17), F 43.33 nN (predicted 42–43): the laws compose |
+
+The `350V_400km_slender` spoke is the one deliberate exception to the
+one-axis rule: it moves voltage **and** geometry together. Both single-axis
+legs are measured (`slender_body` at 200 V, `350V_400km` pre-registered at
+350 V), so with the anchor it completes a 2×2 voltage × geometry factorial —
+a test of whether the two committed laws compose, not an unattributable jump.
+Both corners ran 2026-08-17 (squat first) and the composed prediction held —
+see the spoke READMEs for the closed factorial.
 
 ## Provenance of the migrated evidence
 
