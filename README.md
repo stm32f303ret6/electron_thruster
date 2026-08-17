@@ -37,7 +37,8 @@ number and it is good — around 73 %, ion-thruster-class.
 ## What it does, and what it does not
 
 Measured thrust at the validated operating point is **13.65 nN** (200 V,
-0.342 mA, ~68 mW), rising to **30.13 nN** at the 300 V ceiling. Against real
+0.342 mA, ~68 mW), rising to **30.13 nN** at 300 V and **40.48 nN** at the
+350 V top of the measured envelope (43.33 nN on the slender body). Against real
 2024 drag (NRLMSISE-00, real F10.7/Ap, solar-cycle-25 maximum) for the
 Ø10 mm anchor body:
 
@@ -50,8 +51,11 @@ Measured thrust at the validated operating point is **13.65 nN** (200 V,
 | 600 km axial | 2.0 nN | 9.6 nN | mean and max |
 
 **600 km closes at the validated operating point. 550 km is the crossover.
-400 km does not close** — the honest duty-cycle table in `model/MODEL.md` §5
-puts 400 km axial at 140 % of capability.
+400 km mean demand is covered at the 350 V top of the envelope** — 40.48 nN
+(squat, ~81 % duty, float on the 50 V charging limit) and 43.33 nN (slender,
+~76 % duty, 14 V float) against the 32.9 nN axial mean; drag maxima
+(92.4 nN) and night-side rows keep 400 km a design target, not a closed
+case (`model/MODEL.md` §4).
 
 **Larger vehicles.** The feasibility condition is close to scale-free — drag
 buys the ram silhouette and collection buys the skin, and both grow as area —

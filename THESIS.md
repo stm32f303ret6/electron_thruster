@@ -47,13 +47,14 @@ and the anticipated objections answered from measured, committed evidence.
   drag — disqualifying), decisive at mN. The handoff — electron thruster below
   ~0.1 µN, electrospray at µN, ion/Hall at mN — is part of the claim, not a
   concession.
-- **Altitude honesty:** at 400 km / solar max the demand leaves the tested
-  envelope — the axial pose needs ~304 V (above the 300 V ceiling) at
-  ~120–200 mW mean, and the lateral pose fits the envelope only with a
-  redesign of the thrust axis. The unconditional claim lives at ~450–600 km;
-  400 km is a design target (higher voltage, emitter placement, slender or
-  plate geometry). Supplying the power is mission design, not part of the
-  device claim.
+- **Altitude honesty:** at 400 km / solar max the axial mean demand is now
+  inside the tested envelope (the 350 V pair, 2026-08-17: 40.48 nN squat at
+  a float on the 50 V charging limit; 43.33 nN slender at 14 V with 3.6×
+  margin) at ~150–200 mW mean — but drag maxima (92.4 nN) exceed any single
+  operating point, night-side rows stay extrapolated, and the lateral pose
+  fits the envelope only with a redesign of the thrust axis. The
+  unconditional claim lives at ~450–600 km; 400 km is a design target.
+  Supplying the power is mission design, not part of the device claim.
 
 ## Anticipated reviewer objections (with measured answers)
 
