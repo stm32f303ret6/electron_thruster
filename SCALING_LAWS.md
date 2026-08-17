@@ -78,8 +78,9 @@ This is a **scale, not a bound**: the real non-planar geometry emits
 **1.46×** planar (measured at 200 V; both new stages hold that ratio). The
 consequences:
 
-- Maximum thrust scales as `F_max ∝ I_CL·√V ∝ V²` — steep. The 300 V ceiling
-  buys 2.2× the thrust of 200 V.
+- Maximum thrust scales as `F_max ∝ I_CL·√V ∝ V²` — steep. 300 V buys 2.2×
+  the thrust of 200 V; the measured 350 V point delivers 2.97× (40.48 vs
+  13.65 nN) against the 3.06× the pure V² law predicts.
 - The feasibility floor at low V: at 100 V the spot sources only ~0.12 mA no
   matter how dense the plasma is. **Low V is where power is cheap and where
   feasibility runs out** — the optimum is the boundary: the lowest V whose

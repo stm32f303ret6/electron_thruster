@@ -171,7 +171,7 @@ transverse B still open, `future_work/M2_TRANSVERSE_B.md`), single
 grid/PPC/seed (convergence pass in progress),
 finite-time equilibrium on the ion clock. Model-specific:
 the simple law neglects φ (4–6 % floor); escape is assumed near-unity (valid
-at 100–300 V, breaks below ~100 V in the capstone can geometry); supply
+at 100–350 V, breaks below ~100 V in the capstone can geometry); supply
 power is beam power V·I — emitter heating and converter losses are system
 engineering, not modeled.
 

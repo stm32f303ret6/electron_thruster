@@ -10,9 +10,11 @@ edit here first, port to prose after.
 - concept = a parameter-free ideal law; pic runs = evidence that a real
   geometry sits within ~20 % of it.
 - mission corridor (anchor body + any same-shape body, CubeSats included),
-  stated as power demand: 8–17 mW at 550–600 km, 39 mW at 500 km, envelope
-  exit at 400 km stated honestly. supplying the power is mission design
-  (body-mounted solar is the worked example, not a requirement).
+  stated as power demand: 8–17 mW at 550–600 km, 39 mW at 500 km; 400 km
+  mean demand covered at the 350 V envelope top (charging margin
+  shape-dependent), maxima/night rows stated honestly as open. supplying
+  the power is mission design (body-mounted solar is the worked example,
+  not a requirement).
 
 ## 1. why (intro)
 
@@ -25,11 +27,14 @@ edit here first, port to prose after.
 - five contributions:
   1. parameter-free ideal law + measured frontier validates it (within 20 %)
   2. collection law discriminated (pre-registered) on **two axes** —
-     voltage and density — → charging tax fixed, measured conservative
-     along density
+     voltage (100–350 V) and density — → charging tax fixed, measured
+     conservative along density
   3. momentum ledger: the return current does not cancel thrust
   4. mission corridor from year-long propagations, extrapolation flagged
-  5. shape run → size cancels; corridor carries to cubesats unchanged
+  5. shape run → size cancels; corridor carries to cubesats unchanged;
+     voltage × geometry factorial closed at 350 V — the laws **compose**
+     (slender at the 400 km drive: φ 14.0 V predicted 11–17, F 43.3 nN
+     predicted 42–43)
 
 ## 2. operating principle (the cycle)
 
@@ -79,7 +84,8 @@ $$P = \frac{F \sqrt{V}}{c_{ideal}}, \qquad c_{ideal} = \sqrt{2 m_e/e}$$
 - evidence contract:
   - frozen + hashed configs, atomic manifests, interrupted runs discarded
   - gates fixed in versioned policy files **before** each run
-  - 100/300 V predictions + collection-law hypotheses pre-registered
+  - 100/300/350 V (+ slender-350) predictions + collection-law hypotheses
+    pre-registered
   - validation ladder underneath (laplace, thermal ±1 %, biased, floating,
     gun rungs); ledger-vs-dump cross-checks ~1e-9
 
@@ -90,10 +96,15 @@ $$P = \frac{F \sqrt{V}}{c_{ideal}}, \qquad c_{ideal} = \sqrt{2 m_e/e}$$
 | 100 | 0.121 | +5.40 | 3.42 | 12.1 | 0.283 | 96.1 % | 77.2 |
 | 200 | 0.342 | +16.98 | 13.65 | 68.4 | 0.200 | 98.4 % | 147.5 |
 | 300 | 0.630 | +36.30 | 30.13 | 189 | 0.159 | 99.0 % | 210.1 |
+| 350 | 0.793 | +48.29 | 40.48 | 278 | 0.146 | 99.1 % | 237.0 |
 
 - fixed $I/I_{CL} = 1.46$ along the path (self-similar optics).
-- 100/300 V thrusts landed on pre-registered predictions to <1 %.
-- $F/P \propto 1/\sqrt{V}$ confirmed within 2.5 %.
+- 100/300 V thrusts landed on pre-registered predictions to <1 %; the
+  350 V extension (pre-registered 2026-08-17) landed at 0.15 %
+  (40.48 vs 40.5).
+- $F/P \propto 1/\sqrt{V}$ confirmed within 2.5 % over 100–300 V; the
+  350 V point sits ~3 % below the ideal $1/\sqrt{V}$ — the growing float
+  tax, exactly what the two-constant law predicts.
 - two efficiencies, side by side on purpose:
   - energy conversion $\eta \approx 0.73$ (ion-thruster class)
   - impulse economy ~0.2 µN/W (~200× below gridded ion)
@@ -103,18 +114,19 @@ $$P = \frac{F \sqrt{V}}{c_{ideal}}, \qquad c_{ideal} = \sqrt{2 m_e/e}$$
 
 ### 5.1 validation vs the ideal law
 
-measured / bound = **1.19–1.22** at all three points. the gap is a closed
-ledger:
+measured / bound = **1.19–1.24** across the four points (the upward drift
+is the growing float tax). the gap is a closed ledger:
 
 | tax | value | mechanism | cost |
 |---|---|---|---|
 | energy fraction κ | 0.81 | injection-plane space charge | ~10 % |
 | thrust slope $c_F$ | 0.97 $c_{ideal}$ | plume divergence | ~3 % |
-| float tax $V/(V-\varphi)$ | 1.06–1.14 | body charging | 6–14 % |
+| float tax $V/(V-\varphi)$ | 1.06–1.16 | body charging | 6–16 % |
 
 - with measured constants ($c_{eff} = c_F\sqrt{\kappa} = 0.87\,c_{ideal}$)
-  the law reproduces all three powers to 4–6 %:
-  model 11.7 / 65.8 / 177.9 vs measured 12.1 / 68.4 / 189 mW.
+  the law reproduces the powers to 4–7 %:
+  model 11.7 / 65.8 / 177.9 / 258 vs measured 12.1 / 68.4 / 189 / 278 mW
+  (the 7 % is 350 V, where φ/V is largest).
 - off-optimum (low V, fixed thrust): 1.5–2× the bound. decomposes into
   (i) non-optimal voltage, (ii) beam interception in the can (isolated gun
   transmits 99.99 % at the same command). geometry-specific, not the law.
@@ -140,8 +152,13 @@ predictions recorded before the 300 V run (all agree at 200 V anchor):
 - caveat (pre-registered): 300 V still relaxing at 800 ns; settled
   extrapolation 42–48 V, brushes the 50 V limit. fit across all three
   points: α = 0.85–0.89.
+- **350 V extension (pre-registered 2026-08-17): the fitted law holds one
+  step past its fit range** — predicted φ 47 V, measured 48.29 V tail
+  (endpoint 51.1 V, still +34 mV/ns: the settled float extrapolates past
+  the 50 V limit at this compact geometry — see §11 for the slender
+  answer).
 - this law = the charging tax schedule: φ eats 5 % of supply at 100 V,
-  12 % at 300 V.
+  12 % at 300 V, 14 % at 350 V.
 
 ### 6.1 the density axis (second pre-registered discrimination)
 
@@ -214,8 +231,9 @@ predictions recorded before the 300 V run (all agree at 200 V anchor):
 
 ## 9. comparison
 
-- every incumbent's lowest operating power ≥ 10× our 300 V ceiling point;
-  FEEP starts at ~8 W.
+- every incumbent's lowest operating power ≥ 10× our 300 V frontier point;
+  FEEP starts at ~8 W. (the 350 V envelope top draws 278 mW — still well
+  below every incumbent's floor.)
 - jet efficiencies found: electrospray 28–45 %, FEEP ~35 %, hall ~31–44 %.
   ours: 68–73 % — exceeds every value found.
 - but F/P ~200× below gridded ion → natural handoff: this device
@@ -243,15 +261,22 @@ never averaged in.
   the float there → the corridor's night edge is biased conservative;
   rows below n0/3 toward the ~2e11 night minimum remain extrapolated
   (with measured directional bias); powers are beam power $VI$ only.
-- why 400 km exits the envelope even ideally (axial pose):
-  1. impulse: peak drag needs 510 V; demand > ceiling 63 % of the time;
-     duty 140 % — no battery fixes >100 %.
-  2. energy: ideal-bound power at best V ≈ 98 mW — an order above the
+- table computed against the pre-2026-08-17 300 V envelope cap. the 350 V
+  pair moves the 400 km axial **mean** inside the measured envelope:
+  40.48 nN squat (~81 % duty) / 43.33 nN slender (~76 %) vs the 32.9 nN
+  mean demand. model re-run at the 350 V cap: TODO.
+- why 400 km stays open even with the mean covered (axial pose):
+  1. impulse: peak drag (92.4 nN) needs ~510 V — still far above the
+     350 V envelope; no battery fixes the uncovered maxima.
+  2. charging: at 350 V the squat can floats ON the 50 V limit (48.3 V
+     tail, endpoint rising); the slender shape carries the margin
+     (14.0 V) — coverage at 400 km is shape-dependent.
+  3. energy: ideal-bound power at best V ≈ 98 mW — an order above the
      example body-mounted solar supply (cells give ~100 W/m² of skin,
      drag wants ~1450 W/m² of ram; best shape ratio 14 → margin 0.3
      against that example).
-  → a design/research target (voltage, emitter placement, slender body),
-     not a closed case.
+  → a design/research target, not a closed case — but now with the mean
+     demand and the margin geometry both measured.
 
 ## 11. geometry + scale-free
 
@@ -259,6 +284,15 @@ never averaged in.
   φ 16.98 → **4.38 V** (area-only hypothesis confirmed, cylinder-limit
   refuted ~10×), thrust *up* to 14.22 nN (lower float returns drive
   energy). escape 98.4 %.
+- **the factorial corner (pre-registered 2026-08-17): the laws compose.**
+  slender at the 400 km-enabling drive (350 V / 0.793 mA, identical to
+  the squat run): φ **14.00 V** measured vs 11–17 V composed prediction,
+  F **43.33 nN** vs 42–43 predicted (+7 % over the squat via the
+  returned float; KE 273 vs 237 eV). 2×2 (200/350 V × L/r 0.6/6) fully
+  measured → the voltage frontier and geometry law are one validated 2D
+  operating map. mission reading: the shape the vehicle takes anyway
+  covers the 400 km mean at ~76 % duty with 3.6× charging margin, where
+  the squat can sits on the limit.
 - drag buys the **ram silhouette**; collection + any body-mounted supply buy the **skin** →
   both sides of the power balance are areal → **size cancels**. what
   survives: shape ratio + altitude.
@@ -281,7 +315,7 @@ result. 3U at 600 km: 8.8 mA, 0.88 W — cubesat-supply class.)
 
 ## 12. practical
 
-- bom: conducting structure, mW-class HV supply (100–300 V), cold gun,
+- bom: conducting structure, mW-class HV supply (100–350 V), cold gun,
   aperture. no tank/valves/feed/RF/gimbal. floor = cathode + boost
   converter + the skin itself.
 - retrofit: ion/hall neutralizer + spacecraft structure *is* this
@@ -294,11 +328,14 @@ result. 3U at 600 km: 8.8 mA, 0.88 W — cubesat-supply class.)
    conservative (§6.1) — a secant, not a fit; α_eff vs β drift not
    separable with one step. below n0/3 = extrapolation with measured
    directional bias.
-2. geometry axis: two points (L/r 0.6 and 6), not a map.
+2. geometry axis: two shapes (L/r 0.6 and 6), each measured at two drives
+   (200/350 V) — a 2×2 factorial, not a continuous map.
 3. no run in the cubesat sheath regime (r/λ_D ≈ 2.5 measured vs 25–60).
 4. grid resolution ±4–7 %, sign conservative.
-5. anchor-row floats unsettled at 800 ns (300 V: 42–48 V band carried);
-   only the thin-plasma row is settled (2.4 µs).
+5. anchor-row floats unsettled at 800 ns (300 V: 42–48 V band carried;
+   350 V squat: 48.3 V tail with 51.1 V endpoint rising — settled value
+   likely past the 50 V limit; slender-350: 14–17 V band); only the
+   thin-plasma row is settled (2.4 µs).
 6. reduced ion mass 400 $m_e$ (not O⁺).
 7. stationary plasma (no ram wake — deferred, not estimated).
 8. RZ axisymmetric. geomagnetic field: field-aligned measured (1× null,
@@ -314,11 +351,15 @@ result. 3U at 600 km: 8.8 mA, 0.88 W — cubesat-supply class.)
 1. measured frontier validates the parameter-free law: within 20 % of the
    bound, $1/\sqrt{V}$ within 2.5 %, η ≈ 0.73 at 0.16–0.28 µN/W.
 2. the thrust is real: ledger + full-return null + per-run gates (1–9 %).
-3. collection law fixes the charging tax — discriminated on voltage *and*
-   density (settled), measured conservative along density; flight-strength
-   field-aligned B is a null → conservative model → corridor:
-   closes 550–600, impulse 500, fails 400 — and by the areal argument the
-   corridor is a statement about shape and altitude, not size.
+3. collection law fixes the charging tax — discriminated on voltage
+   (100–350 V) *and* density (settled), measured conservative along
+   density, and **composes with the geometry law** (2×2 factorial:
+   slender at 350 V landed at φ 14.0 V vs 11–17 predicted);
+   flight-strength field-aligned B is a null → conservative model →
+   corridor: closes 550–600, impulse 500, 400 mean covered at the
+   envelope top with shape-dependent charging margin (maxima and night
+   rows open) — and by the areal argument the corridor is a statement
+   about shape and altitude, not size.
 
 cheap to test: a gun and a hole. retrofit path exists on every flying
 ion/hall neutralizer.
