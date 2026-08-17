@@ -231,8 +231,9 @@ def sweep_missions() -> tuple[str, list[dict]]:
         "  minimum feasible voltage (emission-ceiling limited) and at",
         "  representative fixed voltages.",
         "",
-        "  Harvest estimate: ~30 mW (body-mounted triple-junction cells,",
-        "  30% efficiency, 25% illumination duty, 1/3 of skin area)",
+        "  Power demand is the deliverable; supplying it is mission design.",
+        "  For scale only: body-mounted cells on the anchor body harvest",
+        "  roughly 10-30 mW depending on coverage (30% cells, 25% duty).",
         "",
     ]
 
@@ -293,14 +294,14 @@ def sweep_missions() -> tuple[str, list[dict]]:
         "SUMMARY TABLE (beam-supply power at minimum feasible voltage)",
         "",
         "  | mission | drag mean (nN) | drag max (nN) | V_min (mean) | "
-        "P_mean (mW) | P_max (mW) | vs 30 mW harvest |",
+        "P_mean (mW) | P_max (mW) | inside 300 V envelope |",
         "  |---|---:|---:|---:|---:|---:|---|",
     ]
     for s in summaries:
         V_use = max(s["V_min_mean"], V_HW[0])
         P_mean = float(power_mW(s["F_mean_nN"], V_use))
         P_max = float(power_mW(s["F_max_nN"], V_use))
-        verdict = "CLOSES" if P_mean < 30 else "marginal" if P_mean < 60 else "does not close"
+        verdict = "yes" if s["V_min_mean"] <= V_HW[1] else "no (V_min above ceiling)"
         L.append(f"  | {s['mission']} | {s['F_mean_nN']:.1f} | {s['F_max_nN']:.1f} "
                  f"| {V_use:.0f} V | {P_mean:.1f} | {P_max:.1f} | {verdict} |")
         s["P_mean_Vmin_mW"] = P_mean

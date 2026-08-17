@@ -106,7 +106,7 @@ a universal electron-gun limit.
   ([`MODEL.md` §3](../model/MODEL.md)).
 - **Magnetized axis** — tier M1 (field-aligned Bz, executed 2026-08-10)
   closed the near-field half — null at 1× LEO, an ~11 % thrust tax through
-  the float at 10× (`../pic_sims/thruster_characterization/magnetized_1x/`,
+  the float at 10× (`../pic_sims/characterization/magnetized_1x/`,
   `magnetized_10x/`). Far-field current closure under transverse B (tier
   M2, the flight geometry) remains open;
   [`M2_TRANSVERSE_B.md`](M2_TRANSVERSE_B.md) holds its design.

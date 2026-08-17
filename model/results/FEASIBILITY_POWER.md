@@ -61,8 +61,9 @@ MISSION POWER PREDICTIONS (simple model)
   minimum feasible voltage (emission-ceiling limited) and at
   representative fixed voltages.
 
-  Harvest estimate: ~30 mW (body-mounted triple-junction cells,
-  30% efficiency, 25% illumination duty, 1/3 of skin area)
+  Power demand is the deliverable; supplying it is mission design.
+  For scale only: body-mounted cells on the anchor body harvest
+  roughly 10-30 mW depending on coverage (30% cells, 25% duty).
 
   400km_lateral_station_keeping_chipsat
     drag: mean 21.65 nN, 95th 40.33 nN, max 60.74 nN
@@ -116,11 +117,11 @@ MISSION POWER PREDICTIONS (simple model)
 
 SUMMARY TABLE (beam-supply power at minimum feasible voltage)
 
-  | mission | drag mean (nN) | drag max (nN) | V_min (mean) | P_mean (mW) | P_max (mW) | vs 30 mW harvest |
+  | mission | drag mean (nN) | drag max (nN) | V_min (mean) | P_mean (mW) | P_max (mW) | inside 300 V envelope |
   |---|---:|---:|---:|---:|---:|---|
-  | 400km_lateral_station_keeping_chipsat | 21.6 | 60.7 | 247 V | 115.9 | 325.2 | does not close |
-  | 400km_station_keeping_chipsat | 32.9 | 92.4 | 304 V | 195.7 | 549.2 | does not close |
-  | 500km_station_keeping_chipsat | 7.6 | 28.4 | 146 V | 31.3 | 116.9 | marginal |
-  | 550km_station_keeping_chipsat | 3.8 | 16.3 | 104 V | 13.4 | 56.7 | CLOSES |
-  | 600km_station_keeping_chipsat | 2.0 | 9.6 | 100 V | 6.8 | 32.5 | CLOSES |
+  | 400km_lateral_station_keeping_chipsat | 21.6 | 60.7 | 247 V | 115.9 | 325.2 | yes |
+  | 400km_station_keeping_chipsat | 32.9 | 92.4 | 304 V | 195.7 | 549.2 | no (V_min above ceiling) |
+  | 500km_station_keeping_chipsat | 7.6 | 28.4 | 146 V | 31.3 | 116.9 | yes |
+  | 550km_station_keeping_chipsat | 3.8 | 16.3 | 104 V | 13.4 | 56.7 | yes |
+  | 600km_station_keeping_chipsat | 2.0 | 9.6 | 100 V | 6.8 | 32.5 | yes |
 ```

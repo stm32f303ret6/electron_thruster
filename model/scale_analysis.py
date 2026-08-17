@@ -7,9 +7,11 @@ what changes when the same device is built at CubeSat scale instead of
 chipsat scale.
 
 The result is that size cancels.  Drag charges for the ram silhouette and
-harvest pays from the skin, and both the thrust demand and the power supply
-scale with area, so the closure condition depends on the SHAPE ratio
-(skin / ram) and the altitude, not on how big the craft is.
+any body-mounted power supply pays from the skin, and both the thrust demand
+and the supply scale with area, so the closure condition depends on the SHAPE
+ratio (skin / ram) and the altitude, not on how big the craft is.  The power
+source is not part of the thruster; body-mounted solar cells are used below
+only as a worked example of a skin-areal supply.
 
 Run:  python model/scale_analysis.py [--out model/results]
 """
@@ -105,6 +107,10 @@ def main() -> int:
     w("at gram scale it is a curiosity; if the feasibility condition is")
     w("scale-free it is a propulsion option for CubeSats.\n")
     w("## Assumptions (engineering inputs, not measurements)\n")
+    w("The power source is not part of the thruster. Body-mounted solar cells")
+    w("appear here only as a **worked example** of a supply that scales with")
+    w("skin area; any other skin-areal source changes the margin, not the")
+    w("size-cancellation.\n")
     w(f"- solar cells {CELL_EFFICIENCY:.0%} efficient, {ILLUMINATION_DUTY:.0%} "
       f"orbit-average illumination → **{harvest:.0f} W/m² of cell area**")
     w(f"- cells cover {CELL_FRACTION_OF_SKIN:.0%} of skin (rest is bare collector + structure)")
@@ -112,7 +118,8 @@ def main() -> int:
     w(f"- drag scales with ram silhouette at fixed C_d = 2.2\n")
 
     w("## Step 1 — demand and supply are both areal\n")
-    w("Drag charges for the **ram silhouette**; harvest pays from the **skin**.")
+    w("Drag charges for the **ram silhouette**; any body-mounted supply pays")
+    w("from the **skin** (solar cells as the example).")
     w("Thrust demand, hence current, hence power, all scale with ram area, so")
     w("power per unit ram area is a property of altitude and drive alone:\n")
     w("| altitude | drag (mean) | P required |")
@@ -125,7 +132,8 @@ def main() -> int:
     w("both sides.** What survives is the shape ratio skin/ram.\n")
 
     w("## Step 2 — closure by shape, at every size\n")
-    w("Margin = harvest / demand; > 1 closes.\n")
+    w("Margin = example supply / demand. The point is the ratio being")
+    w("size-free, not the absolute number.\n")
     w("| body | ram | skin/ram | cells | " + " | ".join(f"{a} km" for a in ALTITUDES) + " |")
     w("|---|---|---|---|" + "---|" * len(ALTITUDES))
     for nm, ar, sk, _r in BODIES:
@@ -139,7 +147,8 @@ def main() -> int:
           + " | ".join(cells) + " |")
     w("\n**The slender chipsat and the 3U CubeSat return identical margins** —")
     w("they have the same skin/ram ratio. Feasibility is a shape property.")
-    w("Nothing closes at 400 km at any size.\n")
+    w("The 400 km demand exceeds the example supply at every size — supplying")
+    w("it is a mission-design question, and it too is size-free.\n")
 
     w("## Step 3 — what a useful spacecraft actually needs\n")
     w(f"At {DRIVE_V:.0f} V, KE = {KE:.0f} eV:\n")
@@ -191,8 +200,8 @@ def main() -> int:
     w("condition reduces to a shape ratio and an altitude. CubeSat-class craft")
     w("in their natural end-on configurations sit at **more favourable shape")
     w("ratios and less extrapolated collection physics** than the chipsat that")
-    w("was measured. The 400 km wall is scale-free too: it does not close for")
-    w("anything.")
+    w("was measured. The 400 km demand is scale-free too: it exceeds the")
+    w("example body-mounted supply at every size.")
 
     out = args.out / "SCALE_ANALYSIS.md"
     out.parent.mkdir(parents=True, exist_ok=True)

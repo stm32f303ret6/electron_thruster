@@ -16,7 +16,7 @@ the repository tests read STAGES; nothing here imports a stage's WarpX code.
 
 Stage ids are frozen once evidence is committed: every manifest and verdict
 embeds them, so folders may move but ids never change.  That is why the two
-voltage spokes moved to ``thruster_characterization/`` keep their historical
+voltage spokes moved to ``characterization/`` keep their historical
 ``capstone.*`` ids.
 """
 
@@ -88,11 +88,11 @@ STAGES: tuple[Stage, ...] = (
     # capstone.high_thrust / capstone.low_power keep their pre-move ids: the
     # committed manifests embed them.
     Stage("capstone.high_thrust",
-          Path("thruster_characterization/high_thrust"),
+          Path("characterization/high_thrust"),
           requires=("capstone.floating_body",),
           group="characterization"),
     Stage("capstone.low_power",
-          Path("thruster_characterization/low_power"),
+          Path("characterization/low_power"),
           requires=("capstone.floating_body",),
           group="characterization"),
     # The four axis spokes below were first run as variant decks through the
@@ -100,19 +100,33 @@ STAGES: tuple[Stage, ...] = (
     # (their migrated evidence keeps stage_id capstone.floating_body); these
     # registry entries gate FUTURE runs under the ids below.
     Stage("characterization.slender_body",
-          Path("thruster_characterization/slender_body"),
+          Path("characterization/slender_body"),
           requires=("capstone.floating_body",),
           group="characterization"),
     Stage("characterization.thin_plasma",
-          Path("thruster_characterization/thin_plasma"),
+          Path("characterization/thin_plasma"),
           requires=("capstone.floating_body",),
           group="characterization"),
     Stage("characterization.magnetized_1x",
-          Path("thruster_characterization/magnetized_1x"),
+          Path("characterization/magnetized_1x"),
           requires=("capstone.floating_body",),
           group="characterization"),
     Stage("characterization.magnetized_10x",
-          Path("thruster_characterization/magnetized_10x"),
+          Path("characterization/magnetized_10x"),
+          requires=("capstone.floating_body",),
+          group="characterization"),
+    # 350 V envelope extension toward the 400 km demand (V_min = 304 V);
+    # pre-registered 2026-08-17, no committed run yet.
+    Stage("characterization.350V_400km",
+          Path("characterization/350V_400km"),
+          requires=("capstone.floating_body",),
+          group="characterization"),
+    # The slender body at the same 350 V operating point -- the fourth
+    # corner of the 2x2 voltage-x-geometry factorial (deliberately two
+    # axes off the anchor; both single-axis legs are measured -- see the
+    # spoke README).  Pre-registered 2026-08-17, no committed run yet.
+    Stage("characterization.350V_400km_slender",
+          Path("characterization/350V_400km_slender"),
           requires=("capstone.floating_body",),
           group="characterization"),
     # The fixed-thrust throttle stages (geometry-specific controller work)

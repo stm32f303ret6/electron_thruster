@@ -305,7 +305,7 @@ corner where the concept is most stressed.
 
 **Status (2026-08-06): pre-registered, deliberately not run.** Predictions
 were committed (α = 1 → 53.4 V, 0.893 → 60.9 V, 0.82 → 68.0 V, 0.5 →
-160.4 V) in `pic_sims/thruster_characterization/thin_plasma/THIN_PLASMA_PLAN.md`, then
+160.4 V) in `pic_sims/characterization/thin_plasma/THIN_PLASMA_PLAN.md`, then
 the run was cut on re-examination of what it buys. The law's density
 dependence is `I ∝ n·(1+χ)^α`: the `n`-linear term is the one-sided thermal
 flux, **already validated to ±1 % at step `collector.thermal`**, and χ has no
@@ -317,14 +317,14 @@ not a measurement**, and stays ready rather than spent.
 
 ## 8b. Geometry scaling — MEASURED (2026-08-06)
 
-Drag charges for the **ram silhouette**; collection and solar harvest buy the
-**total skin**. The two are different areas, so body shape is a free design
+Drag charges for the **ram silhouette**; collection and any body-mounted
+power supply buy the **total skin**. The two are different areas, so body shape is a free design
 lever — *if* the collection law survives the shape change. Theory says it
 might not: OML gives α = 1 for a sphere and α = 0.5 for a long cylinder, and
 the squat can's fitted 0.82–0.89 sits between the limits, so a slender body
 should slide toward the cylinder value and pay a hidden charging tax.
 
-Pre-registered (`pic_sims/thruster_characterization/slender_body/README.md`, plan section) and then measured, at
+Pre-registered (`pic_sims/characterization/slender_body/README.md`, plan section) and then measured, at
 identical drive, commanded current, plasma row, grid and seed:
 
 | hypothesis | predicted φ | measured |
@@ -343,6 +343,15 @@ at the same current and the same drag bill. Growing the collector is a thrust
 *bonus*, not a penalty. This is why the concept scales along the rod, not into
 the cube.
 
+**Confirmed at the 350 V drive (2026-08-17):** the slender body at
+0.793 mA (`characterization.350V_400km_slender`) floated at **14.00 V
+tail-averaged** — dead center of the 11–17 V band the geometry law
+predicts when composed with the voltage frontier — against the squat can's
+48.29 V at identical drive. Thrust returned as predicted too: 43.33 nN vs
+the squat's 40.48 nN (+7 %, the `KE = κ(V−φ)` bonus). With all four
+corners of the voltage × geometry factorial measured (200/350 V ×
+L/r 1.1/6), the two laws compose into a validated 2D operating map.
+
 Still extrapolation: L/r beyond 6, where the cylinder limit must eventually
 bite, and radii approaching λ_D, which converge on bare-tether collection
 (Sanmartín 1993).
@@ -359,10 +368,11 @@ It does not. The argument is two lines of area bookkeeping.
   altitude needs `F = F_drag`, so `I = F/(c_F·√KE) ∝ A_ram` and
   `P = I·V ∝ A_ram`. Power *per unit ram area* is a function of altitude and
   drive voltage only.
-- **Supply is areal.** Harvest goes as cell area, which is a fraction of the
-  skin `A_skin`. Power available per unit skin area is a property of the cells.
+- **Supply is areal.** Any body-mounted power source scales with the skin
+  `A_skin`; body-mounted solar cells are the worked example here, and power
+  available per unit skin area is a property of the source, not the size.
 
-Divide: the closure margin is `(harvest/m² · A_skin) / (demand/m² · A_ram)` —
+Divide: the closure margin is `(supply/m² · A_skin) / (demand/m² · A_ram)` —
 **size cancels, and what remains is the shape ratio `A_skin/A_ram` and the
 altitude.** Note also that station-keeping thrust equals drag *regardless of
 mass*, so vehicle mass never enters either.
@@ -381,8 +391,9 @@ Computed from the committed mission CSVs (`model/scale_analysis.py`):
 | **3U CubeSat, end-on** | **14** | **1.4×** | **2.8×** | **5.4×** |
 | 6U CubeSat, end-on | 12 | 1.2× | 2.4× | 4.6× |
 
-The slender can and the 3U CubeSat return *identical* margins. The 400 km wall
-is scale-free too: nothing closes there. In absolute terms a 3U end-on needs
+The slender can and the 3U CubeSat return *identical* margins (computed
+against the example solar supply). The 400 km demand is scale-free too: it
+exceeds the example supply at every size. In absolute terms a 3U end-on needs
 **8.8 mA / 0.88 W at 600 km**, 17 mA / 1.7 W at 550 km, 34 mA / 3.4 W at
 500 km.
 

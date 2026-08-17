@@ -120,7 +120,7 @@ and edge containment.
 - Probe/pinned mode, shroud, ram drift, Bz: research configs are deliberately
   outside the validation ladder; the migrated stage is the float200 baseline only.
   (The Bz axis has since been run under the exploratory policy — tier M1,
-  2026-08-10, results in `../../../thruster_characterization/magnetized_1x/` and `magnetized_10x/` — without entering the ladder.)
+  2026-08-10, results in `../../../characterization/magnetized_1x/` and `magnetized_10x/` — without entering the ladder.)
 
 ## Priority summary
 

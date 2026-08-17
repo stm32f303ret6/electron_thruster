@@ -64,7 +64,7 @@ K_PER_EV = QE / KB        # 11604.5 K per eV
 
 REPO = Path(__file__).resolve().parent.parent
 CAPSTONE = REPO / "pic_sims" / "ladder" / "capstone"
-CHARACTERIZATION = REPO / "pic_sims" / "thruster_characterization"
+CHARACTERIZATION = REPO / "pic_sims" / "characterization"
 
 # ----------------------------------------------------------------------
 # Measured anchors -- the three committed frontier runs (provenance pinned).

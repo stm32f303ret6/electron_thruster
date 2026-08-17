@@ -17,7 +17,7 @@
 
 \title{Propellantless Drag Compensation by Ambient-Electron Exchange}
 \subtitle{Ion-thruster efficiency at nanonewton scale, zero propellant\\
-{\small three gated PIC operating points -- pre-registered predictions -- a measured thrust--power frontier}}
+{\small a gated PIC campaign -- pre-registered predictions -- a measured thrust--power frontier}}
 \author{R.~S.~C.}
 \date{August 2026}
 
@@ -215,8 +215,48 @@
         \item Pre-registered caveat honored: the 300\,V float was still
               relaxing (settled band $\approx$42--48\,V, inside the 50\,V
               limit) -- carried as uncertainty, not hidden.
-        \item This is the physics that sets the operating point -- and it
-              closes the analytical power model to\ldots\ (next slide)
+        \item This is the physics that sets the operating point -- tested
+              again on two more axes (next slide), and it closes the
+              analytical power model to 4--6\%.
+      \end{itemize}
+  \end{columns}
+\end{frame}
+
+% 8b --------------------------------------------------------------------------
+\begin{frame}{The law survived two more pre-registered tests: density and $B$ field}
+  \begin{columns}
+    \column{0.5\textwidth}
+      \small\textbf{Density axis} ($n_e/3$ run, continued to 2.4\,\textmu s
+      -- the campaign's only fully \emph{settled} float):
+      \begin{itemize}\small
+        \item Floats recorded before launch: $\alpha{=}1$: 53.4\,V;
+              0.893: 60.9\,V; 0.82: 68.0\,V; 0.5: 160.4\,V.
+        \item \textbf{Measured: $+42.5$\,V, settled}
+              ($-0.14$\,V/\textmu s, flat to noise). $\alpha = 0.5$
+              refuted a second time; every fixed exponent
+              \emph{overshoots} $\Rightarrow$ the fitted law is
+              \textbf{conservative} along density.
+        \item Thin plasma does \emph{not} end the envelope: 42.5\,V clears
+              the 50\,V limit this run was expected to break.
+              $F = 12.39$\,nN, escape 99.1\%, KE 122.0 vs 122.6\,eV
+              predicted.
+      \end{itemize}
+    \column{0.48\textwidth}
+      \small\textbf{Geomagnetic field} (axial $B_z$ pair --
+      the field-aligned flight configuration):
+      \begin{itemize}\small
+        \item At flight strength (30\,\textmu T) the pre-registered null
+              holds on every bound: $\varphi$ 17.22 vs 16.98\,V,
+              $F$ 13.64 vs 13.65\,nN, escape within 0.06\,pp.
+              \textbf{Operating point untouched} (beam gyroradius
+              $\ge$0.10\,m $\gg$ device).
+        \item At 10$\times$ (300\,\textmu T -- amplification instrument,
+              not a flight condition): a collection tax, entirely through
+              the float ($+32.6$\,V); beam formation unaffected
+              (escape 98.3\%).
+        \item The two-constant thrust law reproduces both points
+              (13.56 / 12.03 predicted vs 13.64 / 12.06\,nN): the field
+              acts on \emph{collection} only.
       \end{itemize}
   \end{columns}
 \end{frame}
@@ -253,14 +293,15 @@
 \end{frame}
 
 % 10 --------------------------------------------------------------------------
-\begin{frame}{Mission corridor --- with the failure stated plainly}
+\begin{frame}{Mission corridor --- power demand stated plainly}
   \includegraphics[width=0.9\linewidth]{missions.pdf}
   \begin{itemize}\small
     \item Year-long propagations, real F10.7/Ap, per-5-min plasma + drag;
           the model solves the minimum-power $(V, I, \varphi)$ each step.
-    \item \textbf{Closes on skin-harvested power at 550--600\,km}; impulse-%
-          closes (power-bound) at 500\,km; \textbf{does not close at 400\,km}
-          for this body.
+    \item \textbf{Demand: 7--31\,mW mean at 500--600\,km}, inside the tested
+          $\le$300\,V envelope; \textbf{$\sim$120--200\,mW at 400\,km}, where
+          the axial pose needs 304\,V --- just past the tested ceiling.
+          Supplying the power is mission design, not part of the device.
     \item Slender bodies (drag buys silhouette, collection buys skin):
           \textbf{geometry run done} -- 3.24$\times$ skin $\to \varphi$
           16.98 $\to$ 4.38\,V, thrust \emph{up} to 14.22\,nN.
@@ -299,8 +340,9 @@
 % 11b -------------------------------------------------------------------------
 \begin{frame}{Size cancels: the corridor carries to CubeSats}
   \begin{itemize}\small
-    \item Drag charges the \textbf{ram silhouette}; harvest is paid from the
-          \textbf{skin}. Demand \emph{and} supply are areal $\Rightarrow$
+    \item Drag charges the \textbf{ram silhouette}; any body-mounted supply
+          is paid from the \textbf{skin} (solar cells as the worked example).
+          Demand \emph{and} supply are areal $\Rightarrow$
           \textbf{vehicle size cancels}. Mass never enters (thrust = drag).
     \item What survives: the shape ratio $A_{\rm skin}/A_{\rm ram}$ and the
           altitude.
@@ -332,18 +374,26 @@
 \end{frame}
 
 % 12 --------------------------------------------------------------------------
-\begin{frame}{Where the model is blind --- and the two runs that fix it}
+\begin{frame}{Where the model is still blind --- and the run that fixes the worst of it}
   \begin{itemize}\small
-    \item \textbf{Density axis}: all runs at one dayside row; the night-side
-          corridor edge (thin, cold plasma $\to$ float toward 50\,V) is
-          flagged extrapolation. $\to$ \emph{night-row run.}
+    \item \textbf{Density axis}: measured at one $3\times$ step (settled
+          42.5\,V at $n_e/3$; fitted law \emph{conservative} there). Deeper
+          night rows remain extrapolation -- now with a measured
+          directional bias -- and stay flagged.
     \item \textbf{Geometry axis}: exponent is shape-dependent (sphere 1,
           cylinder 0.5; can 0.82--0.89), so it was pre-registered and
           \emph{tested}: measured $\varphi = 4.38$\,V vs hypothesis A's
           4--5\,V. Holds to $L/r = 6$; \emph{beyond that, still open.}
+    \item \textbf{$B$ field}: axial pair measured -- null at flight
+          strength, tax only at 10$\times$. The transverse-field far field
+          (exhaust gyrates at $r_g \approx 1.4$\,m) cannot be posed in RZ;
+          \emph{open.}
     \item Reduced ion mass ($400\,m_e$ vs O$^+$ 29\,166); stationary plasma
-          (no ram wake); RZ symmetry, no geomagnetic field; powers are beam
+          (no ram wake); RZ symmetry; powers are beam
           power $I\,V$ (converter/cathode overheads not included).
+    \item \textbf{No run in the CubeSat sheath regime} (25--60\,$\lambda_D$
+          vs our 2.5): the highest-value follow-on, and the cheapest --
+          lower-$\chi$ equilibria settle faster. $\to$ \emph{next run.}
   \end{itemize}
   \vspace{1ex}
   \small Every mission row outside the measured envelope is counted and
@@ -381,8 +431,13 @@
           pre-registered.
     \item \textbf{The thrust is real}: full-return null closes to zero;
           return-channel momentum gated at 1--9\% of beam thrust.
-    \item \textbf{The mission corridor is honest}: closes at 550--600\,km on
-          the spacecraft's own skin; fails at 400\,km and says so.
+    \item \textbf{The collection law is discriminated on two axes}
+          (voltage and density) and is \emph{conservative} along density;
+          the geomagnetic field leaves the operating point untouched at
+          flight strength.
+    \item \textbf{The mission corridor is honest}: tens of mW at
+          500--600\,km inside the tested envelope; 400\,km sits just past
+          that envelope, and says so.
   \end{enumerate}
   \vspace{2ex}
   \centering
@@ -420,6 +475,10 @@
           inside the 50\,V gate, carried through the $\alpha$ fit as the
           0.85--0.89 band.
     \item The caveat was pre-registered \emph{with} the hypothesis test.
+    \item The $n_e/3$ continuation (2.4\,\textmu s) is the campaign's only
+          fully settled float and measures the settle time for its row at
+          $\sim$2\,\textmu s; anchor-row floats remain 800\,ns reads with
+          disclosed slopes.
   \end{itemize}
 \end{frame}
 

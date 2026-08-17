@@ -12,7 +12,7 @@ The ladder deliberately ends here. Every run that *varies* the anchor — the
 300 V / 100 V voltage points, the slender geometry, thin plasma, the tier-M1
 magnetized pair — is a characterization spoke, not a rung: each depends only
 on the anchor and never on another spoke. They live in
-[`../../thruster_characterization/`](../../thruster_characterization/README.md),
+[`../../characterization/`](../../characterization/README.md),
 each as a self-contained stage folder with its migrated evidence and
 provenance notes.
 
