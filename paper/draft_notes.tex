@@ -501,14 +501,15 @@ altitude / pose & drag mean/max [nN] & feasible & duty cycle & $P$ mean [mW]
 \medskip
 the corridor reads directly:
 \begin{itemize}
-  \item \textbf{550--600\,km:} drag compensation closes on body-mounted solar
-        power (8--17\,mW mean demand vs $\sim$30\,mW harvest), 25--32\% duty
-        cycles
-  \item \textbf{500\,km:} closes on impulse but power-bound at the mean
-        (39\,mW) --- closure relies on thrusting preferentially when plasma is
-        dense and charging tax low
-  \item \textbf{400\,km: does not close} for this body --- demand exceeds
-        emission ceiling 63\% of the time
+  \item \textbf{550--600\,km:} 8--17\,mW mean demand, 25--32\% duty cycles
+        --- inside the tested envelope
+  \item \textbf{500\,km:} impulse closes at 45\% duty, 39\,mW mean --- the
+        model thrusts preferentially when plasma is dense and charging tax
+        low
+  \item \textbf{400\,km: demand exits the tested envelope} for this body ---
+        exceeds the emission ceiling 63\% of the time; a design target, not
+        a closed case.  supplying the power is mission design (body-mounted
+        solar $\sim$10--30\,mW on this body is the worked example)
 \end{itemize}
 
 \textbf{honesty flags:}
@@ -524,7 +525,7 @@ the corridor reads directly:
 \section{geometry lever: slender bodies}
 
 drag and collection scale with \emph{different} areas: drag buys the ram
-silhouette, collection and solar harvest buy the total skin.  a slender body
+silhouette, collection and any body-mounted supply buy the total skin.  a slender body
 flying end-on decouples them.
 
 example: $\varnothing$10\,mm $\times$ 100\,mm cylinder --- same end cap as
@@ -585,7 +586,8 @@ design trades:
 
 the geometry measurement licenses a scaling argument.  drag charges for
 $A_{\mathrm{ram}}$, so thrust demand, beam current, and input power are all
-$\propto A_{\mathrm{ram}}$.  solar harvest $\propto A_{\mathrm{skin}}$.
+$\propto A_{\mathrm{ram}}$.  any body-mounted supply
+$\propto A_{\mathrm{skin}}$ (solar as the worked example).
 \textbf{vehicle size cancels from both sides of the power balance.}  what
 survives: the shape ratio $A_{\mathrm{skin}}/A_{\mathrm{ram}}$ + altitude.
 
@@ -596,7 +598,7 @@ survives: the shape ratio $A_{\mathrm{skin}}/A_{\mathrm{ram}}$ + altitude.
 \midrule
 power demand per m$^2$ of ram & 1451\,W & 335\,W & 170\,W & 88\,W \\
 \midrule
-\multicolumn{5}{l}{\emph{margin = harvest / demand at 100\,V; $>$1 closes}} \\
+\multicolumn{5}{l}{\emph{margin = example solar supply / demand at 100\,V}} \\
 $\varnothing$10\,mm can, squat \hfill (4) & 0.1 & 0.4 & 0.8 & 1.6 \\
 1U cube, face-on \hfill (6) & 0.1 & 0.6 & 1.2 & 2.3 \\
 \textbf{$\varnothing$10\,mm can, slender} \hfill (14) & 0.3 & \textbf{1.4} &
@@ -607,8 +609,9 @@ $\varnothing$10\,mm can, squat \hfill (4) & 0.1 & 0.4 & 0.8 & 1.6 \\
 \bottomrule
 \end{tabular}
 \end{center}
-{\small\itshape harvest assumes 30\% cells over $\frac{1}{3}$ skin at 25\%
-orbit-average illumination (102\,W/m$^2$ of cell area).}
+{\small\itshape the example supply assumes 30\% cells over $\frac{1}{3}$ skin
+at 25\% orbit-average illumination (102\,W/m$^2$ of cell area); the
+size-free ratio is the result, not the absolute number.}
 
 \medskip
 the slender $\varnothing$10\,mm can and the 3U CubeSat return
@@ -716,8 +719,8 @@ three results support treating this as a credible propulsion mechanism:
   \item \textbf{the thrust is real:} closed momentum ledger with full-return
         null experiment (predecessor); per-run momentum gates bound return
         channel at 1--9\% of beam thrust (this campaign)
-  \item \textbf{the mission corridor is honest:} closure on harvested power at
-        550--600\,km, impulse closure at 500\,km, failure at 400\,km stated
+  \item \textbf{the mission corridor is honest:} 8--17\,mW demand at
+        550--600\,km, 39\,mW at 500\,km, envelope exit at 400\,km stated
         plainly.  size cancels: a 3U CubeSat and a $\varnothing$10\,mm slender
         can share identical margins at the same shape ratio
 \end{enumerate}

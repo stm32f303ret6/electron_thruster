@@ -1,0 +1,133 @@
+{
+  "analysis_id": "20260817T133738Z_0518d3ce",
+  "metrics": [
+    {
+      "id": "escape_fraction_pct",
+      "status": "OK",
+      "value": 99.11360481927711,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": 415,
+      "window": {
+        "start_iteration": 165900,
+        "end_iteration": 207280
+      },
+      "source": "contactor_log.csv pct_escape (cumulative beam fate), tail mean"
+    },
+    {
+      "id": "f_beam_nN",
+      "status": "OK",
+      "value": 40.48316775903615,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 165900,
+        "end_iteration": 207280
+      },
+      "source": "contactor_log.csv F_beam_N (escaped-beam z-momentum flux)"
+    },
+    {
+      "id": "phi_body_V",
+      "status": "OK",
+      "value": 48.29054556626507,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 165900,
+        "end_iteration": 207280
+      },
+      "source": "contactor_log.csv phi_body, tail mean"
+    },
+    {
+      "id": "current_balance",
+      "status": "OK",
+      "value": 0.03210984879656352,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 165900,
+        "end_iteration": 207280
+      },
+      "source": "|I_escape - (I_amb_e - I_amb_i)| / I_escape, tail means"
+    },
+    {
+      "id": "f_net_over_f_beam",
+      "status": "OK",
+      "value": 0.01100693499232823,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 165900,
+        "end_iteration": 207280
+      },
+      "source": "|F_net| / |F_beam| momentum sanity bound"
+    },
+    {
+      "id": "edge_phi_max_V",
+      "status": "OK",
+      "value": 0.1537038074552062,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "max |phi| a few cells inside the open boundaries, last dump"
+    },
+    {
+      "id": "scrape_charge_consistency",
+      "status": "OK",
+      "value": 1.617871935451814e-10,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "ambient-e EB charge: CSV ledger integral vs openPMD scrape total"
+    },
+    {
+      "id": "scrape_charge_consistency_beam_escape",
+      "status": "OK",
+      "value": 1.6100774297163605e-10,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "beam-escape charge: CSV ledger I_escape integral vs openPMD zhi+zlo+xhi scrape total"
+    },
+    {
+      "id": "exhaust_ke_mean_eV",
+      "status": "OK",
+      "value": 239.04945036144576,
+      "unit": "eV",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 165900,
+        "end_iteration": 207280
+      },
+      "source": "contactor_log.csv beam_escape_KE_mean (REPORTED, not gated)"
+    },
+    {
+      "id": "late_dphidt_V_per_ns",
+      "status": "OK",
+      "value": 0.03384757619517599,
+      "unit": "V/ns",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "phi_body linear slope over the last 50 ns (REPORTED: finite-time-equilibrium honesty line, plan C6)"
+    },
+    {
+      "id": "ke_predicted_eV",
+      "status": "OK",
+      "value": 240.664775361786,
+      "unit": "eV",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "-phi(injection plane) from tail field dumps (REPORTED)"
+    }
+  ]
+}

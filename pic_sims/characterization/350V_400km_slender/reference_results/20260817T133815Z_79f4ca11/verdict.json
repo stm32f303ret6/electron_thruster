@@ -1,0 +1,82 @@
+{
+  "stage_id": "characterization.350V_400km_slender",
+  "policy_id": "characterization.350V_400km_slender.v1",
+  "status": "PASS",
+  "exit_code": 0,
+  "detail": "all 7 required gate(s) passed",
+  "gates": [
+    {
+      "id": "beam_escapes",
+      "status": "PASS",
+      "required": true,
+      "metric": "escape_fraction_pct",
+      "comparison": "at_least",
+      "value": 99.13817759036144,
+      "detail": "99.1382 >= 95"
+    },
+    {
+      "id": "body_floats_benign",
+      "status": "PASS",
+      "required": true,
+      "metric": "phi_body_V",
+      "comparison": "at_most",
+      "value": 14.001126626506025,
+      "detail": "14.0011 <= 50"
+    },
+    {
+      "id": "steady_current_balance",
+      "status": "PASS",
+      "required": true,
+      "metric": "current_balance",
+      "comparison": "at_most",
+      "value": 0.0436429538729758,
+      "detail": "0.043643 <= 0.05"
+    },
+    {
+      "id": "momentum_sanity_bound",
+      "status": "PASS",
+      "required": true,
+      "metric": "f_net_over_f_beam",
+      "comparison": "at_most",
+      "value": 0.010181340271273298,
+      "detail": "0.0101813 <= 1"
+    },
+    {
+      "id": "sheath_and_plume_contained",
+      "status": "PASS",
+      "required": true,
+      "metric": "edge_phi_max_V",
+      "comparison": "at_most",
+      "value": 0.05772960479149966,
+      "detail": "0.0577296 <= 1"
+    },
+    {
+      "id": "scrape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "scrape_charge_consistency",
+      "comparison": "at_most",
+      "value": 7.183558346287868e-10,
+      "detail": "7.18356e-10 <= 0.02"
+    },
+    {
+      "id": "beam_escape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "scrape_charge_consistency_beam_escape",
+      "comparison": "at_most",
+      "value": 7.577949674666779e-10,
+      "detail": "7.57795e-10 <= 0.02"
+    },
+    {
+      "id": "covers_400km_mean_drag",
+      "status": "PASS",
+      "required": false,
+      "metric": "f_beam_nN",
+      "comparison": "at_least",
+      "value": 43.328579638554224,
+      "detail": "43.3286 >= 32.9"
+    }
+  ],
+  "analysis_id": "20260817T232525Z_1112e593"
+}

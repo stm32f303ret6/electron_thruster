@@ -1,7 +1,7 @@
 # electron_thruster
 
 **A propellantless electric thruster for small spacecraft, built from a cold
-cathode, a boost converter, and the spacecraft's own skin.**
+cathode, an HV supply, and the spacecraft's own skin.**
 
 The device emits an electron beam and lets the ionosphere close the circuit.
 The escaping beam carries momentum away; the ambient plasma returns the same

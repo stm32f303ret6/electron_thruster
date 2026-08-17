@@ -9,9 +9,10 @@ edit here first, port to prose after.
   inside a sealed floating body, one aperture, ionosphere closes the circuit.
 - concept = a parameter-free ideal law; pic runs = evidence that a real
   geometry sits within ~20 % of it.
-- mission corridor (anchor body + any same-shape body, CubeSats included):
-  closes on skin-harvested
-  power at 550–600 km, impulse-closes at 500 km, fails honestly at 400 km.
+- mission corridor (anchor body + any same-shape body, CubeSats included),
+  stated as power demand: 8–17 mW at 550–600 km, 39 mW at 500 km, envelope
+  exit at 400 km stated honestly. supplying the power is mission design
+  (body-mounted solar is the worked example, not a requirement).
 
 ## 1. why (intro)
 
@@ -229,25 +230,28 @@ model applies the throttle principle per row, solves min-power $(V,I,\varphi)$
 self-consistently with the collection law; out-of-envelope rows flagged,
 never averaged in.
 
-| altitude/pose | drag mean/max (nN) | feasible | duty | P mean (mW) | verdict |
+| altitude/pose | drag mean/max (nN) | feasible | duty | P mean (mW) | envelope |
 |---|---|---|---|---|---|
-| 400 axial | 32.9 / 92.4 | 21 % | 140 % | 136 | fails |
-| 400 lateral | 21.7 / 60.7 | 54 % | 92 % | 111 | fails (power) |
-| 500 axial | 7.6 / 28.4 | 81 % | 45 % | 39 | impulse-closes, power-bound |
-| 550 axial | 3.8 / 16.3 | 92 % | 32 % | 17 | **closes** (~30 mW harvest) |
-| 600 axial | 2.0 / 9.6 | 97 % | 25 % | 8 | **closes** |
+| 400 axial | 32.9 / 92.4 | 21 % | 140 % | 136 | exits (duty > 100 %) |
+| 400 lateral | 21.7 / 60.7 | 54 % | 92 % | 111 | inside on impulse; thrust axis needs redesign |
+| 500 axial | 7.6 / 28.4 | 81 % | 45 % | 39 | **inside** |
+| 550 axial | 3.8 / 16.3 | 92 % | 32 % | 17 | **inside** |
+| 600 axial | 2.0 / 9.6 | 97 % | 25 % | 8 | **inside** |
 
 - honesty flags: night rows drive the boundary; the density axis now has
   one measured, settled 3× step (§6.1) showing the law *over-predicts*
   the float there → the corridor's night edge is biased conservative;
   rows below n0/3 toward the ~2e11 night minimum remain extrapolated
   (with measured directional bias); powers are beam power $VI$ only.
-- why 400 km fails even ideally:
+- why 400 km exits the envelope even ideally (axial pose):
   1. impulse: peak drag needs 510 V; demand > ceiling 63 % of the time;
      duty 140 % — no battery fixes >100 %.
-  2. energy: ideal-bound power at best V ≈ 98 mW vs ~30 mW harvest.
-     drag wants ~1450 W/m² of ram; cells give ~100 W/m² of skin; best
-     shape ratio 14 → margin 0.3.
+  2. energy: ideal-bound power at best V ≈ 98 mW — an order above the
+     example body-mounted solar supply (cells give ~100 W/m² of skin,
+     drag wants ~1450 W/m² of ram; best shape ratio 14 → margin 0.3
+     against that example).
+  → a design/research target (voltage, emitter placement, slender body),
+     not a closed case.
 
 ## 11. geometry + scale-free
 
@@ -255,7 +259,7 @@ never averaged in.
   φ 16.98 → **4.38 V** (area-only hypothesis confirmed, cylinder-limit
   refuted ~10×), thrust *up* to 14.22 nN (lower float returns drive
   energy). escape 98.4 %.
-- drag buys the **ram silhouette**; collection + solar buy the **skin** →
+- drag buys the **ram silhouette**; collection + any body-mounted supply buy the **skin** →
   both sides of the power balance are areal → **size cancels**. what
   survives: shape ratio + altitude.
 
@@ -266,8 +270,8 @@ never averaged in.
 | slender can / 3U end-on (14) | 0.3 | **1.4** | **2.8** | **5.4** |
 | 6U end-on (12) | 0.3 | 1.2 | 2.4 | 4.6 |
 
-(margin = harvest/demand at 100 V; >1 closes. 3U at 600 km: 8.8 mA,
-0.88 W — cubesat-supply class.)
+(margin = example solar supply/demand at 100 V; the size-free ratio is the
+result. 3U at 600 km: 8.8 mA, 0.88 W — cubesat-supply class.)
 
 - larger bodies need *less* enhancement over bare thermal flux (4.3× vs
   15×) → **less extrapolation, not more**.

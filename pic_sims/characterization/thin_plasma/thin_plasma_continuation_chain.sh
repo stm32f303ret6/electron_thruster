@@ -7,7 +7,7 @@ source /home/rsc/miniforge3/etc/profile.d/conda.sh
 conda activate warpx-cpu-mpich-dev
 set -u
 
-STAGE=/home/rsc/Desktop/repos/warpequisd/electron_thruster_3/pic_sims/thruster_characterization/thin_plasma
+STAGE=/home/rsc/Desktop/repos/warpequisd/electron_thruster_3/pic_sims/characterization/thin_plasma
 LOG_DIR=$STAGE/logs
 mkdir -p "$LOG_DIR"
 log() { echo "[$(date -u +%H:%M:%S)] $*"; }

@@ -188,7 +188,7 @@ cd pic_sims
 |---|---|
 | validate the contract and stage topology, no simulation | `python run_ladder.py --check` |
 | run + analyze the whole ladder group, in dependency order | `python run_ladder.py` |
-| run a characterization spoke (see `thruster_characterization/`) | `python run_ladder.py --stages characterization.slender_body` |
+| run a characterization spoke (see `characterization/`) | `python run_ladder.py --stages characterization.slender_body` |
 | one stage (dependencies must already have passed) | `python run_ladder.py --stages capstone.floating_body` |
 | re-analyze existing runs without re-simulating | `python run_ladder.py --analyze-only` |
 
@@ -212,7 +212,7 @@ capstone/                     THE DEVICE (ladder terminus)
   1_two_node_laplace   capstone.two_node_laplace   two-node EB in vacuum     seconds
   2_chipsat_thruster   capstone.floating_body      200 V anchor              ~6.3 h
 
-../thruster_characterization/   SPOKES OFF THE ANCHOR (run via --stages)
+../characterization/   SPOKES OFF THE ANCHOR (run via --stages)
   high_thrust          capstone.high_thrust        300 V, 192 680 steps      7 h 14 min
   low_power            capstone.low_power          100 V, 115 480 steps      4 h 56 min
   slender_body         characterization.slender_body   geometry, L/r = 6     ~6.5 h
@@ -255,9 +255,9 @@ python simulation.py --config /tmp/my_variant.yaml
 The run freezes its own `config_used.yaml` and hashes it into `case_sha256`, so
 a variant is fully self-describing without touching git. Variants that answer a
 pre-registered question get a plan document committed *before* they run —
-`pic_sims/thruster_characterization/slender_body/README.md` (plan section; the pre-run
+`pic_sims/characterization/slender_body/README.md` (plan section; the pre-run
 file `SLENDER_BODY_PLAN.md` is preserved in git history),
-`pic_sims/thruster_characterization/thin_plasma/THIN_PLASMA_PLAN.md` — and, when the
+`pic_sims/characterization/thin_plasma/THIN_PLASMA_PLAN.md` — and, when the
 default gates would gate the answer rather than the trustworthiness of the
 measurement, their own acceptance policy (`acceptance_exploratory.yaml`).
 

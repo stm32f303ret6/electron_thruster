@@ -30,13 +30,13 @@ A series of PIC simulations in order of increasing physics, each gated against c
 
 The ladder ends at the anchor. Everything varied *off* the anchor — the 300 V /
 100 V voltage points, the slender geometry, thin plasma, magnetized runs —
-lives in [`../thruster_characterization/`](../thruster_characterization/README.md)
+lives in [`../characterization/`](../characterization/README.md)
 as hub-and-spoke stages that each depend only on `capstone.floating_body`.
 
 ### Gap closures
 
 - `collector.floating` and `capstone.two_node_laplace` close validation gaps G1/G2 (the charge pump and two-node EB had no analytic anchors beneath the capstone)
-- `capstone.high_thrust` (300 V, 30.13 nN) and `capstone.low_power` (100 V, 3.42 nN) — now filed under `../thruster_characterization/` — complete the three-point P-F frontier across the full hardware voltage range, bracketing the validated 200 V anchor
+- `capstone.high_thrust` (300 V, 30.13 nN) and `capstone.low_power` (100 V, 3.42 nN) — now filed under `../characterization/` — complete the three-point P-F frontier across the full hardware voltage range, bracketing the validated 200 V anchor
 
 ## Architecture
 

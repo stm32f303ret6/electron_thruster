@@ -188,10 +188,10 @@ verdict it governs.
 - `model/minimal_model.py` + `model/MODEL.md` — the executable model, calibrated
   from committed `reference_results` only.
 - Plan documents with amendments rather than rewrites: the slender-body plan
-  (`pic_sims/thruster_characterization/slender_body/README.md`, plan and
+  (`pic_sims/characterization/slender_body/README.md`, plan and
   first-attempt sections; the pre-run `SLENDER_BODY_PLAN.md` is in git history)
   records the killed run and *why* it was invalid;
-  `pic_sims/thruster_characterization/thin_plasma/THIN_PLASMA_PLAN.md`
+  `pic_sims/characterization/thin_plasma/THIN_PLASMA_PLAN.md`
   records why its run was cut.
 
 ---
@@ -273,18 +273,27 @@ empty corner below ~10 nN, and that is the niche — one the scale-free result
 
 ### 6.3 The mission corridor is real and narrow
 
-- **550–600 km:** closes on harvested power. 25–32 % duty cycle, 8–17 mW.
-- **500 km:** closes on impulse but is power-bound (39 mW mean, 45 % duty).
-- **400 km:** does not close — 140 % duty cycle is a contradiction.
+Stated as power demand — supplying it is mission design, like the cathode
+technology:
 
-This is a feasibility corridor, not a solved station-keeping problem, and it
-depends on assumptions (solar harvest, attitude, duty cycling) that only a full
-mission analysis can settle.
+- **550–600 km:** 8–17 mW mean at 25–32 % duty cycle — inside the tested
+  envelope.
+- **500 km:** 39 mW mean at 45 % duty — inside the tested envelope.
+- **400 km:** the 350 V pair (2026-08-17) brought the axial mean demand
+  inside the measured envelope at both geometries — squat: 40.48 nN
+  (~81 % duty) at a 48.3 V float, on the 50 V charging limit; slender:
+  **43.33 nN (~76 % duty) at a 14.0 V float**, 3.6× margin. Drag maxima
+  and night rows stay open — a design target, not a closed case.
+
+This is a demand statement, not a solved station-keeping problem. For scale,
+body-mounted solar cells on the anchor geometry give roughly 10–30 mW
+depending on coverage — one supply option among several — and the attitude
+and duty-cycling assumptions only a full mission analysis can settle.
 
 ### 6.4 Elongation is the up-mass path, and it is free
 
-Drag charges for the **ram silhouette**; collection and solar harvest buy the
-**total skin**. A slender body flying end-on decouples them, and the campaign
+Drag charges for the **ram silhouette**; collection and any body-mounted
+power supply buy the **total skin**. A slender body flying end-on decouples them, and the campaign
 measured that the decoupling is not paid for elsewhere:
 
 | | squat can | slender can |
@@ -304,17 +313,19 @@ drag bill. The concept scales *along the rod*, not into the cube.
 The campaign measured small bodies, but the geometry result licenses a scaling
 argument in which **size cancels entirely**. Drag charges for the ram
 silhouette, so thrust demand, current and power are all proportional to
-`A_ram`; harvest is paid from the skin, so supply is proportional to
-`A_skin`. Divide, and the closure margin depends only on the **shape ratio**
+`A_ram`; any body-mounted power supply is paid from the skin, so supply is
+proportional to `A_skin`. Divide, and the closure margin depends only on the **shape ratio**
 `A_skin/A_ram` and the altitude. Mass never enters: holding altitude needs
 thrust = drag whatever the craft weighs.
 
 Computed from committed data (`model/scale_analysis.py` →
 `model/results/SCALE_ANALYSIS.md`), a slender Ø10 mm can and a 3U CubeSat in
-end-on flight return **identical** margins — 1.4× / 2.8× / 5.4× at
+end-on flight return **identical** margins against the example body-mounted
+solar supply — 1.4× / 2.8× / 5.4× at
 500 / 550 / 600 km — because they share `A_skin/A_ram = 14`. A 3U needs
 **8.8 mA at 0.88 W to hold 600 km**, 17 mA / 1.7 W at 550 km, 34 mA / 3.4 W at
-500 km. The 400 km wall is scale-free too, and closes for nothing.
+500 km. The 400 km demand is scale-free too: it exceeds the example supply
+at every size.
 
 Larger bodies also need **less** extrapolation. The Ø10 mm anchor frontier runs at
 χ ≈ 150–320, deep in the fitted enhancement regime; a 3U needs only ~4× the
@@ -386,6 +397,8 @@ Ranked by how much they threaten the conclusions.
 | 2026-08-10 | M1 pair gated PASS, run sequentially on one GPU: 1× LEO null (anchor unchanged), 10× collection tax (φ +33 V lower bound, F −11 %) |
 | 2026-08-11 | thin-plasma 2.4 µs continuation pre-registered, then launched |
 | 2026-08-12 | continuation gated PASS — the campaign's first settled float: 42.5 V, below every fixed-α prediction; the law is conservative along density |
+| 2026-08-17 | 350 V spoke (`350V_400km`) pre-registered and run, gated PASS — F 40.48 nN (40.5 predicted), φ 48.29 V tail (47 predicted; 51.1 V endpoint still rising — on the 50 V limit); 400 km axial row now an interpolation; slender sibling (`350V_400km_slender`) pre-registered and launched — the 2×2 factorial corner |
+| 2026-08-17 | slender 350 V gated PASS — φ 14.00 V (11–17 predicted), F 43.33 nN (42–43 predicted): **the laws compose**; factorial closed, 400 km mean demand covered with 3.6× charging margin on the mission-relevant geometry |
 
 Total: **~50 GPU-hours** across four production runs, two convergence runs, and
 one killed run. One code change. Three pre-registrations, three resolved.
@@ -444,7 +457,7 @@ per the ladder's policy-versioning contract.
 
 Two axes the frontier left open — ambient density and the geomagnetic
 field — were measured as spokes off the 200 V anchor
-(`pic_sims/thruster_characterization/`), each pre-registered before its
+(`pic_sims/characterization/`), each pre-registered before its
 run, each gated PASS on the trust set under
 `capstone.exploratory_axes.v1`.
 

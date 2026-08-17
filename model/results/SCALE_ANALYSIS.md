@@ -13,6 +13,11 @@ scale-free it is a propulsion option for CubeSats.
 
 ## Assumptions (engineering inputs, not measurements)
 
+The power source is not part of the thruster. Body-mounted solar cells
+appear here only as a **worked example** of a supply that scales with
+skin area; any other skin-areal source changes the margin, not the
+size-cancellation.
+
 - solar cells 30% efficient, 25% orbit-average illumination → **102 W/m² of cell area**
 - cells cover 33% of skin (rest is bare collector + structure)
 - drive 100 V (F/P ∝ 1/√V, so the frontier's low end)
@@ -20,7 +25,8 @@ scale-free it is a propulsion option for CubeSats.
 
 ## Step 1 — demand and supply are both areal
 
-Drag charges for the **ram silhouette**; harvest pays from the **skin**.
+Drag charges for the **ram silhouette**; any body-mounted supply pays
+from the **skin** (solar cells as the example).
 Thrust demand, hence current, hence power, all scale with ram area, so
 power per unit ram area is a property of altitude and drive alone:
 
@@ -36,7 +42,8 @@ both sides.** What survives is the shape ratio skin/ram.
 
 ## Step 2 — closure by shape, at every size
 
-Margin = harvest / demand; > 1 closes.
+Margin = example supply / demand. The point is the ratio being
+size-free, not the absolute number.
 
 | body | ram | skin/ram | cells | 400 km | 500 km | 550 km | 600 km |
 |---|---|---|---|---|---|---|---|
@@ -49,7 +56,8 @@ Margin = harvest / demand; > 1 closes.
 
 **The slender chipsat and the 3U CubeSat return identical margins** —
 they have the same skin/ram ratio. Feasibility is a shape property.
-Nothing closes at 400 km at any size.
+The 400 km demand exceeds the example supply at every size — supplying
+it is a mission-design question, and it too is size-free.
 
 ## Step 3 — what a useful spacecraft actually needs
 
@@ -72,7 +80,7 @@ At 100 V, KE = 78 eV:
 
 ## Step 4 — collection gets EASIER with size
 
-Bare thermal collection is `I = A_skin · j_the`, validated to ±1 % at step
+Bare thermal collection is `I = A_skin · j_the`, validated to ±1 % at rung
 `collector.thermal`. At the committed plasma row j_the gives:
 
 | body | skin | I_thermal | boost needed @600 km | regime r/λ_D |
@@ -124,5 +132,5 @@ The measured device is a Ø10 mm can, but the *result* is not about a
 condition reduces to a shape ratio and an altitude. CubeSat-class craft
 in their natural end-on configurations sit at **more favourable shape
 ratios and less extrapolated collection physics** than the chipsat that
-was measured. The 400 km wall is scale-free too: it does not close for
-anything.
+was measured. The 400 km demand is scale-free too: it exceeds the
+example body-mounted supply at every size.
