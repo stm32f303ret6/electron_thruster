@@ -2,7 +2,7 @@
 % Ambient-electron exchange thruster -- arXiv preprint (v2, characterization campaign)
 % Build: pdflatex main.tex  (twice for refs)
 % Status: DRAFT. Measured numbers from the gated capstone frontier
-% (100/200/300 V, reference_results/) + minimal model mission sweeps.
+% (100/200/300/350 V + slender pair, reference_results/) + minimal model mission sweeps.
 % TODO markers where inputs are pending (lab experiment, author list,
 % final lit refs). Characterization spokes (density, magnetized) folded
 % in 2026-08-12.
@@ -34,18 +34,22 @@ electron mass and charge alone. Taking a \O10\,mm conducting can at a
 representative dayside ionospheric operating point as a measured anchor,
 pre-registered and acceptance-gated particle-in-cell simulations (WarpX, RZ
 electrostatic) validate that concept under real constraints, measuring the
-complete thrust--power frontier across the 100--300\,V hardware
-range: 3.42\,nN at 12.1\,mW, 13.65\,nN at 68.4\,mW, and 30.13\,nN at
-189\,mW, confirming the $F/P \propto 1/\sqrt{V}$ throttle law within 2.5\%,
-with beam escape $\ge 96\%$ and a benign floating potential
-($\le$36\,V) at every point. The same three runs discriminate between
+complete thrust--power frontier across the 100--350\,V hardware
+range: 3.42\,nN at 12.1\,mW, 13.65\,nN at 68.4\,mW, 30.13\,nN at
+189\,mW, and 40.48\,nN at 278\,mW, confirming the $F/P \propto 1/\sqrt{V}$
+throttle law within 2.5\% over 100--300\,V (the 350\,V point sits 3\%
+below the ideal, the predicted float tax), with beam escape $\ge 96\%$ and
+a floating potential within the 50\,V benign design limit at every point.
+The frontier runs discriminate between
 pre-registered forms of the ambient-electron collection law: the linear and
 square-root laws are refuted and the sub-linear form
 $I \propto (1+e\varphi/kT_e)^{\alpha}$ with $\alpha \approx 0.82$--0.89
 survives, which fixes the charging tax and places every gated frontier
-point within 20\% of a parameter-free ideal-beam power bound -- set by
-electron mass and charge alone -- and within 6\% once the two measured
-geometry constants are applied. A pre-registered run at one-third ambient
+point within 24\% of a parameter-free ideal-beam power bound -- set by
+electron mass and charge alone -- and within 7\% once the two measured
+geometry constants are applied; extrapolated one step past its fit range,
+the fitted law predicted the 350\,V float to within 1.3\,V (47 predicted,
+48.3 measured). A pre-registered run at one-third ambient
 density, continued to 2.4\,\textmu s -- the campaign's only fully settled
 floating potential -- discriminates the collection law on a second axis:
 the square-root form is refuted again, and every fixed-exponent
@@ -57,7 +61,12 @@ A further pre-registered run varies body
 \emph{shape} at fixed drive: tripling the collecting skin while holding the
 ram silhouette fixed drops the float from 17.0 to 4.38\,V and \emph{raises}
 thrust to 14.22\,nN, because a lower float returns drive energy to the beam.
-This exposes the governing scaling. Drag charges for the ram silhouette while
+A final pre-registered pair at 350\,V -- the drive the 400\,km orbit
+demands -- closes a $2{\times}2$ voltage--geometry factorial and shows the
+two laws \emph{compose}: the slender body floats at 14.0\,V (composed
+prediction 11--17\,V) and delivers 43.3\,nN, covering the 400\,km mean
+drag with $3.6\times$ charging margin where the compact can sits on the
+50\,V limit. This exposes the governing scaling. Drag charges for the ram silhouette while
 collection and any body-mounted power supply are paid from the skin, so
 thrust demand and
 power supply are both areal and vehicle size cancels: the feasibility
@@ -66,10 +75,11 @@ independent of scale. A minimal executable model calibrated only from the
 gated runs, applied to year-long orbit propagations with real solar-activity
 and ionosphere data, therefore bounds a corridor that a \O10\,mm body and a
 3U CubeSat in end-on flight share identically: at 550--600\,km drag
-compensation demands 7--17\,mW mean at 25--32\% duty for the \O10\,mm body;
-at 500\,km it remains inside the measured envelope at 39\,mW mean; at
-400\,km the demand exceeds the 300\,V emission ceiling for this shape at
-any size. Supplying the demand is mission design rather than part of the
+compensation demands 8--17\,mW mean at 23--29\% duty for the \O10\,mm body;
+at 500\,km it remains inside the measured envelope at 41\,mW mean; at
+400\,km the mean demand is covered at the 350\,V envelope top, but the
+year-round duty (113\%) remains capped by night-side collection at the
+compact shape -- the slender geometry is the measured lever, at any size. Supplying the demand is mission design rather than part of the
 device -- body-mounted solar cells are the worked example throughout. For
 CubeSat-class craft this corresponds to 0.9--3.4\,W and 9--34\,mA, and the
 required collection sits only a few times above the bare thermal flux --
@@ -119,22 +129,24 @@ This paper makes five contributions. First, we state the concept's
 operating economics in parameter-free form -- an ideal power bound set by
 electron mass and charge alone (Sec.~\ref{sec:throttle}) -- and validate
 it by measuring the complete thrust--power frontier of the mechanism
-across its full hardware voltage range (100--300\,V) with pre-registered,
+across its full hardware voltage range (100--350\,V) with pre-registered,
 acceptance-gated particle-in-cell simulation at a realistic ionospheric
 operating point (Sec.~\ref{sec:frontier}): the measured points land within
-20\% of the bound and deliver ion-thruster-class \emph{energy} conversion
+24\% of the bound and deliver ion-thruster-class \emph{energy} conversion
 ($\eta \approx 0.73$) at a deliberately tiny \emph{momentum} economy
 ($F/P \approx 0.16$--0.28\,\textmu N/W) -- the pair of numbers that
 explains why the device owns the nanonewton regime and nothing above it
-(Sec.~\ref{sec:comparison}). Second, the three frontier
+(Sec.~\ref{sec:comparison}). Second, the frontier
 points discriminate between pre-registered candidate forms of the
-ambient-electron collection law (Sec.~\ref{sec:collection}), and a
+ambient-electron collection law (Sec.~\ref{sec:collection}), a
 pre-registered one-third-density run -- the campaign's only fully settled
 equilibrium -- confirms the discrimination on a second axis and shows the
-fitted law is conservative there (Sec.~\ref{sec:density}); the surviving
+fitted law is conservative there (Sec.~\ref{sec:density}), and the
+350\,V extension lands on the fitted law's out-of-range prediction to
+1.3\,V; the surviving
 sub-linear law fixes the charging tax, and the measured frontier lands
-within 20\% of a parameter-free power bound set by electron mass and charge
-alone -- within 6\% once two measured geometry constants are applied
+within 24\% of a parameter-free power bound set by electron mass and charge
+alone -- within 7\% once two measured geometry constants are applied
 (Sec.~\ref{sec:throttle}). That is the accuracy a feasibility argument
 needs, and it is the role the simulations play throughout: proving the
 concept against a physics bound, not calibrating a mission-ready thruster.
@@ -147,7 +159,11 @@ model, calibrated only from the gated runs and with every out-of-envelope
 prediction explicitly flagged, converts year-long orbit propagations into a
 mission feasibility corridor (Sec.~\ref{sec:application}). Fifth, a further
 pre-registered run varies body \emph{shape} rather than drive, and shows the
-fitted collection law survives a $3.24\times$ change in collecting area; this
+fitted collection law survives a $3.24\times$ change in collecting area --
+and a final pre-registered pair at 350\,V closes a $2{\times}2$
+voltage--geometry factorial, showing the voltage and geometry laws
+\emph{compose} (slender float 14.0\,V measured against an 11--17\,V
+composed prediction); this
 licenses a scaling argument in which vehicle size cancels entirely, so the
 corridor above applies unchanged to CubeSat-class spacecraft
 (Sec.~\ref{sec:slender}) -- the measured body is a \O10\,mm can, but the
@@ -248,7 +264,8 @@ Acceptance gates (escape fraction, benign float, steady current balance,
 momentum bound, sheath containment, and two independent ledger-vs-particle-dump
 charge cross-checks, which close to $\sim$$10^{-9}$) are fixed in versioned
 policy files \emph{before} each run; the scaling-law predictions for the
-100\,V and 300\,V points, the competing collection-law hypotheses of
+100\,V, 300\,V, and 350\,V points (and the composed prediction for the
+slender body at 350\,V), the competing collection-law hypotheses of
 Sec.~\ref{sec:collection} (on both the voltage and the density axis),
 and the magnetized-axis expectations of Sec.~\ref{sec:magnetized} were
 pre-registered in the repository before those runs completed. Below the production stages sits a validation ladder
@@ -271,6 +288,7 @@ $V$ [V] & $I$ [mA] & $\varphi$ [V] & $F$ [nN] & $P$ [mW] & $F/P$ [\textmu N/W]
 100 & 0.121 & $+5.40$  & 3.42  & 12.1 & 0.283 & 96.1\% & 77.2 \\
 200 & 0.342 & $+16.98$ & 13.65 & 68.4 & 0.200 & 98.4\% & 147.5 \\
 300 & 0.630 & $+36.30$ & 30.13 & 189  & 0.159 & 99.0\% & 210.1 \\
+350 & 0.793 & $+48.29$ & 40.48 & 278  & 0.146 & 99.1\% & 237.0 \\
 \bottomrule
 \end{tabular}
 \caption{The measured voltage frontier of the \O10\,mm anchor device at the
@@ -278,7 +296,8 @@ dayside plasma row, all runs PASS on all pre-registered acceptance gates.
 Each point holds the same emission ratio $I/I_{\mathrm{CL}} = 1.46$ (the
 space-charge-limited ceiling measured at 200\,V), so beam optics stay
 self-similar along the frontier. The 100\,V and 300\,V thrust values landed
-on their pre-registered predictions (3.4 and 30\,nN) to better than 1\%.
+on their pre-registered predictions (3.4 and 30\,nN) to better than 1\%,
+and the 350\,V extension on its prediction (40.5\,nN) to 0.15\%.
 Grid-resolution uncertainty (Sec.~\ref{sec:credibility}): $F \pm 4$\%,
 KE $\pm 7$\%, $\varphi \pm 2$\%; particle count, time step, and seed
 contribute $\le$0.5\%.}
@@ -293,7 +312,8 @@ laws, all anchored at the 200\,V reference; the measured 300\,V float
 discriminates them (Sec.~\ref{sec:collection}). The orange square is the
 settled-value extrapolation of the 300\,V run's decaying late slope. Right:
 thrust per watt against the $1/\sqrt{V}$ law anchored at 200\,V; measured
-points agree within 2.5\%.}
+points agree within 2.5\% over 100--300\,V, with the 350\,V point 3\%
+below the ideal -- the growing float tax the two-constant law predicts.}
 \label{fig:frontier}
 \end{figure}
 
@@ -330,14 +350,16 @@ $\kappa = \mathrm{KE}/(V-\varphi) = 0.81$ (injection-plane space-charge
 depression, Sec.~\ref{sec:principle}), so the effective constant is
 $c_{\mathrm{eff}} = c_F\sqrt{\kappa} = 0.87\,c_{\mathrm{ideal}}$. With
 this measured calibration the law reproduces the gated frontier powers to
-within 4--6\% at all three operating points (model 11.7 / 65.8 /
-177.9\,mW against measured 12.1 / 68.4 / 189\,mW), the residual being
-essentially the charging tax $V/(V-\varphi) = 1.06$--$1.14$, which the
+within 4--7\% at all four operating points (model 11.7 / 65.8 /
+177.9 / 258\,mW against measured 12.1 / 68.4 / 189 / 278\,mW), the
+residual being
+essentially the charging tax $V/(V-\varphi) = 1.06$--$1.16$, which the
 measured collection law of Sec.~\ref{sec:collection} supplies when a
 tighter number is wanted. The role of the PIC evidence here is to prove
 the concept -- a concrete geometry already operates within
-$\approx$20\% of the parameter-free physics bound (measured/bound
-$= 1.19$--$1.22$ across the frontier), for understood, separable reasons
+$\approx$24\% of the parameter-free physics bound (measured/bound
+$= 1.19$--$1.24$ across the frontier, the drift being the growing float
+tax), for understood, separable reasons
 -- not to certify a mission-ready thruster; the mission
 projections of Sec.~\ref{sec:application} use the measured (conservative)
 calibration, which is committed with the repository alongside the runs
@@ -388,12 +410,24 @@ test and applies in full: at high $\chi$ the sheath equilibrates on the ion
 timescale, and the run's late slope, though decaying ($+44 \to +27$\,mV/ns
 over the final 200\,ns), had not reached zero; extrapolating the decay
 places the settled float at $\approx$42--48\,V, brushing but not breaking
-the 50\,V design limit. A least-squares fit of $\alpha$ across all three
-measured points gives $\alpha = 0.89$ (tail-averaged floats) to
+the 50\,V design limit. A least-squares fit of $\alpha$ across the three
+fit points gives $\alpha = 0.89$ (tail-averaged floats) to
 $\alpha = 0.85$ (settled-extrapolated floats), bracketing the upper edge of
-the pre-registered band. The float robs the beam -- the accelerating
+the pre-registered band.
+
+The fitted law was then tested one step \emph{past} its fit range: a
+pre-registered 350\,V run -- the drive the 400\,km orbit demands
+($V_{\min} = 304$\,V, Sec.~\ref{sec:application}) -- carried the fitted
+law's prediction of $+47$\,V and measured $+48.29$\,V (tail-averaged),
+1.3\,V from the prediction. The same settle caveat applies with less
+margin: the endpoint float was 51.1\,V and still rising at $+34$\,mV/ns,
+so the settled value extrapolates past the 50\,V limit -- at this compact
+geometry the 400\,km-enabling drive sits \emph{on} the benign-float limit,
+a result the slender geometry of Sec.~\ref{sec:slender} resolves. The
+float robs the beam -- the accelerating
 potential is always $V - \varphi$ -- so this law is also the charging tax
-schedule: $\varphi$ eats 5\% of the supply at 100\,V and 12\% at 300\,V.
+schedule: $\varphi$ eats 5\% of the supply at 100\,V, 12\% at 300\,V, and
+14\% at 350\,V.
 
 \subsection{The density axis: a second discrimination, and a conservative
 law}
@@ -644,7 +678,7 @@ sourced from a manufacturer datasheet, a peer-reviewed paper, or NASA's 2026
 \emph{State of the Art of Small Spacecraft Technology} report~\cite{nasasoa26}.
 The comparison makes three points. First, every incumbent's \emph{lowest
 flight-representative operating power} is at least an order of magnitude
-above even our 300\,V ceiling point (189\,mW) -- FEEP, the lowest-power
+above even our 350\,V envelope-top point (278\,mW) -- FEEP, the lowest-power
 flight electric propulsion technology surveyed, states explicitly that ``the
 required power to operate the IFM starts at around 8\,W''~\cite{enpifm} --
 and no system in the table is characterized, or apparently characterizable,
@@ -678,7 +712,7 @@ converter, and the spacecraft's own skin.
 \toprule
 System & Example & Thrust & Power & Isp & Energy eff. & Hardware & Ref.\\
 \midrule
-\textbf{This work} & Ambient-electron exchange & 3.4--30\,nN (\O10\,mm, 100--300\,V); 17\,nN (\O14\,mm, 800\,V) & 12--189\,mW; 174\,mW & $0.7$--$1.5{\times}10^6$\,s & \textbf{68--73\%} ($F/P$ 0.16--0.28\,\textmu N/W) & HV supply + cold gun + aperture. No tank, valves, feed, neutralizer, gimbal & -- \\
+\textbf{This work} & Ambient-electron exchange & 3.4--43\,nN (\O10\,mm, 100--350\,V); 17\,nN (\O14\,mm, 800\,V) & 12--278\,mW; 174\,mW & $0.7$--$1.5{\times}10^6$\,s & \textbf{68--73\%} ($F/P$ 0.15--0.28\,\textmu N/W) & HV supply + cold gun + aperture. No tank, valves, feed, neutralizer, gimbal & -- \\
 Cold gas & GomSpace NanoProp 6U (GOMX-4B)$^\ddagger$ & 0.1--10\,mN & $<$2\,W & 60--110\,s & n/s & Dual tanks, fill valves, filters, 2--3 isolation valves/line, heaters, 4 nozzles & \cite{nasasoa26,gomx4eop} \\
 PPT & Mars Space PPTCUP (qualified)$^\ddagger$ & 40\,\textmu N avg & $\sim$2\,W & 655\,s & n/s ($<$20\% typ.) & Cu--W chamber, HV cap bank, EMI box; no tank/valves & \cite{cia15,cia16,nasasoa26} \\
 Electrospray & Busek CMNT (LISA Pathfinder) & 4$\times$20\,\textmu N & 16.5\,W & 225\,s & 28/45\%$^\dagger$ (BET-300-P) & Propellant-less CNT neutralizer, low-pressure tanks, PPU & \cite{nasasoa26,busekbetmax21} \\
@@ -705,7 +739,7 @@ archived alongside this paper's repository.}
 
 \section{Application: the mission feasibility corridor}
 \label{sec:application}
-The three gated runs calibrate a minimal executable model (committed with
+The gated frontier runs calibrate a minimal executable model (committed with
 the repository) that applies the throttle principle of
 Sec.~\ref{sec:throttle} to every row of a year-long orbit propagation: per
 five-minute timestep, the local plasma density and temperature (IRI-2020)
@@ -727,14 +761,15 @@ express carries to any vehicle of the same shape ratio, CubeSats included.
 altitude / pose & drag mean/max [nN] & feasible & duty cycle & $P$ mean [mW]
  & $\varphi{>}50$\,V & in envelope \\
 \midrule
-400 km axial   & 32.9 / 92.4 & 21\% & 140\% & 136 & 41\% & 12\% \\
-400 km lateral & 21.7 / 60.7 & 54\% & 92\%  & 111 & 31\% & 33\% \\
-500 km axial   & 7.6 / 28.4  & 81\% & 45\%  & 39  & 19\% & 29\% \\
-550 km axial   & 3.8 / 16.3  & 92\% & 32\%  & 17  & 8\%  & 8\%  \\
-600 km axial   & 2.0 / 9.6   & 97\% & 25\%  & 8   & 3\%  & 1\%  \\
+400 km axial   & 32.9 / 92.4 & 36\% & 113\% & 175 & 49\% & 18\% \\
+400 km lateral & 21.7 / 60.7 & 63\% & 74\%  & 129 & 33\% & 38\% \\
+500 km axial   & 7.6 / 28.4  & 76\% & 39\%  & 41  & 24\% & 29\% \\
+550 km axial   & 3.8 / 16.3  & 85\% & 29\%  & 17  & 15\% & 8\%  \\
+600 km axial   & 2.0 / 9.6   & 93\% & 23\%  & 8   & 7\%  & 1\%  \\
 \bottomrule
 \end{tabular}
-\caption{Year-long mission sweeps under the throttle principle. ``Feasible'' = a
+\caption{Year-long mission sweeps under the throttle principle at the
+measured 100--350\,V envelope. ``Feasible'' = a
 benign equilibrium exists at the demanded thrust; ``duty cycle'' =
 mean drag / mean benign capability ($>$100\% cannot close); ``in
 envelope'' = row interpolates committed measurements on every axis.}
@@ -751,13 +786,17 @@ supply, not a device requirement.}
 \end{figure}
 
 The corridor reads directly as power demand: at \textbf{550--600\,km} drag
-compensation costs 8--17\,mW mean at 25--32\% duty cycles; at
-\textbf{500\,km} the impulse budget closes at 45\% duty and the mean demand
-is 39\,mW -- the per-row minimum-power solution automatically thrusts
+compensation costs 8--17\,mW mean at 23--29\% duty cycles; at
+\textbf{500\,km} the impulse budget closes at 39\% duty and the mean demand
+is 41\,mW -- the per-row minimum-power solution automatically thrusts
 preferentially when the plasma is dense and the charging tax low; at
-\textbf{400\,km the demand leaves the measured envelope} -- it exceeds the
-emission ceiling 63\% of the time for this body -- and we state that plainly
-rather than average around it. Supplying these demands is mission design,
+\textbf{400\,km the mean demand is now inside the measured envelope}
+(the 350\,V pair of Secs.~\ref{sec:collection} and \ref{sec:slender}
+covers the 32.9\,nN axial mean directly), yet the year-round duty is
+113\% for this compact body: the binding constraint has moved from the
+voltage ceiling to the benign-float collection cap on thin night-side
+rows, where the demanded current drives $\varphi$ past 50\,V -- and we
+state that plainly rather than average around it. Supplying these demands is mission design,
 not part of the device; for scale, body-mounted cells on this body harvest
 roughly 10--30\,mW depending on cell coverage. Two
 honesty flags travel with the table. First, the corridor's boundary
@@ -787,9 +826,9 @@ supply (100--200\,mW of solar cells, as one example), at a mass of tens of
 grams. The niche
 therefore extends up-mass along the rod (or plate) direction, not the cube:
 payload, power, and return current grow with length while the drag bill
-does not, and 400\,km -- infeasible for the squat anchor in
-Table~\ref{tab:missions} -- reopens for slender geometries on the power
-side.
+does not, and 400\,km -- duty-capped for the squat anchor in
+Table~\ref{tab:missions} -- reopens for slender geometries on both the
+charging and the power side.
 
 The concern this raised was that the collection exponent is provably
 geometry-dependent. OML theory gives $\alpha = 1$ for a sphere and
@@ -818,6 +857,23 @@ more of its drive: exhaust energy rises from $\sim$147 to 159.7\,eV and beam
 thrust from 13.6 to 14.22\,nN, at the same commanded current and the same
 ram silhouette. Elongation is free on the thrust side and strictly
 favourable on the charging side.
+
+The lever was then tested where it matters most. The 350\,V squat-can run
+of Sec.~\ref{sec:collection} left the 400\,km-enabling drive sitting
+\emph{on} the 50\,V charging limit, so a final pre-registered run drove
+the slender body at the identical 350\,V\,/\,0.793\,mA operating point --
+the fourth corner of a $2{\times}2$ voltage--geometry factorial whose
+other three corners were already measured. Composing the two fitted laws
+predicted a float of 11--17\,V and a thrust of 42--43\,nN; the run
+measured $\varphi = 14.00$\,V (tail-averaged; 15.8\,V at run end) and
+$F = 43.33$\,nN, with escape at 99.1\%. \textbf{The voltage frontier and
+the geometry collection law compose}: together with the anchor they form
+a validated two-dimensional operating map over $100$--$350$\,V and
+$L/r = 0.6$--$6$, not two independent one-dimensional curves. The mission
+reading is direct -- at the drive the 400\,km orbit demands, the shape a
+real vehicle takes anyway covers the 32.9\,nN mean drag at $\sim$76\%
+duty with a $3.6\times$ margin on the charging limit, and a 7\% thrust
+bonus over the compact can from the returned float energy.
 
 Two design trades still travel with the lever: solar cells and bare
 collector compete for the same wall area (clad dielectric surfaces do not
@@ -906,7 +962,7 @@ settles faster.
 \section{Practical realization}
 \label{sec:practical}
 \subsection{Bill of materials}
-A conducting structure, a milliwatt-class high-voltage supply (100--300\,V
+A conducting structure, a milliwatt-class high-voltage supply (100--350\,V
 for the measured design; up to 800\,V demonstrated in simulation at larger
 scale), a cold electron gun with its cathode at $-V$, and an aperture. No
 tank, valves, feed lines, RF stages, or gimbals. The dry-system floor is a
@@ -944,11 +1000,12 @@ with flagged extrapolation; full mission validation is future work.
         extrapolation, with a measured directional bias. The model still
         flags every such row (Table~\ref{tab:missions}).
   \item \textbf{The collection law's geometry axis is measured at two
-        points, not mapped.} The exponent is geometry-dependent by theory
+        shapes, not mapped.} The exponent is geometry-dependent by theory
         (sphere 1, long cylinder 0.5; measured 0.82--0.89 for the can), and
-        the pre-registered slender run (Sec.~\ref{sec:slender}) confirms it
-        survives to $L/r = 6$ and $3.24\times$ skin area. Aspect ratios
-        beyond that remain extrapolation resting on the theory-safe
+        the pre-registered slender runs (Sec.~\ref{sec:slender}) confirm it
+        survives to $L/r = 6$ and $3.24\times$ skin area at both 200 and
+        350\,V -- a $2{\times}2$ factorial, not a continuous map. Aspect
+        ratios beyond that remain extrapolation resting on the theory-safe
         thermal-collection floor plus flags, not on the fitted law.
   \item \textbf{No run sits in the CubeSat sheath regime.} All committed
         bodies are at $r/\lambda_D \approx 2.5$, where orbital-motion
@@ -973,6 +1030,11 @@ with flagged extrapolation; full mission validation is future work.
         was still relaxing at run end (Sec.~\ref{sec:collection}); the
         settled-value band (42--48\,V) is carried through the $\alpha$ fit
         rather than hidden, and brushes the 50\,V design limit. The
+        350\,V squat float is the sharpest case: gated at 48.3\,V on the
+        tail mean but 51.1\,V and still rising at run end, so its settled
+        value likely exceeds the limit -- the compact body sits on the
+        boundary, and the slender body (14--17\,V band) carries the
+        margin. The
         2.4\,\textmu s density-axis continuation is the only fully settled
         float (Sec.~\ref{sec:density}) and measures the settle time for
         its row at $\sim$2\,\textmu s; the anchor-row floats remain
@@ -1027,9 +1089,9 @@ slot with zero propellant and zero net mass flux: a sealed conducting body,
 a cold electron gun, and the ionosphere as both propellant reservoir and
 return electrode. Three results support treating this as a credible
 propulsion mechanism rather than a numerical curiosity. First, the measured
-frontier -- 3.4\,nN at 12\,mW to 30\,nN at 189\,mW across the full hardware
-voltage range -- confirms the $F/P \propto 1/\sqrt{V}$ throttle law within
-2.5\% and delivers ion-thruster-class energy conversion
+frontier -- 3.4\,nN at 12\,mW to 40.5\,nN at 278\,mW across the full
+hardware voltage range -- confirms the $F/P \propto 1/\sqrt{V}$ throttle
+law and delivers ion-thruster-class energy conversion
 ($\approx$0.73) at a thrust-per-watt $\sim$200$\times$ below gridded ion:
 the pair of numbers that assigns this device the nanonewton regime and
 nothing above it. Second, the returning current does not cancel the
@@ -1038,14 +1100,19 @@ experiment establishes it in the predecessor implementation, and per-run
 momentum gates bound the return channel at 1--9\% of beam thrust in the
 present one. Third, the measured collection law -- discriminated on both
 the voltage and the density axis, settled on the latter, conservative
-where it extrapolates, and undisturbed by a flight-strength field-aligned
-geomagnetic field -- fixes the charging tax, and
+where it extrapolates, undisturbed by a flight-strength field-aligned
+geomagnetic field, and shown to \emph{compose} with the geometry law
+across a fully measured $2{\times}2$ voltage--geometry factorial (the
+slender body at the 400\,km-enabling 350\,V drive landed dead-centre of
+its composed prediction) -- fixes the charging tax, and
 the resulting two-constant analytical power model -- validated to within
-6\% of every gated frontier point -- applied to year-long orbit
+7\% of every gated frontier point -- applied to year-long orbit
 propagations with every extrapolated regime flagged, bounds a mission
-corridor stated as power demand: 7--17\,mW at 550--600\,km, 39\,mW at
-500\,km, and an honest envelope exit
-at 400\,km -- a corridor that, by the measured size-cancellation argument,
+corridor stated as power demand: 8--17\,mW at 550--600\,km, 41\,mW at
+500\,km, and at 400\,km a mean demand now covered inside the measured
+envelope (with the charging margin belonging to the slender shape) while
+the year-round duty stays honestly capped by night-side collection -- a
+corridor that, by the measured size-cancellation argument,
 a 3U CubeSat in end-on flight inherits unchanged at 0.9--3.4\,W and
 9--34\,mA. The device is inexpensive and low-risk to test -- no hardware
 beyond a high-voltage supply and an electron gun of a kind that already

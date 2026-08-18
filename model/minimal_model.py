@@ -96,7 +96,7 @@ EMIT_R_M = 0.5e-3
 R_EMIT = 1.46
 
 # Design/hardware limits
-V_HW = (100.0, 300.0)     # cathode supply range [V]
+V_HW = (100.0, 350.0)     # cathode supply range [V] (350 V measured 2026-08-17)
 PHI_BENIGN_V = 50.0       # benign-float design limit (acceptance-gated)
 PHI_CHOKE_V = 100.0       # choke ceiling (run-abort threshold in PIC)
 
