@@ -20,6 +20,7 @@ CALIBRATION (concept-level simple model)
     100 V: model 11.7 mW, measured 12.1 mW, error -3.7% (float tax V/(V-phi) = 1.057)
     200 V: model 65.8 mW, measured 68.4 mW, error -3.8% (float tax V/(V-phi) = 1.093)
     300 V: model 177.9 mW, measured 189.0 mW, error -5.9% (float tax V/(V-phi) = 1.138)
+    350 V: model 258.1 mW, measured 277.6 mW, error -7.0% (float tax V/(V-phi) = 1.160)
 ```
 
 ## U-curve validation
@@ -41,6 +42,7 @@ U-CURVE VALIDATION (geometry-specific PIC data vs simple model)
   | 125.0 |  93.8% | 13.09 |   58.0 |   49.9 | 1.16x | mild escape loss |
   | 200.0 |  98.4% | 13.65 |   68.4 |   65.8 | 1.04x | validated regime |
   | 300.0 |  99.0% | 30.13 |  189.0 |  177.9 | 1.06x | validated regime |
+  | 350.0 |  99.1% | 40.48 |  277.6 |  258.1 | 1.08x | validated regime |
 
   In the validated regime (escape > 95%), the simple model agrees
   to within 6%. Below ~100 V, escape collapses due to beam
@@ -68,22 +70,24 @@ MISSION POWER PREDICTIONS (simple model)
   400km_lateral_station_keeping_chipsat
     drag: mean 21.65 nN, 95th 40.33 nN, max 60.74 nN
     V_min for mean drag: 247 V
-    V_min for max drag:  413 V  (EXCEEDS 300 V -- infeasible)
+    V_min for max drag:  413 V  (EXCEEDS 350 V -- infeasible)
        V [V]      P_mean      P_95th       P_max       F/P
          100      73.8 mW     137.5 mW     207.0 mW    293 uN/W  (max drag exceeds ceiling)
          150      90.4 mW     168.4 mW     253.6 mW    240 uN/W  (max drag exceeds ceiling)
          200     104.4 mW     194.4 mW     292.8 mW    207 uN/W  (max drag exceeds ceiling)
          300     127.8 mW     238.1 mW     358.6 mW    169 uN/W  (max drag exceeds ceiling)
+         350     138.0 mW     257.2 mW     387.3 mW    157 uN/W  (max drag exceeds ceiling)
 
   400km_station_keeping_chipsat
     drag: mean 32.92 nN, 95th 61.33 nN, max 92.37 nN
     V_min for mean drag: 304 V
-    V_min for max drag:  510 V  (EXCEEDS 300 V -- infeasible)
+    V_min for max drag:  510 V  (EXCEEDS 350 V -- infeasible)
        V [V]      P_mean      P_95th       P_max       F/P
          100     112.2 mW     209.0 mW     314.8 mW    293 uN/W  (max drag exceeds ceiling)
          150     137.4 mW     256.0 mW     385.6 mW    240 uN/W  (max drag exceeds ceiling)
          200     158.7 mW     295.6 mW     445.2 mW    207 uN/W  (max drag exceeds ceiling)
          300     194.3 mW     362.1 mW     545.3 mW    169 uN/W  (max drag exceeds ceiling)
+         350     209.9 mW     391.1 mW     589.0 mW    157 uN/W  (max drag exceeds ceiling)
 
   500km_station_keeping_chipsat
     drag: mean 7.59 nN, 95th 16.82 nN, max 28.36 nN
@@ -94,6 +98,7 @@ MISSION POWER PREDICTIONS (simple model)
          150      31.7 mW      70.2 mW     118.4 mW    240 uN/W  (max drag exceeds ceiling)
          200      36.6 mW      81.1 mW     136.7 mW    207 uN/W  (max drag exceeds ceiling)
          300      44.8 mW      99.3 mW     167.4 mW    169 uN/W
+         350      48.4 mW     107.3 mW     180.8 mW    157 uN/W
 
   550km_station_keeping_chipsat
     drag: mean 3.85 nN, 95th 9.22 nN, max 16.30 nN
@@ -104,6 +109,7 @@ MISSION POWER PREDICTIONS (simple model)
          150      16.1 mW      38.5 mW      68.1 mW    240 uN/W  (max drag exceeds ceiling)
          200      18.5 mW      44.4 mW      78.6 mW    207 uN/W  (max drag exceeds ceiling)
          300      22.7 mW      54.4 mW      96.3 mW    169 uN/W
+         350      24.5 mW      58.8 mW     104.0 mW    157 uN/W
 
   600km_station_keeping_chipsat
     drag: mean 2.01 nN, 95th 5.16 nN, max 9.55 nN
@@ -114,13 +120,14 @@ MISSION POWER PREDICTIONS (simple model)
          150       8.4 mW      21.6 mW      39.9 mW    240 uN/W  (max drag exceeds ceiling)
          200       9.7 mW      24.9 mW      46.0 mW    207 uN/W
          300      11.8 mW      30.5 mW      56.4 mW    169 uN/W
+         350      12.8 mW      32.9 mW      60.9 mW    157 uN/W
 
 SUMMARY TABLE (beam-supply power at minimum feasible voltage)
 
-  | mission | drag mean (nN) | drag max (nN) | V_min (mean) | P_mean (mW) | P_max (mW) | inside 300 V envelope |
+  | mission | drag mean (nN) | drag max (nN) | V_min (mean) | P_mean (mW) | P_max (mW) | inside 350 V envelope |
   |---|---:|---:|---:|---:|---:|---|
   | 400km_lateral_station_keeping_chipsat | 21.6 | 60.7 | 247 V | 115.9 | 325.2 | yes |
-  | 400km_station_keeping_chipsat | 32.9 | 92.4 | 304 V | 195.7 | 549.2 | no (V_min above ceiling) |
+  | 400km_station_keeping_chipsat | 32.9 | 92.4 | 304 V | 195.7 | 549.2 | yes |
   | 500km_station_keeping_chipsat | 7.6 | 28.4 | 146 V | 31.3 | 116.9 | yes |
   | 550km_station_keeping_chipsat | 3.8 | 16.3 | 104 V | 13.4 | 56.7 | yes |
   | 600km_station_keeping_chipsat | 2.0 | 9.6 | 100 V | 6.8 | 32.5 | yes |

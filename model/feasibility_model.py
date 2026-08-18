@@ -15,7 +15,7 @@ MODEL (two measured constants, one equation)
     kappa = 0.8063                     energy fraction KE/(V-phi) (PIC-measured)
 
     This is the phi << V limit of F = c_F * I * sqrt(kappa*(V-phi)), P = V*I.
-    Accuracy vs measured frontier: 3-6% across 100-300 V (the float tax).
+    Accuracy vs measured frontier: 3-7% across 100-350 V (the float tax).
 
 EMISSION CEILING
 
@@ -76,15 +76,16 @@ K_CL = _k * math.pi * EMIT_R_M**2 * 1e3  # 8.298e-5
 # Thrust ceiling coefficient: F_max [nN] = A_CEIL * V^2
 A_CEIL = C_EFF * R_EMIT * K_CL  # 3.554e-4
 
-V_HW = (100.0, 300.0)
+V_HW = (100.0, 350.0)
 
 # ---------------------------------------------------------------------------
-# The three PIC-validated frontier operating points
+# The four PIC-validated frontier operating points
 # ---------------------------------------------------------------------------
 FRONTIER = [
     dict(V=100, I_mA=0.121, phi_V=5.40, F_nN=3.42,  esc_pct=96.12, KE_eV=77.2),
     dict(V=200, I_mA=0.342, phi_V=16.98, F_nN=13.65, esc_pct=98.44, KE_eV=147.5),
     dict(V=300, I_mA=0.630, phi_V=36.30, F_nN=30.13, esc_pct=98.99, KE_eV=210.1),
+    dict(V=350, I_mA=0.793, phi_V=48.29, F_nN=40.48, esc_pct=99.11, KE_eV=237.0),
 ]
 
 # U-curve measured data (geometry-specific, used for validation only)
@@ -250,7 +251,7 @@ def sweep_missions() -> tuple[str, list[dict]]:
         V_min_mean = float(min_voltage(F_mean))
         V_min_max = float(min_voltage(F_max))
 
-        feas_at_300 = bool(F_max <= max_thrust_nN(300))
+        feas_at_cap = bool(F_max <= max_thrust_nN(V_HW[1]))
         feas_at_200 = bool(F_max <= max_thrust_nN(200))
 
         s = dict(
@@ -261,20 +262,20 @@ def sweep_missions() -> tuple[str, list[dict]]:
             F_p95_nN=F_p95,
             V_min_mean=V_min_mean,
             V_min_max=V_min_max,
-            feasible_at_300V=feas_at_300,
+            feasible_at_350V=feas_at_cap,
         )
 
         L.append(f"  {name}")
         L.append(f"    drag: mean {F_mean:.2f} nN, 95th {F_p95:.2f} nN, max {F_max:.2f} nN")
         L.append(f"    V_min for mean drag: {V_min_mean:.0f} V")
         L.append(f"    V_min for max drag:  {V_min_max:.0f} V  "
-                 f"{'(within hardware)' if V_min_max <= 300 else '(EXCEEDS 300 V -- infeasible)'}")
+                 f"{'(within hardware)' if V_min_max <= V_HW[1] else f'(EXCEEDS {V_HW[1]:.0f} V -- infeasible)'}")
 
         hdr = "    {:>8s}  {:>10s}  {:>10s}  {:>10s}  {:>8s}".format(
             "V [V]", "P_mean", "P_95th", "P_max", "F/P")
         L.append(hdr)
 
-        voltages = [100, 150, 200, 300]
+        voltages = [100, 150, 200, 300, 350]
         for V in voltages:
             P_mean = float(power_mW(F_mean, V))
             P_p95 = float(power_mW(F_p95, V))
@@ -294,7 +295,7 @@ def sweep_missions() -> tuple[str, list[dict]]:
         "SUMMARY TABLE (beam-supply power at minimum feasible voltage)",
         "",
         "  | mission | drag mean (nN) | drag max (nN) | V_min (mean) | "
-        "P_mean (mW) | P_max (mW) | inside 300 V envelope |",
+        f"P_mean (mW) | P_max (mW) | inside {V_HW[1]:.0f} V envelope |",
         "  |---|---:|---:|---:|---:|---:|---|",
     ]
     for s in summaries:
@@ -331,7 +332,7 @@ def write_mission_csvs(summaries: list[dict], out_dir: Path):
             w.writerow(["timestamp_utc", "F_drag_nN",
                         "V_min_V", "P_at_Vmin_mW",
                         "P_at_100V_mW", "P_at_200V_mW", "P_at_300V_mW",
-                        "feasible_at_300V"])
+                        "P_at_350V_mW", "feasible_at_350V"])
             for row in reader:
                 F = float(row["drag_N"]) * 1e9
                 Vm = max(float(min_voltage(F)), V_HW[0])
@@ -343,7 +344,8 @@ def write_mission_csvs(summaries: list[dict], out_dir: Path):
                     f"{float(power_mW(F, 100)):.3f}",
                     f"{float(power_mW(F, 200)):.3f}",
                     f"{float(power_mW(F, 300)):.3f}",
-                    int(F <= max_thrust_nN(300)),
+                    f"{float(power_mW(F, 350)):.3f}",
+                    int(F <= max_thrust_nN(350)),
                 ])
         s["out_csv"] = str(out_csv.relative_to(REPO))
 
