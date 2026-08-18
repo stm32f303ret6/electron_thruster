@@ -54,23 +54,125 @@ operating point — there is no cycle, just a continuous equilibrium.
 
 ![Concept, step by step](paper/new/imgs/concept_steps.png)
 
-### Thrust law
+### Theory
 
-Thrust is the beam's momentum flux. Two measured constants describe it across
-the full 100–350 V range to ~1 %:
+As electric propulsion, the concept is a plain electrostatic accelerator.
+Its laws carry no numbers — only the structure of where thrust and energy
+go:
 
-```
-F [nN] = 3.2675 · I [mA] · √KE [eV]
-KE     = 0.8063 · (V − φ)
-```
+$$
+\begin{aligned}
+F &= \frac{I \sqrt{2 m_e \, \mathrm{KE}}}{e} && \text{thrust — momentum flux of the escaping beam} \\
+\mathrm{KE} &= \kappa \, (V - \varphi) && \text{energy each electron actually leaves with} \\
+\eta &= \kappa \, \frac{V - \varphi}{V} \cdot f_{\mathrm{esc}} && \text{jet power / electrical power}
+\end{aligned}
+$$
 
-Two useful consequences:
+Every symbol on the right is a **design or environment parameter, not a
+constant of the concept**:
 
-- **The device measures its own thrust.** `I` and `φ` are plain electrical
-  measurements any microcontroller can take in flight. No thrust stand needed.
+- **$\kappa$** — the gun's energy transmission. Set by how hard the gun is
+  loaded (beam current relative to its space-charge limit): the beam's own
+  charge depresses the potential at the injection plane. A lightly-loaded or
+  distributed emitter sits closer to 1.
+- **$\varphi$** — the float potential. Set by the current balance with the
+  ambient plasma: the body floats exactly high enough to collect the return
+  current. It falls as collecting area grows and rises as the plasma thins.
+  Its cost, the **float tax** $\varphi/V$, is the energy price of
+  propellantless current return — the one loss channel the concept requires
+  to exist, though not its size.
+- **$f_{\mathrm{esc}}$** — the fraction of the beam that clears the body.
+  Set by the exit-aperture geometry.
+
+#### Standard EP parameters
+
+Read against the usual electric-propulsion figures of merit:
+
+- **Exhaust velocity.** The exhaust is electrons, so
+  $v_e = \sqrt{2\,\mathrm{KE}/m_e}$ is enormous — orders of magnitude above
+  any ion exhaust at comparable energy. This one fact fixes the device's
+  place in the EP landscape through the ideal tradeoff
+
+$$
+\frac{F}{P} = \frac{2\,\eta}{v_e}
+$$
+
+  light exhaust → huge exhaust velocity → tiny thrust per watt. The ~200×
+  thrust-per-watt gap to gridded ion in the table below is this equation at
+  work, not an engineering shortfall — and it is also why the device only
+  competes where thrust demands are tiny.
+- **Specific impulse.** Two honest readings, neither a figure of merit
+  here. Beam-stream $I_{sp} = v_e/g_0$ is orders of magnitude above ion
+  thrusters; system $I_{sp}$ is undefined, because no stored propellant is
+  consumed — net mass flow is zero, as with electrodynamic tethers. The
+  claim is *propellantless*, not "infinite Isp"; $I_{sp}$'s only job in
+  this document is explaining $F/P$.
+- **Total impulse.** Not propellant-limited — bounded by cathode lifetime,
+  not tank size. At nN scale the binding constraint for any propellant
+  system is its dry-mass floor (tank + feed + PPU), not propellant mass
+  (`THESIS.md`).
+- **Divergence efficiency.** The standard plume cosine factor; it appears
+  in the measured thrust slope below.
+- **Propellant utilization, Δv mass fraction.** Not applicable — there is
+  no propellant and the rocket equation does not bind. The nearest analog
+  on the loss ledger is $f_{\mathrm{esc}}$.
+
+Two structural consequences, independent of any parameter values:
+
+- **The device measures its own thrust.** $I$ and $\varphi$ are plain
+  electrical measurements any microcontroller can take in flight. No thrust
+  stand needed.
 - **The control law is trivial.** A two-line servo on the measured float — no
   ionosphere model, no lookup table. Density, temperature, day/night all
   collapse into where the body floats (`model/MODEL.md` §2).
+
+### Measured numbers (PIC campaign)
+
+The simulations put numbers to the symbols for **one design family**: a
+Ø10 mm body, a single gun run at $I/I_{\mathrm{CL}} = 1.46$, one dayside
+plasma row.
+Within that family, two constants describe every run across 100–350 V
+to ~1 %:
+
+$$
+F\,[\mathrm{nN}] = 3.2675 \cdot I\,[\mathrm{mA}] \cdot \sqrt{\mathrm{KE}\,[\mathrm{eV}]}
+\qquad\qquad
+\mathrm{KE} = 0.8063 \, (V - \varphi)
+$$
+
+- 200 V anchor: $\varphi$ 17.0 V, escape 98.4 % → **$\eta \approx 0.73$**
+- slender body ($L/r = 6$) at 350 V: $\varphi$ 14.0 V, escape 99.1 % →
+  **$\eta \approx 0.77$**
+- squat body across 100–350 V: $\eta$ spans 0.67–0.74 (the float tax grows
+  with voltage)
+- exhaust velocity across the envelope: $v_e = 5.2$–$9.8 \times 10^6$ m/s
+  (beam-stream $I_{sp} \sim 5$–$10 \times 10^5$ s — see the theory note:
+  not a figure of merit). The ideal tradeoff closes on the measurements:
+  $2\eta/v_e = 0.202$ µN/W at the anchor vs 0.200 measured.
+- divergence: the measured thrust slope is $0.97\,c_{\mathrm{ideal}}$ —
+  plume divergence factor ≈ 0.97.
+
+**These numbers characterize the simulated design, not the concept.** Each
+traces to a specific design parameter, and moving that parameter moves the
+number:
+
+| measured value | design parameter it comes from |
+|---|---|
+| $\kappa = 0.8063$ | gun loading $I/I_{\mathrm{CL}} = 1.46$ — the space-charge depression it buys |
+| $\varphi = 5\text{–}48$ V | body collecting area and shape ($L/r$), operating point, ambient density |
+| $f_{\mathrm{esc}} = 96\text{–}99\,\%$ | exit-aperture geometry |
+| $c_F = 0.97\,c_{\mathrm{ideal}}$ | plume divergence — gun optics and exit aperture |
+| $\eta = 0.67\text{–}0.77$ | all of the above, at the tested operating points |
+
+The measured envelope is the evidence; anything outside it (other gun
+loadings, other geometries, other plasmas) requires new simulations —
+`model/MODEL.md` is the only sanctioned extrapolation, and it labels its
+outputs estimates.
+
+One accounting caveat for any comparison with flown thrusters: this $\eta$
+excludes cathode power, because the beam current is *prescribed* in every
+simulation and no flight cathode is selected yet (open risk 2). Flight
+thruster efficiencies include their full beam-production cost.
 
 ## Comparison with ion thrusters
 
@@ -78,7 +180,7 @@ Two useful consequences:
 |---|---|---|
 | thrust per watt | ~40 µN/W | ~0.2 µN/W (~200× worse) |
 | power at nN thrust | ~1 mW | ~10–100 mW — at this scale the gap is negligible |
-| energy conversion efficiency | ~70 % | **~73 %** — same class |
+| energy conversion efficiency | ~70 % (flight hardware, full beam-production cost) | 0.67–0.77 in PIC (concept stage, cathode excluded) — same class, but not a like-for-like comparison; see "Measured numbers" above |
 | tank / propellant / valves / neutralizer | yes | **no** |
 | launch-safety review for stored propellant | yes | **no** |
 | cost | tens of k$ | two electrodes + HV supply |
