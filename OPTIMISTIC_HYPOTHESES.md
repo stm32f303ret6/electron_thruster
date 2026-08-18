@@ -360,9 +360,12 @@ that trade.
 
 From `model/MODEL.md` §5:
 
-*(table computed against the 300 V envelope; the 2026-08-17 extension to
-350 V moved 400 km axial to ~76–81 % duty — see `CAMPAIGN.md`. The density
-axis this hypothesis is actually about remains as stated.)*
+*(table computed against the 300 V envelope; the 2026-08-17 re-run at the
+350 V cap moved 400 km axial to 113 % duty — the binding constraint is now
+the night-side benign-float collection cap, not the voltage ceiling — and
+the PIC pair covers the dayside mean directly at ~76–81 % duty. See
+`CAMPAIGN.md`. The density axis this hypothesis is actually about remains
+as stated.)*
 
 | altitude | duty cycle needed | **in-envelope %** |
 |---|---|---|
