@@ -5,11 +5,11 @@ laws, calibration provenance, and envelope semantics.
 
 | mission | drag mean/max (nN) | feasible % | in-envelope % | duty cycle needed | P mean/max (mW) | phi mean/max (V) |
 |---|---|---|---|---|---|---|
-| 400km_lateral_station_keeping_chipsat | 21.6 / 60.7 | 53.7 | 33.2 | 92 % | 110.8 / 188.9 | 60.1 / 1963.3 |
-| 400km_station_keeping_chipsat | 32.9 / 92.4 | 21.0 | 11.8 | 140 % | 135.2 / 188.9 | 75.1 / 1963.2 |
-| 500km_station_keeping_chipsat | 7.6 / 28.4 | 76.1 | 29.1 | 45 % | 40.7 / 181.4 | 81.8 / 1410.5 |
-| 550km_station_keeping_chipsat | 3.8 / 16.3 | 84.9 | 8.0 | 32 % | 17.4 / 95.1 | 82.4 / 1885.6 |
-| 600km_station_keeping_chipsat | 2.0 / 9.6 | 92.8 | 0.9 | 25 % | 8.0 / 51.3 | 52.0 / 2137.4 |
+| 400km_lateral_station_keeping_chipsat | 21.6 / 60.7 | 63.4 | 37.8 | 74 % | 128.6 / 277.7 | 64.2 / 2543.4 |
+| 400km_station_keeping_chipsat | 32.9 / 92.4 | 36.1 | 17.7 | 113 % | 174.8 / 277.7 | 86.2 / 2543.4 |
+| 500km_station_keeping_chipsat | 7.6 / 28.4 | 76.1 | 29.1 | 39 % | 40.7 / 181.4 | 95.4 / 1827.3 |
+| 550km_station_keeping_chipsat | 3.8 / 16.3 | 84.9 | 8.0 | 29 % | 17.4 / 95.1 | 90.4 / 2442.9 |
+| 600km_station_keeping_chipsat | 2.0 / 9.6 | 92.8 | 0.9 | 23 % | 8.0 / 51.3 | 53.0 / 2769.0 |
 
 - `model/results/400km_lateral_station_keeping_chipsat_model.csv`
 - `model/results/400km_station_keeping_chipsat_model.csv`

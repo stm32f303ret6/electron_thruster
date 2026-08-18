@@ -22,6 +22,20 @@ V_m = np.array([a["V"] for a in A])
 F_m = np.array([a["F_nN"] for a in A])
 phi_m = np.array([a["phi_V"] for a in A])
 I_m = np.array([a["I_mA"] for a in A])
+
+# The 350 V envelope extension (characterization.350V_400km, gated PASS
+# 2026-08-17): plotted as a measured point but NOT used in the calibration,
+# which stays fitted to the original three anchors.
+import json as _json
+_ext_dir = (Path(__file__).resolve().parents[2] / "pic_sims" / "characterization"
+            / "350V_400km" / "reference_results" / "20260817T055536Z_acf6cf7b")
+_ext = {m["id"]: m["value"]
+        for m in _json.loads((_ext_dir / "metrics.json").read_text())["metrics"]}
+V_m = np.append(V_m, 350.0)
+F_m = np.append(F_m, _ext["f_beam_nN"])
+phi_m = np.append(phi_m, _ext["phi_body_V"])
+I_m = np.append(I_m, 0.793)            # frozen config: I_CL(350 V) * 1.46
+
 P_m = I_m * V_m * 1e-3 * 1e3          # mW
 FP_m = F_m / P_m                       # uN/W == nN/mW
 
@@ -30,7 +44,7 @@ j0 = float(j_the(cal.n0, cal.Te0_K))
 Iesc200 = A[1]["esc"] * A[1]["I_mA"] * 1e-3
 chi200 = A[1]["phi_V"] / kTe
 
-Vg = np.linspace(95, 320, 200)
+Vg = np.linspace(95, 370, 220)
 esc_g = cal.esc_of_V(np.clip(Vg, 100, 300))
 Iesc_g = esc_g * R_EMIT * i_cl_mA(Vg) * 1e-3   # frontier path current [A]
 

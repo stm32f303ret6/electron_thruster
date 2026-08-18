@@ -10,7 +10,7 @@ edit here first, port to prose after.
 - concept = a parameter-free ideal law; pic runs = evidence that a real
   geometry sits within ~20 % of it.
 - mission corridor (anchor body + any same-shape body, CubeSats included),
-  stated as power demand: 8–17 mW at 550–600 km, 39 mW at 500 km; 400 km
+  stated as power demand: 8–17 mW at 550–600 km, 41 mW at 500 km; 400 km
   mean demand covered at the 350 V envelope top (charging margin
   shape-dependent), maxima/night rows stated honestly as open. supplying
   the power is mission design (body-mounted solar is the worked example,
@@ -250,21 +250,29 @@ never averaged in.
 
 | altitude/pose | drag mean/max (nN) | feasible | duty | P mean (mW) | envelope |
 |---|---|---|---|---|---|
-| 400 axial | 32.9 / 92.4 | 21 % | 140 % | 136 | exits (duty > 100 %) |
-| 400 lateral | 21.7 / 60.7 | 54 % | 92 % | 111 | inside on impulse; thrust axis needs redesign |
-| 500 axial | 7.6 / 28.4 | 81 % | 45 % | 39 | **inside** |
-| 550 axial | 3.8 / 16.3 | 92 % | 32 % | 17 | **inside** |
-| 600 axial | 2.0 / 9.6 | 97 % | 25 % | 8 | **inside** |
+| 400 axial | 32.9 / 92.4 | 36 % | 113 % | 175 | exits (duty > 100 % — night-side collection cap at this geometry, no longer the voltage ceiling) |
+| 400 lateral | 21.7 / 60.7 | 63 % | 74 % | 129 | inside on impulse; thrust axis needs redesign |
+| 500 axial | 7.6 / 28.4 | 76 % | 39 % | 41 | **inside** |
+| 550 axial | 3.8 / 16.3 | 85 % | 29 % | 17 | **inside** |
+| 600 axial | 2.0 / 9.6 | 93 % | 23 % | 8 | **inside** |
+
+(model re-run 2026-08-17 at the 350 V cap; the extended envelope moved
+400 axial duty 140 → 113 % and lateral 92 → 74 %. the binding constraint
+at 400 axial is now the benign-float collection cap on thin night rows at
+the squat geometry — the slender skin, measured to cut the float 3.4× at
+this drive, is the modeled-but-not-yet-swept fix.)
 
 - honesty flags: night rows drive the boundary; the density axis now has
   one measured, settled 3× step (§6.1) showing the law *over-predicts*
   the float there → the corridor's night edge is biased conservative;
   rows below n0/3 toward the ~2e11 night minimum remain extrapolated
   (with measured directional bias); powers are beam power $VI$ only.
-- table computed against the pre-2026-08-17 300 V envelope cap. the 350 V
-  pair moves the 400 km axial **mean** inside the measured envelope:
-  40.48 nN squat (~81 % duty) / 43.33 nN slender (~76 %) vs the 32.9 nN
-  mean demand. model re-run at the 350 V cap: TODO.
+- the 350 V pair moves the 400 km axial **mean** inside the measured
+  envelope: 40.48 nN squat (~81 % duty at the tested dayside row) /
+  43.33 nN slender (~76 %) vs the 32.9 nN mean demand. the year-model
+  duty above (113 %) is the harder statement: capability-weighted over
+  real rows, where thin night plasma caps collection at the 50 V float
+  limit on the squat skin.
 - why 400 km stays open even with the mean covered (axial pose):
   1. impulse: peak drag (92.4 nN) needs ~510 V — still far above the
      350 V envelope; no battery fixes the uncovered maxima.

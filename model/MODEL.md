@@ -154,8 +154,9 @@ target, not a closed case.
 
 ## 5. Capability, duty cycle, closure — definitions
 
-- **Feasible**: the emission ceiling at V = 300 V can supply the demanded
-  thrust (I ≤ 1.46·I_CL(300 V) → F ≤ 32 nN).
+- **Feasible**: the emission ceiling at V = 350 V can supply the demanded
+  thrust (I ≤ 1.46·I_CL(350 V) → F ≤ 43.5 nN; the measured 350 V slender
+  run delivered 43.33 nN — the ceiling is measured, not extrapolated).
 - **Duty cycle needed** = mean(drag)/F_cap: ≤ 100 % means the impulse
   budget closes by duty-cycling.
 - **Power demand**: mean beam power V·I at the minimum feasible voltage.

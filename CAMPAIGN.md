@@ -276,9 +276,9 @@ empty corner below ~10 nN, and that is the niche — one the scale-free result
 Stated as power demand — supplying it is mission design, like the cathode
 technology:
 
-- **550–600 km:** 8–17 mW mean at 25–32 % duty cycle — inside the tested
-  envelope.
-- **500 km:** 39 mW mean at 45 % duty — inside the tested envelope.
+- **550–600 km:** 8–17 mW mean at 23–29 % duty cycle — inside the tested
+  envelope (model re-run at the 350 V cap, 2026-08-17).
+- **500 km:** 41 mW mean at 39 % duty — inside the tested envelope.
 - **400 km:** the 350 V pair (2026-08-17) brought the axial mean demand
   inside the measured envelope at both geometries — squat: 40.48 nN
   (~81 % duty) at a 48.3 V float, on the 50 V charging limit; slender:
