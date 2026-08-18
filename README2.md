@@ -139,10 +139,12 @@ against the 32.9 nN mean demand (~81 % duty) but floats *on* the 50 V
 charging limit (48.3 V gated, still rising at run end). The slender body —
 the shape a real mission vehicle takes anyway — delivered **43.33 nN at a
 14.0 V float**: the same demand covered at ~76 % duty with 3.6× margin on
-the charging limit. What stays open at 400 km: drag maxima (92.4 nN) above
-any single operating point, night-side plasma rows still extrapolated,
-~150–200 mW mean power as mission design, and the lateral-pose thrust-axis
-question.
+the charging limit. What stays open at 400 km: the year-round duty is
+still 113 % for the compact shape (the model re-run at the 350 V cap —
+thin night-side plasma caps benign collection, the constraint the slender
+skin relieves), drag maxima (92.4 nN) sit above any single operating
+point, ~150–200 mW mean power is mission design, and the lateral-pose
+thrust-axis question is untouched.
 
 ## Status
 

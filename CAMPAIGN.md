@@ -233,6 +233,22 @@ measured or extrapolated:
 The model's independent 400 km power figure (136 mW) reproduces the earlier
 hand estimate (~110–165 mW), which is a weak but real cross-check.
 
+*Update 2026-08-17 — re-run at the 350 V cap after the envelope extension:*
+
+| mission | feasible % | duty cycle | P mean (mW) |
+|---|---|---|---|
+| 400 km axial | 36.1 | **113 %** | 174.8 |
+| 400 km lateral | 63.4 | 74 % | 128.6 |
+| 500 km | 76.1 | 39 % | 40.7 |
+| 550 km | 84.9 | 29 % | 17.4 |
+| 600 km | 92.8 | 23 % | 8.0 |
+
+The binding constraint at 400 km axial moved: no longer the voltage
+ceiling (every V_min is now inside the envelope) but the benign-float
+collection cap on thin night-side rows at the squat geometry — the
+constraint the measured slender float (14.0 V at the same drive) relieves,
+though the model does not yet sweep geometry per row.
+
 ---
 
 ## 6. What it implies
