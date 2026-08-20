@@ -61,13 +61,22 @@ operating point, there is no cycle, just a continuous equilibrium.
 The concept is a plain electrostatic accelerator.
 
 $$
-\begin{aligned}
-F &= \frac{I \sqrt{2 m_e \, \mathrm{KE}}}{e} \qquad \text{thrust: momentum flux of the escaping beam} \\
-\mathrm{KE} &= \kappa \, (V - \varphi) \qquad \text{energy each electron actually leaves with} \\
-\eta &= \kappa \, \frac{V - \varphi}{V} \cdot f_{\mathrm{esc}} \qquad \text{jet power / electrical power}
-\end{aligned}
+F = \frac{I \sqrt{2 m_e \, \mathrm{KE}}}{e}
 $$
-Where:
+
+Thrust: momentum flux of the escaping beam.
+
+$$
+\mathrm{KE} = \kappa \, (V - \varphi)
+$$
+
+Energy each electron actually leaves with.
+
+$$
+\eta = \kappa \, \frac{V - \varphi}{V} \cdot f_{\mathrm{esc}}
+$$
+
+Jet power / electrical power. Where:
 
 
 | symbol | what it is | what sets it |
@@ -117,7 +126,9 @@ Two constants describe every run across 100–350 V to ~1 %:
 
 $$
 F\,[\mathrm{nN}] = 3.2675 \cdot I\,[\mathrm{mA}] \cdot \sqrt{\mathrm{KE}\,[\mathrm{eV}]}
-\qquad\qquad
+$$
+
+$$
 \mathrm{KE} = 0.8063 \, (V - \varphi)
 $$
 
