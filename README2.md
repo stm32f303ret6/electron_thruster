@@ -8,6 +8,8 @@ system, no neutralizer.
 
 This allows small spacecraft to carry cheap, simple propulsion enough to cancel drag, allowing missions like station-keeping (theoretically indefinite because there is no on-board propellant).
 
+![200 V baseline simulation](paper/new/imgs/dashboard_200v.gif)
+
 ## Motivation
 
 Ion thrusters dominate electric propulsion, but they carry a tank, a feed
