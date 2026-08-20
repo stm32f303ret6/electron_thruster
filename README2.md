@@ -24,7 +24,7 @@ thruster (~0.2 µN/W vs ~40 µN/W). That gap is disqualifying at
 millinewton scale. But LEO drag at 400–600 km on a small spacecraft is
 nanonewtons, and at that scale the arithmetic changes: an electron beam
 needs 10–100 mW where an ion thruster would need ~1 mW. The power
-difference is negligible — what matters is that the electron version needs
+difference is negligible, what matters is that the electron version needs
 no tank, no neutralizer, no propellant. Just two electrodes and an HV
 supply.
 
@@ -35,11 +35,11 @@ small spacecraft.
 
 ### Components
 
-1. **A negative cathode** — emits and accelerates electrons out of the
+1. **A negative cathode**: emits and accelerates electrons out of the
    spacecraft. The escaping beam produces the thrust.
-2. **The spacecraft's own structure** — collects electrons back from the
+2. **The spacecraft's own structure**: collects electrons back from the
    ionosphere. The skin is the second electrode.
-3. **An HV supply** — holds the cathode at a fixed voltage below the body, so
+3. **An HV supply**: holds the cathode at a fixed voltage below the body, so
    collected electrons are re-emitted as the beam.
 
 ### Operation
@@ -52,7 +52,7 @@ small spacecraft.
 
 The process settles into a steady state: the body floats at the potential
 **φ** where collected current equals emitted current. That float **is** the
-operating point — there is no cycle, just a continuous equilibrium.
+operating point, there is no cycle, just a continuous equilibrium.
 
 ![Concept, step by step](paper/new/imgs/concept_steps.png)
 
@@ -62,9 +62,9 @@ The concept is a plain electrostatic accelerator.
 
 $$
 \begin{aligned}
-F &= \frac{I \sqrt{2 m_e \, \mathrm{KE}}}{e} && \text{thrust — momentum flux of the escaping beam} \\
-\mathrm{KE} &= \kappa \, (V - \varphi) && \text{energy each electron actually leaves with} \\
-\eta &= \kappa \, \frac{V - \varphi}{V} \cdot f_{\mathrm{esc}} && \text{jet power / electrical power}
+F &= \frac{I \sqrt{2 m_e \, \mathrm{KE}}}{e} \qquad \text{thrust: momentum flux of the escaping beam} \\
+\mathrm{KE} &= \kappa \, (V - \varphi) \qquad \text{energy each electron actually leaves with} \\
+\eta &= \kappa \, \frac{V - \varphi}{V} \cdot f_{\mathrm{esc}} \qquad \text{jet power / electrical power}
 \end{aligned}
 $$
 Where:
@@ -72,9 +72,9 @@ Where:
 
 | symbol | what it is | what sets it |
 |---|---|---|
-| $\kappa$ | gun energy transmission | gun loading — beam space charge depresses the injection plane; lighter or distributed emission → closer to 1 |
-| $\varphi$ | float potential | current balance with the plasma — falls as collecting area grows, rises as plasma thins |
-| $\varphi/V$ | the float tax | the energy price of propellantless current return — must exist; its size is design |
+| $\kappa$ | gun energy transmission | gun loading: beam space charge depresses the injection plane; lighter or distributed emission → closer to 1 |
+| $\varphi$ | float potential | current balance with the plasma: falls as collecting area grows, rises as plasma thins |
+| $\varphi/V$ | the float tax | the energy price of propellantless current return, must exist; its size is design |
 | $f_{\mathrm{esc}}$ | beam fraction that clears the body | exit-aperture geometry |
 
 Two structural consequences, independent of any parameter values:
@@ -82,7 +82,7 @@ Two structural consequences, independent of any parameter values:
 - **The device measures its own thrust.** $I$ and $\varphi$ are plain
   electrical measurements any microcontroller can take in flight. No thrust
   stand needed.
-- **The control law is trivial.** A two-line servo on the measured float — no
+- **The control law is trivial.** A two-line servo on the measured float, no
   ionosphere model, no lookup table. Density, temperature, day/night all
   collapse into where the body floats (`model/MODEL.md` §2).
 
@@ -98,16 +98,16 @@ $$
 $$
 
 then forces tiny thrust per watt: the ~200× gap to gridded ion is this
-equation, not an engineering shortfall — and it is why the device only
+equation, not an engineering shortfall, and it is why the device only
 competes where thrust demands are tiny.
 
 | parameter | here |
 |---|---|
-| exhaust velocity $v_e$ | huge (electron exhaust) — the root of everything in this table |
-| specific impulse | beam-stream $I_{sp} = v_e/g_0$ huge; system $I_{sp}$ undefined (zero net mass flow, as with electrodynamic tethers). Not a figure of merit — its only job is explaining $F/P$ |
-| total impulse | not propellant-limited — bounded by cathode lifetime (`THESIS.md`) |
-| divergence efficiency | plume cosine factor — measured below |
-| propellant utilization, Δv mass fraction | not applicable — no propellant; nearest analog is $f_{\mathrm{esc}}$ |
+| exhaust velocity $v_e$ | huge (electron exhaust), the root of everything in this table |
+| specific impulse | beam-stream $I_{sp} = v_e/g_0$ huge; system $I_{sp}$ undefined (zero net mass flow, as with electrodynamic tethers). Not a figure of merit, its only job is explaining $F/P$ |
+| total impulse | not propellant-limited, bounded by cathode lifetime (`THESIS.md`) |
+| divergence efficiency | plume cosine factor, measured below |
+| propellant utilization, Δv mass fraction | not applicable, no propellant; nearest analog is $f_{\mathrm{esc}}$ |
 
 ### Measured numbers (PIC campaign)
 
@@ -128,7 +128,7 @@ $$
 | squat, 100–350 V | 5.4–48.3 V | 96–99 % | 0.67–0.74 (float tax grows with V) |
 
 - exhaust velocity: $v_e = 5.2$–$9.8 \times 10^6$ m/s
-  (beam $I_{sp} \sim 5$–$10 \times 10^5$ s — not a figure of merit, see theory)
+  (beam $I_{sp} \sim 5$–$10 \times 10^5$ s, not a figure of merit, see theory)
 - cross-check: $2\eta/v_e = 0.202$ µN/W at the anchor vs 0.200 measured
 - divergence factor: 0.97 (measured thrust slope vs ideal)
 
@@ -137,10 +137,10 @@ traces to a design parameter; moving the parameter moves the number:
 
 | measured value | design parameter it comes from |
 |---|---|
-| $\kappa = 0.8063$ | gun loading $I/I_{\mathrm{CL}} = 1.46$ — the space-charge depression it buys |
+| $\kappa = 0.8063$ | gun loading $I/I_{\mathrm{CL}} = 1.46$, the space-charge depression it buys |
 | $\varphi = 5\text{–}48$ V | body collecting area and shape ($L/r$), operating point, ambient density |
 | $f_{\mathrm{esc}} = 96\text{–}99\,\%$ | exit-aperture geometry |
-| $c_F = 0.97\,c_{\mathrm{ideal}}$ | plume divergence — gun optics and exit aperture |
+| $c_F = 0.97\,c_{\mathrm{ideal}}$ | plume divergence, gun optics and exit aperture |
 | $\eta = 0.67\text{–}0.77$ | all of the above, at the tested operating points |
 
 Two rules for reading them:
@@ -150,15 +150,15 @@ Two rules for reading them:
    the only sanctioned extrapolation and labels its outputs estimates.
 2. **The cathode is excluded.** Beam current is *prescribed*; no flight
    cathode is selected (open risk 2). Flight thruster efficiencies include
-   their full beam-production cost — this $\eta$ does not.
+   their full beam-production cost, this $\eta$ does not.
 
 ## Comparison with ion thrusters
 
 | | gridded ion thruster | electron thruster |
 |---|---|---|
 | thrust per watt | ~40 µN/W | ~0.2 µN/W (~200× worse) |
-| power at nN thrust | ~1 mW | ~10–100 mW — at this scale the gap is negligible |
-| energy conversion efficiency | ~70 % (flight hardware, full beam-production cost) | 0.67–0.77 in PIC (concept stage, cathode excluded) — same class, but not a like-for-like comparison; see "Measured numbers" above |
+| power at nN thrust | ~1 mW | ~10–100 mW, at this scale the gap is negligible |
+| energy conversion efficiency | ~70 % (flight hardware, full beam-production cost) | 0.67–0.77 in PIC (concept stage, cathode excluded), same class, but not a like-for-like comparison; see "Measured numbers" above |
 | tank / propellant / valves / neutralizer | yes | **no** |
 | launch-safety review for stored propellant | yes | **no** |
 | cost | tens of k$ | two electrodes + HV supply |
@@ -174,7 +174,7 @@ where nothing else operates.
 
 Measured thrust with full PIC simulations show that this thruster produces **13.65 nN** at 200V consuming **~68 mW**, produces **30.13 nN** using 300V, and **40.48 nN** at 350 V. Against real 2024 drag (NRLMSISE-00, real F10.7/Ap, solar-cycle-25 maximum) for the anchor body:
 
-- **Test body**: a cylinder, Ø10 mm × 5 mm height, 100 g, Cd = 2.2 — the
+- **Test body**: a cylinder, Ø10 mm × 5 mm height, 100 g, Cd = 2.2, the
   same geometry the PIC simulations use.
 - **axial**: drag hits the cap side of the cylinder.
 - **lateral**: drag hits the skin side of the cylinder.
@@ -197,12 +197,12 @@ point's drag and computes what it costs:
 | 600 km | 100 V | 6.8 mW | yes |
 | 550 km | 104 V | 13.4 mW | yes |
 | 500 km | 146 V | 31.3 mW | yes |
-| 400 km lateral | 247 V | 116 mW | yes — see the note below |
-| 400 km axial | 304 V | 196 mW | yes — inside the extended 350 V envelope |
+| 400 km lateral | 247 V | 116 mW | yes, see the note below |
+| 400 km axial | 304 V | 196 mW | yes, inside the extended 350 V envelope |
 
 **Power is the thruster's interface to the spacecraft**: tens of mW at
 500–600 km, ~100–200 mW at 400 km. Where that power comes from is mission
-design, not part of the thruster — same as the cathode technology. For
+design, not part of the thruster, same as the cathode technology. For
 context, typical small-spacecraft power:
 
 - this geometry (femtosat class): ~10–30 mW from body-mounted solar cells,
@@ -216,11 +216,11 @@ CubeSat size: a 3U needs ~0.9 W at 600 km against a typical 5–10 W budget.
 **Note on 400 km.** The axial-pose demand is now inside the measured
 envelope, at both tested geometries. The compact body delivered 40.48 nN
 against the 32.9 nN mean demand (~81 % duty) but floats *on* the 50 V
-charging limit (48.3 V gated, still rising at run end). The slender body —
-the shape a real mission vehicle takes anyway — delivered **43.33 nN at a
+charging limit (48.3 V gated, still rising at run end). The slender body,
+the shape a real mission vehicle takes anyway, delivered **43.33 nN at a
 14.0 V float**: the same demand covered at ~76 % duty with 3.6× margin on
 the charging limit. What stays open at 400 km: the year-round duty is
-still 113 % for the compact shape (the model re-run at the 350 V cap —
+still 113 % for the compact shape (the model re-run at the 350 V cap,
 thin night-side plasma caps benign collection, the constraint the slender
 skin relieves), drag maxima (92.4 nN) sit above any single operating
 point, ~150–200 mW mean power is mission design, and the lateral-pose
@@ -234,8 +234,8 @@ What is validated and what is not:
 |---|---|
 | Simulation | nine-stage WarpX PIC validation ladder, every stage gated against a pre-registered, hash-frozen acceptance policy |
 | Hardware | one bench experiment, rough vacuum (4–5 Pa), qualitative only |
-| Flight cathode | not selected — beam current is *prescribed* in every simulation |
-| Magnetic field | field-aligned axis measured (tier M1); transverse B — the actual flight geometry — untested |
+| Flight cathode | not selected: beam current is *prescribed* in every simulation |
+| Magnetic field | field-aligned axis measured (tier M1); transverse B, the actual flight geometry, untested |
 | Flight heritage | none |
 
 This is a research repository with a working physics model, not a product.
@@ -253,7 +253,7 @@ verdict. The evidence can never move when the demand changes.
 
 ![Ladder and characterization](paper/new/imgs/ladder_characterization.png)
 
-### PIC simulations — the ladder
+### PIC simulations: the ladder
 
 The ladder builds from a vacuum electron gun up to the full floating
 thruster. Each stage isolates one piece of physics and gates it against
@@ -273,22 +273,22 @@ theory or a disclosed anchor. All nine stages **PASS**.
 
 Full digest with every gate: `pic_sims/ladder/LADDER_SUMMARY.md`.
 
-### PIC simulations — characterization
+### PIC simulations: characterization
 
 Eight spokes off the 200 V anchor. Each moves **one** physics axis and keeps
-everything else verbatim — except the last, which deliberately combines the
+everything else verbatim, except the last, which deliberately combines the
 two measured axes (voltage × geometry) to test that the laws compose. All
 eight **PASS** their gates.
 
 | spoke | axis | result |
 |---|---|---|
 | `high_thrust` | 300 V | φ 36.3 V, **F 30.13 nN** |
-| `350V_400km` | 350 V (the 400 km-enabling drive) | φ 48.3 V — on the 50 V limit, **F 40.48 nN** |
-| `350V_400km_slender` | 350 V × slender — the factorial corner | φ 14.0 V (predicted 11–17), **F 43.33 nN**: the laws compose |
+| `350V_400km` | 350 V (the 400 km-enabling drive) | φ 48.3 V, on the 50 V limit, **F 40.48 nN** |
+| `350V_400km_slender` | 350 V × slender, the factorial corner | φ 14.0 V (predicted 11–17), **F 43.33 nN**: the laws compose |
 | `low_power` | 100 V | φ 5.4 V, F 3.42 nN |
 | `slender_body` | elongated body, L/r = 6 | φ 4.4 V, F 14.22 nN |
 | `thin_plasma` | density n₀/3 | float unsettled, > 31.6 V bound |
-| `magnetized_1x` | axial B = 30 µT (1× LEO) | null — anchor unchanged |
+| `magnetized_1x` | axial B = 30 µT (1× LEO) | null: anchor unchanged |
 | `magnetized_10x` | axial B = 300 µT | collection tax: φ +33 V, F −11 % |
 
 Details: `pic_sims/characterization/README.md`.
@@ -300,7 +300,7 @@ Details: `pic_sims/characterization/README.md`.
 - Drag is cancelled exactly, so the per-row drag force **is** the thrust
   demand.
 - Cases: 400 (axial + lateral), 500, 550, 600 km.
-- Deliverable: `station_keeping.csv` per case — every row carries pose, drag,
+- Deliverable: `station_keeping.csv` per case, every row carries pose, drag,
   and `(n_e, Te, Ti)`.
 
 ## Scaling to CubeSats
@@ -317,7 +317,7 @@ estimates a 3U CubeSat at:
 | 500 km | ~3.4 W |
 
 These are **estimates from an extrapolated collection law, not
-measurements** — the extrapolation crosses a regime boundary (risk 4 below).
+measurements**, the extrapolation crosses a regime boundary (risk 4 below).
 
 ## Open risks
 
