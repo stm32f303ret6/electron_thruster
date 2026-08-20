@@ -1,34 +1,34 @@
 # Electron Thruster
 
-**A propellantless thruster for small spacecraft: a cathode, a high-voltage
-supply, and the spacecraft's own skin.**
+An electron thruster for LEO drag compensation, with the ionosphere as the return circuit.
 
-The device fires an electron beam into space. The escaping beam carries
-momentum away — that is the thrust. The ionosphere returns the same current
-to the spacecraft's outer surface, so the net mass flow is zero: the thruster
-needs no propellant.
+The thruster accelerates electrons out of the spacecraft, the escaping beam produces the thrust. The ionosphere returns the same current to the spacecraft
+surface, so the circuit closes with zero net mass flow, no tank, no feed
+system, no neutralizer.
+
+This allows small spacecraft to carry cheap, simple propulsion enough to cancel drag, allowing missions like station-keeping (theoretically indefinite because there is no on-board propellant).
 
 ## Motivation
 
-Most LEO CubeSats fly with no propulsion at all. The reason is usually not
-performance — it is what a propellant system brings with it:
+Ion thrusters dominate electric propulsion, but they carry a tank, a feed
+system, a neutralizer, and a pressure vessel, this hardware is expensive,
+takes up space, and is rarely justified on a cubesat. This project asks:
+what if you emit electrons instead of ions, and let the ionosphere return
+the current?
 
-- a tank and a pressure vessel
-- valves, feed lines, propellant loading
-- a launch-safety review that can cost more than the spacecraft
-- tens of thousands of dollars and tens of watts, for commercial CubeSat EP
-
-This project proposes a thruster with none of that:
-
-- **no tank, no propellant, no valves, no neutralizer**
-- thrust in the nN range — enough to cancel drag at 500–600 km, with the
-  400 km mean demand covered at 350 V (mission-level questions still open)
-- power in the mW range
-- hardware: two electrodes and an HV supply
+The tradeoff is thrust per watt, electrons are far lighter than ions, so
+an electron beam carries ~200x less momentum per watt than a gridded ion
+thruster (~0.2 µN/W vs ~40 µN/W). That gap is disqualifying at
+millinewton scale. But LEO drag at 400–600 km on a small spacecraft is
+nanonewtons, and at that scale the arithmetic changes: an electron beam
+needs 10–100 mW where an ion thruster would need ~1 mW. The power
+difference is negligible — what matters is that the electron version needs
+no tank, no neutralizer, no propellant. Just two electrodes and an HV
+supply.
 
 The goal is not the highest performance. It is the **lowest barrier to
-actually flying a thruster**.
-
+actually flying a thruster**, enabling missions like drag compensation for
+small spacecraft.
 ## How it works
 
 ### Components
@@ -56,8 +56,7 @@ operating point — there is no cycle, just a continuous equilibrium.
 
 ### Theory
 
-The concept is a plain electrostatic accelerator. The laws carry no
-numbers — only the structure of where thrust and energy go:
+The concept is a plain electrostatic accelerator.
 
 $$
 \begin{aligned}
@@ -66,15 +65,14 @@ F &= \frac{I \sqrt{2 m_e \, \mathrm{KE}}}{e} && \text{thrust — momentum flux o
 \eta &= \kappa \, \frac{V - \varphi}{V} \cdot f_{\mathrm{esc}} && \text{jet power / electrical power}
 \end{aligned}
 $$
+Where:
 
-Every symbol is a **design or environment parameter, not a constant of the
-concept**:
 
 | symbol | what it is | what sets it |
 |---|---|---|
 | $\kappa$ | gun energy transmission | gun loading — beam space charge depresses the injection plane; lighter or distributed emission → closer to 1 |
 | $\varphi$ | float potential | current balance with the plasma — falls as collecting area grows, rises as plasma thins |
-| $\varphi/V$ | the **float tax** | the energy price of propellantless current return — must exist; its size is design |
+| $\varphi/V$ | the float tax | the energy price of propellantless current return — must exist; its size is design |
 | $f_{\mathrm{esc}}$ | beam fraction that clears the body | exit-aperture geometry |
 
 Two structural consequences, independent of any parameter values:
@@ -86,6 +84,8 @@ Two structural consequences, independent of any parameter values:
   ionosphere model, no lookup table. Density, temperature, day/night all
   collapse into where the body floats (`model/MODEL.md` §2).
 
+Note: Every symbol is a design param, not a constant of the concept.
+An STM32 is enough to control this thruster.
 #### Standard EP parameters
 
 The electron exhaust is extremely light, so $v_e = \sqrt{2\,\mathrm{KE}/m_e}$
