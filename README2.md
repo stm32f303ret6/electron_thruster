@@ -18,15 +18,18 @@ takes up space, and is rarely justified on a cubesat. This project asks:
 what if you emit electrons instead of ions, and let the ionosphere return
 the current?
 
-The tradeoff is thrust per watt, electrons are far lighter than ions, so
-an electron beam carries ~200x less momentum per watt than a gridded ion
-thruster (~0.2 µN/W vs ~40 µN/W). That gap is disqualifying at
-millinewton scale. But LEO drag at 400–600 km on a small spacecraft is
-nanonewtons, and at that scale the arithmetic changes: an electron beam
-needs 10–100 mW where an ion thruster would need ~1 mW. The power
-difference is negligible, what matters is that the electron version needs
-no tank, no neutralizer, no propellant. Just two electrodes and an HV
-supply.
+The tradeoff is thrust per watt. For any thruster, $F/P = 2\eta/v_e$:
+higher exhaust velocity means less thrust per watt. Electrons are light,
+so $v_e$ is huge, and an electron beam carries ~200x less momentum per
+watt than a gridded ion thruster (~0.2 µN/W vs ~40 µN/W). That gap is
+not an engineering shortfall, it is this equation, and it is disqualifying
+at millinewton scale.
+
+But LEO drag at 400–600 km on a small spacecraft is nanonewtons, and at
+that scale the arithmetic changes: an electron beam needs 10–100 mW where
+an ion thruster would need ~1 mW. The power difference is negligible,
+what matters is that the electron version needs no tank, no neutralizer,
+no propellant. Just two electrodes and an HV supply.
 
 The goal is not the highest performance. It is the **lowest barrier to
 actually flying a thruster**, enabling missions like drag compensation for
@@ -60,34 +63,37 @@ operating point, there is no cycle, just a continuous equilibrium.
 
 The concept is a plain electrostatic accelerator.
 
+Thrust: momentum flux of the escaping beam:
 $$
 F = \frac{I \sqrt{2 m_e \, \mathrm{KE}}}{e}
 $$
 
-Thrust: momentum flux of the escaping beam.
+Energy each electron actually leaves with:
 
 $$
 \mathrm{KE} = \kappa \, (V - \varphi)
 $$
 
-Energy each electron actually leaves with.
+Jet power / electrical power:
 
 $$
 \eta = \kappa \, \frac{V - \varphi}{V} \cdot f_{\mathrm{esc}}
 $$
 
-Jet power / electrical power. Where:
 
 
-| symbol | what it is | what sets it |
+ Where:
+
+
+| symbol | what it is | controlled by |
 |---|---|---|
-| $\kappa$ | gun energy transmission | gun loading: beam space charge depresses the injection plane; lighter or distributed emission → closer to 1 |
-| $\varphi$ | float potential | current balance with the plasma: falls as collecting area grows, rises as plasma thins |
-| $\varphi/V$ | the float tax | the energy price of propellantless current return, must exist; its size is design |
+| $\kappa$ | gun energy transmission | gun loading ($I/I_{\mathrm{CL}}$) |
+| $\varphi$ | float potential | collecting area, body shape, plasma density |
+| $\varphi/V$ | the float tax | fraction of supply voltage lost to current return |
 | $f_{\mathrm{esc}}$ | beam fraction that clears the body | exit-aperture geometry |
 
-Two structural consequences, independent of any parameter values:
 
+### Control
 - **The device measures its own thrust.** $I$ and $\varphi$ are plain
   electrical measurements any microcontroller can take in flight. No thrust
   stand needed.
@@ -95,28 +101,7 @@ Two structural consequences, independent of any parameter values:
   ionosphere model, no lookup table. Density, temperature, day/night all
   collapse into where the body floats (`model/MODEL.md` §2).
 
-Note: Every symbol is a design param, not a constant of the concept.
 An STM32 is enough to control this thruster.
-#### Standard EP parameters
-
-The electron exhaust is extremely light, so $v_e = \sqrt{2\,\mathrm{KE}/m_e}$
-is huge. The ideal tradeoff
-
-$$
-\frac{F}{P} = \frac{2\,\eta}{v_e}
-$$
-
-then forces tiny thrust per watt: the ~200× gap to gridded ion is this
-equation, not an engineering shortfall, and it is why the device only
-competes where thrust demands are tiny.
-
-| parameter | here |
-|---|---|
-| exhaust velocity $v_e$ | huge (electron exhaust), the root of everything in this table |
-| specific impulse | beam-stream $I_{sp} = v_e/g_0$ huge; system $I_{sp}$ undefined (zero net mass flow, as with electrodynamic tethers). Not a figure of merit, its only job is explaining $F/P$ |
-| total impulse | not propellant-limited, bounded by cathode lifetime (`THESIS.md`) |
-| divergence efficiency | plume cosine factor, measured below |
-| propellant utilization, Δv mass fraction | not applicable, no propellant; nearest analog is $f_{\mathrm{esc}}$ |
 
 ### Measured numbers (PIC campaign)
 
@@ -132,36 +117,33 @@ $$
 \mathrm{KE} = 0.8063 \, (V - \varphi)
 $$
 
-| run | $\varphi$ | $f_{\mathrm{esc}}$ | $\eta$ |
-|---|---|---|---|
-| 200 V anchor | 17.0 V | 98.4 % | **0.73** |
-| slender ($L/r = 6$), 350 V | 14.0 V | 99.1 % | **0.77** |
-| squat, 100–350 V | 5.4–48.3 V | 96–99 % | 0.67–0.74 (float tax grows with V) |
+| run | $\varphi$ | $f_{\mathrm{esc}}$ | $\eta$ | $v_e$ (m/s) |
+|---|---|---|---|---|
+| 200 V anchor | 17.0 V | 98.4 % | **0.73** | $5.4 \times 10^6$ |
+| slender ($L/r = 6$), 350 V | 14.0 V | 99.1 % | **0.77** | $9.7 \times 10^6$ |
+| squat, 100–350 V | 5.4–48.3 V | 96–99 % | 0.67–0.74 | $5.2$–$9.8 \times 10^6$ |
 
-- exhaust velocity: $v_e = 5.2$–$9.8 \times 10^6$ m/s
-  (beam $I_{sp} \sim 5$–$10 \times 10^5$ s, not a figure of merit, see theory)
-- cross-check: $2\eta/v_e = 0.202$ µN/W at the anchor vs 0.200 measured
-- divergence factor: 0.97 (measured thrust slope vs ideal)
+Divergence factor: 0.97 (measured thrust slope vs ideal).
 
-**These numbers characterize the simulated design, not the concept.** Each
-traces to a design parameter; moving the parameter moves the number:
+#### Reading these numbers
 
-| measured value | design parameter it comes from |
-|---|---|
-| $\kappa = 0.8063$ | gun loading $I/I_{\mathrm{CL}} = 1.46$, the space-charge depression it buys |
-| $\varphi = 5\text{–}48$ V | body collecting area and shape ($L/r$), operating point, ambient density |
-| $f_{\mathrm{esc}} = 96\text{–}99\,\%$ | exit-aperture geometry |
-| $c_F = 0.97\,c_{\mathrm{ideal}}$ | plume divergence, gun optics and exit aperture |
-| $\eta = 0.67\text{–}0.77$ | all of the above, at the tested operating points |
+These numbers characterize the simulated design, not the concept. Each
+traces to a design parameter (see the theory table above); moving the
+parameter moves the number.
 
-Two rules for reading them:
+For example, $\kappa = 0.81$ reflects the space-charge depression of a
+single-aperture gun at $I/I_{\mathrm{CL}} = 1.46$; distributed emission
+(grid, array) reduces that depression and pushes $\kappa$ toward 1.
+Similarly, the slender body already shows $\varphi$ dropping from 17 V to
+4.4 V by changing geometry alone.
 
-1. **No extrapolation without simulation.** Outside the measured envelope
-   (other gun loadings, geometries, plasmas) → new runs; `model/MODEL.md` is
-   the only sanctioned extrapolation and labels its outputs estimates.
-2. **The cathode is excluded.** Beam current is *prescribed*; no flight
-   cathode is selected (open risk 2). Flight thruster efficiencies include
-   their full beam-production cost, this $\eta$ does not.
+Outside the measured envelope (other gun loadings, geometries, plasmas),
+new runs are needed; `model/MODEL.md` is the only sanctioned
+extrapolation and labels its outputs estimates.
+
+The cathode is excluded: beam current is *prescribed*, no flight cathode
+is selected (open risk 2). Flight thruster efficiencies include their
+full beam-production cost, this $\eta$ does not.
 
 ## Comparison with ion thrusters
 
