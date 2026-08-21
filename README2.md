@@ -234,19 +234,21 @@ The ladder builds from a vacuum electron gun up to the full floating thruster.
 Each stage isolates one piece of physics and gates it against theory or a disclosed anchor.
 All nine stages **PASS**.
 
+Each stage links to its simulation directory:
+
 | # | stage | what it proves | headline result |
 |---|---|---|---|
-| 1 | `emitter.negative_cathode` | gun physics vs exact Laplace ramp | potential error 35 µV on 100 V |
-| 2 | `emitter.holed_anode` | space charge + geometry control transmission | 0.97 → 0.90 → 1.00 across the three scenarios, as predicted |
-| 3 | `emitter.voltage_bracket` | transmission is voltage-independent 200→300 V | spread 0.006 pp |
-| 4 | `collector.thermal` | collection vs exact thermal flux | within 1 % of closed form |
-| 5 | `collector.biased_3v` | OML collection at +3 V | 0.85 of ceiling, matching Laframboise |
-| 6 | `collector.biased_10v` | sheath grows, collected fraction falls | 0.81 of ceiling, sheath 4.1 → 6.9 mm |
-| 7 | `collector.floating` | body floats to theoretical potential | −0.251 V, inside the two-model bracket |
-| 8 | `capstone.two_node_laplace` | two potentials on one conducting body | exact Laplace, 0.0 V violation |
-| 9 | `capstone.floating_body` | **the full device** | φ +16.98 V, escape 98.4 %, **F = 13.65 nN** |
+| 1 | [`emitter.negative_cathode`](pic_sims/ladder/electron_gun/1_negative_cathode) | gun physics vs exact Laplace ramp | potential error 35 µV on 100 V |
+| 2 | [`emitter.holed_anode`](pic_sims/ladder/electron_gun/2_electron_gun) | space charge + geometry control transmission | 0.97 → 0.90 → 1.00 across the three scenarios, as predicted |
+| 3 | [`emitter.voltage_bracket`](pic_sims/ladder/electron_gun/3_voltage_bracket) | transmission is voltage-independent 200→300 V | spread 0.006 pp |
+| 4 | [`collector.thermal`](pic_sims/ladder/current_collection/1_thermal) | collection vs exact thermal flux | within 1 % of closed form |
+| 5 | [`collector.biased_3v`](pic_sims/ladder/current_collection/2_biased_3v) | OML collection at +3 V | 0.85 of ceiling, matching Laframboise |
+| 6 | [`collector.biased_10v`](pic_sims/ladder/current_collection/3_biased_10v) | sheath grows, collected fraction falls | 0.81 of ceiling, sheath 4.1 → 6.9 mm |
+| 7 | [`collector.floating`](pic_sims/ladder/current_collection/4_floating) | body floats to theoretical potential | −0.251 V, inside the two-model bracket |
+| 8 | [`capstone.two_node_laplace`](pic_sims/ladder/capstone/1_two_node_laplace) | two potentials on one conducting body | exact Laplace, 0.0 V violation |
+| 9 | [`capstone.floating_body`](pic_sims/ladder/capstone/2_chipsat_thruster) | **the full device** | φ +16.98 V, escape 98.4 %, **F = 13.65 nN** |
 
-Full digest with every gate: `pic_sims/ladder/LADDER_SUMMARY.md`.
+Full digest with every gate: [`pic_sims/ladder/LADDER_SUMMARY.md`](pic_sims/ladder/LADDER_SUMMARY.md).
 
 ### PIC simulations: characterization
 
@@ -254,18 +256,20 @@ Eight spokes off the 200 V anchor.
 Each moves **one** physics axis and keeps everything else verbatim, except the last, which deliberately combines the two measured axes (voltage × geometry) to test that the laws compose.
 All eight **PASS** their gates.
 
+Each spoke links to its simulation directory:
+
 | spoke | axis | result |
 |---|---|---|
-| `high_thrust` | 300 V | φ 36.3 V, **F 30.13 nN** |
-| `350V_400km` | 350 V (the 400 km-enabling drive) | φ 48.3 V, on the 50 V limit, **F 40.48 nN** |
-| `350V_400km_slender` | 350 V × slender, the factorial corner | φ 14.0 V (predicted 11–17), **F 43.33 nN**: the laws compose |
-| `low_power` | 100 V | φ 5.4 V, F 3.42 nN |
-| `slender_body` | elongated body, L/r = 6 | φ 4.4 V, F 14.22 nN |
-| `thin_plasma` | density n₀/3 | float unsettled, > 31.6 V bound |
-| `magnetized_1x` | axial B = 30 µT (1× LEO) | null: anchor unchanged |
-| `magnetized_10x` | axial B = 300 µT | collection tax: φ +33 V, F −11 % |
+| [`high_thrust`](pic_sims/characterization/high_thrust) | 300 V | φ 36.3 V, **F 30.13 nN** |
+| [`350V_400km`](pic_sims/characterization/350V_400km) | 350 V (the 400 km-enabling drive) | φ 48.3 V, on the 50 V limit, **F 40.48 nN** |
+| [`350V_400km_slender`](pic_sims/characterization/350V_400km_slender) | 350 V × slender, the factorial corner | φ 14.0 V (predicted 11–17), **F 43.33 nN**: the laws compose |
+| [`low_power`](pic_sims/characterization/low_power) | 100 V | φ 5.4 V, F 3.42 nN |
+| [`slender_body`](pic_sims/characterization/slender_body) | elongated body, L/r = 6 | φ 4.4 V, F 14.22 nN |
+| [`thin_plasma`](pic_sims/characterization/thin_plasma) | density n₀/3 | float unsettled, > 31.6 V bound |
+| [`magnetized_1x`](pic_sims/characterization/magnetized_1x) | axial B = 30 µT (1× LEO) | null: anchor unchanged |
+| [`magnetized_10x`](pic_sims/characterization/magnetized_10x) | axial B = 300 µT | collection tax: φ +33 V, F −11 % |
 
-Details: `pic_sims/characterization/README.md`.
+Details: [`pic_sims/characterization/README.md`](pic_sims/characterization/README.md).
 
 ### Orbit simulations
 
