@@ -281,31 +281,6 @@ Each spoke links to its simulation directory:
 
 Details: [`pic_sims/characterization/README.md`](pic_sims/characterization/README.md).
 
-### Pre-registered predictions
-
-All predictions were committed to git before the run that tested them.
-
-**Collection law exponent** (pre-registered 2026-08-04): three candidates for `I_collect ∝ (1+χ)^α`:
-
-| α | predicted φ at 300 V | outcome |
-|---|---|---|
-| 1.0 (linear OML) | ~31 V | **REFUTED** — φ passed 31 V and kept climbing |
-| **0.82** (pre-registered) | ~36 V | **SURVIVES** — measured 36.30 V |
-| 0.5 (square root) | ~90 V | **REFUTED** |
-
-**Slender body** (pre-registered 2026-08-05):
-
-| hypothesis | predicted φ | outcome |
-|---|---|---|
-| **A: area-only scaling** (α holds, demand drops 3.24×) | 4–5 V | **CONFIRMED** — measured 4.38 V |
-| B: cylinder-limit lateral (α → 0.5) | tens of V | **REFUTED by ~10×** |
-
-**Thin plasma density** (pre-registered 2026-08-06): every fixed-α prediction overshoots (53–160 V predicted, 42.5 V measured).
-The fitted law is **conservative along density**.
-
-**350 V factorial** (pre-registered 2026-08-17): squat φ 48.3 V (predicted ~47), F 40.48 nN (predicted 40.5); slender φ 14.0 V (predicted 11–17), F 43.33 nN (predicted 42–43).
-The voltage and geometry laws **compose**.
-
 ### Numerical convergence (200 V anchor)
 
 | axis | change | effect |
