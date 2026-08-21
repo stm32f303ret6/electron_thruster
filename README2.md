@@ -1,6 +1,6 @@
 # Electron Thruster
 
-An electron thruster for LEO drag compensation, with the ionosphere as the return circuit.
+An electron thruster for LEO drag compensation, with the ionosphere as the return circuit, validated with full PIC simulations and orbit-drag models.
 
 The thruster accelerates electrons out of the spacecraft, the escaping beam produces the thrust.
 The ionosphere returns the same current to the spacecraft surface, so the circuit closes with zero net mass flow, no tank, no feed system, no neutralizer.
@@ -11,7 +11,8 @@ This allows small spacecraft to carry cheap, simple propulsion enough to cancel 
 
 ## Motivation
 
-Ion thrusters dominate electric propulsion, but they carry a tank, a feed system, a neutralizer, and a pressure vessel, this hardware is expensive, takes up space, and is rarely justified on a cubesat.
+Ion thrusters dominate electric propulsion, but they carry a tank, a feed system, a neutralizer, and a pressure vessel.
+This hardware is expensive, takes up space, and is rarely justified on a cubesat.
 This project asks: what if you emit electrons instead of ions, and let the ionosphere return the current?
 
 The tradeoff is thrust per watt.
@@ -49,7 +50,16 @@ That float **is** the operating point, there is no cycle, just a continuous equi
 
 ![Concept, step by step](paper/new/imgs/concept_steps.png)
 
-### Theory
+### How does the current return?
+
+The escaping beam leaves the spacecraft positively charged.
+That positive potential attracts electrons from the ambient ionospheric plasma onto the spacecraft's outer surface.
+Collection grows until it exactly balances the emitted beam current, at which point the body floats at a steady potential **φ**.
+
+No wire, no neutralizer, no propellant exchange: the ionosphere closes the circuit.
+The only cost is the float potential **φ**, which steals a fraction of the supply voltage from the beam (the "float tax" $\varphi/V$).
+
+## Theory
 
 The concept is a plain electrostatic accelerator.
 
@@ -88,7 +98,7 @@ Where:
 
 An STM32 is enough to control this thruster.
 
-### Measured numbers (PIC campaign)
+## Measured numbers
 
 The simulations put numbers to the symbols for **one design family**: Ø10 mm body, gun at $I/I_{\mathrm{CL}} = 1.46$, one dayside plasma row.
 Two constants describe every run across 100–350 V to ~1 %:
@@ -109,7 +119,7 @@ $$
 
 Divergence factor: 0.97 (measured thrust slope vs ideal).
 
-#### Reading these numbers
+### Reading these numbers
 
 These numbers characterize the simulated design, not the concept.
 Each traces to a design parameter (see the theory table above); moving the parameter moves the number.
@@ -122,31 +132,20 @@ Outside the measured envelope (other gun loadings, geometries, plasmas), new run
 The cathode is excluded: beam current is *prescribed*, no flight cathode is selected (open risk 2).
 Flight thruster efficiencies include their full beam-production cost, this $\eta$ does not.
 
-## Comparison with ion thrusters
-
-| | gridded ion thruster | electron thruster |
-|---|---|---|
-| thrust per watt | ~40 µN/W | ~0.2 µN/W (~200× worse) |
-| power at nN thrust | ~1 mW | ~10–100 mW, at this scale the gap is negligible |
-| energy conversion efficiency | ~70 % (flight hardware, full beam-production cost) | 0.67–0.77 in PIC (concept stage, cathode excluded), same class, but not a like-for-like comparison; see "Measured numbers" above |
-| tank / propellant / valves / neutralizer | yes | **no** |
-| launch-safety review for stored propellant | yes | **no** |
-| cost | tens of k$ | two electrodes + HV supply |
-| works at mN scale | yes | no |
-| works at nN scale | no (cannot throttle that low) | **yes** |
-| depends on altitude / ambient plasma | no | yes |
-
-The 200x thrust-per-watt penalty is irrelevant at nanonewtons and disqualifying at millinewtons.
-That is why this device targets the low end, where nothing else operates.
-
 ## Does it cancel drag?
 
-Measured thrust with full PIC simulations show that this thruster produces **13.65 nN** at 200V consuming **~68 mW**, produces **30.13 nN** using 300V, and **40.48 nN** at 350 V.
+At 500–600 km, the thruster covers mean and max drag inside the tested envelope (≤ 350 V), consuming 7–31 mW.
+At 400 km, the mean demand is covered but year-round and peak demands remain open: 400 km is a research target.
+
 Against real 2024 drag (NRLMSISE-00, real F10.7/Ap, solar-cycle-25 maximum) for the anchor body:
 
 - **Test body**: a cylinder, Ø10 mm × 5 mm height, 100 g, Cd = 2.2, the same geometry the PIC simulations use.
 - **axial**: drag hits the cap side of the cylinder.
 - **lateral**: drag hits the skin side of the cylinder.
+
+### Fixed-voltage coverage
+
+Running the thruster at one fixed voltage all year:
 
 | altitude | drag mean | drag max | 13.65 nN (200 V) covers | 30.13 nN (300 V) covers |
 |---|---|---|---|---|
@@ -156,16 +155,19 @@ Against real 2024 drag (NRLMSISE-00, real F10.7/Ap, solar-cycle-25 maximum) for 
 | 550 km axial | 3.9 nN | 16.3 nN | mean (max barely missed) | **mean and max** |
 | 600 km axial | 2.0 nN | 9.6 nN | **mean and max** | **mean and max** |
 
-The table above runs the thruster at one fixed voltage all year.
-In flight the voltage can follow the drag instead: for every point along the orbit, the model (`model/MODEL.md` §4) finds the lowest voltage that cancels that point's drag and computes what it costs:
+### Voltage-following mode
+
+In flight the voltage can follow the drag: for every point along the orbit, the model (`model/MODEL.md` §4) finds the lowest voltage that cancels that point's drag and computes what it costs:
 
 | altitude | minimum voltage | mean power | inside the tested envelope (≤ 350 V)? |
 |---|---|---|---|
 | 600 km | 100 V | 6.8 mW | yes |
 | 550 km | 104 V | 13.4 mW | yes |
 | 500 km | 146 V | 31.3 mW | yes |
-| 400 km lateral | 247 V | 116 mW | yes, see the note below |
+| 400 km lateral | 247 V | 116 mW | yes, see 400 km note below |
 | 400 km axial | 304 V | 196 mW | yes, inside the extended 350 V envelope |
+
+### Power demand
 
 **Power is the thruster's interface to the spacecraft**: tens of mW at 500–600 km, ~100–200 mW at 400 km.
 Where that power comes from is mission design, not part of the thruster, same as the cathode technology.
@@ -177,26 +179,44 @@ For context, typical small-spacecraft power:
 
 Demand and supply both grow with area, so the ratio stays workable at CubeSat size: a 3U needs ~0.9 W at 600 km against a typical 5–10 W budget.
 
-**Note on 400 km.** The axial-pose demand is now inside the measured envelope, at both tested geometries.
-The compact body delivered 40.48 nN against the 32.9 nN mean demand (~81 % duty) but floats *on* the 50 V charging limit (48.3 V gated, still rising at run end).
-The slender body, the shape a real mission vehicle takes anyway, delivered **43.33 nN at a 14.0 V float**: the same demand covered at ~76 % duty with 3.6× margin on the charging limit.
-What stays open at 400 km: the year-round duty is still 113 % for the compact shape (the model re-run at the 350 V cap, thin night-side plasma caps benign collection, the constraint the slender skin relieves), drag maxima (92.4 nN) sit above any single operating point, ~150–200 mW mean power is mission design, and the lateral-pose thrust-axis question is untouched.
+### 400 km note
 
-## Status
+The axial-pose demand is now inside the measured envelope, at both tested geometries.
 
-What is validated and what is not:
+- The compact body delivered 40.48 nN against the 32.9 nN mean demand (~81 % duty), but floats *on* the 50 V charging limit (48.3 V gated, still rising at run end).
+- The slender body, the shape a real mission vehicle takes anyway, delivered **43.33 nN at a 14.0 V float**: the same demand covered at ~76 % duty with 3.6× margin on the charging limit.
+
+What stays open at 400 km:
+
+- Year-round duty is still 113 % for the compact shape (the model re-run at the 350 V cap, thin night-side plasma caps benign collection, the constraint the slender skin relieves).
+- Drag maxima (92.4 nN) sit above any single operating point.
+- ~150–200 mW mean power is mission design.
+- The lateral-pose thrust-axis question is untouched.
+
+## Does it scale to CubeSats?
+
+The feasibility condition is close to scale-free: drag grows with the ram area, collection grows with the skin area, and they cancel.
+Bigger bodies just need proportionally more current and power.
+`SCALING_LAWS.md` §8 estimates a 3U CubeSat at:
+
+| altitude | power |
+|---|---|
+| 600 km | ~0.9 W |
+| 550 km | ~1.7 W |
+| 500 km | ~3.4 W |
+
+These estimates use the anchor's measured efficiency; the design levers in "Reading these numbers" (better $\kappa$, lower $\varphi$) would reduce them.
+They are also **estimates from an extrapolated collection law, not measurements**, the extrapolation crosses a regime boundary (risk 4 below).
+
+## What is validated?
 
 | | |
 |---|---|
-| Simulation | nine-stage WarpX PIC validation ladder, every stage gated against a pre-registered, hash-frozen acceptance policy |
+| Simulation | nine-stage WarpX PIC validation ladder + eight characterization spokes, every stage gated against a pre-registered, hash-frozen acceptance policy |
 | Hardware | one bench experiment, rough vacuum (4–5 Pa), qualitative only |
 | Flight cathode | not selected: beam current is *prescribed* in every simulation |
 | Magnetic field | field-aligned axis measured (tier M1); transverse B, the actual flight geometry, untested |
 | Flight heritage | none |
-
-This is a research repository with a working physics model, not a product.
-
-## Validation
 
 Two simulation trees, one direction of flow:
 
@@ -254,19 +274,7 @@ Details: `pic_sims/characterization/README.md`.
 - Cases: 400 (axial + lateral), 500, 550, 600 km.
 - Deliverable: `station_keeping.csv` per case, every row carries pose, drag, and `(n_e, Te, Ti)`.
 
-## Scaling to CubeSats
-
-The feasibility condition is close to scale-free: drag grows with the ram area, collection grows with the skin area, and they cancel.
-Bigger bodies just need proportionally more current and power.
-`SCALING_LAWS.md` §8 estimates a 3U CubeSat at:
-
-| altitude | power |
-|---|---|
-| 600 km | ~0.9 W |
-| 550 km | ~1.7 W |
-| 500 km | ~3.4 W |
-
-These are **estimates from an extrapolated collection law, not measurements**, the extrapolation crosses a regime boundary (risk 4 below).
+This is a research repository with a working physics model, not a product.
 
 ## Open risks
 
