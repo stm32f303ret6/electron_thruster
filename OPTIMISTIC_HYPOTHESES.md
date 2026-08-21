@@ -364,7 +364,7 @@ From `model/MODEL.md` §5:
 350 V cap moved 400 km axial to 113 % duty — the binding constraint is now
 the night-side benign-float collection cap, not the voltage ceiling — and
 the PIC pair covers the dayside mean directly at ~76–81 % duty. See
-`CAMPAIGN.md`. The density axis this hypothesis is actually about remains
+`README.md`. The density axis this hypothesis is actually about remains
 as stated.)*
 
 | altitude | duty cycle needed | **in-envelope %** |

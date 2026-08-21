@@ -48,7 +48,7 @@ it is not a pre-registration for the migrated evidence.
 
 Historical launch records: each spoke's `logs/` (the magnetized pair ran
 strictly sequentially on one GPU; run manifests carry the exact decks).
-Campaign narrative: `/CAMPAIGN.md`; plans live inside the spokes
+Pre-registered predictions and results: `/README.md`; plans live inside the spokes
 (`slender_body/README.md` and the magnetized READMEs' plan sections,
 `thin_plasma/THIN_PLASMA_PLAN.md`); the open tier-M2 transverse-field design
 is at `/future_work/M2_TRANSVERSE_B.md`.

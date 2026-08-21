@@ -268,18 +268,50 @@ All eight **PASS** their gates.
 
 Each spoke links to its simulation directory:
 
-| spoke | axis changed | $\varphi$ | $F$ | note |
-|---|---|---|---|---|
-| [`high_thrust`](pic_sims/characterization/high_thrust) | 300 V | 36.3 V | **30.13 nN** | |
-| [`350V_400km`](pic_sims/characterization/350V_400km) | 350 V | 48.3 V | **40.48 nN** | on the 50 V charging limit |
-| [`350V_400km_slender`](pic_sims/characterization/350V_400km_slender) | 350 V + slender body | 14.0 V | **43.33 nN** | voltage × geometry compose |
-| [`low_power`](pic_sims/characterization/low_power) | 100 V | 5.4 V | 3.42 nN | |
-| [`slender_body`](pic_sims/characterization/slender_body) | L/r = 6 body | 4.4 V | 14.22 nN | |
-| [`thin_plasma`](pic_sims/characterization/thin_plasma) | density n₀/3 | > 31.6 V | — | float unsettled at run end |
-| [`magnetized_1x`](pic_sims/characterization/magnetized_1x) | axial B = 30 µT (1× LEO) | 17.0 V | 13.65 nN | null: anchor unchanged |
-| [`magnetized_10x`](pic_sims/characterization/magnetized_10x) | axial B = 300 µT | +33 V | −11 % | collection tax from B field |
+| spoke | axis changed | $\varphi$ | $F$ | $f_{\mathrm{esc}}$ | KE (eV) | note |
+|---|---|---|---|---|---|---|
+| [`high_thrust`](pic_sims/characterization/high_thrust) | 300 V | 36.3 V | **30.13 nN** | 98.99 % | 210.1 | |
+| [`low_power`](pic_sims/characterization/low_power) | 100 V | 5.4 V | 3.42 nN | 96.12 % | 77.2 | |
+| [`350V_400km`](pic_sims/characterization/350V_400km) | 350 V | 48.3 V | **40.48 nN** | 98.86 % | 239.5 | on the 50 V charging limit |
+| [`350V_400km_slender`](pic_sims/characterization/350V_400km_slender) | 350 V + slender body | 14.0 V | **43.33 nN** | 99.12 % | 269.2 | voltage × geometry compose |
+| [`slender_body`](pic_sims/characterization/slender_body) | L/r = 6 body | 4.4 V | 14.22 nN | 98.42 % | 159.7 | |
+| [`thin_plasma`](pic_sims/characterization/thin_plasma) | density n₀/3 | 42.5 V | 12.39 nN | 99.13 % | 122.0 | settled at 2.4 µs; law conservative along density |
+| [`magnetized_1x`](pic_sims/characterization/magnetized_1x) | axial B = 30 µT (1× LEO) | 17.0 V | 13.65 nN | 98.44 % | 147.3 | null: anchor unchanged |
+| [`magnetized_10x`](pic_sims/characterization/magnetized_10x) | axial B = 300 µT | +33 V | −11 % | 98.32 % | 115.9 | collection tax from B field |
 
 Details: [`pic_sims/characterization/README.md`](pic_sims/characterization/README.md).
+
+### Pre-registered predictions
+
+All predictions were committed to git before the run that tested them.
+
+**Collection law exponent** (pre-registered 2026-08-04): three candidates for `I_collect ∝ (1+χ)^α`:
+
+| α | predicted φ at 300 V | outcome |
+|---|---|---|
+| 1.0 (linear OML) | ~31 V | **REFUTED** — φ passed 31 V and kept climbing |
+| **0.82** (pre-registered) | ~36 V | **SURVIVES** — measured 36.30 V |
+| 0.5 (square root) | ~90 V | **REFUTED** |
+
+**Slender body** (pre-registered 2026-08-05):
+
+| hypothesis | predicted φ | outcome |
+|---|---|---|
+| **A: area-only scaling** (α holds, demand drops 3.24×) | 4–5 V | **CONFIRMED** — measured 4.38 V |
+| B: cylinder-limit lateral (α → 0.5) | tens of V | **REFUTED by ~10×** |
+
+**Thin plasma density** (pre-registered 2026-08-06): every fixed-α prediction overshoots (53–160 V predicted, 42.5 V measured).
+The fitted law is **conservative along density**.
+
+**350 V factorial** (pre-registered 2026-08-17): squat φ 48.3 V (predicted ~47), F 40.48 nN (predicted 40.5); slender φ 14.0 V (predicted 11–17), F 43.33 nN (predicted 42–43).
+The voltage and geometry laws **compose**.
+
+### Numerical convergence (200 V anchor)
+
+| axis | change | effect |
+|---|---|---|
+| particle count | ppc 16 → 32 | ≤ 0.05 % — **closed** |
+| grid | dx 0.15 → 0.10 mm | F +4.0 %, KE +7.4 %, φ −1.8 % — **leading uncertainty, conservative in sign** |
 
 ### Orbit simulations
 
@@ -308,7 +340,6 @@ Ordered by how much they could change the answer.
 
 | document | what it is |
 |---|---|
-| `CAMPAIGN.md` | the 2026-08 campaign: what was measured, hypotheses and outcomes |
 | `SCALING_LAWS.md` | the physics laws, measured constants, scaling to larger vehicles |
 | `model/MODEL.md` | the executable model, control law, honest mission table |
 | `THESIS.md` | the claim stated for a physics reviewer |
