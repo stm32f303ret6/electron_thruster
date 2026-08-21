@@ -59,6 +59,16 @@ Collection grows until it exactly balances the emitted beam current, at which po
 No wire, no neutralizer, no propellant exchange: the ionosphere closes the circuit.
 The only cost is the float potential **φ**, which steals a fraction of the supply voltage from the beam (the "float tax" $\varphi/V$).
 
+### Why doesn't the beam come back?
+
+The body charges positive, so why doesn't it recapture its own beam?
+Energy asymmetry: the beam electrons carry 100–350 eV of kinetic energy, while the float potential is only 5–48 V.
+They are too fast to recapture.
+The ambient ionospheric electrons, by contrast, are thermal (~0.1 eV), so the same float potential easily collects them.
+
+This asymmetry is what makes the circuit work: slow electrons get captured, fast electrons escape.
+The [capstone simulation](pic_sims/ladder/capstone/2_chipsat_thruster) measures this directly: 98.4 % of beam electrons escape at the 200 V anchor ($\varphi$ = 17 V), and across the full [characterization campaign](pic_sims/characterization) the escape fraction $f_{\mathrm{esc}}$ stays at 96–99 %.
+
 ## Theory
 
 The concept is a plain electrostatic accelerator.
@@ -236,17 +246,17 @@ All nine stages **PASS**.
 
 Each stage links to its simulation directory:
 
-| # | stage | what it proves | headline result |
+| # | stage | validates | result |
 |---|---|---|---|
-| 1 | [`emitter.negative_cathode`](pic_sims/ladder/electron_gun/1_negative_cathode) | gun physics vs exact Laplace ramp | potential error 35 µV on 100 V |
-| 2 | [`emitter.holed_anode`](pic_sims/ladder/electron_gun/2_electron_gun) | space charge + geometry control transmission | 0.97 → 0.90 → 1.00 across the three scenarios, as predicted |
-| 3 | [`emitter.voltage_bracket`](pic_sims/ladder/electron_gun/3_voltage_bracket) | transmission is voltage-independent 200→300 V | spread 0.006 pp |
-| 4 | [`collector.thermal`](pic_sims/ladder/current_collection/1_thermal) | collection vs exact thermal flux | within 1 % of closed form |
-| 5 | [`collector.biased_3v`](pic_sims/ladder/current_collection/2_biased_3v) | OML collection at +3 V | 0.85 of ceiling, matching Laframboise |
-| 6 | [`collector.biased_10v`](pic_sims/ladder/current_collection/3_biased_10v) | sheath grows, collected fraction falls | 0.81 of ceiling, sheath 4.1 → 6.9 mm |
-| 7 | [`collector.floating`](pic_sims/ladder/current_collection/4_floating) | body floats to theoretical potential | −0.251 V, inside the two-model bracket |
-| 8 | [`capstone.two_node_laplace`](pic_sims/ladder/capstone/1_two_node_laplace) | two potentials on one conducting body | exact Laplace, 0.0 V violation |
-| 9 | [`capstone.floating_body`](pic_sims/ladder/capstone/2_chipsat_thruster) | **the full device** | φ +16.98 V, escape 98.4 %, **F = 13.65 nN** |
+| 1 | [`emitter.negative_cathode`](pic_sims/ladder/electron_gun/1_negative_cathode) | negative cathode emits and accelerates electrons toward a grounded body | 35 µV error on 100 V |
+| 2 | [`emitter.holed_anode`](pic_sims/ladder/electron_gun/2_electron_gun) | aperture controls transmission | κ = 0.97, 0.90, 1.00 as predicted |
+| 3 | [`emitter.voltage_bracket`](pic_sims/ladder/electron_gun/3_voltage_bracket) | transmission is voltage-independent | 0.006 pp spread over 200–300 V |
+| 4 | [`collector.thermal`](pic_sims/ladder/current_collection/1_thermal) | PIC thermal current vs theory | within 1 % |
+| 5 | [`collector.biased_3v`](pic_sims/ladder/current_collection/2_biased_3v) | OML collection at +3 V bias | 0.85 of ceiling (Laframboise) |
+| 6 | [`collector.biased_10v`](pic_sims/ladder/current_collection/3_biased_10v) | larger sheath collects more current | 0.81 of ceiling, sheath 4.1 → 6.9 mm |
+| 7 | [`collector.floating`](pic_sims/ladder/current_collection/4_floating) | unbiased body floats to theory | −0.251 V, inside two-model bracket |
+| 8 | [`capstone.two_node_laplace`](pic_sims/ladder/capstone/1_two_node_laplace) | two potentials on one conductor | exact Laplace, 0.0 V violation |
+| 9 | [`capstone.floating_body`](pic_sims/ladder/capstone/2_chipsat_thruster) | **full device** | φ = 17.0 V, $f_{\mathrm{esc}}$ = 98.4 %, **F = 13.65 nN** |
 
 Full digest with every gate: [`pic_sims/ladder/LADDER_SUMMARY.md`](pic_sims/ladder/LADDER_SUMMARY.md).
 
@@ -258,16 +268,16 @@ All eight **PASS** their gates.
 
 Each spoke links to its simulation directory:
 
-| spoke | axis | result |
-|---|---|---|
-| [`high_thrust`](pic_sims/characterization/high_thrust) | 300 V | φ 36.3 V, **F 30.13 nN** |
-| [`350V_400km`](pic_sims/characterization/350V_400km) | 350 V (the 400 km-enabling drive) | φ 48.3 V, on the 50 V limit, **F 40.48 nN** |
-| [`350V_400km_slender`](pic_sims/characterization/350V_400km_slender) | 350 V × slender, the factorial corner | φ 14.0 V (predicted 11–17), **F 43.33 nN**: the laws compose |
-| [`low_power`](pic_sims/characterization/low_power) | 100 V | φ 5.4 V, F 3.42 nN |
-| [`slender_body`](pic_sims/characterization/slender_body) | elongated body, L/r = 6 | φ 4.4 V, F 14.22 nN |
-| [`thin_plasma`](pic_sims/characterization/thin_plasma) | density n₀/3 | float unsettled, > 31.6 V bound |
-| [`magnetized_1x`](pic_sims/characterization/magnetized_1x) | axial B = 30 µT (1× LEO) | null: anchor unchanged |
-| [`magnetized_10x`](pic_sims/characterization/magnetized_10x) | axial B = 300 µT | collection tax: φ +33 V, F −11 % |
+| spoke | axis changed | $\varphi$ | $F$ | note |
+|---|---|---|---|---|
+| [`high_thrust`](pic_sims/characterization/high_thrust) | 300 V | 36.3 V | **30.13 nN** | |
+| [`350V_400km`](pic_sims/characterization/350V_400km) | 350 V | 48.3 V | **40.48 nN** | on the 50 V charging limit |
+| [`350V_400km_slender`](pic_sims/characterization/350V_400km_slender) | 350 V + slender body | 14.0 V | **43.33 nN** | voltage × geometry compose |
+| [`low_power`](pic_sims/characterization/low_power) | 100 V | 5.4 V | 3.42 nN | |
+| [`slender_body`](pic_sims/characterization/slender_body) | L/r = 6 body | 4.4 V | 14.22 nN | |
+| [`thin_plasma`](pic_sims/characterization/thin_plasma) | density n₀/3 | > 31.6 V | — | float unsettled at run end |
+| [`magnetized_1x`](pic_sims/characterization/magnetized_1x) | axial B = 30 µT (1× LEO) | 17.0 V | 13.65 nN | null: anchor unchanged |
+| [`magnetized_10x`](pic_sims/characterization/magnetized_10x) | axial B = 300 µT | +33 V | −11 % | collection tax from B field |
 
 Details: [`pic_sims/characterization/README.md`](pic_sims/characterization/README.md).
 
