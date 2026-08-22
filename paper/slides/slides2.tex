@@ -29,16 +29,19 @@ zero propellant}
 \end{frame}
 
 % 2 --- The gap ---------------------------------------------------------------
-\begin{frame}{Drag is nanonewtons --- no flight thruster reaches that low}
+\begin{frame}{Drag is nanonewtons --- no flight thruster holds it without a tank}
   \centering
   \includegraphics[width=0.95\linewidth]{demand_supply.pdf}
   \begin{itemize}\small
     \item LEO drag at 500--600\,km: \textbf{2--8\,nN mean} for a
           kg-class CubeSat.
-    \item Smallest flight EP (FEEP/electrospray): 5--30\,\textmu N,
-          $\ge$8\,W --- $10^2$--$10^3\times$ above the demand.
-    \item Dry-system floor (tank + feed + valves + PPU) $\approx$ 0.3--1\,kg:
-          a large share of a kilogram-class CubeSat.
+    \item Sub-\textmu N \emph{control} is flight-proven (LISA Pathfinder
+          colloid: 100\,nN resolution; NanoFEEP on a 1U at
+          $\sim$0.2--0.3\,W) --- but every flown system spends stored
+          propellant: total impulse is a consumable.
+    \item Dry-system floor (tank + feed + valves + PPU) $\approx$ 0.3--1\,kg
+          and a finite impulse budget; this concept's floor: cathode +
+          boost converter + the spacecraft's own skin.
   \end{itemize}
 \end{frame}
 

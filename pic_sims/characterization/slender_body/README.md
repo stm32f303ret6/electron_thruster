@@ -183,7 +183,7 @@ run `20260805T190609Z_f59e228b`, **killed at 69% by operator decision**.
 
 ## provenance
 
-executed 2026-08-06 as a variant deck through the anchor stage under the exploratory policy `capstone.exploratory_axes.v1`; the frozen run config and manifests carry `stage_id: capstone.floating_body`. this folder's `config.yaml` reproduces that deck under the new stage id; `acceptance.yaml` re-identifies the same gates for future runs — it is not a pre-registration for the migrated evidence. launch record: `logs/`.
+executed 2026-08-06 as a variant deck through the anchor stage under the exploratory policy `capstone.exploratory_axes.v1`; the frozen run config and manifests carry `stage_id: capstone.floating_body`. this folder's `config.yaml` reproduces that deck under the new stage id; `acceptance.yaml` re-identifies the same gates for future runs — it is not a pre-registration for the migrated evidence. launch console logs are local working files, not committed; the run manifest under `reference_results/` carries the provenance.
 
 *(this file was formerly `SLENDER_BODY_PLAN.md`, unified 2026-08-11; the pre-run plan is preserved in that file's git history.)*
 
@@ -193,7 +193,7 @@ requires `capstone.floating_body` (the anchor). spokes never depend on each othe
 
 ## cost
 
-~6.5 GPU-h. 159k steps, $\Delta t \approx 5.0$ ps, 200 × 608 grid. CUDA build required (`/SETUP.md`).
+~6.5 GPU-h. 159k steps, $\Delta t \approx 5.0$ ps, 200 × 608 grid. CUDA build required (`../../../SETUP.md`).
 
 ## commands
 

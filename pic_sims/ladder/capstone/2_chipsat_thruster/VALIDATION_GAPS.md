@@ -127,7 +127,7 @@ and edge containment.
 1. **G1/G2: CLOSED (2026-08-01)** by the two new steps `collector.floating`
    and `capstone.two_node_laplace` — the capstone's two core mechanisms are
    now ladder-validated, not just lineage-validated. Both are required
-   dependencies of `capstone.floating_body` in `ladder.py`.
+   dependencies of `capstone.floating_body` in `stages.py`.
 2. **G3** would be closed by one extra `emitter.holed_anode` scenario at
    200 V / 4.7 mm-gap-equivalent / rms 2.6e5 / ppc_beam 16.
 3. **G5** is closed by the consistency gates (capstone: ambient-e AND

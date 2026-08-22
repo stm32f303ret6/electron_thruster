@@ -195,9 +195,9 @@ From the committed 2024 orbit sweep (Ø10 mm anchor body, real F10.7/Ap):
 | altitude / pose | drag mean | drag max |
 |---|---|---|
 | 400 km axial | 32.9 nN | 92.4 nN |
-| 400 km lateral | 21.7 nN | 60.7 nN |
+| 400 km lateral | 21.6 nN | 60.7 nN |
 | 500 km axial | 7.6 nN | 28.4 nN |
-| 550 km axial | 3.9 nN | 16.3 nN |
+| 550 km axial | 3.8 nN | 16.3 nN |
 | 600 km axial | 2.0 nN | 9.6 nN |
 
 Demand swings ~10× over an orbit (diurnal) and ~15× across 400–600 km.
@@ -229,7 +229,8 @@ not generic gun optics: `emitter.voltage_bracket` C ran the same 92.4 V
 command in the clean isolated-gun geometry and transmitted 0.9999. The full
 fixed-thrust slice (pre-registration, three gated stages, and the
 controller design built on it) lives in `future_work/` (`UCURVE_PLAN.md`,
-`ucurve_pic_stages/`, `UCURVE_CONTROL_REVIEW.md`).
+`ucurve_pic_stages/`, and the controller distillation in
+`future_work/README.md`).
 
 Two slices of the (V, I) plane, not to be confused:
 
@@ -250,13 +251,13 @@ ends by `capstone.low_power` and `capstone.high_thrust` respectively.
 
 Closed-loop throttle control for a selected cathode and geometry (escaped-
 current estimation, thrust loop, power minimization, guards) is deliberately
-excluded from the concept argument — see the scope decision in
-`future_work/README.md` and `future_work/UCURVE_CONTROL_REVIEW.md`. The
+excluded from the concept argument — see the scope decision and the
+controller distillation in `future_work/README.md`. The
 concept paper carries only the
-throttle principle above and its measured 4–6 % closure.
+throttle principle above and its measured 4–7 % closure.
 
 One sentence for the paper: *a propellantless thruster whose power budget
-is an analytical lower bound with measured 4–6 % closure.*
+is an analytical lower bound with measured 4–7 % closure.*
 
 ## 8. Plasma scaling — what one plasma row does and does not cover
 
@@ -304,17 +305,15 @@ that the PIC evidence does **not** yet cover. The split for the paper:
 (voltage fixed) would measure the *plasma* scaling — the collection-limited
 corner where the concept is most stressed.
 
-**Status (2026-08-06): pre-registered, deliberately not run.** Predictions
-were committed (α = 1 → 53.4 V, 0.893 → 60.9 V, 0.82 → 68.0 V, 0.5 →
-160.4 V) in `pic_sims/characterization/thin_plasma/THIN_PLASMA_PLAN.md`, then
-the run was cut on re-examination of what it buys. The law's density
-dependence is `I ∝ n·(1+χ)^α`: the `n`-linear term is the one-sided thermal
-flux, **already validated to ±1 % at step `collector.thermal`**, and χ has no
-density dependence at all. α is already discriminated on the voltage axis
-(§4). What remains under test is one residual assumption — that α and β do
-not drift as `r_probe/λ_D` goes 2.5 → 1.5 — and the settle limit of §5 would
-blur a 53–68 V discrimination anyway. It is a **gross-breakdown detector,
-not a measurement**, and stays ready rather than spent.
+**Status (2026-08-12): executed and settled.** The pre-registered run
+(per-α predictions committed 2026-08-06: α = 1 → 53.4 V, 0.893 → 60.9 V,
+0.82 → 68.0 V, 0.5 → 160.4 V) was first cut as a gross-breakdown detector
+of limited value, then relaunched 2026-08-08 and continued to 2.4 µs — the
+campaign's first *settled* float. Verdict: φ = 42.5 V settled; α = 0.5
+refuted independently on the density axis; every fixed α ≤ 1 *overshoots*
+(secant α_eff = 1.26, i.e. the fitted law is **conservative along
+density**); the 50 V benign gate passes. Full record and plan details:
+`pic_sims/characterization/thin_plasma/README.md`.
 
 ## 8b. Geometry scaling — MEASURED (2026-08-06)
 

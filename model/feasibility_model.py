@@ -205,7 +205,7 @@ def ucurve_validation() -> str:
     L += [
         "",
         "  In the validated regime (escape > 95%), the simple model agrees",
-        "  to within 6%. Below ~100 V, escape collapses due to beam",
+        "  to within 8%. Below ~100 V, escape collapses due to beam",
         "  self-scrape inside the capstone can geometry -- the measured",
         "  power diverges from the model because the emitter must push",
         "  more current to compensate for lost electrons. This loss is",

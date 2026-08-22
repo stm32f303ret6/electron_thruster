@@ -6,4 +6,4 @@
 *.nav
 *.snm
 main.pdf
-slides/slides.pdf
+slides/*.pdf

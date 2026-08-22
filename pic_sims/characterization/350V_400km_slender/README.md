@@ -109,7 +109,7 @@ the mission answer: at the 400 km-enabling drive the squat can sits ON the
 slender body — the shape the mission vehicle is anyway (`SCALING_LAWS.md`
 §8c) — covers the 400 km axial mean drag at ~76 % duty with **3.6× margin**
 on the limit, plus a 7 % thrust bonus from the returned float
-(KE = κ(V−φ): exhaust 272.7 eV vs the squat's 237 eV).
+(KE = κ(V−φ): exhaust 272.7 eV vs the squat's 239.0 eV).
 
 settle caveat: φ end-of-run 15.76 V, late slope +20.8 mV/ns — quote the
 settled float as a ~14–17 V band; the 35 V distance to the limit makes the

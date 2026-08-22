@@ -62,11 +62,11 @@ See `../ARCHITECTURE.md` for details. Two key decisions:
   reference_results/ # curated, committed
 ```
 
-### Root files
+### Root files (one level up, in `pic_sims/`)
 
 ```
 ladder_contract.py   # shared plumbing (unit-tested in tests/)
-ladder.py            # the stage list
+stages.py            # literal stage registry (ids, paths, deps, group)
 run_ladder.py        # subprocess orchestration + suite verdict
 cross_stage.py       # cross-stage checks (trends, orderings, shared params)
 tests/               # contract + repository-level tests

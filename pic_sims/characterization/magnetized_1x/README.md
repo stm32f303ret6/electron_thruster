@@ -1,6 +1,6 @@
 # characterization.magnetized_1x — field-aligned B at 1× LEO
 
-same system as the anchor with a uniform **axial magnetic field at flight strength**, Bz = 30 µT. tier M1a of the magnetized axis, pre-registered 2026-08-08 before the run (plan section below; the shared pre-run `MAGNETIZED_PLAN.md` is preserved in git history — its never-run tier-M2 design moved to `/future_work/M2_TRANSVERSE_B.md`).
+same system as the anchor with a uniform **axial magnetic field at flight strength**, Bz = 30 µT. tier M1a of the magnetized axis, pre-registered 2026-08-08 before the run (plan section below; the shared pre-run `MAGNETIZED_PLAN.md` is preserved in git history — its never-run tier-M2 design moved to `../../../future_work/M2_TRANSVERSE_B.md`).
 
 [![dashboard](viz/20260810T064845Z_5e785001_dashboard.gif)](viz/20260810T064845Z_5e785001_dashboard.mp4)
 
@@ -8,7 +8,7 @@ same system as the anchor with a uniform **axial magnetic field at flight streng
 
 ## plan — pre-registered 2026-08-08, before the run
 
-every committed run is electrostatic with B = 0, while the mission flies in the LEO geomagnetic field. two distinct physics questions hide in "what does B do": the **near field** (does the committed operating point — collection, float, escape, thrust production — survive magnetization?), answerable on the existing RZ deck; and the **far field** (where does the emitted momentum end up once the exhaust gyrates at r_g ≈ 1.4 m?), not answerable in RZ at 30 mm — that is tier M2, still open (`/future_work/M2_TRANSVERSE_B.md`). the only external B compatible with the RZ deck is **axial** — which is exactly the field-aligned-firing configuration, the fallback operating mode if the far-field answer ever comes back unfavorable.
+every committed run is electrostatic with B = 0, while the mission flies in the LEO geomagnetic field. two distinct physics questions hide in "what does B do": the **near field** (does the committed operating point — collection, float, escape, thrust production — survive magnetization?), answerable on the existing RZ deck; and the **far field** (where does the emitted momentum end up once the exhaust gyrates at r_g ≈ 1.4 m?), not answerable in RZ at 30 mm — that is tier M2, still open (`../../../future_work/M2_TRANSVERSE_B.md`). the only external B compatible with the RZ deck is **axial** — which is exactly the field-aligned-firing configuration, the fallback operating mode if the far-field answer ever comes back unfavorable.
 
 **H-M1-null (expected):** every anchor observable inside its exploratory trust gates and close to the B = 0 anchor — |Δφ| ≤ 2 V, |ΔF|/F ≤ 5%, Δescape ≤ 1 pp — at both field strengths. grounds: (i) the beam is axially field-aligned and r_g ≥ 0.10 m ≫ every device scale, so beam optics and escape cannot be B-limited; (ii) the Parker–Murphy ceiling (963 mm at 1×) sits far above the OML capture radius (61 mm), so magnetized collection is not flux-starved; (iii) ions stay unmagnetized at 1×.
 
@@ -49,7 +49,7 @@ reference run `20260810T064845Z_5e785001`, all 6 required gates PASS. under the 
 
 ## provenance
 
-executed 2026-08-10 as a variant deck through the anchor stage under the pre-registered exploratory policy `capstone.exploratory_axes.v1` (strictly sequential with M1b on one GPU, 12.8 h total); the frozen run config and manifests therefore carry `stage_id: capstone.floating_body`. this `config.yaml` is that same deck (git-moved, history intact) under the new stage id; `acceptance.yaml` re-identifies the same gates for future runs — it is not a pre-registration for the migrated evidence. launch record: `logs/`.
+executed 2026-08-10 as a variant deck through the anchor stage under the pre-registered exploratory policy `capstone.exploratory_axes.v1` (strictly sequential with M1b on one GPU, 12.8 h total); the frozen run config and manifests therefore carry `stage_id: capstone.floating_body`. this `config.yaml` is that same deck (git-moved, history intact) under the new stage id; `acceptance.yaml` re-identifies the same gates for future runs — it is not a pre-registration for the migrated evidence. launch console logs are local working files, not committed; the run manifest under `reference_results/` carries the provenance.
 
 ## dependencies
 
@@ -57,7 +57,7 @@ requires `capstone.floating_body` (the anchor). spokes never depend on each othe
 
 ## cost
 
-~6.4 GPU-h. 159k steps, dt ≈ 5.0 ps, 200 × 440 grid. CUDA build required (`/SETUP.md`).
+~6.4 GPU-h. 159k steps, dt ≈ 5.0 ps, 200 × 440 grid. CUDA build required (`../../../SETUP.md`).
 
 ## commands
 
@@ -68,6 +68,6 @@ python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 
 ## limitations
 
-- field-aligned geometry only — the transverse case (tier M2, beam gyroradius ~1.4 m vs the 30 mm domain) is the project's largest unexamined question (`/OPTIMISTIC_HYPOTHESES.md` H1)
+- field-aligned geometry only — the transverse case (tier M2, beam gyroradius ~1.4 m vs the 30 mm domain) is the project's largest unexamined question (`../../../future_work/M2_TRANSVERSE_B.md`)
 - single field point at 1×; the axis is bracketed only by the 10× companion
 - anchor limitations inherited: single grid/PPC/seed, reduced ion mass 400 mₑ

@@ -47,7 +47,7 @@ neither of which belongs in the concept argument:
    the float tax, and emission-type overheads (gate power etc.) — all
    geometry- and cathode-specific.
 
-The theoretical lower bound plus its measured 4–6 % closure in the
+The theoretical lower bound plus its measured 4–7 % closure in the
 high-escape regime is therefore sufficient for the concept paper. The
 attribution is already confirmed at one demand inside the committed data:
 the model's minimum feasible voltage for the anchor's own 13.65 nN demand
@@ -94,10 +94,9 @@ a universal electron-gun limit.
   measurability against the ±4–7 % grid band. Priority: emission ceiling
   first (moves mission verdicts), ideal-constant recovery second.
 
-- **Adaptive controller design** —
-  [`UCURVE_CONTROL_REVIEW.md`](UCURVE_CONTROL_REVIEW.md): escaped-current
-  estimation from the return-current/charge balance, closed thrust loop,
-  extremum-seeking power minimization, and hard guards.
+- **Adaptive controller design** — distilled below ("The adaptive
+  controller"); the full control review (2026-08-08,
+  `UCURVE_CONTROL_REVIEW.md`) is preserved in git history.
 - **U-curve targeting script** —
   [`ucurve_targeting.py`](ucurve_targeting.py): commanded currents for the
   fixed-thrust throttle stages, solving the calibrated laws at fixed demand.
@@ -114,3 +113,76 @@ a universal electron-gun limit.
   power, collimation (single-gate angular spread is appreciable; double-gate
   collimation is only demonstrated at 20 keV), and downstream space-charge
   limits in ambient plasma.
+
+## The adaptive controller (distilled from the 2026-08-08 control review)
+
+The capstone U-curve is an open-loop sweep of one geometry at one plasma
+condition — not a global control law. The portable principle it supports:
+
+> At each thrust command, estimate escaped axial current from the
+> return-current and spacecraft-charge balance, regulate the minimum
+> acceleration voltage that closes the thrust error, and increase emission
+> only while measured total bus power falls, subject to floating-potential,
+> transport, emitter, thermal, and voltage guards.
+
+- **Control on escaped current, not emitted.** The decisive measurement:
+  from 92.4 V to 78 V the emitted current rose ~40 % while escaped current
+  stayed ≈ 0.48 mA — the extra emission self-scraped inside the can.
+  Estimate `I_esc = I_col,net + C·dφ/dt` (a settled point drops the
+  capacitive term). φ alone does not give current magnitude, so a flight
+  implementation needs an instrumented collector or another net-current
+  observer.
+- **Thrust loop.** `F = 3.372 · I_esc · √(κ(V − φ)) · η_θ`; regulate V to
+  the thrust command; a slower orbit-error loop absorbs residual κ/η_θ
+  error.
+- **Extremum-seeking current search.** Perturb the emission reference and
+  increase useful current only while measured total bus power falls — this
+  learns the local U-valley without a geometry-specific lookup table.
+  Acquire from the high-voltage side: overshoot is cheap (the valley is
+  shallow rightward, +13 % power at 200 V), undershoot hits escape
+  collapse.
+- **Hard guards.** Benign-float limit; collapse of dI_esc/dI_emit;
+  emitter/gate/thermal/converter limits; voltage ceiling; unsettled φ̇ or
+  current balance; unreachable thrust target → an explicit infeasible
+  state and duty-cycling, never more current.
+- The untaxed closed form `V_opt = ((2α+1)/α)·φ ≈ 3.1φ` is a hard **lower
+  bound** only — the measured valley sits at V/φ ≈ 5.9
+  (`UCURVE_PLAN.md` amendment).
+- A field-emitter array improves the plant (emitting area, no heater, fast
+  electronic current control, separable extraction/acceleration/
+  collimation) but does not remove the collection/charging trade, and
+  single-gate arrays carry appreciable angular spread — double-gate
+  collimation is demonstrated only at 20 keV (Tsujino et al., Nat.
+  Commun.).
+
+## Open items (distilled 2026-08-21)
+
+From the external optimistic-hypotheses review (2026-08-07;
+`OPTIMISTIC_HYPOTHESES.md`, preserved in git history) and the thin-plasma
+plan amendment — what remains open after the M1, thin-plasma, and 350 V
+campaigns:
+
+1. **`edge_phi_max` is in the wrong units** (a real defect, not an
+   upside): the containment gate allows 1.0 V at the injection boundary,
+   which is eφ/kTe ≈ 8.8 at kTe = 113.6 meV. Re-express it in kTe (the
+   physically meaningful bound is of order 0.01 V). Fixing it moves
+   results in the device's favor.
+2. **Domain truncation under-collects.** The OML capture radius at the
+   200 V anchor (~61 mm) exceeds rmax = 30 mm, so ambient plasma is
+   injected as an undisturbed Maxwellian *inside* the device's own capture
+   fan: simulated φ is an over-estimate and the committed thrust a floor.
+   One run at rmax ≈ 60 mm (~2× cells) bounds it; expect φ down, F up.
+3. **Long capstone with real O⁺** (gap G8): coarse grid, ≥ 20 µs. If φ,
+   escape, and F land inside the existing gate tolerances, the most-cited
+   caveat in the repo — 800 ns is a snapshot on the ion clock — becomes a
+   measured band.
+4. **The orbit-config mass is unphysical.** `mass_kg: 0.1` on the
+   Ø10 × 5 mm cylinder is ~255 g/cm³ (11× osmium). No committed drag row
+   changes (drag force is mass-independent), but a physical mass should be
+   chosen, ΔV-authority statements re-derived, and the ~100× drop in
+   attitude inertia disclosed — it makes the unaddressed attitude-control
+   problem harder, not easier.
+5. **Full-return null fixture.** A configuration where every beam electron
+   returns to the craft, so the measured thrust must read ~0 — the
+   falsification test of the momentum diagnostic itself, turning the
+   momentum-cancellation objection (README FAQ) into a figure.

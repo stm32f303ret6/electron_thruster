@@ -19,8 +19,14 @@ edit here first, port to prose after.
 ## 1. why (intro)
 
 - small sats below ~600 km die to drag in months–years.
-- needed: nN–µN continuous thrust from mW-class power → **no flight system
-  lives there** (smallest flight EP: ~5–30 µN at 8+ W, in 0.3–1 kg packages).
+- needed: nN–µN continuous thrust from mW-class power. sub-µN flight
+  systems exist — LPF colloid: 100 nN resolution demonstrated in orbit;
+  NanoFEEP on a 1U at ~0.2–0.3 W; cold gas ~0.1 µN — but every one spends
+  stored propellant (total impulse is a consumable) and the precision
+  systems are drag-free science instruments
+  (survey: `NANONEWTON_THRUSTER_REVIEW.md`).
+- the open slot is **propellantless** nN thrust: no tank → no
+  total-impulse limit; dry floor = cathode + boost converter + skin.
 - idea: run the neutralizer *as* the thruster. fire electrons out, body
   charges +, ambient electrons return through the skin. propellant mass flow:
   ~ng/year, all from the ionosphere.
@@ -96,7 +102,7 @@ $$P = \frac{F \sqrt{V}}{c_{ideal}}, \qquad c_{ideal} = \sqrt{2 m_e/e}$$
 | 100 | 0.121 | +5.40 | 3.42 | 12.1 | 0.283 | 96.1 % | 77.2 |
 | 200 | 0.342 | +16.98 | 13.65 | 68.4 | 0.200 | 98.4 % | 147.5 |
 | 300 | 0.630 | +36.30 | 30.13 | 189 | 0.159 | 99.0 % | 210.1 |
-| 350 | 0.793 | +48.29 | 40.48 | 278 | 0.146 | 99.1 % | 237.0 |
+| 350 | 0.793 | +48.29 | 40.48 | 278 | 0.146 | 99.1 % | 239.0 |
 
 - fixed $I/I_{CL} = 1.46$ along the path (self-similar optics).
 - 100/300 V thrusts landed on pre-registered predictions to <1 %; the
@@ -231,16 +237,22 @@ predictions recorded before the 300 V run (all agree at 200 V anchor):
 
 ## 9. comparison
 
-- every incumbent's lowest operating power ≥ 10× our 300 V frontier point;
-  FEEP starts at ~8 W. (the 350 V envelope top draws 278 mW — still well
-  below every incumbent's floor.)
+- nN-class *control* is flight-proven; nN-class *station-keeping* is not:
+  LPF colloid demonstrated 100 nN resolution in flight, NanoFEEP flew
+  sub-µN on a 1U at ~0.2–0.3 W (comparable to our 278 mW envelope top —
+  the old "every incumbent ≥ 10× our power" claim is dead, do not
+  resurrect; enpulsion-class FEEP starts ~8 W but is not the class
+  floor). what no incumbent escapes: stored propellant → finite total
+  impulse, plus drag-free-instrument cost at the precision end
+  (`NANONEWTON_THRUSTER_REVIEW.md`; UWE-4 reliability: 1 of 4 heads).
 - jet efficiencies found: electrospray 28–45 %, FEEP ~35 %, hall ~31–44 %.
   ours: 68–73 % — exceeds every value found.
 - but F/P ~200× below gridded ion → natural handoff: this device
   <0.1 µN, electrospray at µN, ion/hall at mN. that boundary is part of
   the claim.
-- "continuous thrust" argument at nN is a **dry-system floor** argument
-  (tank+feed+PPU ~0.3–1 kg does not shrink), not a propellant-mass one.
+- "continuous thrust" argument at nN is a **dry-system floor +
+  total-impulse** argument (tank+feed+PPU ~0.3–1 kg does not shrink, and
+  the impulse it buys runs out), not a propellant-mass one.
 
 ## 10. missions (year-long, real F10.7/Ap, IRI + NRLMSISE, per-5-min rows)
 
@@ -251,7 +263,7 @@ never averaged in.
 | altitude/pose | drag mean/max (nN) | feasible | duty | P mean (mW) | envelope |
 |---|---|---|---|---|---|
 | 400 axial | 32.9 / 92.4 | 36 % | 113 % | 175 | exits (duty > 100 % — night-side collection cap at this geometry, no longer the voltage ceiling) |
-| 400 lateral | 21.7 / 60.7 | 63 % | 74 % | 129 | inside on impulse; thrust axis needs redesign |
+| 400 lateral | 21.6 / 60.7 | 63 % | 74 % | 129 | inside on impulse; thrust axis needs redesign |
 | 500 axial | 7.6 / 28.4 | 76 % | 39 % | 41 | **inside** |
 | 550 axial | 3.8 / 16.3 | 85 % | 29 % | 17 | **inside** |
 | 600 axial | 2.0 / 9.6 | 93 % | 23 % | 8 | **inside** |
@@ -296,7 +308,7 @@ this drive, is the modeled-but-not-yet-swept fix.)
   slender at the 400 km-enabling drive (350 V / 0.793 mA, identical to
   the squat run): φ **14.00 V** measured vs 11–17 V composed prediction,
   F **43.33 nN** vs 42–43 predicted (+7 % over the squat via the
-  returned float; KE 273 vs 237 eV). 2×2 (200/350 V × L/r 0.6/6) fully
+  returned float; KE 272.7 vs 239.0 eV). 2×2 (200/350 V × L/r 0.6/6) fully
   measured → the voltage frontier and geometry law are one validated 2D
   operating map. mission reading: the shape the vehicle takes anyway
   covers the 400 km mean at ~76 % duty with 3.6× charging margin, where
