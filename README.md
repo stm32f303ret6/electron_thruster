@@ -207,6 +207,12 @@ What stays open at 400 km:
 - ~150–200 mW mean power is mission design.
 - The lateral-pose thrust-axis question is untouched.
 
+### Orbit dependence
+
+Closure depends on the orbit. The tested case (solar-maximum 2024, one inclination and pose) is likely among the more demanding; other orbits shift both drag and plasma conditions in the mission's favour.
+
+Where full station-keeping does not close, partial compensation still extends mission life.
+
 ## Does it scale to CubeSats?
 
 The feasibility condition is close to scale-free: drag grows with the ram area, collection grows with the skin area, and they cancel.
@@ -301,7 +307,7 @@ Details: [`pic_sims/characterization/README.md`](pic_sims/characterization/READM
 
 This is a research repository with a working physics model, not a product.
 
-## Open risks
+## Limitations and open items
 
 Ordered by how much they could change the answer.
 
