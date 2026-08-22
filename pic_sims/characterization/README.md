@@ -46,9 +46,10 @@ record of how they ran. Each folder's `acceptance.yaml` re-identifies the same
 gates (byte-for-byte tolerances) under the new stage id **for future runs**;
 it is not a pre-registration for the migrated evidence.
 
-Historical launch records: each spoke's `logs/` (the magnetized pair ran
-strictly sequentially on one GPU; run manifests carry the exact decks).
-Pre-registered predictions and results: `/README.md`; plans live inside the spokes
-(`slender_body/README.md` and the magnetized READMEs' plan sections,
-`thin_plasma/THIN_PLASMA_PLAN.md`); the open tier-M2 transverse-field design
-is at `/future_work/M2_TRANSVERSE_B.md`.
+Launch console logs are local working files, not committed (the magnetized
+pair ran strictly sequentially on one GPU); the run manifests under each
+spoke's `reference_results/` carry the exact decks. Pre-registered
+predictions and results live inside the spokes (each spoke README's plan
+and results sections; the pre-run plan files are preserved in git
+history); the open tier-M2 transverse-field design
+is at [`../../future_work/M2_TRANSVERSE_B.md`](../../future_work/M2_TRANSVERSE_B.md).

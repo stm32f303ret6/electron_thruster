@@ -288,7 +288,7 @@ $V$ [V] & $I$ [mA] & $\varphi$ [V] & $F$ [nN] & $P$ [mW] & $F/P$ [\textmu N/W]
 100 & 0.121 & $+5.40$  & 3.42  & 12.1 & 0.283 & 96.1\% & 77.2 \\
 200 & 0.342 & $+16.98$ & 13.65 & 68.4 & 0.200 & 98.4\% & 147.5 \\
 300 & 0.630 & $+36.30$ & 30.13 & 189  & 0.159 & 99.0\% & 210.1 \\
-350 & 0.793 & $+48.29$ & 40.48 & 278  & 0.146 & 99.1\% & 237.0 \\
+350 & 0.793 & $+48.29$ & 40.48 & 278  & 0.146 & 99.1\% & 239.0 \\
 \bottomrule
 \end{tabular}
 \caption{The measured voltage frontier of the \O10\,mm anchor device at the
@@ -381,7 +381,7 @@ bound closes to 4\% with 98.4\% escape, while the
 $\approx$1.5--2$\times$ excess appears only at voltages the throttle
 principle would never select, where the demand exceeds the emission
 ceiling by 2.7--10$\times$. For concept feasibility the ideal bound with
-its measured 4--6\% closure is therefore sufficient; closed-loop throttle
+its measured 4--7\% closure is therefore sufficient; closed-loop throttle
 optimization for a selected cathode and spacecraft geometry is future
 work.
 
@@ -671,18 +671,30 @@ low-Earth-orbit micropropulsion device.
 
 \subsection{Quantitative comparison}
 \label{sec:comparison-table}
-Table~\ref{tab:comparison} positions our device against seven representative,
+Table~\ref{tab:comparison} positions our device against eight representative,
 flight-proven or flight-qualified micropropulsion systems spanning cold gas
 through Hall-effect propulsion, plus a passive photon-pressure baseline, each
 sourced from a manufacturer datasheet, a peer-reviewed paper, or NASA's 2026
 \emph{State of the Art of Small Spacecraft Technology} report~\cite{nasasoa26}.
-The comparison makes three points. First, every incumbent's \emph{lowest
-flight-representative operating power} is at least an order of magnitude
-above even our 350\,V envelope-top point (278\,mW) -- FEEP, the lowest-power
-flight electric propulsion technology surveyed, states explicitly that ``the
-required power to operate the IFM starts at around 8\,W''~\cite{enpifm} --
-and no system in the table is characterized, or apparently characterizable,
-at our thrust and power scale. Second, where an explicit or computable jet
+The comparison makes three points. First, nanonewton-class \emph{control} is
+flight-proven, but nanonewton-class \emph{station-keeping} is not. The
+ST7-DRS colloid thrusters on LISA Pathfinder demonstrated 0.1\,\textmu N
+(100\,nN) thrust resolution with $\sim$100\,nN/$\sqrt{\mathrm{Hz}}$ noise
+against free-floating test masses~\cite{anderson18}, and gallium NanoFEEP
+flew sub-micronewton thrust magnitudes on the 1U CubeSat UWE-4 from a few
+hundred milliwatts~\cite{bock18} -- so neither a thrust floor nor a power
+floor separates this device from the flown state of the art (Enpulsion-class
+FEEP states that ``the required power to operate the IFM starts at around
+8\,W''~\cite{enpifm}, but that is not the floor of its class). What does
+separate it is in the table's hardware column: every incumbent spends a
+finite stored propellant through tanks, feed systems, or precision emitters,
+so its total impulse is a consumable; the sub-\textmu N precision systems
+are drag-free science instruments whose cost and supporting hardware sit
+far outside a small-spacecraft budget; and at the gram scale measured here
+even NanoFEEP's 160\,g thruster outweighs the vehicle. A verification of
+the flight-proven sub-5\,\textmu N landscape against primary sources is
+archived with this paper's repository
+(\texttt{NANONEWTON\_THRUSTER\_REVIEW.md}). Second, where an explicit or computable jet
 efficiency exists, it clusters at 28--45\% for
 electrospray~\cite{busekbetmax21}, $\approx$35\% for FEEP~\cite{krejci19},
 and $\approx$31--44\% for Hall thrusters~\cite{busekbht200}; our measured
@@ -694,17 +706,14 @@ nanonewtons (milliwatts), noticeable at micronewtons ($\sim$10\,W for
 CubeSat drag -- disqualifying), and decisive at millinewtons. The natural
 handoff -- this device below $\sim$0.1\,\textmu N, electrospray at
 micronewtons, ion/Hall at millinewtons -- is part of the claim, not a
-concession. The smallest controllable flight EP (precision
-electrosprays/FEEP, $\sim$5--30\,\textmu N with $\sim$0.1\,\textmu N
-resolution~\cite{nasasoa26}) sits two to three orders of magnitude above
-the drag demand of the bodies considered here, in packages heavier than the
-smaller of them; ``continuous'' thrust at
+concession. ``Continuous'' thrust at
 nanonewtons is not a propellant-mass argument (five years of nanonewton
 thrust is $\sim$0.3\,g of electrospray propellant) but a \emph{dry-system
-floor} argument: tank + feed + valves + PPU is $\sim$0.3--1\,kg -- a
-substantial fraction of a kilogram-class CubeSat's total mass before the
-first newton-second -- while this concept's floor is a cathode, a boost
-converter, and the spacecraft's own skin.
+floor and total-impulse} argument: tank + feed + valves + PPU is
+$\sim$0.3--1\,kg -- a substantial fraction of a kilogram-class CubeSat's
+total mass before the first newton-second, and the impulse it buys is
+finite -- while this concept's floor is a cathode, a boost converter, and
+the spacecraft's own skin, with no total-impulse limit.
 
 \begin{sidewaystable}
 \centering\footnotesize
@@ -715,7 +724,8 @@ System & Example & Thrust & Power & Isp & Energy eff. & Hardware & Ref.\\
 \textbf{This work} & Ambient-electron exchange & 3.4--43\,nN (\O10\,mm, 100--350\,V); 17\,nN (\O14\,mm, 800\,V) & 12--278\,mW; 174\,mW & $0.7$--$1.5{\times}10^6$\,s & \textbf{68--73\%} ($F/P$ 0.15--0.28\,\textmu N/W) & HV supply + cold gun + aperture. No tank, valves, feed, neutralizer, gimbal & -- \\
 Cold gas & GomSpace NanoProp 6U (GOMX-4B)$^\ddagger$ & 0.1--10\,mN & $<$2\,W & 60--110\,s & n/s & Dual tanks, fill valves, filters, 2--3 isolation valves/line, heaters, 4 nozzles & \cite{nasasoa26,gomx4eop} \\
 PPT & Mars Space PPTCUP (qualified)$^\ddagger$ & 40\,\textmu N avg & $\sim$2\,W & 655\,s & n/s ($<$20\% typ.) & Cu--W chamber, HV cap bank, EMI box; no tank/valves & \cite{cia15,cia16,nasasoa26} \\
-Electrospray & Busek CMNT (LISA Pathfinder) & 4$\times$20\,\textmu N & 16.5\,W & 225\,s & 28/45\%$^\dagger$ (BET-300-P) & Propellant-less CNT neutralizer, low-pressure tanks, PPU & \cite{nasasoa26,busekbetmax21} \\
+Electrospray & Busek CMNT (LISA Pathfinder) & 4$\times$20\,\textmu N (0.1\,\textmu N resolution) & 16.5\,W & 225\,s & 28/45\%$^\dagger$ (BET-300-P) & Propellant-less CNT neutralizer, low-pressure tanks, PPU & \cite{nasasoa26,busekbetmax21,anderson18} \\
+FEEP (1U) & TU Dresden / Morpheus NanoFEEP (UWE-4) & 0--8\,\textmu N cont.\ (peaks 22) & $\sim$0.2--0.3\,W & up to 6000\,s & n/s & Gallium liquid-metal needle heads ($<$6\,g each), propellant heater, CNT neutralizer & \cite{bock18} \\
 FEEP & Enpulsion IFM Nano (Flock 3P) & 10\,\textmu N--0.5\,mN & \textbf{8--40\,W} & 2000--5000\,s & $\approx$35\%$^\dagger$ & 28-needle emitter, 2 redundant neutralizer cathodes, PPU & \cite{enpifm,krejci19} \\
 RF ion & Busek BIT-3 (Artemis I)$^\ddagger$ & 0.66--1.24\,mN & 56--80\,W & 1400--2640\,s & n/s (PPU $\sim$90\%$^*$) & Grid ion optics, RF cathode neutralizer, iodine feed valve, PPU, 2-axis gimbal & \cite{busekbit3,nasasoa26,nasalunahmap23} \\
 Hall & Busek BHT-200 (TacSat-2) & 13\,mN & 200--250\,W & 1390\,s & $\approx$44\%$^\dagger$ & Magnetic discharge channel, hollow cathode, xenon feed, PPU & \cite{busekbht200,nasasoa26} \\
@@ -762,7 +772,7 @@ altitude / pose & drag mean/max [nN] & feasible & duty cycle & $P$ mean [mW]
  & $\varphi{>}50$\,V & in envelope \\
 \midrule
 400 km axial   & 32.9 / 92.4 & 36\% & 113\% & 175 & 49\% & 18\% \\
-400 km lateral & 21.7 / 60.7 & 63\% & 74\%  & 129 & 33\% & 38\% \\
+400 km lateral & 21.6 / 60.7 & 63\% & 74\%  & 129 & 33\% & 38\% \\
 500 km axial   & 7.6 / 28.4  & 76\% & 39\%  & 41  & 24\% & 29\% \\
 550 km axial   & 3.8 / 16.3  & 85\% & 29\%  & 17  & 15\% & 8\%  \\
 600 km axial   & 2.0 / 9.6   & 93\% & 23\%  & 8   & 7\%  & 1\%  \\
@@ -1059,7 +1069,7 @@ with flagged extrapolation; full mission validation is future work.
         efficiency are flight-design quantities outside this paper's scope.
   \item \textbf{Throttle optimization is deferred.} Quoted powers are the
         ideal beam-supply bound of Sec.~\ref{sec:throttle}, validated to
-        4--6\% in the high-escape regime. Off-optimum low-voltage
+        4--7\% in the high-escape regime. Off-optimum low-voltage
         operation in this geometry measured up to
         $\approx$1.5--2$\times$ the bound, an excess attributable to
         non-optimal voltage plus geometry-specific losses (beam
@@ -1080,10 +1090,11 @@ with flagged extrapolation; full mission validation is future work.
 \label{sec:conclusion}
 Drag compensation for small spacecraft at 450--600\,km requires
 nanonewtons to micronewtons of continuous thrust from milliwatts to a few
-watts of power -- a slot no flight propulsion system occupies: the smallest
-controllable flight EP sits orders of magnitude above the demand, in
-kilogram-scale packages that claim a large share of a CubeSat's mass and
-power budget. We have measured, under a pre-registered evidence
+watts of power. Flight-proven micropropulsion reaches that scale in control
+resolution but not in kind: every flown system spends a finite stored
+propellant through tanks, feed systems, and precision emitters whose mass,
+cost, and total-impulse limit are disproportionate to a spacecraft this
+small. We have measured, under a pre-registered evidence
 contract, the complete thrust--power frontier of a device that fills the
 slot with zero propellant and zero net mass flux: a sealed conducting body,
 a cold electron gun, and the ionosphere as both propellant reservoir and
@@ -1214,6 +1225,16 @@ their propellant is exhausted.
   Performance Mapping of the IFM Nano Thruster, Including Direct Thrust
   Measurements,'' \emph{Journal of Space Safety Engineering}, vol.~8, no.~2,
   2019, p.~882.
+
+\bibitem{anderson18} G.~Anderson et al., ``Experimental results from the
+  ST7 mission on LISA Pathfinder,'' \emph{Physical Review D}, vol.~98,
+  102005, 2018.
+
+\bibitem{bock18} D.~Bock and M.~Tajmar, ``Highly miniaturized FEEP
+  propulsion system (NanoFEEP) for attitude and orbit control of CubeSats,''
+  \emph{Acta Astronautica}, vol.~144, 2018, pp.~422--428; see also
+  ``UWE-4: First Electric Propulsion on a 1U CubeSat,'' 2020 (in-orbit
+  operation at $\sim$0.2--0.3\,W).
 
 \bibitem{busekbit3} Busek Co.\ Inc., ``BIT-3 RF Ion Thruster'' product page,
   \url{https://www.busek.com/bit3}.

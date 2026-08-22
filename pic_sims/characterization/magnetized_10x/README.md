@@ -1,6 +1,6 @@
 # characterization.magnetized_10x — field-aligned B at 10× LEO
 
-same system as the anchor with the axial field **overdriven to 10× flight strength**, Bz = 300 µT. tier M1b of the magnetized axis, pre-registered 2026-08-08 before the run (plan section below; the shared pre-run `MAGNETIZED_PLAN.md` is preserved in git history — its never-run tier-M2 design moved to `/future_work/M2_TRANSVERSE_B.md`).
+same system as the anchor with the axial field **overdriven to 10× flight strength**, Bz = 300 µT. tier M1b of the magnetized axis, pre-registered 2026-08-08 before the run (plan section below; the shared pre-run `MAGNETIZED_PLAN.md` is preserved in git history — its never-run tier-M2 design moved to `../../../future_work/M2_TRANSVERSE_B.md`).
 
 [![dashboard](viz/20260810T131955Z_0b81e70a_dashboard.gif)](viz/20260810T131955Z_0b81e70a_dashboard.mp4)
 
@@ -49,7 +49,7 @@ disclosures that travel with the number: the float had not settled at 800 ns (14
 
 ## provenance
 
-executed 2026-08-10 as a variant deck through the anchor stage under the pre-registered exploratory policy `capstone.exploratory_axes.v1` (strictly sequential after M1a on one GPU, 12.8 h total); the frozen run config and manifests therefore carry `stage_id: capstone.floating_body`. `outputs/20260808T130307Z_0b81e70a` is an earlier launch of the same deck with no gated result (superseded). this `config.yaml` is that same deck (git-moved, history intact) under the new stage id; `acceptance.yaml` re-identifies the same gates for future runs — it is not a pre-registration for the migrated evidence. launch record: `logs/`.
+executed 2026-08-10 as a variant deck through the anchor stage under the pre-registered exploratory policy `capstone.exploratory_axes.v1` (strictly sequential after M1a on one GPU, 12.8 h total); the frozen run config and manifests therefore carry `stage_id: capstone.floating_body`. `outputs/20260808T130307Z_0b81e70a` is an earlier launch of the same deck with no gated result (superseded). this `config.yaml` is that same deck (git-moved, history intact) under the new stage id; `acceptance.yaml` re-identifies the same gates for future runs — it is not a pre-registration for the migrated evidence. launch console logs are local working files, not committed; the run manifest under `reference_results/` carries the provenance.
 
 ## dependencies
 
@@ -57,7 +57,7 @@ requires `capstone.floating_body` (the anchor). spokes never depend on each othe
 
 ## cost
 
-~6.4 GPU-h. 159k steps, dt ≈ 5.0 ps, 200 × 440 grid. CUDA build required (`/SETUP.md`).
+~6.4 GPU-h. 159k steps, dt ≈ 5.0 ps, 200 × 440 grid. CUDA build required (`../../../SETUP.md`).
 
 ## commands
 

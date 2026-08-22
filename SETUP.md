@@ -255,9 +255,9 @@ python simulation.py --config /tmp/my_variant.yaml
 The run freezes its own `config_used.yaml` and hashes it into `case_sha256`, so
 a variant is fully self-describing without touching git. Variants that answer a
 pre-registered question get a plan document committed *before* they run —
-`pic_sims/characterization/slender_body/README.md` (plan section; the pre-run
-file `SLENDER_BODY_PLAN.md` is preserved in git history),
-`pic_sims/characterization/thin_plasma/THIN_PLASMA_PLAN.md` — and, when the
+now unified into each spoke README's plan sections, with the pre-run files
+(`SLENDER_BODY_PLAN.md`, `THIN_PLASMA_PLAN.md`, `MAGNETIZED_PLAN.md`)
+preserved in git history — and, when the
 default gates would gate the answer rather than the trustworthiness of the
 measurement, their own acceptance policy (`acceptance_exploratory.yaml`).
 
@@ -292,7 +292,7 @@ cd paper/figs && python make_frontier.py && python make_missions.py && python ma
 
 # paper and slides
 cd paper && pdflatex main.tex && pdflatex main.tex
-cd paper/slides && pdflatex slides.tex && pdflatex slides.tex
+cd paper/slides && pdflatex slides2.tex && pdflatex slides2.tex
 ```
 
 Stage unit tests (no WarpX, no GPU, ~4 s for all 278):

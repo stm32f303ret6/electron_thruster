@@ -45,7 +45,7 @@ U-CURVE VALIDATION (geometry-specific PIC data vs simple model)
   | 350.0 |  99.1% | 40.48 |  277.6 |  258.1 | 1.08x | validated regime |
 
   In the validated regime (escape > 95%), the simple model agrees
-  to within 6%. Below ~100 V, escape collapses due to beam
+  to within 8%. Below ~100 V, escape collapses due to beam
   self-scrape inside the capstone can geometry -- the measured
   power diverges from the model because the emitter must push
   more current to compensate for lost electrons. This loss is

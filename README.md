@@ -7,7 +7,7 @@ The ionosphere returns the same current to the spacecraft surface, so the circui
 
 This allows small spacecraft to carry cheap, simple propulsion enough to cancel drag, allowing missions like station-keeping (theoretically indefinite because there is no on-board propellant).
 
-![200 V baseline simulation](paper/new/imgs/dashboard_200v.gif)
+![200 V baseline simulation](paper/imgs/dashboard_200v.gif)
 
 ## Motivation
 
@@ -20,9 +20,7 @@ For any thruster, $F/P = 2\eta/v_e$: higher exhaust velocity means less thrust p
 Electrons are light, so $v_e$ is huge, and an electron beam carries ~200x less momentum per watt than a gridded ion thruster (~0.2 µN/W vs ~40 µN/W).
 That gap is not an engineering shortfall, it is this equation, and it is disqualifying at millinewton scale.
 
-But LEO drag at 400–600 km on a small spacecraft is nanonewtons, and at that scale the arithmetic changes: an electron beam needs 10–100 mW where an ion thruster would need ~1 mW.
-The power difference is negligible, what matters is that the electron version needs no tank, no neutralizer, no propellant.
-Just two electrodes and an HV supply.
+But LEO drag at 400–600 km on a small spacecraft is nanonewtons, and at that scale the arithmetic changes: an electron beam needs 10–100 mW where an ion thruster would need ~1 mW. The power difference is negligible, what matters is that the electron version needs no tank, no neutralizer, no propellant. Just two electrodes and an HV supply.
 
 The goal is not the highest performance.
 It is the **lowest barrier to actually flying a thruster**, enabling missions like drag compensation for small spacecraft.
@@ -48,7 +46,7 @@ It is the **lowest barrier to actually flying a thruster**, enabling missions li
 The process settles into a steady state: the body floats at the potential **φ** where collected current equals emitted current.
 That float **is** the operating point, there is no cycle, just a continuous equilibrium.
 
-![Concept, step by step](paper/new/imgs/concept_steps.png)
+![Concept, step by step](paper/imgs/concept_steps.png)
 
 ### How does the current return?
 
@@ -68,6 +66,12 @@ The ambient ionospheric electrons, by contrast, are thermal (~0.1 eV), so the sa
 
 This asymmetry is what makes the circuit work: slow electrons get captured, fast electrons escape.
 The [capstone simulation](pic_sims/ladder/capstone/2_chipsat_thruster) measures this directly: 98.4 % of beam electrons escape at the 200 V anchor ($\varphi$ = 17 V), and across the full [characterization campaign](pic_sims/characterization) the escape fraction $f_{\mathrm{esc}}$ stays at 96–99 %.
+
+### Doesn't the returning current cancel the thrust?
+
+The collected electrons do land on the spacecraft and deposit momentum, so the question is quantitative — and the simulations measure it rather than argue it.
+The per-step ledger separates the beam's reaction thrust $F_{\mathrm{beam}}$ from the net momentum deposited by everything landing on the craft ($F_{\mathrm{net}}$): at the 300 V point the measured ratio is 1 % ($|F_{\mathrm{net}}|/F_{\mathrm{beam}}$ = 0.0098), and the bound is gated in every committed run.
+There is also a physics ceiling: at current balance the arriving electrons carry only ~$e\varphi$ of energy against the beam's exhaust energy, so even if every collected electron arrived directly astern the cancellation could not exceed $\sqrt{\varphi/\mathrm{KE}} \approx 40\,\%$ — and isotropic arrival, the objection's own premise, brings it down to the measured percent level.
 
 ## Theory
 
@@ -160,9 +164,9 @@ Running the thruster at one fixed voltage all year:
 | altitude | drag mean | drag max | 13.65 nN (200 V) covers | 30.13 nN (300 V) covers |
 |---|---|---|---|---|
 | 400 km axial | 32.9 nN | 92.4 nN | — | — |
-| 400 km lateral | 21.7 nN | 60.7 nN | — | mean |
+| 400 km lateral | 21.6 nN | 60.7 nN | — | mean |
 | 500 km axial | 7.6 nN | 28.4 nN | mean | **mean and max** |
-| 550 km axial | 3.9 nN | 16.3 nN | mean (max barely missed) | **mean and max** |
+| 550 km axial | 3.8 nN | 16.3 nN | mean (max barely missed) | **mean and max** |
 | 600 km axial | 2.0 nN | 9.6 nN | **mean and max** | **mean and max** |
 
 ### Voltage-following mode
@@ -236,7 +240,7 @@ Two simulation trees, one direction of flow:
 Conditions flow one way only: orbit CSV row → frozen `config.yaml` → PIC verdict.
 The evidence can never move when the demand changes.
 
-![Ladder and characterization](paper/new/imgs/ladder_characterization.png)
+![Ladder and characterization](paper/imgs/ladder_characterization.png)
 
 ### PIC simulations: the ladder
 
@@ -272,11 +276,11 @@ Each spoke links to its simulation directory:
 |---|---|---|---|---|---|---|
 | [`high_thrust`](pic_sims/characterization/high_thrust) | 300 V | 36.3 V | **30.13 nN** | 98.99 % | 210.1 | |
 | [`low_power`](pic_sims/characterization/low_power) | 100 V | 5.4 V | 3.42 nN | 96.12 % | 77.2 | |
-| [`350V_400km`](pic_sims/characterization/350V_400km) | 350 V | 48.3 V | **40.48 nN** | 98.86 % | 239.5 | on the 50 V charging limit |
-| [`350V_400km_slender`](pic_sims/characterization/350V_400km_slender) | 350 V + slender body | 14.0 V | **43.33 nN** | 99.12 % | 269.2 | voltage × geometry compose |
+| [`350V_400km`](pic_sims/characterization/350V_400km) | 350 V | 48.3 V | **40.48 nN** | 99.11 % | 239.0 | on the 50 V charging limit |
+| [`350V_400km_slender`](pic_sims/characterization/350V_400km_slender) | 350 V + slender body | 14.0 V | **43.33 nN** | 99.14 % | 272.7 | voltage × geometry compose |
 | [`slender_body`](pic_sims/characterization/slender_body) | L/r = 6 body | 4.4 V | 14.22 nN | 98.42 % | 159.7 | |
 | [`thin_plasma`](pic_sims/characterization/thin_plasma) | density n₀/3 | 42.5 V | 12.39 nN | 99.13 % | 122.0 | settled at 2.4 µs; law conservative along density |
-| [`magnetized_1x`](pic_sims/characterization/magnetized_1x) | axial B = 30 µT (1× LEO) | 17.0 V | 13.65 nN | 98.44 % | 147.3 | null: anchor unchanged |
+| [`magnetized_1x`](pic_sims/characterization/magnetized_1x) | axial B = 30 µT (1× LEO) | 17.2 V | 13.64 nN | 98.44 % | 147.3 | null: anchor unchanged |
 | [`magnetized_10x`](pic_sims/characterization/magnetized_10x) | axial B = 300 µT | +33 V | −11 % | 98.32 % | 115.9 | collection tax from B field |
 
 Details: [`pic_sims/characterization/README.md`](pic_sims/characterization/README.md).
@@ -317,8 +321,8 @@ Ordered by how much they could change the answer.
 |---|---|
 | `SCALING_LAWS.md` | the physics laws, measured constants, scaling to larger vehicles |
 | `model/MODEL.md` | the executable model, control law, honest mission table |
-| `THESIS.md` | the claim stated for a physics reviewer |
-| `OPTIMISTIC_HYPOTHESES.md` | the upside cases, pre-registered and falsifiable |
+| `paper/NANONEWTON_THRUSTER_REVIEW.md` | the flight-proven sub-µN propulsion landscape, verified against primary sources |
+| `future_work/README.md` | scope decision, deferred optimization work, open items |
 | `pic_sims/ladder/LADDER_SUMMARY.md` | stage-by-stage verdicts |
 | `lab_experiments/electron_gun/` | the bench experiment, with caveats |
 | `SETUP.md` | reproducing everything |

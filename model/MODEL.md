@@ -3,7 +3,7 @@
 Two models live in this directory:
 
 - **`feasibility_model.py`** — the concept-level power prediction used in the
-  paper. One equation, two measured constants, 4–6 % accuracy.
+  paper. One equation, two measured constants, 4–7 % accuracy.
 - **`minimal_model.py`** — the detailed per-row model with self-consistent
   floating potential, collection law, emission ceiling, and envelope flags.
 
@@ -36,6 +36,7 @@ Validation against the three frontier anchors:
 | 100 | 11.7 | 12.1 | −3.7 % | 1.057 |
 | 200 | 65.8 | 68.4 | −3.8 % | 1.093 |
 | 300 | 177.9 | 189.0 | −5.9 % | 1.138 |
+| 350 | 258.1 | 277.6 | −7.0 % | 1.160 |
 
 The model's only approximation is neglecting φ (the floating potential).
 The resulting error is the float tax V/(V−φ), which grows slowly with V.
@@ -171,7 +172,7 @@ exploratory policy — null at 1× LEO, ~11 % thrust tax at 10× via the float,
 transverse B still open, `future_work/M2_TRANSVERSE_B.md`), single
 grid/PPC/seed (convergence pass in progress),
 finite-time equilibrium on the ion clock. Model-specific:
-the simple law neglects φ (4–6 % floor); escape is assumed near-unity (valid
+the simple law neglects φ (4–7 % floor); escape is assumed near-unity (valid
 at 100–350 V, breaks below ~100 V in the capstone can geometry); supply
 power is beam power V·I — emitter heating and converter losses are system
 engineering, not modeled.
