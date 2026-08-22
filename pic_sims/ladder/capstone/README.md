@@ -21,4 +21,6 @@ Historical note: before 2026-08-11 those spokes ran as variant decks through
 `capstone.exploratory_axes.v1` (still committed here as
 `2_chipsat_thruster/acceptance_exploratory.yaml`, whose header records the
 required-vs-reported gate rationale). Their run manifests therefore carry
-`stage_id: capstone.floating_body`; pre-registered predictions and results are in `/README.md`.
+`stage_id: capstone.floating_body`; pre-registered predictions and results
+live in each spoke's README under
+[`../../characterization/`](../../characterization/README.md).

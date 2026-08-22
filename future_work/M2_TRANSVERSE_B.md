@@ -6,8 +6,9 @@ the executed spokes (`pic_sims/characterization/magnetized_1x/`,
 `magnetized_10x/`). Tier M1 closed the *near-field* half of the magnetized
 question — null at 1× LEO, a collection tax at 10×. This document holds the
 open half: the far-field design. It is the project's largest unexamined
-question (`OPTIMISTIC_HYPOTHESES.md` H1) and needs its own committed plan
-with numeric pre-registrations before any measurement run.
+question (hypothesis H1 of the 2026-08-07 external review
+`OPTIMISTIC_HYPOTHESES.md`, preserved in git history) and needs its own
+committed plan with numeric pre-registrations before any measurement run.
 
 ## The gap
 
