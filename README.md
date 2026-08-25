@@ -46,7 +46,7 @@ It is the **lowest barrier to actually flying a thruster**, enabling missions li
 The process settles into a steady state: the body floats at the potential **φ** where collected current equals emitted current.
 That float **is** the operating point, there is no cycle, just a continuous equilibrium.
 
-![Concept, step by step](paper/imgs/concept_steps.png)
+![Concept, step by step](paper/imgs/concept_steps_mpl.png)
 
 ### How does the current return?
 
@@ -157,6 +157,8 @@ Against real 2024 drag (NRLMSISE-00, real F10.7/Ap, solar-cycle-25 maximum) for 
 - **axial**: drag hits the cap side of the cylinder.
 - **lateral**: drag hits the skin side of the cylinder.
 
+![Thrust vs drag across altitude](paper/imgs/drag_coverage.png)
+
 ### Fixed-voltage coverage
 
 Running the thruster at one fixed voltage all year:
@@ -228,23 +230,11 @@ Bigger bodies just need proportionally more current and power.
 These estimates use the anchor's measured efficiency; the design levers in "Reading these numbers" (better $\kappa$, lower $\varphi$) would reduce them.
 They are also **estimates from an extrapolated collection law, not measurements**, the extrapolation crosses a regime boundary (risk 4 below).
 
-## What is validated?
-
-| | |
-|---|---|
-| Simulation | nine-stage WarpX PIC validation ladder + eight characterization spokes, every stage gated against a pre-registered, hash-frozen acceptance policy |
-| Hardware | one bench experiment, rough vacuum (4–5 Pa), qualitative only |
-| Flight cathode | not selected: beam current is *prescribed* in every simulation |
-| Magnetic field | field-aligned axis measured (tier M1); transverse B, the actual flight geometry, untested |
-| Flight heritage | none |
-
+## Simulations
 Two simulation trees, one direction of flow:
 
 - `orbit_sims/` computes **what the mission demands** (drag, plasma conditions).
 - `pic_sims/` answers **whether the device delivers it** (full PIC, WarpX).
-
-Conditions flow one way only: orbit CSV row → frozen `config.yaml` → PIC verdict.
-The evidence can never move when the demand changes.
 
 ![Ladder and characterization](paper/imgs/ladder_characterization.png)
 
