@@ -290,9 +290,8 @@ python model/minimal_model.py --all          # -> model/results/
 # paper figures (read committed calibration + summaries; no hand-typed numbers)
 cd paper/figs && python make_frontier.py && python make_missions.py && python make_fpplane.py
 
-# paper and slides
+# paper
 cd paper && pdflatex main.tex && pdflatex main.tex
-cd paper/slides && pdflatex slides2.tex && pdflatex slides2.tex
 ```
 
 Stage unit tests (no WarpX, no GPU, ~4 s for all 278):
