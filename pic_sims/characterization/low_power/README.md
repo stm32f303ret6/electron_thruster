@@ -1,12 +1,13 @@
-# capstone.low_power — 100 V floor
+# capstone.low_power: 100 V floor
 
-same system as `floating_body` driven at **100 V** / 0.121 mA. measures what thrust costs at the power-optimal low-voltage point.
+Same system as `floating_body`, driven at 100 V / 0.121 mA. Measures what
+thrust costs at the power-optimal low-voltage point.
 
 [![dashboard](viz/20260804T230218Z_0adb478f_dashboard.gif)](viz/20260804T230218Z_0adb478f_dashboard.mp4)
 
-*animated dashboard — click for the full video.*
+*Animated dashboard. Click for the full video.*
 
-## setup
+## Setup
 
 ![schematic](viz/schematic_4_low_power.png)
 
@@ -18,7 +19,7 @@ same system as `floating_body` driven at **100 V** / 0.121 mA. measures what thr
 
 $$I / I_{CL} = 1.46 \;\Rightarrow\; i_\text{beam} = 0.121\ \text{mA}$$
 
-### three-point P–F frontier
+### Three-point P–F frontier
 
 | stage | V | I | F (nN) | P (mW) | F/P (µN/W) |
 |---|---|---|---|---|---|
@@ -26,15 +27,18 @@ $$I / I_{CL} = 1.46 \;\Rightarrow\; i_\text{beam} = 0.121\ \text{mA}$$
 | floating_body | 200 | 0.342 mA | **13.65** | 68.4 | **0.200** |
 | high_thrust | 300 | 0.63 mA | **30.13** | 189 | **0.159** |
 
-$F/P \propto 1/\sqrt{V}$ confirmed. measured float: **5.40 V**, exhaust KE **77.19 eV**.
+$F/P \propto 1/\sqrt{V}$ confirmed. Measured float 5.40 V, exhaust KE
+77.19 eV.
 
-## how the pic works
+## How the PIC works
 
-same engine as `floating_body` — deck, charge pump, reservoir, observer identical. only the drive point differs.
+Same engine as `floating_body`: deck, charge pump, reservoir, observer
+identical. Only the drive point differs.
 
-## results
+## Results
 
-reference run `20260804T230218Z_0adb478f`, all gates PASS. same gate structure as `high_thrust`.
+Reference run `20260804T230218Z_0adb478f`, all gates PASS. Same gate
+structure as `high_thrust`.
 
 | check | measured | target |
 |---|---|---|
@@ -45,13 +49,13 @@ reference run `20260804T230218Z_0adb478f`, all gates PASS. same gate structure a
 | current balance | 1.5% | ≤ 5% |
 | edge |φ| | 5.8 mV | ≤ 1 V |
 
-## commands
+## Commands
 
 ```bash
 python simulation.py                    # ~5 h
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 ```
 
-## limitations
+## Limitations
 
 - reduced ion mass (400 mₑ), electrostatic only, single grid/PPC/seed, finite-time equilibrium

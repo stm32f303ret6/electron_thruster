@@ -1,26 +1,26 @@
-# capstone.two_node_laplace — the can geometry in vacuum
+# capstone.two_node_laplace: the can geometry in vacuum
 
-the chipsat's two-node EB geometry solved in vacuum (no particles). BODY at +16 V, CATHODE at −184 V, using the same `set_potential_on_eb` per-step rewrite the capstone uses. proves the vacuum laplace field is correct before any plasma is added.
+The chipsat's two-node EB geometry solved in vacuum (no particles). BODY at +16 V, CATHODE at −184 V, using the same `set_potential_on_eb` per-step rewrite the capstone uses. This shows the vacuum Laplace field is correct before any plasma is added.
 
-## setup
+## Setup
 
 ![schematic](viz/schematic_1_two_node_laplace.png)
 
-- **grid**: capstone's exact grid (200 × 440, dx = 0.15 mm)
-- **particles**: none
-- **solver**: every solve is laplace's equation ($\nabla^2 \varphi = 0$)
+- grid: the capstone's exact grid (200 × 440, dx = 0.15 mm)
+- particles: none
+- solver: every solve is Laplace's equation ($\nabla^2 \varphi = 0$)
 
-## how the pic works
+## How the PIC works
 
-- **no particles**: grid + EB + electrostatic solver only
-- **EB init**: boundary starts at uniform 1 V (mirrors capstone's capacitance calibration)
-- **two-node imposition**: after-init callback rewrites BODY = +16 V, CATHODE = −184 V via `set_potential_on_eb`
-- **per-step**: 5 multigrid solves; re-imposing unchanged potential tests idempotency
-- **output**: φ dumped every step; analysis gates surface values, maximum principle, independent solver match, rewrite drift
+1. No particles: grid, EB and electrostatic solver only.
+2. EB init: the boundary starts at uniform 1 V (mirrors the capstone's capacitance calibration).
+3. Two-node imposition: an after-init callback rewrites BODY = +16 V, CATHODE = −184 V via `set_potential_on_eb`.
+4. Per step: 5 multigrid solves. Re-imposing the unchanged potential tests idempotency.
+5. Output: φ dumped every step. The analysis gates surface values, the maximum principle, the independent solver match, and rewrite drift.
 
-## results
+## Results
 
-reference run `20260806T142600Z_f44044c6`, all gates PASS:
+Reference run `20260806T142600Z_f44044c6`, all gates PASS:
 
 | check | measured | target |
 |---|---|---|
@@ -30,34 +30,34 @@ reference run `20260806T142600Z_f44044c6`, all gates PASS:
 | independent RZ solver | 1.864 V diff | ≤ 4 V |
 | per-step rewrite idempotency | 0 V drift | ≤ 1 mV |
 
-the independent solver is a scipy sparse direct factorization with stair-step EB — different representation and solver than warpx. comparison excludes the 3-cell skin near surfaces.
+The independent solver is a scipy sparse direct factorization with a stair-step EB, a different representation and solver than WarpX. The comparison excludes the 3-cell skin near surfaces.
 
-## dependencies
+## Dependencies
 
-none (leaf step). the capstone requires this stage.
+None (leaf step). The capstone requires this stage.
 
-## cost
+## Cost
 
-seconds — five laplace solves, no particles.
+Seconds. Five Laplace solves, no particles.
 
-## commands
+## Commands
 
 ```bash
 python simulation.py
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 ```
 
-## reference figures
+## Reference figures
 
 | | |
 |---|---|
 | ![fields](reference_results/20260806T142600Z_f44044c6/figures/fields.png) | ![phi axis](reference_results/20260806T142600Z_f44044c6/figures/phi_axis.png) |
 
-## validates for capstone
+## Validates for capstone
 
-the capstone's exact two-node EB geometry and piecewise `set_potential_on_eb` rewrite — verified in vacuum before plasma is added.
+The capstone's exact two-node EB geometry and piecewise `set_potential_on_eb` rewrite, checked in vacuum before plasma is added.
 
-## limitations
+## Limitations
 
-- independent solver uses stair-step EB; comparison only meaningful a few cells from surfaces
-- EB potential is static here (capstone changes it dynamically via the charge pump)
+- the independent solver uses a stair-step EB; the comparison is only meaningful a few cells from surfaces
+- the EB potential is static here (the capstone changes it dynamically via the charge pump)

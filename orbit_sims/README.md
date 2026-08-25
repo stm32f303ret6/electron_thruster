@@ -1,15 +1,15 @@
-# orbit_sims — where the mission demand comes from
+# orbit_sims: where the mission demand comes from
 
-A tiny satellite is propagated with TudatPy while an idealised thruster fires
-continuously to cancel drag **exactly**. Altitude is therefore held, and the
-per-row drag force **is** the thrust a real station-keeping system would have to
+A small satellite is propagated with TudatPy while an idealised thruster
+fires continuously to cancel drag exactly. Altitude is therefore held, and the
+per-row drag force is the thrust a real station-keeping system would have to
 supply. Every exported pose is enriched with IRI-2020 electron density and
-electron/ion temperature, so the ionosphere the vehicle actually flies through
-comes out alongside the demand it creates.
+electron/ion temperature, so the ionosphere the vehicle flies through comes
+out alongside the demand it creates.
 
-**The deliverable is the CSV.** Nothing here knows about thrusters, voltages or
+The deliverable is the CSV. Nothing here knows about thrusters, voltages or
 particles. Picking scenario conditions from this CSV and validating them with
-particles is `pic_sims/`'s job.
+particles is the job of `pic_sims/`.
 
 ## Environment
 
@@ -25,9 +25,9 @@ External data this needs, none of it vendored:
 | Space weather (F10.7/Ap) | `~/.tudat/resource/space_weather/sw19571001.txt` | shipped with Tudat; NRLMSISE-00 reads it |
 | IRI solar indices | `<iricore>/data/index/{apf107.dat, ig_rz.dat}` | `python -c "import iricore; iricore.update()"` (needs internet) |
 
-The run refuses to start if the IRI index does not cover the whole mission span
-— a year-long propagation that discovers on day 300 that its index file stopped
-in month 9 has wasted the whole run.
+The run refuses to start if the IRI index does not cover the whole mission
+span. A year-long propagation that discovers on day 300 that its index file
+stopped in month 9 has wasted the whole run.
 
 ## Usage
 
@@ -40,36 +40,37 @@ python3 run_station_keeping.py 400km_station_keeping_chipsat --days 1   # smoke 
 
 Output lands in `validation_cases/<case>/results/`:
 
-- `station_keeping.csv` — the artifact (gitignored; ~10 MB for a year)
-- `config_used.yaml` — the fully merged config that produced it (tracked)
+- `station_keeping.csv`, the artifact (gitignored; ~10 MB for a year)
+- `config_used.yaml`, the fully merged config that produced it (tracked)
 
-`--days N` overrides the duration in **both** the live config and the raw dict,
+`--days N` overrides the duration in both the live config and the raw dict,
 so `config_used.yaml` records what actually ran rather than what the file said.
 
 ## Physics summary
 
-- **Drag cancel ⇒ `drag_N` ≡ thruster demand.** A custom acceleration of
-  magnitude `|a_drag|` is applied along the wind-free airspeed direction
-  (`v − ω × r`). The exported drag comes from the *independently* saved
-  aerodynamic acceleration norm, not from the cancelling acceleration, so the
-  number does not depend on the cancel direction being perfect.
-- **Dynamics**: EGM96 spherical harmonics (8×8), NRLMSISE-00 aerodynamics,
-  Sun/Moon point-mass, cannonball SRP. Sun/Moon and SRP are kept — this port
-  dropped the solar *power ledger*, not the *physics*.
-- **Near-circular setup**: a two-body circular speed inserted into the real J2
-  field is ~0.07 % too slow at the equator, which would excite a spurious ~10 km
-  once-per-orbit altitude breathing and contaminate the drag statistics. The
-  initial tangential speed is boosted by the J2 equatorial factor.
-- **Arcs**: monthly arcs chained state-to-state (bounded memory), 60 s fixed
-  RKF7(8), decimated to the 300 s CSV grid, seam rows deduplicated.
-- **IRI preset `"default"`** — the full switch set, which is what enables Te and
-  Ti. (The predecessor used `"default_edens"`, which zeroes `jf[1]` and returns
-  electron density only.) iricore maps IRI's internal sentinels to **NaN**, so
-  the validity check is `np.isfinite(x) and x > 0`, and a bad value raises with
-  the offending pose rather than writing a silent NaN.
-- **120 km floor**: the propagation terminates below `orbit.decay_floor_km`,
-  which defaults to 120 km — also the bottom of IRI's Te/Ti validity range, so
-  one guard covers both.
+1. Drag cancel ⇒ `drag_N` ≡ thruster demand. A custom acceleration of
+   magnitude `|a_drag|` is applied along the wind-free airspeed direction
+   (`v − ω × r`). The exported drag comes from the independently saved
+   aerodynamic acceleration norm, not from the cancelling acceleration, so the
+   number does not depend on the cancel direction being perfect.
+2. Dynamics: EGM96 spherical harmonics (8×8), NRLMSISE-00 aerodynamics,
+   Sun/Moon point-mass, cannonball SRP. Sun/Moon and SRP are kept; this port
+   dropped the solar power ledger, not the physics.
+3. Near-circular setup: a two-body circular speed inserted into the real J2
+   field is ~0.07 % too slow at the equator, which would excite a spurious
+   ~10 km once-per-orbit altitude breathing and contaminate the drag
+   statistics. The initial tangential speed is boosted by the J2 equatorial
+   factor.
+4. Arcs: monthly arcs chained state-to-state (bounded memory), 60 s fixed
+   RKF7(8), decimated to the 300 s CSV grid, seam rows deduplicated.
+5. IRI preset `"default"`: the full switch set, which is what enables Te and
+   Ti. (The predecessor used `"default_edens"`, which zeroes `jf[1]` and
+   returns electron density only.) iricore maps IRI's internal sentinels to
+   NaN, so the validity check is `np.isfinite(x) and x > 0`, and a bad value
+   raises with the offending pose rather than writing a silent NaN.
+6. 120 km floor: the propagation terminates below `orbit.decay_floor_km`,
+   which defaults to 120 km. That is also the bottom of IRI's Te/Ti validity
+   range, so one guard covers both.
 
 ## CSV schema
 
@@ -84,18 +85,19 @@ so `config_used.yaml` records what actually ran rather than what the file said.
 | `ion_temperature_K` | K | IRI-2020 |
 | `drag_N` | N | mass × aerodynamic acceleration norm |
 
-The environment columns are **spacecraft-independent**: because drag is
-cancelled the altitude holds, so ρ(t), n_e(t), Te(t) and Ti(t) do not depend on
-the vehicle that flew through them. Only `drag_N` carries the geometry. One
+The environment columns are spacecraft-independent. Because drag is cancelled
+the altitude holds, so ρ(t), n_e(t), Te(t) and Ti(t) do not depend on the
+vehicle that flew through them. Only `drag_N` carries the geometry. One
 13-minute run per altitude therefore serves a whole design space.
 
 The 300 s cadence gives ~19 samples per orbit, which resolves the diurnal
-n_e/Te/Ti swing — day-vs-night design points can be read straight off the CSV.
+n_e/Te/Ti swing, so day-vs-night design points can be read straight off the
+CSV.
 
 ## Config schema
 
 Overrides live in `validation_cases/<case>/inputs/config.yaml` and are merged
-**strictly** over `config.py:DEFAULTS`: an unknown key aborts the run instead of
+strictly over `config.py:DEFAULTS`: an unknown key aborts the run instead of
 silently doing nothing.
 
 | key | default | meaning |
@@ -129,26 +131,26 @@ config.
 | `lateral` | side rectangle, 2rh | both caps, 2πr² | **5.48e-5 m²** |
 | `tumbling` | Cauchy mean A_ext/4 | — | **7.85e-5 m²** |
 
-Both *held* poses fold two drag coefficients into one effective area, because
+Both held poses fold two drag coefficients into one effective area, because
 TudatPy's constant-coefficient aero interface takes a single scalar:
 
 ```
 rho v²/2 · (Cd·A_ram + Cd_side·A_parallel) = rho v²/2 · Cd · [A_ram + (Cd_side/Cd)·A_parallel]
 ```
 
-`Cd_side = sigma_t · (v_mp/v_orbit) / sqrt(pi)` ≈ 0.068 for this body at 400 km — a
-surface edge-on to a hyperthermal flow sees molecules only through their thermal
-spread, so the coefficient collapses from ~2.2 broadside to ~0.07. Dropping that
-term from `lateral` while keeping it in `axial` would make the two poses an
-apples-to-oranges comparison (~10 % on this squat body).
+`Cd_side = sigma_t · (v_mp/v_orbit) / sqrt(pi)` ≈ 0.068 for this body at
+400 km. A surface edge-on to a hyperthermal flow sees molecules only through
+their thermal spread, so the coefficient collapses from ~2.2 broadside to
+~0.07. Dropping that term from `lateral` while keeping it in `axial` would
+make the two poses an apples-to-oranges comparison (~10 % on this squat body).
 
-**Worth knowing, because it surprises people:** at r = h the cap disc πr² is
-*larger* than the side rectangle 2rh, so for the squat anchor body **broadside is the
-LOW-drag pose**. A slender body (h > 1.571·r) reverses it.
+A point that surprises people: at r = h the cap disc πr² is larger than the
+side rectangle 2rh, so for the squat anchor body broadside is the low-drag
+pose. A slender body (h > 1.571·r) reverses it.
 
 ## What was left out of the port
 
-Deliberately dropped from the pre-refactor orbit step: the solar
-power ledger, the propulsion/calibration blocks, summary gates, plots, and the
-IGRF/B-field columns. Cube and box shapes are gone too — one cylinder, three
+Deliberately dropped from the pre-refactor orbit step: the solar power
+ledger, the propulsion/calibration blocks, summary gates, plots, and the
+IGRF/B-field columns. Cube and box shapes are gone too; one cylinder, three
 poses.

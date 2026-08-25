@@ -1,13 +1,13 @@
-# MODEL — the electron thruster concept feasibility model
+# MODEL: the electron thruster concept feasibility model
 
 Two models live in this directory:
 
-- **`feasibility_model.py`** — the concept-level power prediction used in the
-  paper. One equation, two measured constants, 4–7 % accuracy.
-- **`minimal_model.py`** — the detailed per-row model with self-consistent
-  floating potential, collection law, emission ceiling, and envelope flags.
+1. `feasibility_model.py`, the concept-level power prediction used in the
+   paper. One equation, two measured constants, 4–7 % accuracy.
+2. `minimal_model.py`, the detailed per-row model with self-consistent
+   floating potential, collection law, emission ceiling, and envelope flags.
 
-The §9 contract: these models **never feed an acceptance gate**. PIC stages
+The §9 contract: these models never feed an acceptance gate. PIC stages
 stay self-contained; fitted constants stay home; physics forms travel.
 
 ---
@@ -25,9 +25,9 @@ c_eff = c_F · √κ = 2.934
 This is the φ ≪ V limit of the full thrust law, using two PIC-measured
 constants:
 
-- **c_F = 3.2675** nN/(mA·√eV) — thrust slope (per-anchor 3.216–3.300;
+- c_F = 3.2675 nN/(mA·√eV), the thrust slope (per-anchor 3.216–3.300;
   ideal 3.372). Holds to ~1 % across the full 3× voltage range.
-- **κ = 0.8063** — energy fraction KE/(V−φ) (per-anchor 0.797–0.816).
+- κ = 0.8063, the energy fraction KE/(V−φ) (per-anchor 0.797–0.816).
 
 Validation against the three frontier anchors:
 
@@ -52,28 +52,28 @@ Minimum voltage to deliver thrust F: `V_min = √(F / 3.554·10⁻⁴)`.
 
 ### What this law says about the thruster
 
-At fixed thrust, **P ∝ √V**: lower voltage needs more current (slower,
+At fixed thrust, P ∝ √V: lower voltage needs more current (slower,
 more numerous electrons) and costs less power. The power-optimal operating
 point is the lowest voltage where the emission ceiling can supply the
 required current. The thrust-to-power ratio `F/P = c_eff / √V` improves
-monotonically as V decreases — 293 µN/W at 100 V, 207 µN/W at 200 V,
+monotonically as V decreases: 293 µN/W at 100 V, 207 µN/W at 200 V,
 169 µN/W at 300 V.
 
-### What this law does NOT say
+### What this law does not say
 
-- It is not a flight controller. The optimal voltage for a real spacecraft
-  depends on the floating potential, which depends on the plasma environment.
-  Controller optimization is future work (see `future_work/`).
-- `P = V·I` is the beam-supply power only. Real power consumption adds
-  gate/converter/control overheads.
-- The law assumes near-unity escape. Below ~100 V, escape collapses in the
-  measured can geometry (see U-curve validation in `feasibility_model.py`).
+1. It is not a flight controller. The optimal voltage for a real spacecraft
+   depends on the floating potential, which depends on the plasma environment.
+   Controller optimization is future work (see `future_work/`).
+2. `P = V·I` is the beam-supply power only. Real power consumption adds
+   gate/converter/control overheads.
+3. The law assumes near-unity escape. Below ~100 V, escape collapses in the
+   measured can geometry (see U-curve validation in `feasibility_model.py`).
 
 ---
 
 ## 2. The measured frontier
 
-Calibration inputs — the three committed, all-gates-PASS frontier runs
+Calibration inputs are the three committed, all-gates-PASS frontier runs
 (single dayside plasma row n₀ = 1.627·10¹² m⁻³, Te = 1318.8 K):
 
 | V | I (mA) | φ (V) | F (nN) | escape | KE (eV) | provenance |
@@ -92,32 +92,32 @@ ideal lower bound:
 | 300 | 189.0 | 126.8 | 1.49 |
 
 Where P_ideal = F²/(3.372²·I). The ~1.45× overhead is the float tax, the
-0.81 energy fraction, and sub-unity escape — all measured, none optimized.
+0.81 energy fraction, and sub-unity escape. All measured, none optimized.
 
 ---
 
 ## 3. The detailed model (`minimal_model.py`)
 
 The detailed model solves the full thrust law self-consistently with the
-collection law to predict the floating potential per orbit row:
+collection law to predict the floating potential per orbit row.
 
-**Thrust law** — plasma-independent gun physics:
+Thrust law (plasma-independent gun physics):
 
 ```
 F [nN] = c_F · I [mA] · √KE [eV]
 KE     = κ · (V − φ)
 ```
 
-**Collection law** — plasma-dependent return circuit:
+Collection law (plasma-dependent return circuit):
 
 ```
 I_esc = β·A · j_the(n, Te) · (1 + χ)^α        χ = eφ/kTe
 ```
 
-Fit over the three anchors: **α = 0.8931**, **βA = 2.51 cm²**, residuals
+Fit over the three anchors: α = 0.8931, βA = 2.51 cm², residuals
 within ±0.9 V on φ.
 
-**Operating point**: for each orbit row, the model finds the minimum
+Operating point: for each orbit row, the model finds the minimum
 feasible voltage (limited by emission ceiling), solves self-consistently
 for φ, and computes power. Rows outside the measured envelope (density,
 χ, φ limits) are flagged.
@@ -137,51 +137,57 @@ predicts beam-supply power at the minimum feasible voltage:
 | 550 km | 3.8 | 104 V | 13.4 | yes |
 | 600 km | 2.0 | 100 V | 6.8 | yes |
 
-**Demand is tens of mW at 500–600 km and ~100–200 mW at 400 km.** Where
-that power comes from is mission design, outside this model — like the
+Demand is tens of mW at 500–600 km and ~100–200 mW at 400 km. Where
+that power comes from is mission design, outside this model, like the
 cathode technology. For scale only: body-mounted solar cells on the anchor
 body would harvest roughly 10–30 mW depending on cell coverage (30 %
 efficiency, 25 % illumination duty).
 
-Note on 400 km: the 350 V pair (2026-08-17) put the axial-pose demand
+Note on 400 km. The 350 V pair (2026-08-17) put the axial-pose demand
 inside the measured envelope at both tested geometries. The squat can
 delivered 40.48 nN (~81 % duty) but floats on the 50 V limit (48.3 V
-gated, endpoint rising); the slender body delivered **43.33 nN at a
-14.0 V float** — the same demand at ~76 % duty with 3.6× charging margin
+gated, endpoint rising); the slender body delivered 43.33 nN at a
+14.0 V float, the same demand at ~76 % duty with 3.6× charging margin
 (§8b of `paper/SCALING_LAWS.md`, now confirmed at this drive). The lateral pose
 is inside the envelope but points the tested thrust axis across the flow;
 drag maxima and night-side rows stay open, so 400 km is a research
 target, not a closed case.
 
-## 5. Capability, duty cycle, closure — definitions
+## 5. Capability, duty cycle, closure: definitions
 
-- **Feasible**: the emission ceiling at V = 350 V can supply the demanded
-  thrust (I ≤ 1.46·I_CL(350 V) → F ≤ 43.5 nN; the measured 350 V slender
-  run delivered 43.33 nN — the ceiling is measured, not extrapolated).
-- **Duty cycle needed** = mean(drag)/F_cap: ≤ 100 % means the impulse
-  budget closes by duty-cycling.
-- **Power demand**: mean beam power V·I at the minimum feasible voltage.
-  Supplying it is mission design, not part of this model.
+1. Feasible: the emission ceiling at V = 350 V can supply the demanded
+   thrust (I ≤ 1.46·I_CL(350 V) → F ≤ 43.5 nN; the measured 350 V slender
+   run delivered 43.33 nN, so the ceiling is measured, not extrapolated).
+2. Duty cycle needed = mean(drag)/F_cap: ≤ 100 % means the impulse
+   budget closes by duty-cycling.
+3. Power demand: mean beam power V·I at the minimum feasible voltage.
+   Supplying it is mission design, not part of this model.
 
 ## 6. Caveats that travel with every number
 
-Ladder-wide (inherited from the PIC evidence): reduced ion mass (400 mₑ),
-electrostatic (no B, no ram drift; field-aligned Bz since probed under the
-exploratory policy — null at 1× LEO, ~11 % thrust tax at 10× via the float,
-`pic_sims/characterization/magnetized_1x/`+`magnetized_10x/` —
-transverse B still open, `future_work/M2_TRANSVERSE_B.md`), single
-grid/PPC/seed (convergence pass in progress),
-finite-time equilibrium on the ion clock. Model-specific:
-the simple law neglects φ (4–7 % floor); escape is assumed near-unity (valid
-at 100–350 V, breaks below ~100 V in the capstone can geometry); supply
-power is beam power V·I — emitter heating and converter losses are system
-engineering, not modeled.
+Ladder-wide (inherited from the PIC evidence):
 
-**Scale invariance.** Drag charges for the ram silhouette and any
-body-mounted power supply pays
-from the skin, so vehicle size cancels. The feasibility condition depends
-on the shape ratio A_skin/A_ram and the altitude, not on how big the craft
-is. See `model/scale_analysis.py` and `model/results/SCALE_ANALYSIS.md`.
+- reduced ion mass (400 mₑ)
+- electrostatic (no B, no ram drift; field-aligned Bz since probed under the
+  exploratory policy: null at 1× LEO, ~11 % thrust tax at 10× via the float,
+  `pic_sims/characterization/magnetized_1x/`+`magnetized_10x/`;
+  transverse B still open, `future_work/M2_TRANSVERSE_B.md`)
+- single grid/PPC/seed (convergence pass in progress)
+- finite-time equilibrium on the ion clock
+
+Model-specific:
+
+- the simple law neglects φ (4–7 % floor)
+- escape is assumed near-unity (valid at 100–350 V, breaks below ~100 V in
+  the capstone can geometry)
+- supply power is beam power V·I; emitter heating and converter losses are
+  system engineering, not modeled
+
+Scale invariance. Drag charges for the ram silhouette and any
+body-mounted power supply pays from the skin, so vehicle size cancels. The
+feasibility condition depends on the shape ratio A_skin/A_ram and the
+altitude, not on how big the craft is. See `model/scale_analysis.py` and
+`model/results/SCALE_ANALYSIS.md`.
 
 ## 7. Usage
 

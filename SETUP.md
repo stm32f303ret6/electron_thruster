@@ -1,11 +1,11 @@
-# SETUP — environments, WarpX build, and how to run everything
+# SETUP: environments, WarpX build, and how to run everything
 
 Everything below is transcribed from the machine that produced the committed
 evidence, not from documentation. Versions were read out of the live
 environments; build flags were read out of `build/CMakeCache.txt`. Where a
 number is a measurement (wall time, GPU memory) it says so.
 
-For what the ladder *proves*, see `pic_sims/ladder/README.md` and
+For what the ladder proves, see `pic_sims/ladder/README.md` and
 `LADDER_SUMMARY.md`. This file is only about making it run.
 
 ---
@@ -23,7 +23,7 @@ For what the ladder *proves*, see `pic_sims/ladder/README.md` and
 
 A different GPU needs one change: `AMReX_CUDA_ARCH` in §3. Nothing else in the
 repo is hardware-specific. The runs are single-rank (`mpi_ranks: 1` in every
-manifest) — MPI is compiled in but not used for the committed evidence.
+manifest). MPI is compiled in but not used for the committed evidence.
 
 ---
 
@@ -33,12 +33,12 @@ Two environments, one per tree. Recipes are committed in `env/`, generated with
 `conda env export --from-history` (explicit requests only, so they resolve on
 other machines).
 
-### `warpx-cpu-mpich-dev` — the PIC tree
+### `warpx-cpu-mpich-dev`: the PIC tree
 
-> **The name is a historical misnomer.** It is a **CUDA** build
-> (`WarpX_COMPUTE=CUDA`). Do not infer the backend from the environment name;
-> `build/CMakeCache.txt` is the authority. The name is kept because every
-> committed manifest and log references it.
+The name is a historical misnomer. It is a CUDA build
+(`WarpX_COMPUTE=CUDA`). Do not infer the backend from the environment name;
+`build/CMakeCache.txt` is the authority. The name is kept because every
+committed manifest and log references it.
 
 ```bash
 conda env create -n warpx-cpu-mpich-dev -f env/environment-warpx.yml
@@ -58,10 +58,10 @@ PyYAML         == 6.0.3         mpi4py         == 4.1.2
 pytest         == 9.0.3
 ```
 
-`pywarpx` is **not** installed from PyPI — it is the local build of §3
+`pywarpx` is not installed from PyPI. It is the local build of §3
 installed into this environment's `site-packages`.
 
-### `tudat-sk` — the orbit tree
+### `tudat-sk`: the orbit tree
 
 ```bash
 conda env create -n tudat-sk -f env/environment-tudat.yml
@@ -71,8 +71,8 @@ python -c "import iricore; iricore.update()"    # IRI solar-index data; needs in
 ```
 
 `tudatpy 1.0.0` (NRLMSISE-00 atmosphere, SPICE, J2 propagation) and
-`iricore 1.9.0` (IRI-2020 ionosphere). Note this environment pins
-**numpy 1.26.4**, incompatible with the PIC environment's numpy 2.x — which is
+`iricore 1.9.0` (IRI-2020 ionosphere). This environment pins
+numpy 1.26.4, incompatible with the PIC environment's numpy 2.x. That is
 why they are separate and why nothing is ever run cross-environment.
 
 The IRI index files and the failure mode when they are stale are documented in
@@ -85,7 +85,7 @@ not cover the mission span.
 
 ### Source
 
-WarpX lives in the **parent** directory of this repo — this repo is nested
+WarpX lives in the parent directory of this repo; this repo is nested
 inside a WarpX checkout:
 
 ```
@@ -104,14 +104,14 @@ Version actually used, recorded in every run manifest as `warpx_version: 26.5`:
 | pybind11 | v3.0.4 | — |
 | picmistandard | 0.34.0 | `368db4a7fe7f98f4915209702930e08c59769717` |
 
-AMReX/PICSAR/pyAMReX are fetched by CMake at configure time from the pins in
-the WarpX checkout's `dependencies.json` — they are not vendored here. The
+CMake fetches AMReX/PICSAR/pyAMReX at configure time from the pins in
+the WarpX checkout's `dependencies.json`; they are not vendored here. The
 runtime banner in every log prints `AMReX (26.05-63-gc2eb6db7ee79)`, which is
 the fetched AMReX commit above.
 
 ### Configure and build
 
-The build directory is inside the WarpX checkout root (repo convention — never
+The build directory is inside the WarpX checkout root (repo convention, never
 outside the working tree):
 
 ```bash
@@ -139,25 +139,25 @@ cmake --fresh -S . -B build \
 cmake --build build -j 8 --target pip_install
 ```
 
-That last target compiles **and** installs `pywarpx` into the active
+That last target compiles and installs `pywarpx` into the active
 environment. After a source edit, `--target pip_install_nodeps` is faster.
 
 ### Which flags matter, and why
 
 | flag | value | why the campaign needs it |
 |---|---|---|
-| `WarpX_DIMS` | `3;RZ` | every stage is **RZ** (cylindrical, `n_azimuthal_modes=1`). `3` is built only so the upstream test suite still runs; nothing in this repo uses it. Building `RZ` alone is enough and roughly halves compile time. |
+| `WarpX_DIMS` | `3;RZ` | every stage is RZ (cylindrical, `n_azimuthal_modes=1`). `3` is built only so the upstream test suite still runs; nothing in this repo uses it. Building `RZ` alone is enough and roughly halves compile time. |
 | `WarpX_COMPUTE` | `CUDA` | the capstone runs are 9–10 GPU-hours each; CPU is not viable for them. The four `current_collection` steps are CPU-cheap and run either way. |
-| `AMReX_CUDA_ARCH` | `8.6` | **change this for your GPU** (Ampere consumer = 8.6, A100 = 8.0, Ada = 8.9, Hopper = 9.0). |
-| `WarpX_EB` | `ON` | **mandatory.** The whole device is an embedded-boundary conductor with a two-node piecewise Dirichlet potential. Without EB nothing above `emitter.negative_cathode` builds a geometry. |
-| `WarpX_PYTHON` | `ON` | **mandatory.** Every stage is a PICMI Python deck driving `libwarpx` in-process; the charge pump reads and writes the EB potential *between steps*, which no input-file run can do. |
-| `WarpX_OPENPMD` | `ON` | **mandatory.** Analysis reads openPMD field dumps (`phi`, `rho`, `Er`, `Ez`) via `openpmd-viewer`; the sheath-containment and energy-ledger gates are computed from them. |
+| `AMReX_CUDA_ARCH` | `8.6` | change this for your GPU (Ampere consumer = 8.6, A100 = 8.0, Ada = 8.9, Hopper = 9.0). |
+| `WarpX_EB` | `ON` | mandatory. The whole device is an embedded-boundary conductor with a two-node piecewise Dirichlet potential. Without EB nothing above `emitter.negative_cathode` builds a geometry. |
+| `WarpX_PYTHON` | `ON` | mandatory. Every stage is a PICMI Python deck driving `libwarpx` in-process; the charge pump reads and writes the EB potential between steps, which no input-file run can do. |
+| `WarpX_OPENPMD` | `ON` | mandatory. Analysis reads openPMD field dumps (`phi`, `rho`, `Er`, `Ez`) via `openpmd-viewer`; the sheath-containment and energy-ledger gates are computed from them. |
 | `WarpX_PRECISION`, `WarpX_PARTICLE_PRECISION` | `DOUBLE` | the charge pump integrates a current balance over ~160 000 steps; the ledger-vs-dump gates hold to 1e-9 in double and would not in single. |
-| `WarpX_FFT` | `OFF` | no spectral solver is used — every stage is electrostatic multigrid (`ElectrostaticSolver(method="Multigrid")`). |
+| `WarpX_FFT` | `OFF` | no spectral solver is used; every stage is electrostatic multigrid (`ElectrostaticSolver(method="Multigrid")`). |
 | `WarpX_QED` | `ON` | upstream default; unused by this campaign. `OFF` is fine and builds faster. |
-| `WarpX_IPO`, `WarpX_PYTHON_IPO` | `OFF` | link-time optimisation off — upstream's documented developer setting for fast link times. |
+| `WarpX_IPO`, `WarpX_PYTHON_IPO` | `OFF` | link-time optimisation off, upstream's documented developer setting for fast link times. |
 | `WarpX_CCACHE` | `ON` | rebuild speed only. |
-| `WarpX_MPI` | `ON` | compiled in, **not exercised**: all committed evidence is single-rank. |
+| `WarpX_MPI` | `ON` | compiled in, not exercised: all committed evidence is single-rank. |
 
 ### Verify the build
 
@@ -192,7 +192,7 @@ cd pic_sims
 | one stage (dependencies must already have passed) | `python run_ladder.py --stages capstone.floating_body` |
 | re-analyze existing runs without re-simulating | `python run_ladder.py --analyze-only` |
 
-The orchestrator runs each stage in a **fresh subprocess** — `libwarpx` cannot
+The orchestrator runs each stage in a fresh subprocess. `libwarpx` cannot
 initialise twice in one process, so a stage is never imported.
 
 ### Stage order and cost
@@ -221,7 +221,7 @@ capstone/                     THE DEVICE (ladder terminus)
   magnetized_10x       characterization.magnetized_10x Bz 300 uT (10x)       ~6.4 h
 ```
 
-A full cold ladder is roughly **20 GPU-hours**, dominated by the three capstone
+A full cold ladder is roughly 20 GPU-hours, dominated by the three capstone
 frontier runs. The lower steps are what let you trust the top one; run them once
 and they stay valid until a config or the code changes.
 
@@ -236,14 +236,14 @@ python analyze.py --run outputs/<run-id>              # --run is REQUIRED
 python analyze.py --run outputs/<run-id> --policy acceptance_exploratory.yaml
 ```
 
-`analyze.py` writes `metrics.json` + `verdict.json` and exits **0** if all
-required gates pass, **1** if a gate fails, **2** on invalid evidence.
+`analyze.py` writes `metrics.json` + `verdict.json` and exits 0 if all
+required gates pass, 1 if a gate fails, 2 on invalid evidence.
 
-### Variant runs — how the frontier, convergence, and geometry runs were done
+### Variant runs: how the frontier, convergence, and geometry runs were done
 
-**Committed stage configs are never edited.** Every off-baseline run (the
+Committed stage configs are never edited. Every off-baseline run (the
 convergence pair, the slender-body geometry run, the pre-registered thin-plasma
-run) is a *copy* of the stage config with a few keys changed, passed with
+run) is a copy of the stage config with a few keys changed, passed with
 `--config`:
 
 ```bash
@@ -254,12 +254,12 @@ python simulation.py --config /tmp/my_variant.yaml
 
 The run freezes its own `config_used.yaml` and hashes it into `case_sha256`, so
 a variant is fully self-describing without touching git. Variants that answer a
-pre-registered question get a plan document committed *before* they run —
-now unified into each spoke README's plan sections, with the pre-run files
-(`SLENDER_BODY_PLAN.md`, `THIN_PLASMA_PLAN.md`, `MAGNETIZED_PLAN.md`)
-preserved in git history — and, when the
-default gates would gate the answer rather than the trustworthiness of the
-measurement, their own acceptance policy (`acceptance_exploratory.yaml`).
+pre-registered question get a plan document committed before they run.
+These plans are now unified into each spoke README's plan sections, with the
+pre-run files (`SLENDER_BODY_PLAN.md`, `THIN_PLASMA_PLAN.md`,
+`MAGNETIZED_PLAN.md`) preserved in git history. When the default gates would
+gate the answer rather than the trustworthiness of the measurement, the
+variant also gets its own acceptance policy (`acceptance_exploratory.yaml`).
 
 ### Long runs that must survive the terminal
 
@@ -302,12 +302,12 @@ for d in pic_sims/ladder/tests pic_sims/ladder/*/*/tests; do
 done
 ```
 
-**One pytest process per stage is required, not a stylistic choice.** Stage
+One pytest process per stage is required, not a stylistic choice. Stage
 self-containment (§Architecture in `pic_sims/ladder/README.md`) means
 every stage ships its own `helpers.py`, `tests/test_helpers.py` and
-`tests/test_analysis.py`, and each `tests/conftest.py` puts *its own* stage
+`tests/test_analysis.py`, and each `tests/conftest.py` puts its own stage
 directory on `sys.path`. Collecting them in one process collides on those
-module basenames — `pytest pic_sims/ladder` fails with
+module basenames: `pytest pic_sims/ladder` fails with
 `import file mismatch` / wrong-`helpers` errors, and `--import-mode=importlib`
 only fixes half of them. The loop above is the working invocation; it is also
 what `run_ladder.py` effectively does by running each stage in a subprocess.
@@ -322,7 +322,7 @@ Expected counts: shared contract 49, `two_node_laplace` 20,
 
 ---
 
-## 6. GPU memory — the one setting you will have to tune
+## 6. GPU memory: the one setting you will have to tune
 
 `compute.gpu_arena_bytes` in each stage config pre-allocates the AMReX device
 arena. It is a hard reservation: the process resides at roughly that size for
@@ -335,18 +335,18 @@ its whole life. Measured on the 12 GiB card:
 
 Rules learned the expensive way:
 
-- **Never run two simulations on one GPU.** Two arenas will not fit and the
-  second aborts with `amrex::Abort: Arena out of memory / cudaMalloc returned 2`
-  — which also kills nothing but wastes the slot. Chain runs instead, and arm
-  the chain on the *first* run's `manifest.json` containing the literal string
-  `"status": "COMPLETE"` — **not** on the file existing, which it does from run
-  start with `status: RUNNING`.
-- Grow the arena when you grow the domain. Cells scale as `rmax * Lz / dx²`, and
-  the axial extent is derived (`domain.aspect`, `zmargin_*`), so a radial change
-  can enlarge the domain in both directions at once — check `nr × nz` with
-  `helpers.load_config(...)` before launching, not after.
-- Desktop GPU use (a browser, a game) costs a few hundred MiB and is survivable
-  at the 6 GB arena, tight at 9 GB.
+1. Never run two simulations on one GPU. Two arenas will not fit and the
+   second aborts with `amrex::Abort: Arena out of memory / cudaMalloc returned 2`,
+   which kills nothing but wastes the slot. Chain runs instead, and arm
+   the chain on the first run's `manifest.json` containing the literal string
+   `"status": "COMPLETE"`, not on the file existing. The file exists from run
+   start with `status: RUNNING`.
+2. Grow the arena when you grow the domain. Cells scale as `rmax * Lz / dx²`, and
+   the axial extent is derived (`domain.aspect`, `zmargin_*`), so a radial change
+   can enlarge the domain in both directions at once. Check `nr × nz` with
+   `helpers.load_config(...)` before launching, not after.
+3. Desktop GPU use (a browser, a game) costs a few hundred MiB and is survivable
+   at the 6 GB arena, tight at 9 GB.
 
 ---
 
@@ -355,18 +355,18 @@ Rules learned the expensive way:
 These are contract, not style. They are why the numbers in the paper are
 citable.
 
-1. **A run is evidence only if its `manifest.json` says `status: COMPLETE`** and
+1. A run is evidence only if its `manifest.json` says `status: COMPLETE` and
    `observed_final_iteration == expected_final_iteration`.
-2. **An interrupted run is FAILED evidence and is never resumed.** Kill it,
+2. An interrupted run is FAILED evidence and is never resumed. Kill it,
    record why, rerun from the top. There is no checkpoint path on purpose.
-3. **Committed stage configs and acceptance policies are immutable.** Changing a
+3. Committed stage configs and acceptance policies are immutable. Changing a
    tolerance requires a new `policy_id`; every verdict records the policy's
    SHA-256 and the config's `case_sha256`.
-4. **Commit before launching a production run.** The manifest records
+4. Commit before launching a production run. The manifest records
    `git_commit` and `git_dirty`; a dirty tree makes the run unciteable.
-5. **Pre-register predictions before the run that tests them**, in a committed
+5. Pre-register predictions before the run that tests them, in a committed
    plan document. The slender-body plan (now the plan section of
    `slender_body/README.md`; pre-run file in git history) also carries an
-   *amendment* recording a killed, invalid run rather than quietly rewriting
+   amendment recording a killed, invalid run rather than quietly rewriting
    the original plan.
 6. `random_seed: 42` everywhere; it is recorded in every manifest.

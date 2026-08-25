@@ -1,4 +1,4 @@
-# current_collection — the collector branch
+# current_collection: the collector branch
 
 A conducting sphere (embedded boundary) in the chipsat capstone plasma, tested at increasing bias levels and then floating.
 
@@ -13,7 +13,7 @@ A conducting sphere (embedded boundary) in the chipsat capstone plasma, tested a
 | Sphere radius a | 0.75 mm |
 | a/λ_De | 0.382 (sub-Debye) |
 
-The plasma is maintained by one-sided Maxwellian flux injection from the three open faces, on top of a bulk fill at t = 0. Each stage is a self-contained folder with its own simulation, config, analysis, and tests.
+One-sided Maxwellian flux injection from the three open faces maintains the plasma, on top of a bulk fill at t = 0. Each stage is a self-contained folder with its own simulation, config, analysis, and tests.
 
 ## Steps
 
@@ -30,7 +30,7 @@ The plasma is maintained by one-sided Maxwellian flux injection from the three o
 
 ## Why this also validates the chipsat configuration
 
-Every numerical choice the chipsat uses is tested here against closed-form theory: plasma parameters, dx = 0.15 mm (13.1 cells/λ_De), ppc = 16, flux-reservoir injection, domain sizing. The sphere is at a/λ_De = 0.382, sub-Debye but finite: the collected fraction is expected below the OML ceiling (Laframboise 1966), and the committed run measured 85%.
+Every numerical choice the chipsat uses is tested here against closed-form theory: plasma parameters, dx = 0.15 mm (13.1 cells/λ_De), ppc = 16, flux-reservoir injection, domain sizing. The sphere is at a/λ_De = 0.382, sub-Debye but finite, so the collected fraction should fall below the OML ceiling (Laframboise 1966). The committed run measured 85%.
 
 ## Cross-stage checks (run by `cross_stage.py`)
 
@@ -40,7 +40,7 @@ Every numerical choice the chipsat uses is tested here against closed-form theor
 
 ## Ion-clock note
 
-Electron current settles on the electron clock (~0.06 µs). Ion current and sheath structure settle on the ion clock (~20x slower). At positive bias, ions should be suppressed, but ions already inside the domain at t = 0 never had to climb the barrier — the measured trickle decays slowly. Ion current is reported, never gated.
+Electron current settles on the electron clock (~0.06 µs). Ion current and sheath structure settle on the ion clock (~20x slower). At positive bias, ions should be suppressed, but ions already inside the domain at t = 0 never had to climb the barrier, so the measured trickle decays slowly. Ion current is reported, never gated.
 
 ## Cost
 
@@ -55,7 +55,7 @@ Run one at a time.
 
 ## Known issues
 
-- **RZ radial-face flux**: r_max injection face has a known WarpX over-emission quirk; the far-field density gate is the check
-- **EB faceting**: at 5 cells/radius the staircased EB area is ~1–2% below 4πa², pushing ratios slightly low
-- **t = 0 spike**: bulk particles born inside the sphere are scraped in the first steps; the last-40% steady window excludes this
-- **Not yet gated** (Phase 5): stationarity of the +10 V steady window (~4% drift), zero-bin accounting, connected-sheath-edge containment metric
+1. RZ radial-face flux: the r_max injection face has a known WarpX over-emission quirk. The far-field density gate is the check.
+2. EB faceting: at 5 cells/radius the staircased EB area is ~1–2% below 4πa², pushing ratios slightly low.
+3. t = 0 spike: bulk particles born inside the sphere are scraped in the first steps. The last-40% steady window excludes this.
+4. Not yet gated (Phase 5): stationarity of the +10 V steady window (~4% drift), zero-bin accounting, connected-sheath-edge containment metric.

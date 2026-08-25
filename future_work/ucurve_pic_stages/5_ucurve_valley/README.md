@@ -1,8 +1,10 @@
-# capstone.ucurve_valley — fixed-thrust at 125 V
+# capstone.ucurve_valley: fixed-thrust at 125 V
 
-the candidate valley of the specific-power U-curve. same system as `floating_body` driven at **125 V** with current commanded for the 200 V anchor's measured thrust (13.65 nN).
+The candidate valley of the specific-power U-curve. Same system as
+`floating_body` driven at 125 V with current commanded for the 200 V anchor's
+measured thrust (13.65 nN).
 
-## setup
+## Setup
 
 ![schematic](viz/schematic_5_ucurve_valley.png)
 
@@ -14,7 +16,7 @@ the candidate valley of the specific-power U-curve. same system as `floating_bod
 
 $I / I_{CL}(125\ \text{V}) = 4.0$ → 2.7× the validated emission ceiling.
 
-### hypotheses (pre-registered in `UCURVE_PLAN.md`)
+### Hypotheses (pre-registered in `UCURVE_PLAN.md`)
 
 | | H1 — calibrated laws | H2 — perveance tax |
 |---|---|---|
@@ -23,22 +25,25 @@ $I / I_{CL}(125\ \text{V}) = 4.0$ → 2.7× the validated emission ceiling.
 | delivered F | 13.65 nN | short |
 | P/F | 4.25 mW/nN | above H1 |
 
-## how the pic works
+## How the PIC works
 
-same engine as `floating_body` — deck, charge pump, reservoir, observer identical. only the drive point differs.
+Same engine as `floating_body`: deck, charge pump, reservoir, observer
+identical. Only the drive point differs.
 
-## what is gated
+## What is gated
 
-escape, float, thrust are **the measurement** (reported, not required). required gates are trust set only: current balance ≤ 5%, momentum sanity, containment ≤ 1 V, scrape consistency ≤ 2% (×2).
+Escape, float and thrust are the measurement (reported, not required).
+Required gates are the trust set only: current balance ≤ 5%, momentum
+sanity, containment ≤ 1 V, scrape consistency ≤ 2% (×2).
 
-## commands
+## Commands
 
 ```bash
 python simulation.py                    # ~5.5 h
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 ```
 
-## results (run `20260807T212500Z_3b73998e`, PASS, promoted)
+## Results (run `20260807T212500Z_3b73998e`, PASS, promoted)
 
 | | measured | H1 said | H2 said |
 |---|---|---|---|
@@ -47,9 +52,13 @@ python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 | delivered F | **13.09 nN** (−4.1%) | on demand | short ✓ |
 | P/F at delivered F | **4.43 mW/nN** | 4.25 | above ✓ |
 
-the measured valley of the curve: 4.79 (92.4 V) > **4.43 (here)** < 5.01 (200 V). the tax's onset is visible (escape below every frontier point) but the demand is still met. see `../UCURVE_PLAN.md` amendment for the campaign resolution.
+This is the measured valley of the curve: 4.79 (92.4 V) > 4.43 (here) <
+5.01 (200 V). The onset of the tax is visible (escape below every frontier
+point) but the demand is still met. See `../UCURVE_PLAN.md` amendment for the
+campaign resolution.
 
-## limitations
+## Limitations
 
-- reduced ion mass (400 mₑ), electrostatic only, single grid/PPC/seed, finite-time equilibrium
-- commanded current 2.7× outside validated envelope **by design**
+- reduced ion mass (400 mₑ), electrostatic only, single grid/PPC/seed,
+  finite-time equilibrium
+- commanded current 2.7× outside validated envelope by design
