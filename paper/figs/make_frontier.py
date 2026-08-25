@@ -54,7 +54,12 @@ def phi_law(alpha):
     return kTe * ((Iesc_g / C) ** (1 / alpha) - 1)
 
 
-fig, ax = plt.subplots(1, 3, figsize=(11.5, 3.4))
+PAPER = "--paper" in sys.argv
+if PAPER:
+    plt.rcParams.update({"font.size": 8, "axes.labelsize": 8, "xtick.labelsize": 7,
+                         "ytick.labelsize": 7, "legend.fontsize": 6.5,
+                         "font.family": "serif", "mathtext.fontset": "cm"})
+fig, ax = plt.subplots(1, 3, figsize=(7.0, 2.3) if PAPER else (11.5, 3.4))
 
 ax[0].plot(Vg, cal.cF * R_EMIT * i_cl_mA(Vg)
            * np.sqrt(cal.kappa * (Vg - phi_law(cal.alpha))), "-", c="0.6", lw=1,
@@ -62,7 +67,7 @@ ax[0].plot(Vg, cal.cF * R_EMIT * i_cl_mA(Vg)
 ax[0].plot(V_m, F_m, "o", c="tab:blue", ms=7, label="measured (gated PASS)")
 ax[0].set_xlabel("supply voltage V [V]")
 ax[0].set_ylabel(r"thrust $F_{\rm beam}$ [nN]")
-ax[0].legend(fontsize=8, loc="upper left")
+ax[0].legend(fontsize=8 if not PAPER else 6.5, loc="upper left")
 
 for alpha, style, lab in ((1.0, ":", r"$\alpha=1$ (linear, refuted)"),
                           (0.82, "-", r"$\alpha=0.82$ (pre-reg.\ winner)"),
@@ -73,7 +78,7 @@ ax[1].plot(V_m, phi_m, "o", c="tab:blue", ms=7, zorder=5, label="measured")
 ax[1].errorbar([300], [45], yerr=[[3], [3]], fmt="s", ms=4, c="tab:orange",
                capsize=3, zorder=4, label="300 V settled (extrap.)")
 ax[1].axhline(50, c="tab:red", lw=0.8, ls="-.")
-ax[1].text(102, 51.5, "benign-float design limit", fontsize=7, c="tab:red")
+ax[1].text(102, 51.5, "benign-float design limit", fontsize=6.5, c="tab:red")
 ax[1].set_ylim(0, 100)
 ax[1].set_xlabel("supply voltage V [V]")
 ax[1].set_ylabel(r"floating potential $\varphi$ [V]")
@@ -84,10 +89,16 @@ ax[2].plot(Vg, FP_m[1] * np.sqrt(V_m[1] / Vg), "-", c="0.6", lw=1,
 ax[2].plot(V_m, FP_m, "o", c="tab:blue", ms=7, label="measured")
 ax[2].set_xlabel("supply voltage V [V]")
 ax[2].set_ylabel(r"thrust per watt [$\mu$N/W]")
-ax[2].legend(fontsize=8)
+ax[2].legend(fontsize=8 if not PAPER else 6.5)
 
-for a in ax:
+for a, lab in zip(ax, "abc"):
     a.grid(alpha=0.25, lw=0.4)
+    if PAPER:
+        a.set_title(f"({lab})", loc="left", fontsize=8)
+        for l in a.get_lines():
+            if l.get_marker() == "o":
+                l.set_markersize(5)
 fig.tight_layout()
-fig.savefig(Path(__file__).parent / "frontier.pdf")
-print("wrote frontier.pdf")
+out = Path(__file__).parent / ("frontier_paper.pdf" if PAPER else "frontier.pdf")
+fig.savefig(out)
+print("wrote", out.name)
