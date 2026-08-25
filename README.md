@@ -323,6 +323,13 @@ Ordered by how much they could change the answer.
 | `lab_experiments/electron_gun/` | the bench experiment, with caveats |
 | `SETUP.md` | reproducing everything |
 
+## Citing and acknowledgements
+
+The PIC evidence was produced with [WarpX](https://blast-warpx.github.io) 26.05 (J.-L. Vay et al., *WarpX: An advanced Particle-In-Cell code*, [DOI:10.5281/zenodo.4571577](https://doi.org/10.5281/zenodo.4571577)), built on [AMReX](https://amrex-codes.github.io) (Zhang et al., JOSS 4(37), 1370, 2019).
+Orbit propagation used [TudatPy](https://docs.tudat.space).
+
+This research used the open-source particle-in-cell code WarpX. Primary WarpX contributors are with LBNL, LLNL, CEA-LIDYL, SLAC, DESY, CERN, Helion Energy, TAE Technologies, and Realta Fusion. We acknowledge all WarpX contributors.
+
 ## How to run
 
 | tree | conda env |
