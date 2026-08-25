@@ -43,7 +43,7 @@ $$I_{CL}(350\,\text{V}) = 0.543\ \text{mA}, \quad I / I_{CL} = 1.46 \;\Rightarro
 
 either outcome of (2) is a result: benign → the tested envelope covers the
 400 km mean demand; breached → 400 km costs a measured charging tax and the
-slender-geometry path (`SCALING_LAWS.md` §8b) becomes the 400 km route —
+slender-geometry path (`paper/SCALING_LAWS.md` §8b) becomes the 400 km route —
 already pre-registered as `../350V_400km_slender/`.
 
 ## what this stage does NOT claim

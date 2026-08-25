@@ -205,7 +205,7 @@ required gates PASS**.
 **This run carries the collection-law discrimination:** the pre-registered
 linear (α = 1 → 31 V) and square-root (α = 0.5 → 90 V) laws are refuted;
 α = 0.82 survives.  Late slope +26.8 mV/ns at run end, so the settled float
-extrapolates to ~42–48 V — see `SCALING_LAWS.md` §4 VERDICT.
+extrapolates to ~42–48 V — see `paper/SCALING_LAWS.md` §4 VERDICT.
 
 ### 11. `capstone.low_power` — the 100 V floor (PASS, promoted)
 

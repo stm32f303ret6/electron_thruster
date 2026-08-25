@@ -148,7 +148,7 @@ inside the measured envelope at both tested geometries. The squat can
 delivered 40.48 nN (~81 % duty) but floats on the 50 V limit (48.3 V
 gated, endpoint rising); the slender body delivered **43.33 nN at a
 14.0 V float** — the same demand at ~76 % duty with 3.6× charging margin
-(§8b of `SCALING_LAWS.md`, now confirmed at this drive). The lateral pose
+(§8b of `paper/SCALING_LAWS.md`, now confirmed at this drive). The lateral pose
 is inside the envelope but points the tested thrust axis across the flow;
 drag maxima and night-side rows stay open, so 400 km is a research
 target, not a closed case.

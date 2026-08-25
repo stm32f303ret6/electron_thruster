@@ -23,7 +23,7 @@ jump — it is the fourth corner of a **2×2 factorial**:
 three corners measured or pre-registered from single-axis laws; the fourth
 is fully predicted by composing them. a hit means the laws compose and the
 mission-relevant body (the mission vehicle is slender anyway —
-`SCALING_LAWS.md` §8c: feasibility is a shape property) covers the 400 km
+`paper/SCALING_LAWS.md` §8c: feasibility is a shape property) covers the 400 km
 mean demand benignly. a miss localizes: the single-axis legs tell you which
 law broke.
 
@@ -106,7 +106,7 @@ in the 11–17 V band, F 43.33 nN in the 42–43 nN band. the voltage frontier
 
 the mission answer: at the 400 km-enabling drive the squat can sits ON the
 50 V charging limit (48.3 V tail, endpoint rising past 50), while the
-slender body — the shape the mission vehicle is anyway (`SCALING_LAWS.md`
+slender body — the shape the mission vehicle is anyway (`paper/SCALING_LAWS.md`
 §8c) — covers the 400 km axial mean drag at ~76 % duty with **3.6× margin**
 on the limit, plus a 7 % thrust bonus from the returned float
 (KE = κ(V−φ): exhaust 272.7 eV vs the squat's 239.0 eV).

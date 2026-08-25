@@ -219,7 +219,7 @@ Where full station-keeping does not close, partial compensation still extends mi
 
 The feasibility condition is close to scale-free: drag grows with the ram area, collection grows with the skin area, and they cancel.
 Bigger bodies just need proportionally more current and power.
-`SCALING_LAWS.md` §8 estimates a 3U CubeSat at:
+`paper/SCALING_LAWS.md` §8 estimates a 3U CubeSat at:
 
 | altitude | power |
 |---|---|
@@ -315,7 +315,7 @@ Ordered by how much they could change the answer.
 
 | document | what it is |
 |---|---|
-| `SCALING_LAWS.md` | the physics laws, measured constants, scaling to larger vehicles |
+| `paper/SCALING_LAWS.md` | the physics laws, measured constants, scaling to larger vehicles |
 | `model/MODEL.md` | the executable model, control law, honest mission table |
 | `paper/NANONEWTON_THRUSTER_REVIEW.md` | the flight-proven sub-µN propulsion landscape, verified against primary sources |
 | `future_work/README.md` | scope decision, deferred optimization work, open items |

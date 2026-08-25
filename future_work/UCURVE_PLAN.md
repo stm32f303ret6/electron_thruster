@@ -14,7 +14,7 @@ measure the *cost surface inside the envelope*: what power a **fixed thrust
 demand** costs as the supply voltage drops.
 
 That fixed-thrust slice is where the flight rule lives. The §7b servo
-(`SCALING_LAWS.md`) commands `V_opt = ctrl_factor · φ` with
+(`paper/SCALING_LAWS.md`) commands `V_opt = ctrl_factor · φ` with
 `ctrl_factor = (2α+1)/α ≈ 3.12` — derived from the calibrated laws, i.e. from
 the **H1 branch below, which no committed run has tested off the frontier
 path**. If beam optics degrade as the commanded current climbs past the
@@ -115,7 +115,7 @@ Measured 0.154 s/step on the §1 machine (`SETUP.md`) at this domain size:
 ## What it opens
 
 - The flight rule's valley location and no-go boundary become measured
-  quantities; `SCALING_LAWS.md` §7 and the paper's throttle section cite
+  quantities; `paper/SCALING_LAWS.md` §7 and the paper's throttle section cite
   these stages instead of model extrapolation.
 - The α fit gains high-χ points off the frontier slice (χ 215–416 commanded).
 - The mission sweeps' low-V rows move from flagged extrapolation toward

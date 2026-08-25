@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-minimal_model.py -- the executable form of SCALING_LAWS.md (one file, per its §9)
+minimal_model.py -- the executable form of paper/SCALING_LAWS.md (one file, per its §9)
 
 WHAT THIS IS
   The measured three-point voltage frontier (capstone 100/200/300 V, all gates
@@ -23,7 +23,7 @@ WHAT THIS IS NOT (the §9 contract)
     flagged: mission claims split into "measured-envelope rows" and
     "extrapolated rows, needing a targeted PIC run".
 
-LAWS (SCALING_LAWS.md sections in brackets)
+LAWS (paper/SCALING_LAWS.md sections in brackets)
   thrust   [1] : F[nN] = c_F * I[mA] * sqrt(KE[eV]),  KE = kappa_KE*(V - phi)
   emission [3] : I_CL = K_CL * V^1.5 (planar scale), real ceiling = r_emit*I_CL
   float    [4] : I_esc = betaA * j_the(n,Te) * (1 + chi)^alpha,  chi = e*phi/kTe
