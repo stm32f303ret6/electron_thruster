@@ -128,7 +128,7 @@ $I$ and $\varphi$ are plain electrical measurements, so Eqs.~\eqref{eq:thrust}--
 \label{sec:sims}
 
 \subsection{Setup}
-All runs use WarpX \cite{warpx22} in RZ electrostatic mode with the parameters of Table~\ref{tab:setup}. The body is a closed can with a cathode disk inside and an aperture in the lid, modelled as an embedded conductor (Fig.~\ref{fig:dashboard}). Its potential is not prescribed. Each step the code counts the charge that left through the aperture and the charge that landed on the skin, and moves the body potential by the net charge over the body's self-capacitance, which is measured once from Gauss's law on a vacuum Laplace solve. The float is therefore an output, and ladder stage 7 checks the method on a bare body against the theoretical floating potential. Ions are repelled by the positive body, so the balance is between the escaping beam and collected electrons only; the reduced ion mass affects how fast the sheath settles, not where it settles. The ambient plasma is a dayside 400\,km row kept constant by a particle reservoir. Every run freezes its configuration and passes fixed acceptance gates on escape fraction, floating potential, current balance and momentum before it is used.
+All runs use WarpX \cite{warpx22} (built on AMReX \cite{amrex19}) in RZ electrostatic mode with the parameters of Table~\ref{tab:setup}. The body is a closed can with a cathode disk inside and an aperture in the lid, modelled as an embedded conductor (Fig.~\ref{fig:dashboard}). Its potential is not prescribed. Each step the code counts the charge that left through the aperture and the charge that landed on the skin, and moves the body potential by the net charge over the body's self-capacitance, which is measured once from Gauss's law on a vacuum Laplace solve. The float is therefore an output, and ladder stage 7 checks the method on a bare body against the theoretical floating potential. Ions are repelled by the positive body, so the balance is between the escaping beam and collected electrons only; the reduced ion mass affects how fast the sheath settles, not where it settles. The ambient plasma is a dayside 400\,km row kept constant by a particle reservoir. Every run freezes its configuration and passes fixed acceptance gates on escape fraction, floating potential, current balance and momentum before it is used.
 
 \begin{table}[t]\centering\small
 \caption{PIC configuration of the 200\,V anchor. Characterization runs change one entry at a time (Table~\ref{tab:char}).}
@@ -404,10 +404,13 @@ A cathode, a high-voltage supply and the spacecraft's own skin make a thruster t
 
 \paragraph{Data.} All simulation inputs, run manifests, gate policies, the orbit propagations and the model are committed in the project repository.
 
+\paragraph{Acknowledgements.} This research used the open-source \href{https://blast-warpx.github.io}{particle-in-cell code WarpX}. Primary WarpX contributors are with LBNL, LLNL, CEA-LIDYL, SLAC, DESY, CERN, Helion Energy, TAE Technologies, and Realta Fusion. We acknowledge all WarpX contributors. Orbit propagation used TudatPy \cite{tudat}.
+
 \begin{thebibliography}{99}\footnotesize\setlength{\itemsep}{0pt}
 \bibitem{anderson18} G.~Anderson et al., ``Experimental results from the ST7 mission on LISA Pathfinder,'' \emph{Phys. Rev. D} 98, 102005, 2018.
 \bibitem{bock18} D.~Bock and M.~Tajmar, ``Highly miniaturized FEEP propulsion system (NanoFEEP) for attitude and orbit control of CubeSats,'' \emph{Acta Astronautica} 144, 422--428, 2018.
-\bibitem{warpx22} J.-L.~Vay et al., ``Modeling of a chain of three plasma accelerator stages with the WarpX electromagnetic PIC code on GPUs,'' \emph{Phys. Plasmas} 28, 023105, 2021.
+\bibitem{warpx22} J.-L.~Vay et al., ``WarpX: An advanced Particle-In-Cell code,'' version 26.05, Zenodo, DOI:10.5281/zenodo.4571577, \url{https://blast-warpx.github.io}.
+\bibitem{amrex19} W.~Zhang et al., ``AMReX: a framework for block-structured adaptive mesh refinement,'' \emph{J. Open Source Software} 4(37), 1370, 2019.
 \bibitem{tudat} Tudat Space (TudatPy), TU Delft Astrodynamics Toolbox, \url{https://docs.tudat.space}.
 \bibitem{san93} J.~R.~Sanmart\'in, M.~Mart\'inez-S\'anchez, E.~Ahedo, ``Bare wire anodes for electrodynamic tethers,'' \emph{J. Propulsion and Power} 9(3), 353--360, 1993.
 \bibitem{kat95} I.~Katz et al., ``Plasma turbulence enhanced current collection: results from the PMG electrodynamic tether flight,'' \emph{J. Geophys. Res.} 100, 1995.
