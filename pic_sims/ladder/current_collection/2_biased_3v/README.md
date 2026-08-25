@@ -1,18 +1,18 @@
-# collector.biased_3v — sphere at +3 V
+# collector.biased_3v: sphere at +3 V
 
-same sphere and plasma as `thermal`, biased to +3 V. an attracting sheath forms; electron current checked against the OML ceiling.
+Same sphere and plasma as `thermal`, biased to +3 V. An attracting sheath forms. Electron current is checked against the OML ceiling.
 
 [![dashboard](viz/20260806T142605Z_1a87cbce_dashboard.gif)](viz/20260806T142605Z_1a87cbce_dashboard.mp4)
 
-*animated dashboard — click for the full video.*
+*Animated dashboard. Click for the full video.*
 
-## setup
+## Setup
 
 ![schematic](viz/schematic_2_biased_3v.png)
 
-- **sphere**: 0.75 mm radius (a/λ_De = 0.38), held at +3 V
-- **plasma**: same as `thermal`
-- **domain**: enlarged to 7.3 λ_De to hold the sheath
+- sphere: 0.75 mm radius (a/λ_De = 0.38), held at +3 V
+- plasma: same as `thermal`
+- domain: enlarged to 7.3 λ_De to hold the sheath
 
 ### OML theory
 
@@ -20,19 +20,19 @@ $$I_{OML} = I_{th}\,(1 + \chi), \qquad \chi = \frac{eV}{kT_e} = 26.4$$
 
 $$I_{OML} = 0.10393\ \mu\mathrm{A} \times 27.40 = 2.847\ \mu\mathrm{A}$$
 
-OML is a ceiling (mott-smith & langmuir 1926), attained as a/λ_De → 0. at finite radius the fraction falls below it (laframboise 1966). measured: 85% of ceiling. gate is [0.85, 1.05].
+OML is a ceiling (Mott-Smith and Langmuir 1926), attained as a/λ_De → 0. At finite radius the fraction falls below it (Laframboise 1966). Measured: 85% of ceiling. The gate is [0.85, 1.05].
 
-## how the pic works
+## How the PIC works
 
-same deck as `thermal` — only config differs (bias +3 V, larger domain, dt = 30 ps):
+Same deck as `thermal`. Only the config differs (bias +3 V, larger domain, dt = 30 ps):
 
-- bulk maxwellian fill at t = 0, flux injection from three open faces
-- electrostatic poisson every step; +3 V sphere against 0 V walls
-- EB collection + scrape buffer; last-40% steady window
+1. Bulk Maxwellian fill at t = 0, flux injection from three open faces.
+2. Electrostatic Poisson every step; +3 V sphere against 0 V walls.
+3. EB collection plus scrape buffer; last-40% steady window.
 
-## results
+## Results
 
-reference run `20260806T142605Z_1a87cbce`, all gates PASS:
+Reference run `20260806T142605Z_1a87cbce`, all gates PASS:
 
 | check | measured | target |
 |---|---|---|
@@ -41,15 +41,15 @@ reference run `20260806T142605Z_1a87cbce`, all gates PASS:
 | quasineutrality | 0.19% | ≤ 2% |
 | edge potential | 2.5 mV | ≤ 0.5 V |
 
-## dependencies
+## Dependencies
 
-requires `collector.thermal`.
+Requires `collector.thermal`.
 
-## cost
+## Cost
 
 ~1–2 h. 100k steps × 30 ps = 3.0 µs.
 
-## commands
+## Commands
 
 ```bash
 python simulation.py
@@ -57,13 +57,13 @@ python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 python animate.py --run outputs/<run-id>
 ```
 
-## validates for capstone
+## Validates for capstone
 
-OML electron collection at moderate bias — the capstone body floats positive and collects ambient electrons the same way.
+OML electron collection at moderate bias. The capstone body floats positive and collects ambient electrons the same way.
 
-## limitations
+## Limitations
 
-- OML is a ceiling, not an equality at this a/λ_De — the band is a sanity check
+- OML is a ceiling, not an equality at this a/λ_De; the band is a sanity check
 - ion current is start-up biased (reported, not gated)
-- EB faceting, RZ flux quirk, t = 0 spike same as `thermal`
+- EB faceting, RZ flux quirk, t = 0 spike: same as `thermal`
 - single grid/PPC/seed (phase 5)

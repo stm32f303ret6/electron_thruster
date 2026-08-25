@@ -1,44 +1,44 @@
-# collector.floating — sphere on the charge pump
+# collector.floating: sphere on the charge pump
 
-same sphere and plasma, but the EB potential **floats** using the capstone's charge-pump mechanism. with no beam, the pump drives the sphere to the **floating potential** — where electron and ion collection balance.
+Same sphere and plasma, but the EB potential floats using the capstone's charge-pump mechanism. With no beam, the pump drives the sphere to the floating potential, where electron and ion collection balance.
 
 [![dashboard](viz/20260806T162656Z_40e77ecd_dashboard.gif)](viz/20260806T162656Z_40e77ecd_dashboard.mp4)
 
-*animated dashboard — click for the full video.*
+*Animated dashboard. Click for the full video.*
 
-## setup
+## Setup
 
 ![schematic](viz/schematic_4_floating.png)
 
-the charge pump:
+The charge pump:
 
-1. EB starts at 1 V → init solve calibrates self-capacitance C (gauss' law on domain faces)
-2. every step, scraped weights → $dQ = e\,(w_i - w_e)$
-3. `set_potential_on_eb` rewrites $\phi = \phi_{init} + Q/C$
+1. The EB starts at 1 V. The init solve calibrates the self-capacitance C (Gauss' law on the domain faces).
+2. Every step, scraped weights give $dQ = e\,(w_i - w_e)$.
+3. `set_potential_on_eb` rewrites $\phi = \phi_{init} + Q/C$.
 
-### analytic references
+### Analytic references
 
-let $R = I_{th,e}/I_{th,i} = 23.74$.
+Let $R = I_{th,e}/I_{th,i} = 23.74$.
 
 | ion model | balance equation | φ_f |
 |---|---|---|
-| thermal-ion | $\exp(e\phi/kT_e)\cdot R = 1$ | **−0.360 V** |
-| OML-ion | $\exp(e\phi/kT_e)\cdot R = 1 - e\phi/kT_i$ | **−0.213 V** |
+| thermal-ion | $\exp(e\phi/kT_e)\cdot R = 1$ | −0.360 V |
+| OML-ion | $\exp(e\phi/kT_e)\cdot R = 1 - e\phi/kT_i$ | −0.213 V |
 
-truth lies between the two. φ_f is independent of C (C only sets the timescale).
+The truth lies between the two. φ_f is independent of C; C only sets the timescale.
 
-## how the pic works
+## How the PIC works
 
-same deck as `thermal` (bulk fill + flux injection), plus the charge pump:
+Same deck as `thermal` (bulk fill plus flux injection), with the charge pump added:
 
-- **field solve**: electrostatic poisson every step, EB sphere + grounded walls
-- **C calibration**: init solve at uniform 1 V → gauss-law surface integral → C
-- **charge pump**: per step, $dQ = e\,(w_i - w_e)$ from EB scrape buffers → $\phi = \phi_{init} + Q/C$ via `set_potential_on_eb`
-- **measurement**: CSV ledger records φ, Q, I_e, I_i every 500 steps; gates check last-40% steady window
+1. Field solve: electrostatic Poisson every step, EB sphere plus grounded walls.
+2. C calibration: init solve at uniform 1 V, then a Gauss-law surface integral gives C.
+3. Charge pump: per step, $dQ = e\,(w_i - w_e)$ from the EB scrape buffers, then $\phi = \phi_{init} + Q/C$ via `set_potential_on_eb`.
+4. Measurement: a CSV ledger records φ, Q, I_e, I_i every 500 steps. Gates check the last-40% steady window.
 
-## results
+## Results
 
-reference run `20260806T162656Z_40e77ecd`, all gates PASS:
+Reference run `20260806T162656Z_40e77ecd`, all gates PASS:
 
 | check | measured | target |
 |---|---|---|
@@ -50,27 +50,27 @@ reference run `20260806T162656Z_40e77ecd`, all gates PASS:
 | quasineutrality | 0.13% | ≤ 2% |
 | edge potential | 5.8 mV | ≤ 0.2 V |
 
-## dependencies
+## Dependencies
 
-requires `collector.thermal` (hash-verified config match). the capstone requires this stage.
+Requires `collector.thermal` (hash-verified config match). The capstone requires this stage.
 
-## cost
+## Cost
 
-~35 min. 100k steps × 60 ps = 6.0 µs. pump RC clock: $\tau \approx 1.7\ \mu$s near equilibrium.
+~35 min. 100k steps × 60 ps = 6.0 µs. Pump RC clock: $\tau \approx 1.7\ \mu$s near equilibrium.
 
-## commands
+## Commands
 
 ```bash
 python simulation.py
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 ```
 
-## validates for capstone
+## Validates for capstone
 
-the charge-pump mechanism (C calibration, per-step dQ, `set_potential_on_eb`) — the capstone uses the same code verbatim.
+The charge-pump mechanism (C calibration, per-step dQ, `set_potential_on_eb`). The capstone uses the same code verbatim.
 
-## limitations
+## Limitations
 
-- φ_f gate is a two-model bracket, not a single-model identity
+- the φ_f gate is a two-model bracket, not a single-model identity
 - reduced ion mass (400 mₑ), not real O⁺
 - single grid/PPC/seed (phase 5)

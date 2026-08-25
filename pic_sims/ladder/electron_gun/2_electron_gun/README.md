@@ -1,21 +1,25 @@
-# emitter.holed_anode — electron gun with aperture
+# emitter.holed_anode: electron gun with aperture
 
-same diode as `negative_cathode`, plus a grounded plate with a hole (embedded boundary). three scenarios show: (A) small hole transmits a low-current beam, (B) space charge at 40× current blows the beam into the plate, (C) a wider hole restores transmission — proving the aperture, not the physics, was the limiter.
+Same diode as `negative_cathode`, plus a grounded plate with a hole (embedded boundary). Three scenarios:
+
+1. (A) a small hole transmits a low-current beam
+2. (B) space charge at 40× current blows the beam into the plate
+3. (C) a wider hole restores transmission, so the aperture, not the physics, was the limiter
 
 [![dashboard](viz/20260806_20260806_20260806_dashboard.gif)](viz/20260806_20260806_20260806_dashboard.mp4)
 
-*animated dashboard — click for the full video.*
+*Animated dashboard. Click for the full video.*
 
-## setup
+## Setup
 
 | scenario A | scenario B | scenario C |
 |---|---|---|
 | ![A](viz/schematic_A_low_current_small_hole.png) | ![B](viz/schematic_B_high_current_small_hole.png) | ![C](viz/schematic_C_high_current_big_hole.png) |
 
-- **cathode** (z_min): −100 V, prescribed beam
-- **anode plate** (z ∈ [−0.1, +0.1] mm, r > hole radius): grounded EB
-- **collector** (z_max): grounded
-- three scenarios run as separate warpx processes
+1. Cathode (z_min): −100 V, prescribed beam.
+2. Anode plate (z ∈ [−0.1, +0.1] mm, r > hole radius): grounded EB.
+3. Collector (z_max): grounded.
+4. The three scenarios run as separate WarpX processes.
 
 | scenario | current | hole radius | what happens |
 |---|---|---|---|
@@ -23,17 +27,17 @@ same diode as `negative_cathode`, plus a grounded plate with a hole (embedded bo
 | B — high current, small hole | 400 µA | 0.7 mm | space charge blows beam, significant plate loss |
 | C — high current, big hole | 400 µA | 1.4 mm | wider hole restores transmission |
 
-## how the pic works
+## How the PIC works
 
-- **emission**: prescribed flux-maxwellian from 0.5 mm disc, ~0.25 eV/axis, 128 macroparticles/cell/step
-- **anode plate**: implicit-function EB ($z_a < z < z_a + t_a$, $r > r_h$), held at 0 V — electrode and absorber
-- **field solve**: electrostatic poisson (multigrid) every step, self-consistent space charge with dirichlet plates and EB
-- **push**: shape-1 gather/deposit, dt = 1.5 ps
-- **scraping**: per-surface counts (cathode, collector, wall, anode plate) dumped every 80 steps
+1. Emission: prescribed flux-Maxwellian from a 0.5 mm disc, ~0.25 eV/axis, 128 macroparticles/cell/step.
+2. Anode plate: implicit-function EB ($z_a < z < z_a + t_a$, $r > r_h$), held at 0 V. It is both electrode and absorber.
+3. Field solve: electrostatic Poisson (multigrid) every step, self-consistent space charge with Dirichlet plates and EB.
+4. Push: shape-1 gather/deposit, dt = 1.5 ps.
+5. Scraping: per-surface counts (cathode, collector, wall, anode plate) dumped every 80 steps.
 
-## results
+## Results
 
-reference run `joint_5e72702e`, all gates PASS:
+Reference run `joint_5e72702e`, all gates PASS:
 
 | check | A | B | C | target |
 |---|---|---|---|---|
@@ -44,15 +48,15 @@ reference run `joint_5e72702e`, all gates PASS:
 
 B→A collector drop: 7.3 pp (target ≥ 3 pp). B→C anode reduction: 10.0 pp.
 
-## dependencies
+## Dependencies
 
-requires `emitter.negative_cathode`.
+Requires `emitter.negative_cathode`.
 
-## cost
+## Cost
 
-A ~3 min, B and C heavier (40× more particles). total ~10 min.
+A ~3 min. B and C are heavier (40× more particles). Total ~10 min.
 
-## commands
+## Commands
 
 ```bash
 python simulation.py --scenario A_low_current_small_hole
@@ -63,12 +67,12 @@ python analyze.py --runs outputs/<A-run> outputs/<B-run> outputs/<C-run> \
     --policy acceptance.yaml
 ```
 
-## validates for capstone
+## What it validates for the capstone
 
-embedded-boundary aperture and beam transmission through a hole — the capstone's can lid has the same geometry.
+Embedded-boundary aperture and beam transmission through a hole. The capstone's can lid has the same geometry.
 
-## limitations
+## Limitations
 
 - single grid/PPC/seed (phase 5)
-- anode plate is staircased EB at 0.05 mm; sub-cell aperture-edge effects not resolved
-- A's plate clip is thermal tail (~2–3%), not a cold-beam prediction — gate calibrated from first run
+- anode plate is a staircased EB at 0.05 mm; sub-cell aperture-edge effects not resolved
+- A's plate clip is the thermal tail (~2–3%), not a cold-beam prediction; the gate was calibrated from the first run

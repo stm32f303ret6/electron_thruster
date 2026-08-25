@@ -1,21 +1,21 @@
-# ladder — verification ladder to the chipsat thruster
+# ladder: verification ladder to the chipsat thruster
 
 [![Chipsat thruster dashboard](capstone/2_chipsat_thruster/viz/20260806T011847Z_5670e54c_dashboard.gif)](capstone/2_chipsat_thruster/viz/20260806T011847Z_5670e54c_dashboard.mp4)
 
-*The top step in motion — the chipsat electron thruster capstone ([`capstone/2_chipsat_thruster`](capstone/2_chipsat_thruster/README.md)); click for the full video.*
+*The top step in motion: the chipsat electron thruster capstone ([`capstone/2_chipsat_thruster`](capstone/2_chipsat_thruster/README.md)). Click for the full video.*
 
 See `LADDER_SUMMARY.md` for every step's test, measured numbers, and theory comparison on one page.
 
 ## What this is
 
-A series of PIC simulations in order of increasing physics, each gated against closed-form theory. The ladder validates:
+A series of PIC simulations in order of increasing physics, each gated against closed-form theory. The ladder validates two things:
 
-- **The code**: WarpX RZ electrostatics, embedded boundaries, flux emission, scraping
-- **The configuration**: grid resolution, plasma parameters, ppc, emitted current, aperture geometry — so that by the top step every numerical choice has already passed a gate somewhere cheaper
+1. The code: WarpX RZ electrostatics, embedded boundaries, flux emission, scraping.
+2. The configuration: grid resolution, plasma parameters, ppc, emitted current, aperture geometry. By the top step every numerical choice has already passed a gate at a cheaper step.
 
 ## Steps
 
-**Emitter side** (prescribed-current beams) → **Collector side** (ambient plasma) → **Capstone** (the thruster):
+Order: emitter side (prescribed-current beams), then collector side (ambient plasma), then the capstone (the thruster).
 
 | Step | Stage ID | What it tests | Cost |
 |---|---|---|---|
@@ -28,22 +28,22 @@ A series of PIC simulations in order of increasing physics, each gated against c
 | [`capstone/1_two_node_laplace`](capstone/1_two_node_laplace/README.md) | `capstone.two_node_laplace` | two-node EB in vacuum | seconds |
 | [`capstone/2_chipsat_thruster`](capstone/2_chipsat_thruster/README.md) | `capstone.floating_body` | float200 regression — **the anchor, ladder terminus** | ~6 h |
 
-The ladder ends at the anchor. Everything varied *off* the anchor — the 300 V /
-100 V voltage points, the slender geometry, thin plasma, magnetized runs —
+The ladder ends at the anchor. Everything varied off the anchor (the 300 V /
+100 V voltage points, the slender geometry, thin plasma, magnetized runs)
 lives in [`../characterization/`](../characterization/README.md)
 as hub-and-spoke stages that each depend only on `capstone.floating_body`.
 
 ### Gap closures
 
-- `collector.floating` and `capstone.two_node_laplace` close validation gaps G1/G2 (the charge pump and two-node EB had no analytic anchors beneath the capstone)
-- `capstone.high_thrust` (300 V, 30.13 nN) and `capstone.low_power` (100 V, 3.42 nN) — now filed under `../characterization/` — complete the three-point P-F frontier across the full hardware voltage range, bracketing the validated 200 V anchor
+1. `collector.floating` and `capstone.two_node_laplace` close validation gaps G1/G2 (the charge pump and two-node EB had no analytic anchors beneath the capstone).
+2. `capstone.high_thrust` (300 V, 30.13 nN) and `capstone.low_power` (100 V, 3.42 nN), now filed under `../characterization/`, complete the three-point P-F frontier across the full hardware voltage range, bracketing the validated 200 V anchor.
 
 ## Architecture
 
-See `../ARCHITECTURE.md` for details. Two key decisions:
+See `../ARCHITECTURE.md` for details. Two decisions:
 
-1. **Each stage is a self-contained folder** with its own simulation, config, helpers, analysis, animation, and tests. Physics duplication is deliberate — a reviewer reads one folder and sees the whole model.
-2. **Shared plumbing** (run IDs, manifests, immutable directories, gate evaluation) lives in `../ladder_contract.py`, one level up, serving the ladder and the characterization spokes alike. No physics, no pywarpx, no plotting.
+1. Each stage is a self-contained folder with its own simulation, config, helpers, analysis, animation, and tests. Physics duplication is deliberate: a reviewer reads one folder and sees the whole model.
+2. Shared plumbing (run IDs, manifests, immutable directories, gate evaluation) lives in `../ladder_contract.py`, one level up, used by the ladder and the characterization spokes alike. No physics, no pywarpx, no plotting.
 
 ### Stage folder layout
 
@@ -75,11 +75,11 @@ suite_results/       # generated suite verdicts (git-ignored)
 
 ## Run / analysis lifecycle
 
-- Every `simulation.py` run creates a fresh immutable `outputs/<run-id>/`, marked COMPLETE only after verification. Reruns never mix with old output.
-- Every `analyze.py` run creates a fresh immutable `results/<run-id>/<analysis-id>/`. Analysis reads the frozen `config_used.yaml`, never the live `config.yaml`.
-- Gates are fail-closed: missing, non-finite, duplicate, or skipped required gates are ERROR (exit 2), never silent PASS. Empty policy = ERROR.
-- Exit codes: `0` all pass, `1` gate failed, `2` analysis error.
-- JSON is strict (`allow_nan=False`).
+1. Every `simulation.py` run creates a fresh immutable `outputs/<run-id>/`, marked COMPLETE only after verification. Reruns never mix with old output.
+2. Every `analyze.py` run creates a fresh immutable `results/<run-id>/<analysis-id>/`. Analysis reads the frozen `config_used.yaml`, never the live `config.yaml`.
+3. Gates are fail-closed: missing, non-finite, duplicate, or skipped required gates are ERROR (exit 2), never silent PASS. Empty policy = ERROR.
+4. Exit codes: `0` all pass, `1` gate failed, `2` analysis error.
+5. JSON is strict (`allow_nan=False`).
 
 ## Commands
 
@@ -105,6 +105,6 @@ Run one WarpX case at a time. Deleting any `outputs/<run-id>/` or `results/` sub
 
 ## Status
 
-**Milestone A (Phases 0–4): done.** All 10 stages run and PASS. All carry verified `reference_results/`; numbers are in `LADDER_SUMMARY.md`.
+Milestone A (Phases 0–4): done. All 10 stages run and PASS. All carry verified `reference_results/`; numbers are in `LADDER_SUMMARY.md`.
 
-**Milestone B (Phase 5): not done.** Stationarity gates, consistent ensembles, corrected Child-Langmuir narratives, convergence sweeps. See `../ARCHITECTURE.md` (open items).
+Milestone B (Phase 5): not done. Stationarity gates, consistent ensembles, corrected Child-Langmuir narratives, convergence sweeps. See `../ARCHITECTURE.md` (open items).

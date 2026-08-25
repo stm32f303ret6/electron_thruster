@@ -1,12 +1,13 @@
-# capstone.high_thrust — 300 V (the tested ceiling until 2026-08-17; since extended by `../350V_400km/`)
+# capstone.high_thrust: 300 V (the tested ceiling until 2026-08-17; since extended by `../350V_400km/`)
 
-same system as `floating_body` driven at **300 V** / 0.63 mA. asks: how much thrust at full drive, and does the body still float safely?
+Same system as `floating_body`, driven at 300 V / 0.63 mA. The questions:
+how much thrust at full drive, and does the body still float safely?
 
 [![dashboard](viz/20260804T154756Z_b854dcbe_dashboard.gif)](viz/20260804T154756Z_b854dcbe_dashboard.mp4)
 
-*animated dashboard — click for the full video.*
+*Animated dashboard. Click for the full video.*
 
-## setup
+## Setup
 
 ![schematic](viz/schematic_3_high_thrust.png)
 
@@ -19,15 +20,19 @@ same system as `floating_body` driven at **300 V** / 0.63 mA. asks: how much thr
 
 $$I / I_{CL} = 1.46 \;\Rightarrow\; i_\text{beam} = 0.63\ \text{mA}$$
 
-the larger current needs ~2× ambient collection → float settles higher (~+30 V). choke watchdog (φ > 100 V sustained) fails the run if the ionosphere can't supply it.
+The larger current needs ~2× ambient collection, so the float settles higher
+(~+30 V). The choke watchdog (φ > 100 V sustained) fails the run if the
+ionosphere cannot supply it.
 
-## how the pic works
+## How the PIC works
 
-same engine as `floating_body` — deck, charge pump, reservoir, observer identical. only the drive point differs.
+Same engine as `floating_body`: deck, charge pump, reservoir, observer
+identical. Only the drive point differs.
 
-## results
+## Results
 
-reference run `20260804T154756Z_b854dcbe`, all gates PASS. no regression anchor — gates are theory-anchored invariants only.
+Reference run `20260804T154756Z_b854dcbe`, all gates PASS. No regression
+anchor; gates are theory-anchored invariants only.
 
 | check | measured | target |
 |---|---|---|
@@ -38,15 +43,15 @@ reference run `20260804T154756Z_b854dcbe`, all gates PASS. no regression anchor 
 | current balance | 3.5% | ≤ 5% |
 | edge |φ| | 108 mV | ≤ 1 V |
 
-mission-coverage (f_beam ≥ 28.4 nN for 500 km): PASS.
+Mission coverage (f_beam ≥ 28.4 nN for 500 km): PASS.
 
-## commands
+## Commands
 
 ```bash
 python simulation.py                    # ~8 h
 python analyze.py --run outputs/<run-id> --policy acceptance.yaml
 ```
 
-## limitations
+## Limitations
 
 - reduced ion mass (400 mₑ), electrostatic only, single grid/PPC/seed, finite-time equilibrium
