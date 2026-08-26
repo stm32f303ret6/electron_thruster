@@ -142,7 +142,7 @@ Similarly, the slender body already shows $\varphi$ dropping from 17 V to 4.4 V 
 
 Outside the measured envelope (other gun loadings, geometries, plasmas), new runs are needed; `model/MODEL.md` is the only sanctioned extrapolation and labels its outputs estimates.
 
-The cathode is excluded: beam current is prescribed, no flight cathode is selected (open risk 2).
+The cathode is excluded: beam current is prescribed.
 Flight thruster efficiencies include their full beam-production cost; this $\eta$ does not.
 
 ## Does it cancel drag?
@@ -305,11 +305,9 @@ Ordered by how much they could change the answer.
    The beam gyroradius (~1.4 m) is ~50× larger than the simulation domain (30 mm), so the committed runs cannot see where the exhaust momentum ends up once the beam gyrates.
    This could move the thrust in either direction.
    See `future_work/M2_TRANSVERSE_B.md`.
-2. No flight cathode chosen. The bench emitter is a thermionic filament, and its heater alone uses ~10× more power than the entire thruster.
-   Only a cold cathode (field emission) closes the power budget; its cost, lifetime, and atomic-oxygen tolerance are unaddressed.
-3. Only one plasma density measured. Every committed run uses the same dayside row; the density axis of the collection law is theory-only.
-4. CubeSat collection is a regime change. Committed runs sit at r/λ_D ≈ 2.5 (orbit-motion-limited); a CubeSat is tens of Debye lengths across, where OML does not apply.
-5. No attitude control in this repository, yet the mission cases assume a held pose.
+2. Only one plasma density measured. Every committed run uses the same dayside row; the density axis of the collection law is theory-only.
+3. CubeSat collection is a regime change. Committed runs sit at r/λ_D ≈ 2.5 (orbit-motion-limited); a CubeSat is tens of Debye lengths across, where OML does not apply.
+4. No attitude control in this repository, yet the mission cases assume a held pose.
 
 ## Repository map
 
