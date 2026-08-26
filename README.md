@@ -343,7 +343,7 @@ If you use this work, please cite:
   title     = {Electron thruster for LEO drag compensation},
   year      = {2026},
   doi       = {10.5281/zenodo.22115924},
-  url       = {https://github.com/stm32f303ret6/electron_thruster_ahora_si_eh},
+  url       = {https://https://github.com/stm32f303ret6/electron_thruster},
 }
 ```
 
