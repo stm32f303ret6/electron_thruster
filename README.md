@@ -9,6 +9,8 @@ Small spacecraft can then carry a cheap, simple propulsion system that cancels d
 
 ![200 V baseline simulation](paper/imgs/dashboard_200v.gif)
 
+[Full paper](paper/main.tex)
+
 ## Motivation
 
 Ion thrusters dominate electric propulsion, but they carry a tank, a feed system, a neutralizer, and a pressure vessel.
@@ -320,6 +322,14 @@ Ordered by how much they could change the answer.
 | `pic_sims/ladder/LADDER_SUMMARY.md` | stage-by-stage verdicts |
 | `lab_experiments/electron_gun/` | the bench experiment, with caveats |
 | `SETUP.md` | reproducing everything |
+
+## Author
+
+Ricardo Sebastian Casimiro — [ORCID 0009-0008-5188-1326](https://orcid.org/0009-0008-5188-1326)
+
+## License
+
+[MIT](LICENSE)
 
 ## Citing and acknowledgements
 
