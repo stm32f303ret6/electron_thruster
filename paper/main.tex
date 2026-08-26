@@ -6,8 +6,9 @@
 % (README.md, paper/SCALING_LAWS.md, model/MODEL.md). Every number is a committed
 % measurement unless labelled an estimate.
 % =============================================================================
-\documentclass[10pt,twocolumn]{article}
-\usepackage[margin=0.65in,columnsep=0.2in]{geometry}
+\documentclass[11pt,twocolumn]{article}
+\usepackage[a4paper,margin=1.5cm,columnsep=0.2in]{geometry}
+\usepackage{times}
 \usepackage{amsmath,amssymb,graphicx,booktabs,xcolor,url}
 \usepackage[hidelinks]{hyperref}
 \usepackage{caption}
@@ -20,35 +21,35 @@
 \newcommand{\fesc}{f_{\mathrm{esc}}}
 \newcommand{\Fb}{F_{\mathrm{beam}}}
 \newcommand{\Fn}{F_{\mathrm{net}}}
-\newcommand{\mytitle}{An electron thruster for LEO drag compensation using the ionosphere as the return circuit}
+\newcommand{\mytitle}{Propellantless electron thruster for LEO station keeping}
 
 \title{\Large\bfseries \mytitle}
 \author{Ricardo Sebasti\'an Casimiro\\
-\normalsize contact: rsc9421@gmail.com}
+\normalsize contact: stm32f303ret6@gmail.com}
 \date{}
 
 \begin{document}
-\maketitle
 
+\twocolumn[
+\begin{center}
+\maketitle
 \begin{abstract}
 \noindent
-Small spacecraft below 600\,km lose their orbit to atmospheric drag within months to a few years, and most of them carry no propulsion at all. This paper describes a thruster with no tank, no feed system and no neutralizer. A cathode held a few hundred volts below the spacecraft body emits electrons through a single aperture. The escaping beam produces thrust and leaves the body positively charged, so the body collects electrons from the ionospheric plasma until collection equals emission. The circuit closes through the ionosphere with zero net mass flow. Particle-in-cell simulations (WarpX) of a 10\,mm conducting body in a dayside ionospheric plasma measure the complete operating envelope over 100--350\,V: 3.4 to 43\,nN of thrust from 12 to 278\,mW of beam power, with 96--99\,\% of the beam escaping, a floating potential of 4--48\,V, and an energy efficiency of 0.67--0.77. Two measured constants describe every run to about 1\,\%. Against a year of real 2024 drag from orbit propagation, the device cancels mean and maximum drag at 500--600\,km for 7--31\,mW; at 400\,km it covers the mean demand with a slender body. Because both drag and electron collection scale with area, the feasibility condition is independent of vehicle size, and a 3U CubeSat needs 0.9--3.4\,W for the same altitudes. A bench experiment confirms the electrode topology on hardware. Open items are the transverse geomagnetic field, the choice of a cold cathode, and the CubeSat sheath regime.
+Small spacecraft below 600\,km lose their orbit to atmospheric drag within months to a few years, and most of them carry no propulsion at all. This paper describes a thruster with no tank, no feed system and no neutralizer. A cathode held a few hundred volts below the spacecraft body emits electrons through a single aperture. The escaping beam produces thrust and leaves the body positively charged, so the body collects electrons from the ionospheric plasma until collection equals emission. The circuit closes through the ionosphere with zero net mass flow. Particle-in-cell simulations (WarpX) of a 10\,mm conducting body in a dayside ionospheric plasma measure the complete operating envelope over 100--350\,V: 3.4 to 43\,nN of thrust from 12 to 278\,mW of beam power, with 96--99\,\% of the beam escaping, a floating potential of 4--48\,V, and an energy efficiency of 0.67--0.77. Two measured constants describe every run to within 3\,\%. Against a year of real 2024 drag from orbit propagation, the device cancels mean and maximum drag at 500--600\,km for 7--31\,mW; at 400\,km it covers the mean demand with a slender body. Because both drag and electron collection scale with area, the feasibility condition is independent of vehicle size, and a 3U CubeSat needs 0.9--3.4\,W for the same altitudes. A bench experiment confirms the electrode topology on hardware. Open items are the transverse geomagnetic field, the choice of flight emitter, and the CubeSat sheath regime.
 \end{abstract}
+\end{center}
+\vspace{1cm}
+]
 
 \section{Introduction}
 
-CubeSats and smaller spacecraft have made LEO cheap to reach, but at 400--600\,km their orbits decay in months to a few years and most of them fly without propulsion. The thrust needed to hold altitude on a spacecraft this small is nanonewtons to a few micronewtons, continuously, from tens of milliwatts to a few watts.
+Small spacecraft below 600\,km lose their orbits to atmospheric drag within months to a few years. A 3U CubeSat at 400\,km falls below 100\,km in roughly 139 days. Most carry no propulsion at all.
 
-Flight-proven micropropulsion reaches that thrust scale. Colloid thrusters on LISA Pathfinder resolved 0.1\,\textmu N \cite{anderson18}; NanoFEEP flew on a 1U CubeSat at 0.2--0.3\,W \cite{bock18}. Every one of these spends a stored propellant through a tank, valves, feed lines or precision emitter heads. That hardware costs mass and money, imposes a total-impulse limit, and is rarely justified on a CubeSat.
+The thrust to hold altitude is nanonewtons to a few micronewtons, well within the range of flight-proven micropropulsion. Colloid thrusters on LISA Pathfinder resolved 0.1\,\textmu N \cite{anderson18}; NanoFEEP flew on a 1U CubeSat at 0.2--0.3\,W \cite{bock18}. Every one of these systems spends a stored propellant through tanks, valves, feed lines or precision emitter heads. The propellant imposes a total-impulse limit, and the hardware adds mass and cost that are rarely justified on a CubeSat.
 
-This paper takes the opposite trade. Every ion and Hall thruster already carries an electron gun as its neutralizer. The idea is to run that gun alone, with no ion stage: electrons leave the spacecraft through an aperture and the ionosphere returns the same current to the spacecraft skin. Electrons are light, so the thrust per watt is about 200 times lower than a gridded ion thruster. At nanonewtons that penalty costs milliwatts, which a small spacecraft can afford. What it buys is a thruster made of two electrodes and a high-voltage supply.
+This paper describes a thruster with none of that hardware. A cathode held below the spacecraft potential emits electrons through an aperture. The escaping beam produces thrust and leaves the body positively charged, so the body collects ambient electrons from the ionospheric plasma until collection balances emission. The circuit closes through the ionosphere with no propellant and no net mass flow. An electron beam carries about 200 times less momentum per watt than an ion beam, but LEO drag on a small spacecraft is nanonewtons, and at that scale the beam costs tens of milliwatts. The whole device is a cathode, an aperture and a high-voltage supply. It carries no propellant, no tank and no feed system, and at 400--600\,km it produces enough thrust for station keeping or extending mission life.
 
-The contributions are:
-\begin{enumerate}\setlength{\itemsep}{0pt}
-  \item a two-constant operating law for the device, measured by PIC simulation over 100--350\,V and two body shapes (Sec.~\ref{sec:sims});
-  \item a measured collection law for the ambient return current, which fixes the floating potential and the fraction of supply voltage it costs (Sec.~\ref{sec:theory}, \ref{sec:sims});
-  \item a mission assessment against a year of real drag at 400--600\,km, and the scaling argument that carries it to CubeSats (Sec.~\ref{sec:mission}).
-\end{enumerate}
+The following sections describe the operating principle, test each claim through a ladder of particle-in-cell simulations that build from a vacuum electron gun to the full device in ionospheric plasma, and assess the result against a year of real 2024 drag at 400--600\,km.
 
 \section{Concept}
 \label{sec:concept}
@@ -66,16 +67,20 @@ The device has three parts (Fig.~\ref{fig:concept}):
   \item a high-voltage supply between the two, which moves collected electrons back to the cathode.
 \end{enumerate}
 
-Operation is a single equilibrium, not a cycle:
+Once switched on, the device reaches a steady state:
 \begin{enumerate}\setlength{\itemsep}{0pt}
   \item the spacecraft floats in the ionospheric plasma;
   \item the supply is switched on and the cathode emits;
   \item each escaping electron leaves the body one charge more positive;
-  \item the positive body attracts thermal electrons from the plasma;
+  \item the positive body attracts electrons from the plasma;
   \item collection grows until it equals emission. The body settles at a potential $\varphi$ where the two currents balance.
 \end{enumerate}
 
-Two questions decide whether this works. Why does the positive body not recapture its own beam? Because the beam electrons carry 100--300\,eV while $\varphi$ is a few volts to a few tens of volts; ambient electrons at 0.1\,eV are captured, beam electrons are not. Does the returning current cancel the thrust? Collected electrons arrive with about $e\varphi$ of energy from all directions, against $e\,\mathrm{KE}$ for the beam in one direction. The upper bound on cancellation is $\sqrt{\varphi/\mathrm{KE}}$, about 40\,\% for straight-astern arrival, and the measured value with isotropic arrival is about 1\,\% (Sec.~\ref{sec:ledger}).
+Two questions decide whether this works.
+
+Why does the positive body not recapture its own beam? Because the beam electrons carry 100--300\,eV while $\varphi$ is a few volts to a few tens of volts; ambient electrons at 0.1\,eV are captured, beam electrons are not.
+
+Does the returning current cancel the thrust? The collected electrons gain 4--48\,eV from the floating potential, against 77--272\,eV for the beam, and they arrive from all directions rather than straight astern. The simulations measure the net cancellation at 1--2\,\% of the beam thrust at 200--350\,V, rising to 9\,\% at 100\,V where the slower beam carries less momentum relative to the collected electrons (Sec.~\ref{sec:envelope}).
 
 \section{Theory}
 \label{sec:theory}
@@ -103,7 +108,10 @@ Beam power is $P = VI$. Jet power over supply power is
 \eta = \kappa\,\frac{V-\varphi}{V}\,\fesc ,
 \label{eq:eta}
 \end{equation}
-with $\fesc$ the fraction of the beam that clears the body. Eliminating $I$ between Eq.~\eqref{eq:thrust} and $P=VI$ at fixed thrust gives $P \propto F\sqrt{V}$: doubling the voltage costs about 40\,\% more power for the same thrust. Low voltage is cheap, but the current a gun can source is limited by space charge. The planar Child--Langmuir scale for the simulated spot ($r = 0.5$\,mm, gap 4.7\,mm) is $I_{\mathrm{CL}} \propto V^{3/2}/d^2$, equal to 0.08, 0.24 and 0.43\,mA at 100, 200 and 300\,V; the real gun emits 1.46 times that. Maximum thrust therefore scales as $I_{\mathrm{CL}}\sqrt{V} \propto V^2$, and at 100\,V the spot sources about 0.12\,mA whatever the plasma does. The best operating point is the lowest voltage whose emission ceiling still meets the thrust demand. A shorter gap or a wider spot moves the ceiling without changing the voltage. Thrust per watt is $F/P \approx 3.37\sqrt{\kappa}/\sqrt{V}$ in \textmu N/W with $V$ in volts, about 0.2\,\textmu N/W at 200\,V.
+with $\fesc$ the fraction of the beam that clears the body. Eliminating $I$ between Eq.~\eqref{eq:thrust} and $P=VI$ at fixed thrust gives $P \propto F\sqrt{V}$: doubling the voltage costs about 40\,\% more power for the same thrust. Thrust per watt is $F/P \approx 3.37\sqrt{\kappa}/\sqrt{V}$ in \textmu N/W with $V$ in volts, about 0.2\,\textmu N/W at 200\,V.
+
+\subsection{Emission ceiling}
+Low voltage is cheap, but the current a gun can source is limited by space charge. The planar Child--Langmuir scale for the simulated spot ($r = 0.5$\,mm, gap 4.7\,mm) is $I_{\mathrm{CL}} \propto V^{3/2}/d^2$, equal to 0.08, 0.24 and 0.43\,mA at 100, 200 and 300\,V; the real gun emits 1.46 times that. Maximum thrust therefore scales as $I_{\mathrm{CL}}\sqrt{V} \propto V^2$, and at 100\,V the spot sources about 0.12\,mA whatever the plasma does. The best operating point is the lowest voltage whose emission ceiling still meets the thrust demand. A shorter gap or a wider spot moves the ceiling without changing the voltage.
 
 \subsection{Current collection}
 The body collects the one-sided thermal electron flux \cite{san93}
@@ -118,20 +126,26 @@ I = \beta\,I_{\mathrm{th}}\,(1+\chi)^{\alpha},
 \end{equation}
 where $\alpha = 1$ for a sphere and $0.5$ for a long cylinder in orbital-motion-limited theory, and $\beta$ is a geometry factor. Setting $I$ equal to the escaping current and inverting gives the float. Its stiffness goes as $1/(n_e\sqrt{T_e})$, so thin night-side plasma makes the body float higher for the same current.
 
+\begin{figure}[t]\centering
+\includegraphics[width=0.85\linewidth]{imgs/sheath_regimes.png}
+\caption{Thin sheath ($r_p \gg \lambda_D$): electrons reach the body on nearly straight paths and collection scales with surface area. Thick sheath ($r_p \lesssim \lambda_D$): the potential extends far beyond the body and bends electron orbits inward, giving the $(1+\chi)^\alpha$ enhancement of Eq.~\eqref{eq:oml}. The 10\,mm body sits in the thick-sheath regime; a CubeSat would sit in the thin-sheath regime.}
+\label{fig:sheath}
+\end{figure}
+
 \subsection{Scale}
 Drag is proportional to the ram area; collection and body-mounted power are proportional to the skin area. Thrust demand, beam current and power all scale with ram area, so power per unit ram area depends only on altitude and voltage. Vehicle size drops out and what remains is the shape ratio $A_{\mathrm{skin}}/A_{\mathrm{ram}}$. A 10\,mm can and a 3U CubeSat with the same shape ratio have the same feasibility margin.
 
 \subsection{Control}
 $I$ and $\varphi$ are plain electrical measurements, so Eqs.~\eqref{eq:thrust}--\eqref{eq:ke} let the spacecraft compute its own thrust in flight. Density, temperature and day/night all collapse into where the body floats, so a two-line servo on the measured float is the whole control law. A microcontroller is sufficient.
 
-\section{Simulations}
+\section{PIC simulations}
 \label{sec:sims}
 
 \subsection{Setup}
 All runs use WarpX \cite{warpx22} (built on AMReX \cite{amrex19}) in RZ electrostatic mode with the parameters of Table~\ref{tab:setup}. The body is a closed can with a cathode disk inside and an aperture in the lid, modelled as an embedded conductor (Fig.~\ref{fig:dashboard}). Its potential is not prescribed. Each step the code counts the charge that left through the aperture and the charge that landed on the skin, and moves the body potential by the net charge over the body's self-capacitance, which is measured once from Gauss's law on a vacuum Laplace solve. The float is therefore an output, and ladder stage 7 checks the method on a bare body against the theoretical floating potential. Ions are repelled by the positive body, so the balance is between the escaping beam and collected electrons only; the reduced ion mass affects how fast the sheath settles, not where it settles. The ambient plasma is a dayside 400\,km row kept constant by a particle reservoir. Every run freezes its configuration and passes fixed acceptance gates on escape fraction, floating potential, current balance and momentum before it is used.
 
 \begin{table}[t]\centering\small
-\caption{PIC configuration of the 200\,V anchor. Characterization runs change one entry at a time (Table~\ref{tab:char}).}
+\caption{PIC configuration of the full thruster at 200\,V. Characterization runs change one entry at a time (Table~\ref{tab:char}).}
 \label{tab:setup}
 \begin{tabular}{@{}llr@{}}
 \toprule
@@ -167,37 +181,87 @@ All runs use WarpX \cite{warpx22} (built on AMReX \cite{amrex19}) in RZ electros
 \end{tabular}
 \end{table}
 
-\begin{figure*}[t]\centering
-\includegraphics[width=0.72\textwidth]{imgs/dashboard_200v.png}
-\caption{The 200\,V anchor run. (a) Beam electron density at the end of the run; the grey outline is the can. (b) Fraction of emitted beam that has escaped the domain or returned to the body. (c) Beam thrust. (d) Beam power. The gun switches on at 150\,ns; thrust, power and escape are all steady well before 800\,ns.}
-\label{fig:dashboard}\end{figure*}
-
 \subsection{Validation ladder}
-Nine stages build from a vacuum electron gun to the full device, each checked against theory or a known result (Table~\ref{tab:ladder}). Stages 1--3 test the gun alone in vacuum: energy conservation across the gap, transmission through a holed anode as space charge and hole size change, and independence from voltage. Stages 4--7 test collection alone on a conducting body in the plasma: thermal flux, enhancement at two bias potentials, and the free float. Stages 8--9 join the two. All nine pass. The transmissions in stages 2--3 are for lightly loaded vacuum guns; the device gun runs at 1.46 times its space-charge scale, which is where the lower $\kappa = 0.81$ of Sec.~\ref{sec:envelope} comes from.
+A PIC simulation of the full device has too many parameters to validate at once. The ladder isolates each piece of physics and checks it against theory before combining them, so the full thruster result inherits confidence from every stage below it. Nine stages build from a vacuum electron gun to the full device (Table~\ref{tab:ladder}). All nine pass.
+
+Stages 1--3 test the gun alone in vacuum. Stage 1 confirms that a negative cathode emits and accelerates electrons through a near-neutral aperture, the basic electrode topology, with a 35\,\textmu V energy error on 100\,V; the same topology is confirmed on hardware in Sec.~\ref{sec:bench}. Stage 2 measures aperture transmission at three hole sizes ($\kappa = 0.97$, 0.90 and 1.00, matching the predicted values). Stage 3 confirms transmission is independent of voltage (0.006\,pp spread over 200--300\,V). The transmissions in stages 2--3 are for lightly loaded vacuum guns; the device gun runs at 1.46 times its space-charge scale, which is where the lower $\kappa = 0.81$ of Sec.~\ref{sec:envelope} comes from.
+
+Stages 4--7 test collection on a conducting body in the plasma. Stage 4 reproduces the thermal electron flux of Eq.~\eqref{eq:ith} to within 1\,\%. Stages 5--6 bias the body to $+3$ and $+10$\,V and measure 0.85 and 0.81 of the Laframboise OML ceiling, with the sheath growing from 4.1 to 6.9\,mm as the potential rises. Stage 7 lets the body float freely and measures $-0.251$\,V, inside the bracket between two theoretical models. Stage 8 places two prescribed potentials on one embedded conductor and recovers the exact Laplace solution with zero violation, which validates the multi-potential method used in stage 9. Stage 9 is the full thruster, described next.
 
 \begin{table}[t]\centering\small
 \caption{Validation ladder.}
 \label{tab:ladder}
-\begin{tabular}{@{}clp{3.3cm}@{}}
+\begin{tabular}{@{}clp{3.5cm}@{}}
 \toprule
-\# & stage & result \\
+\# & stage & validates \\
 \midrule
-1 & negative cathode, vacuum & 35\,\textmu V error on 100\,V \\
-2 & holed anode & $\kappa$ = 0.97, 0.90, 1.00 as predicted \\
-3 & voltage bracket & transmission independent of $V$ \\
-4 & thermal collection & within 1\,\% of Eq.~\eqref{eq:ith} \\
-5 & biased body, $+3$\,V & 0.85 of OML ceiling \\
-6 & biased body, $+10$\,V & 0.81 of ceiling, sheath 4.1$\to$6.9\,mm \\
-7 & floating body & $-0.251$\,V, inside theory bracket \\
-8 & two-node Laplace & exact, 0.0\,V violation \\
-9 & full device, 200\,V & $\varphi$ = 17.0\,V, $\fesc$ = 98.4\,\%, $F$ = 13.65\,nN \\
+1 & negative cathode & emits through neutral aperture \\
+2 & holed anode & aperture controls transmission \\
+3 & voltage bracket & transmission is $V$-independent \\
+4 & thermal collection & PIC current vs Eq.~\eqref{eq:ith} \\
+5 & biased, $+3$\,V & OML collection at bias \\
+6 & biased, $+10$\,V & larger sheath, more current \\
+7 & floating body & unbiased float vs theory \\
+8 & two-node Laplace & two potentials, one body \\
+9 & full thruster, 200\,V & gun + plasma combined \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Voltage envelope}
+\subsection{Full thruster}
+\label{sec:full}
+Stage 9 puts the gun inside the floating can and switches it on in the 400\,km plasma (Fig.~\ref{fig:dashboard}). The body charges positive as beam leaves, collection rises with the float, and the two currents balance within a few $RC$ times. Table~\ref{tab:anchor} lists the steady state at 200\,V. The body floats at 17\,V, 98.4\,\% of the beam escapes, and the thrust is 13.65\,nN at 68.4\,mW of beam power. This run is the anchor: everything in the next section perturbs it one axis at a time.
+
+\begin{table}[t]\centering\small
+\caption{Steady-state values of the full thruster at 200\,V. This run is the anchor for all characterization.}
+\label{tab:anchor}
+\begin{tabular}{@{}lr@{}}
+\toprule
+quantity & value \\
+\midrule
+floating potential $\varphi$ & 17.0\,V \\
+beam escape $\fesc$ & 98.4\,\% \\
+thrust $F$ & 13.65\,nN \\
+beam power $P$ & 68.4\,mW \\
+exhaust energy KE & 147.5\,eV \\
+energy efficiency $\eta$ & 0.73 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure*}[t]\centering
+\includegraphics[width=0.72\textwidth]{imgs/dashboard_200v.png}
+\caption{The full thruster at 200\,V, the reference run for everything that follows. (a) Beam electron density at the end of the run; the grey outline is the can. (b) Fraction of emitted beam that has escaped the domain or returned to the body. (c) Beam thrust. (d) Beam power. The gun switches on at 150\,ns; thrust, power and escape are all steady well before 800\,ns.}
+\label{fig:dashboard}\end{figure*}
+
+
+\subsection{Characterization}
+\label{sec:char}
+Eight runs vary the full thruster one axis at a time: voltage first, then shape, plasma density and magnetic field, and one run that combines two axes (Table~\ref{tab:char}). All pass their gates. Predictions were written down before each run.
+
+\begin{table}[t]\centering\footnotesize
+\caption{Characterization runs. Each changes one axis of the full thruster except the last, which combines two.}
+\label{tab:char}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+axis & $\varphi$\,[V] & $F$\,[nN] & $\fesc$\,[\%] & KE\,[eV] \\
+\midrule
+full thruster (200\,V)     & 17.0 & 13.65 & 98.4 & 147.5 \\
+100\,V                     & 5.4  & 3.42  & 96.1 & 77.2 \\
+300\,V                     & 36.3 & 30.13 & 99.0 & 210.1 \\
+350\,V                     & 48.3 & 40.48 & 99.1 & 239.0 \\
+slender body ($L/r = 6$)   & 4.4  & 14.22 & 98.4 & 159.7 \\
+density $n_e/3$            & 42.5 & 12.39 & 99.1 & 122.0 \\
+$B_z$ = 30\,\textmu T      & 17.2 & 13.64 & 98.4 & 147.3 \\
+$B_z$ = 300\,\textmu T     & 49.6 & 12.06 & 98.3 & 115.9 \\
+350\,V + slender           & 14.0 & 43.33 & 99.1 & 272.7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Voltage envelope}
 \label{sec:envelope}
-Stage 9 is the anchor. Three further runs at 100, 300 and 350\,V hold the same gun loading ($I/I_{\mathrm{CL}} = 1.46$) and the same plasma (Table~\ref{tab:frontier}, Fig.~\ref{fig:frontier}). Thrust predictions were recorded before each run and landed within 1\,\%.
+Three runs at 100, 300 and 350\,V hold the same fraction of the Child--Langmuir current and the same plasma (Table~\ref{tab:frontier}, Fig.~\ref{fig:frontier}). Pre-registered thrust predictions landed within 1\,\%.
 
 \begin{table}[t]\centering\small
 \caption{Measured operating envelope of the 10\,mm body. Grid-resolution uncertainty: $F \pm 4$\,\%, KE $\pm 7$\,\%, $\varphi \pm 2$\,\%.}
@@ -217,7 +281,7 @@ V & mA & V & nN & mW & \% & \\
 
 \begin{figure*}[t]\centering
 \includegraphics[width=0.95\textwidth]{figs/frontier_paper.pdf}
-\caption{Left: thrust along the envelope. Centre: floating potential against the three candidate collection exponents, anchored at 200\,V; the 300\,V point selects $\alpha \approx 0.82$--0.89. Right: thrust per watt against the $1/\sqrt{V}$ law.}
+\caption{The four envelope runs (dots) against the model (lines). Left: measured thrust and the two-constant law $F = 3.27\,I\sqrt{\mathrm{KE}}$, $\mathrm{KE} = 0.81(V-\varphi)$. Centre: measured floating potential and the float predicted by Eq.~\eqref{eq:oml} for three collection exponents, each forced through the 200\,V point; they diverge above 200\,V, and the 300\,V measurement selects $\alpha \approx 0.82$--0.89 and refutes the sphere ($\alpha=1$) and cylinder ($\alpha=0.5$) limits. The square is the 300\,V float extrapolated to sheath settlement. Right: measured thrust per watt and the $1/\sqrt{V}$ law that follows from $F \propto I\sqrt{V}$, $P = IV$, anchored at 200\,V; the 350\,V point falls below it because the float tax has grown.}
 \label{fig:frontier}
 \end{figure*}
 
@@ -230,44 +294,15 @@ The thrust slope is 97\,\% of Eq.~\eqref{eq:thrust}; the deficit is plume diverg
 
 The 300\,V run also selects the collection exponent. Three values of $\alpha$ in Eq.~\eqref{eq:oml} agree at 200\,V and predict 31, 36 and 90\,V for the 300\,V float; the measurement is 36.3\,V. A fit across the envelope gives $\alpha = 0.82$--0.89, between the sphere and cylinder limits. The 350\,V float was predicted from that fit at 47\,V and measured at 48.3\,V. One caveat applies to both high-voltage points: the sheath settles on the ion timescale, and their floats were still rising slowly at run end. The quoted values are tail averages; extrapolating the decaying slope puts the settled 300\,V float at 42--48\,V and the settled 350\,V float just past the 50\,V design limit. The compact body at 350\,V sits on that limit, which is why the slender body matters at 400\,km.
 
-\subsection{Characterization}
-Eight further runs each change one axis of the 200\,V anchor (Table~\ref{tab:char}). All pass their gates.
+\subsubsection{Shape, density and field}
 
-\begin{table}[t]\centering\footnotesize
-\caption{Characterization runs. Each changes one axis of the 200\,V anchor except the last, which combines two.}
-\label{tab:char}
-\begin{tabular}{@{}lrrrr@{}}
-\toprule
-axis & $\varphi$\,[V] & $F$\,[nN] & $\fesc$\,[\%] & KE\,[eV] \\
-\midrule
-anchor (200\,V)            & 17.0 & 13.65 & 98.4 & 147.5 \\
-100\,V                     & 5.4  & 3.42  & 96.1 & 77.2 \\
-300\,V                     & 36.3 & 30.13 & 99.0 & 210.1 \\
-350\,V                     & 48.3 & 40.48 & 99.1 & 239.0 \\
-slender body ($L/r = 6$)   & 4.4  & 14.22 & 98.4 & 159.7 \\
-density $n_e/3$            & 42.5 & 12.39 & 99.1 & 122.0 \\
-$B_z$ = 30\,\textmu T      & 17.2 & 13.64 & 98.4 & 147.3 \\
-$B_z$ = 300\,\textmu T     & 49.6 & 12.06 & 98.3 & 115.9 \\
-350\,V + slender           & 14.0 & 43.33 & 99.1 & 272.7 \\
-\bottomrule
-\end{tabular}
-\end{table}
+\paragraph{Shape.} Does elongation hurt current collection? Stretching the can to $L/r = 6$ triples the skin at the same ram area. Two hypotheses were recorded before the run: area-only scaling predicted 4--5\,V, and the long-cylinder limit predicted tens of volts. The float dropped to 4.4\,V and the thrust rose 4\,\%, confirming area-only scaling. The collection exponent held across a $3.2\times$ area change. A 3U CubeSat flying end-on has the same shape ratio, so the measured exponent applies directly (Sec.~\ref{sec:scale}).
 
-\paragraph{Shape.} Stretching the can to $L/r = 6$ triples the skin at the same ram area. The float drops from 17.0 to 4.4\,V and the thrust rises 4\,\%, because a lower float returns voltage to the beam. Before the run, two hypotheses were recorded: area-only scaling predicted 4--5\,V, and the long-cylinder limit predicted tens of volts. The measurement confirms the first.
+\paragraph{Density.} Does thin night-side plasma break the device? At one third density the run was extended to 2.4\,\textmu s (three times the RC time) and the float settled at 42.5\,V. Every fixed-exponent prediction from Eq.~\eqref{eq:oml} overshot, from 53\,V at $\alpha = 1$ to 68\,V at $\alpha = 0.82$. The fitted law overestimates the float in thin plasma, so night-side predictions from Sec.~\ref{sec:mission} are conservative.
 
-\paragraph{Density.} At one third density the float settles at 42.5\,V after 2.4\,\textmu s, the only fully settled float in the campaign. Every fixed-exponent prediction from Eq.~\eqref{eq:oml} was higher (53--68\,V), so the fitted law is conservative in thin plasma.
+\paragraph{Magnetic field.} Does the geomagnetic field tax collection? An axial field at flight strength (30\,\textmu T) changes nothing: float, thrust and escape are within 0.2\,V, 0.1\,\% and 0.06 percentage points of the reference run. At ten times flight strength, collection is taxed and the float rises 33\,V; the thrust law still reproduces the result to within 1\,\% once the measured float is inserted. The transverse field, which is the flight geometry, remains open (Sec.~\ref{sec:limits}).
 
-\paragraph{Magnetic field.} An axial field at flight strength (30\,\textmu T) changes nothing: float, thrust and escape are within 0.2\,V, 0.1\,\% and 0.06\,pp of the anchor. At ten times flight strength, collection is taxed and the float rises 33\,V; the thrust law still reproduces the result to within 1\,\% once the measured float is inserted.
-
-\paragraph{Composition.} The slender body at 350\,V, the drive the 400\,km orbit needs, was predicted from the voltage and shape laws together at 11--17\,V and 42--43\,nN. It measured 14.0\,V and 43.33\,nN. The two laws compose, which turns two one-dimensional curves into an operating map over 100--350\,V and $L/r = 0.6$--6.
-
-\subsection{Momentum ledger}
-\label{sec:ledger}
-Each run separates the beam reaction $\Fb$ from the net momentum $\Fn$ deposited by everything that lands on the body: collected electrons, ions, and the returning beam fraction. At 300\,V, $|\Fn|/\Fb = 1.0\,\%$; at 100\,V, where the beam is slowest, 8.8\,\%. In a predecessor implementation (14\,mm body, 800\,V) the full control-volume ledger closed at $F = \Fb - 2.3\,\%$, and a null run with the body pinned above the beam energy (zero escape) gave zero closed thrust, as momentum conservation requires. The return current does not cancel the thrust.
-
-\subsection{Numerical convergence}
-Doubling the particle count changes every reported quantity by less than 0.05\,\%. Refining the grid from 0.15 to 0.10\,mm raises thrust by 4.0\,\% and exhaust energy by 7.4\,\% and lowers the float by 1.8\,\%. Grid resolution is the leading numerical uncertainty; it is carried as the error band in Table~\ref{tab:frontier}, and its sign favours the device.
-
+\paragraph{400\,km operating point.} Does the slender body at 350\,V close the 400\,km mean drag (32.9\,nN)? The voltage and shape laws together predicted 11--17\,V and 42--43\,nN. It measured 14.0\,V and 43.33\,nN, covering the mean demand with a float well inside the 50\,V limit. The two laws compose, which turns two one-dimensional curves into an operating map over 100--350\,V and $L/r = 0.6$--6.
 \section{Mission assessment}
 \label{sec:mission}
 
@@ -332,75 +367,56 @@ altitude & $V_{\min}$ & mean $P$ & in envelope \\
 \end{tabular}
 \end{table}
 
-At 500--600\,km the thruster covers mean and maximum drag at a fixed 300\,V, and in voltage-following mode it costs 7--31\,mW (Fig.~\ref{fig:drag}, Tables~\ref{tab:fixed}--\ref{tab:follow}). At 400\,km the picture is mixed. The compact body delivers 40.5\,nN at 350\,V against a 32.9\,nN mean, but floats on the 50\,V charging limit. The slender body delivers 43.3\,nN at a 14\,V float, covering the mean at about 76\,\% duty with 3.6 times margin on the limit. The drag maxima (92\,nN) exceed any single operating point, and the year-round duty for the compact shape is 113\,\% because thin night-side plasma caps collection. 400\,km is a research target, not a closed case. Where full station-keeping does not close, partial compensation still extends mission life.
+At 500--600\,km the thruster covers mean and maximum drag at a fixed 300\,V, and in voltage-following mode it costs 7--31\,mW (Fig.~\ref{fig:drag}, Tables~\ref{tab:fixed}--\ref{tab:follow}). At 400\,km the picture is mixed. The compact body delivers 40.48\,nN at 350\,V against a 32.9\,nN mean, but floats on the 50\,V charging limit. The slender body delivers 43.33\,nN at a 14\,V float, 3.6 times below the 50\,V limit, covering the mean at about 76\,\% duty. The drag maxima (92\,nN) exceed any single operating point, and the compact shape cannot keep up year-round because thin night-side plasma caps collection. 400\,km is a research target, not a closed case. Where full station-keeping does not close, partial compensation still extends mission life.
 
 \subsection{Power}
 Power is the thruster's only interface to the spacecraft: tens of milliwatts at 500--600\,km, 100--200\,mW at 400\,km. The 10\,mm body harvests roughly 10--30\,mW from body-mounted cells. A 1U CubeSat has 1--2\,W and a 3U 5--10\,W. Supply and demand both grow with area, so the ratio holds with size.
 
 \subsection{Scaling to CubeSats}
-By the argument of Sec.~\ref{sec:theory}, a 3U CubeSat flying end-on has the same shape ratio as the slender can and the same feasibility margin (Table~\ref{tab:scale}). In absolute terms it needs 8.8\,mA and 0.9\,W at 600\,km, 1.7\,W at 550\,km and 3.4\,W at 500\,km. Larger bodies also need less collection enhancement over the thermal flux (4 times for a 3U at 600\,km against 15 times for the 10\,mm body), so they rest on less extrapolation, not more. These numbers are estimates from the fitted collection law, and CubeSat radii sit at 25--60 Debye lengths where that law has not been measured (Sec.~\ref{sec:limits}).
-
-\begin{table}[t]\centering\small
-\caption{Feasibility margin (example body-mounted solar supply over demand at 100\,V) by shape and altitude. Size cancels; only the skin/ram ratio (in parentheses) matters. Estimates.}
-\label{tab:scale}
-\begin{tabular}{lrrrr}
-\toprule
-body & 400 & 500 & 550 & 600\,km \\
-\midrule
-power per m$^2$ of ram & 1451 & 335 & 170 & 88\,W \\
-\midrule
-10\,mm can, squat (4)    & 0.1 & 0.4 & 0.8 & 1.6 \\
-1U, face-on (6)          & 0.1 & 0.6 & 1.2 & 2.3 \\
-10\,mm can, slender (14) & 0.3 & 1.4 & 2.8 & 5.4 \\
-3U, end-on (14)          & 0.3 & 1.4 & 2.8 & 5.4 \\
-6U, end-on (12)          & 0.3 & 1.2 & 2.4 & 4.6 \\
-\bottomrule
-\end{tabular}
-\end{table}
+\label{sec:scale}
+By the argument of Sec.~\ref{sec:theory}, a 3U CubeSat flying end-on has the same shape ratio as the slender can and the same feasibility margin. In absolute terms it needs 8.8\,mA and 0.9\,W at 600\,km, 1.7\,W at 550\,km and 3.4\,W at 500\,km. Larger bodies also need less collection enhancement over the thermal flux (4 times for a 3U at 600\,km against 15 times for the 10\,mm body), so they rest on less extrapolation, not more. These numbers are estimates from the fitted collection law, and CubeSat radii sit at 25--60 Debye lengths where that law has not been measured (Sec.~\ref{sec:limits}).
 
 \section{Comparison with micropropulsion}
 \label{sec:compare}
 
 \begin{table*}[t]\centering\footnotesize
-\caption{Position against flight micropropulsion. $\dagger$: derived from other reported figures.}
+\caption{Position against flight micropropulsion in the nanonewton-to-micronewton range.}
 \label{tab:compare}
-\begin{tabular}{@{}p{1.4cm}p{2.7cm}p{1.7cm}p{1.5cm}p{1.4cm}p{2.7cm}p{3.2cm}@{}}
+\begin{tabular}{@{}p{1.4cm}p{2.7cm}p{1.7cm}p{1.5cm}p{1.4cm}p{3.2cm}@{}}
 \toprule
-system & example & thrust & power & $I_{sp}$ [s] & energy efficiency & hardware \\
+system & example & thrust & power & $I_{sp}$ [s] & hardware \\
 \midrule
-\textbf{this work} & electron exchange & 3--43\,nN & 12--278\,mW & $10^6$ & 0.67--0.77; $F/P$ = 0.15--0.28\,\textmu N/W & HV supply, cathode, aperture \\
-cold gas & GomSpace NanoProp \cite{nasasoa26} & 0.1--10\,mN & $<$2\,W & 60--110 & -- & tanks, valves, nozzles \\
-PPT & PPTCUP \cite{cia16} & 40\,\textmu N & 2\,W & 655 & $<$0.2 & capacitor bank, electrodes \\
-electrospray & Busek CMNT \cite{anderson18} & 20\,\textmu N & 16.5\,W & 225 & 0.28--0.45$^\dagger$ & tanks, PPU, neutralizer \\
-FEEP (1U) & NanoFEEP \cite{bock18} & 0--8\,\textmu N & 0.2--0.3\,W & 6000 & -- & liquid-metal needles, heater \\
-FEEP & Enpulsion IFM Nano \cite{krejci19} & 10--500\,\textmu N & 8--40\,W & 2000--5000 & 0.35$^\dagger$ & emitter, 2 neutralizers, PPU \\
-RF ion & Busek BIT-3 \cite{busekbit3} & 0.7--1.2\,mN & 56--80\,W & 1400--2640 & -- & grids, RF cathode, iodine feed, gimbal \\
-Hall & Busek BHT-200 \cite{busekbht200} & 13\,mN & 200--250\,W & 1390 & 0.44$^\dagger$ & channel, hollow cathode, xenon feed \\
+\textbf{this work} & electron exchange & 3--43\,nN & 12--278\,mW & $10^6$ & HV supply, cathode, aperture \\
+cold gas & GomSpace NanoProp \cite{nasasoa26} & 0.1--10\,mN & $<$2\,W & 60--110 & tanks, valves, nozzles \\
+PPT & PPTCUP \cite{cia16} & 40\,\textmu N & 2\,W & 655 & capacitor bank, electrodes \\
+electrospray & Busek CMNT \cite{nasasoa26} & 5--30\,\textmu N & 1--16\,W & 200--300 & tanks, PPU, neutralizer \\
+FEEP (1U) & NanoFEEP \cite{bock18} & 0--8\,\textmu N & 0.2--0.3\,W & 6000 & liquid-metal needles, heater \\
+FEEP & Enpulsion IFM Nano \cite{krejci19} & 10--500\,\textmu N & 8--40\,W & 2000--5000 & emitter, 2 neutralizers, PPU \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
-Table~\ref{tab:compare} makes three points. The energy efficiency of this device, 0.67--0.77 of supply power in the jet, is higher than any value found for electrospray, FEEP or Hall thrusters, because the exhaust is electrons and nearly all of them leave at nearly full energy. Its thrust per watt is about 200 times below a gridded ion thruster, which is Eq.~\eqref{eq:thrust} and cannot be engineered away. So the device owns the nanonewton regime: at micronewtons the power penalty reaches watts and electrospray wins; at millinewtons ion and Hall win. Within its regime the difference from every flown system is the hardware column: no tank, no feed system, no neutralizer, no total-impulse limit.
+Table~\ref{tab:compare} compares the device with flown systems in the nanonewton-to-micronewton range. The thrust per watt is about 200 times below an ion thruster, which is Eq.~\eqref{eq:thrust} and cannot be engineered away. At micronewtons the power penalty reaches watts and electrospray or FEEP wins. The difference from every flown system is the hardware column: no tank, no feed system, no neutralizer, no total-impulse limit. Nothing in the table produces thrust below 100\,nN.
 
 Related concepts share the return-circuit idea. Bare electrodynamic tethers \cite{san93,kat95} and Janhunen's electric sail and plasma brake \cite{jan04,jan10} all use continuous electron emission with the ambient plasma closing the circuit, but produce thrust by Lorentz force or ion deflection on kilometre-scale tethers. Atmosphere-breathing electric propulsion \cite{zhe20} collects ambient gas but keeps an ionization stage, an acceleration stage and a neutralizer. A recent review of propellantless propulsion \cite{kez25} does not list a standalone ionospheric electron-exchange thruster.
 
 \section{Bench experiment}
-The electrode topology was tested on a table. A W5W automotive bulb filament with the glass removed, held at $-50$ and $-62$\,V on its two terminals, faces a grounded 4$\times$4\,cm copper plate in a glass chamber at 4--5\,Pa. The ammeter between plate and earth reads a steady 87\,mA once the filament is hot: a single net-negative electrode emits electrons and accelerates them across a gap onto a grounded collector. At this pressure the gap is collisional, so the current includes gas amplification and the result is qualitative. It is the hardware counterpart of ladder stage 1; controls (bias off, filament cold) and an I--V sweep are the next step.
+\label{sec:bench}
+The electrode topology was tested in a laboratory vacuum chamber. A W5W automotive bulb filament with the glass removed, held at $-50$ and $-62$\,V on its two terminals, faces a grounded 4$\times$4\,cm copper plate in a glass chamber at 4--5\,Pa. The ammeter between plate and earth reads a steady 87\,mA once the filament is hot: a single net-negative electrode emits electrons and accelerates them across a gap onto a grounded collector. At this pressure the gap is collisional, so the current includes gas amplification and the result is qualitative. The experiment confirms the principle tested numerically in ladder stage 1: a negative cathode emits and accelerates electrons toward a grounded plate. Controls (bias off, filament cold) and an I--V sweep are the next step.
 
 \section{Limitations}
 \label{sec:limits}
 Ordered by how much each could change the answer.
 \begin{enumerate}\setlength{\itemsep}{1pt}
   \item \textbf{Transverse geomagnetic field.} In LEO the field is roughly perpendicular to the thrust axis. The beam gyroradius (1.4\,m) is 50 times the simulation domain, so the fate of the exhaust momentum once the beam gyrates is unmeasured and could move the thrust either way.
-  \item \textbf{No flight cathode.} Beam current is prescribed. The bench emitter is thermionic and its heater uses ten times the thruster's power; only a cold (field-emission) cathode closes the budget, and its cost, lifetime and atomic-oxygen tolerance are open.
-  \item \textbf{One plasma row.} Every run except the $n_e/3$ case uses the same dayside density; below $n_e/3$ the collection law is extrapolation with a measured conservative bias.
+  \item \textbf{Prescribed beam.} Beam current is a fixed input, not self-consistently emitted from a modelled cathode. The choice of flight emitter is outside the scope of this paper.
   \item \textbf{CubeSat sheath regime.} Runs sit at $r/\lambda_D \approx 2.5$; CubeSats are 25--60\,$\lambda_D$ across, where orbital-motion-limited collection no longer applies. A single large-body run would settle this.
   \item \textbf{Reduced ion mass, stationary plasma, held attitude.} Ions are $400\,m_e$, no ram flow is modelled, and the mission cases assume a fixed pose without an attitude-control model.
 \end{enumerate}
 All powers are beam power $VI$; converter and cathode overheads belong to the flight design.
 
 \section{Conclusion}
-A cathode, a high-voltage supply and the spacecraft's own skin make a thruster that needs no propellant. PIC simulations measure its operating envelope at 3--43\,nN from 12--278\,mW, with two constants describing every run, a floating potential fixed by a measured collection law, and a return current that costs about 1\,\% of the thrust. Against a year of real drag the device holds 500--600\,km for tens of milliwatts and covers the 400\,km mean demand with a slender body. The feasibility condition depends on shape and altitude but not on size, so a 3U CubeSat inherits it at 0.9--3.4\,W. The device is cheap to test: it needs no hardware beyond a supply and an electron gun of the kind that already flies as a neutralizer, and it can be retrofitted to an existing ion or Hall thruster after its propellant is spent. The open questions, the transverse field and the flight cathode, are the next work.
+A cathode, a high-voltage supply and the spacecraft's own skin make a thruster that needs no propellant. PIC simulations measure its operating envelope at 3--43\,nN from 12--278\,mW, with two constants describing every run to within 3\,\%, a floating potential fixed by a measured collection law, and a return current that costs 1--9\,\% of the beam thrust. Against a year of real drag the device holds 500--600\,km for tens of milliwatts and covers the 400\,km mean demand with a slender body. The feasibility condition depends on shape and altitude but not on size, so a 3U CubeSat inherits it at 0.9--3.4\,W. The device is cheap to test: it needs no hardware beyond a supply and an electron gun of the kind that already flies as a neutralizer, and it can be retrofitted to an existing ion or Hall thruster after its propellant is spent. The open questions, the transverse field and the flight emitter, are the next work.
 
 \paragraph{Data.} All simulation inputs, run manifests, gate policies, the orbit propagations and the model are committed in the project repository.
 
@@ -421,8 +437,6 @@ A cathode, a high-voltage supply and the spacecraft's own skin make a thruster t
 \bibitem{nasasoa26} NASA, ``State of the Art of Small Spacecraft Technology,'' 2026 ed., Ch.~4.
 \bibitem{cia16} S.~Ciaralli, M.~Coletti, S.~B.~Gabriel, ``Results of the qualification test campaign of a pulsed plasma thruster for CubeSat propulsion (PPTCUP),'' \emph{Acta Astronautica} 121, 314--322, 2016.
 \bibitem{krejci19} D.~Krejci et al., ``Full performance mapping of the IFM Nano thruster, including direct thrust measurements,'' \emph{J. Space Safety Eng.} 8(2), 2019.
-\bibitem{busekbit3} Busek Co., ``BIT-3 RF ion thruster,'' \url{https://www.busek.com/bit3}.
-\bibitem{busekbht200} Busek Co., ``BHT-200,'' \url{https://www.busek.com/bht200}.
 \end{thebibliography}
 
 \end{document}
