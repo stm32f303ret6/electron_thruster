@@ -1,8 +1,7 @@
-# LaTeX build artifacts; the PDFs are regenerable with two pdflatex passes.
+# LaTeX build artifacts. The compiled PDFs are tracked on purpose.
 *.aux
 *.log
 *.out
 *.toc
 *.nav
 *.snm
-main.pdf
