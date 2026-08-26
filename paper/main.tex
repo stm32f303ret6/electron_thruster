@@ -13,6 +13,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{caption}
 \usepackage{multirow}
+\usepackage{orcidlink}
 \captionsetup{font=small,labelfont=bf}
 \setlength{\parskip}{2pt}
 \setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
@@ -24,7 +25,7 @@
 \newcommand{\mytitle}{Propellantless electron thruster for LEO station keeping}
 
 \title{\Large\bfseries \mytitle}
-\author{Ricardo Sebasti\'an Casimiro\\
+\author{Ricardo Sebasti\'an Casimiro\,\orcidlink{0009-0008-5188-1326}\\
 \normalsize contact: stm32f303ret6@gmail.com}
 \date{}
 
@@ -418,7 +419,7 @@ All powers are beam power $VI$; converter and cathode overheads belong to the fl
 \section{Conclusion}
 A cathode, a high-voltage supply and the spacecraft's own skin make a thruster that needs no propellant. PIC simulations measure its operating envelope at 3--43\,nN from 12--278\,mW, with two constants describing every run to within 3\,\%, a floating potential fixed by a measured collection law, and a return current that costs 1--9\,\% of the beam thrust. Against a year of real drag the device holds 500--600\,km for tens of milliwatts and covers the 400\,km mean demand with a slender body. The feasibility condition depends on shape and altitude but not on size, so a 3U CubeSat inherits it at 0.9--3.4\,W. The device is cheap to test: it needs no hardware beyond a supply and an electron gun of the kind that already flies as a neutralizer, and it can be retrofitted to an existing ion or Hall thruster after its propellant is spent. The open questions, the transverse field and the flight emitter, are the next work.
 
-\paragraph{Data.} All simulation inputs, run manifests, gate policies, the orbit propagations and the model are committed in the project repository.
+\paragraph{Data.} All simulation inputs, run manifests, gate policies, the orbit propagations and the model are committed in the project repository, archived at \href{https://doi.org/10.5281/zenodo.22115924}{DOI:10.5281/zenodo.22115924}.
 
 \paragraph{Acknowledgements.} This research used the open-source \href{https://blast-warpx.github.io}{particle-in-cell code WarpX}. Primary WarpX contributors are with LBNL, LLNL, CEA-LIDYL, SLAC, DESY, CERN, Helion Energy, TAE Technologies, and Realta Fusion. We acknowledge all WarpX contributors. Orbit propagation used TudatPy \cite{tudat}.
 
