@@ -1,5 +1,7 @@
 # Electron thruster
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22115924.svg)](https://doi.org/10.5281/zenodo.22115924)
+
 An electron thruster for LEO drag compensation, with the ionosphere as the return circuit, validated with full PIC simulations and orbit-drag models.
 
 The thruster accelerates electrons out of the spacecraft; the escaping beam produces the thrust.
@@ -331,7 +333,21 @@ Ricardo Sebastian Casimiro — [ORCID 0009-0008-5188-1326](https://orcid.org/000
 
 [MIT](LICENSE)
 
-## Citing and acknowledgements
+## Citing
+
+If you use this work, please cite:
+
+```bibtex
+@software{casimiro2026electron,
+  author    = {Casimiro, Ricardo Sebastian},
+  title     = {Electron thruster for LEO drag compensation},
+  year      = {2026},
+  doi       = {10.5281/zenodo.22115924},
+  url       = {https://github.com/stm32f303ret6/electron_thruster_ahora_si_eh},
+}
+```
+
+## Acknowledgements
 
 The PIC evidence was produced with [WarpX](https://blast-warpx.github.io) 26.05 (J.-L. Vay et al., *WarpX: An advanced Particle-In-Cell code*, [DOI:10.5281/zenodo.4571577](https://doi.org/10.5281/zenodo.4571577)), built on [AMReX](https://amrex-codes.github.io) (Zhang et al., JOSS 4(37), 1370, 2019).
 Orbit propagation used [TudatPy](https://docs.tudat.space).
