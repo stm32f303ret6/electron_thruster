@@ -1,0 +1,86 @@
+{
+  "20260901T174206Z_gyro_1x_fa935f76": {
+    "schema_version": 1,
+    "run_id": "20260901T174206Z_gyro_1x_fa935f76",
+    "stage_id": "characterization.transverse_b_numerics",
+    "scenario": "gyro_1x",
+    "status": "COMPLETE",
+    "created_at_utc": "2026-09-01T17:42:06Z",
+    "completed_at_utc": "2026-09-01T17:42:12Z",
+    "case_sha256": "fa935f7692c776a16a1765af10a54197ea09f073a9603c026748442e67ee5816",
+    "study_sha256": "cec5b622595e29267cd6677662fc91d0e99468e2d6a01751318481a17091c50c",
+    "git_commit": "148a7af6ccf0e4f67943a9f2cfb3481b118d2bc9",
+    "git_dirty": false,
+    "python_version": "3.12.13",
+    "warpx_version": "26.5",
+    "mpi_ranks": 1,
+    "omp_threads": null,
+    "random_seed": 42,
+    "expected_final_iteration": 218,
+    "observed_final_iteration": 218,
+    "artifacts": [
+      {
+        "path": "diags/reducedfiles/beam_relevant.txt",
+        "bytes": 93644,
+        "files": 1
+      }
+    ],
+    "error": null
+  },
+  "20260901T174213Z_gyro_10x_0d90a7ef": {
+    "schema_version": 1,
+    "run_id": "20260901T174213Z_gyro_10x_0d90a7ef",
+    "stage_id": "characterization.transverse_b_numerics",
+    "scenario": "gyro_10x",
+    "status": "COMPLETE",
+    "created_at_utc": "2026-09-01T17:42:13Z",
+    "completed_at_utc": "2026-09-01T17:42:19Z",
+    "case_sha256": "0d90a7efd2254c97064ceaf76f3af66e161f7b9bc8d0b06d635b8023e7fde85b",
+    "study_sha256": "cec5b622595e29267cd6677662fc91d0e99468e2d6a01751318481a17091c50c",
+    "git_commit": "148a7af6ccf0e4f67943a9f2cfb3481b118d2bc9",
+    "git_dirty": false,
+    "python_version": "3.12.13",
+    "warpx_version": "26.5",
+    "mpi_ranks": 1,
+    "omp_threads": null,
+    "random_seed": 42,
+    "expected_final_iteration": 218,
+    "observed_final_iteration": 218,
+    "artifacts": [
+      {
+        "path": "diags/reducedfiles/beam_relevant.txt",
+        "bytes": 93644,
+        "files": 1
+      }
+    ],
+    "error": null
+  },
+  "20260901T174220Z_exb_10x_cca068af": {
+    "schema_version": 1,
+    "run_id": "20260901T174220Z_exb_10x_cca068af",
+    "stage_id": "characterization.transverse_b_numerics",
+    "scenario": "exb_10x",
+    "status": "COMPLETE",
+    "created_at_utc": "2026-09-01T17:42:20Z",
+    "completed_at_utc": "2026-09-01T17:45:24Z",
+    "case_sha256": "cca068aff48a25d5bc48d5a3388c3b0378bde0a4b328962a649a42983e75cb69",
+    "study_sha256": "cec5b622595e29267cd6677662fc91d0e99468e2d6a01751318481a17091c50c",
+    "git_commit": "148a7af6ccf0e4f67943a9f2cfb3481b118d2bc9",
+    "git_dirty": false,
+    "python_version": "3.12.13",
+    "warpx_version": "26.5",
+    "mpi_ranks": 1,
+    "omp_threads": null,
+    "random_seed": 42,
+    "expected_final_iteration": 9725,
+    "observed_final_iteration": 9725,
+    "artifacts": [
+      {
+        "path": "diags/reducedfiles/beam_relevant.txt",
+        "bytes": 4145007,
+        "files": 1
+      }
+    ],
+    "error": null
+  }
+}
