@@ -116,7 +116,9 @@ than to a universal electron-gun limit.
    executed 2026-09-01 as a 3D deck with the body resolved
    (`../pic_sims/characterization/magnetized_transverse/`);
    [`M2_TRANSVERSE_B.md`](M2_TRANSVERSE_B.md) keeps the earlier far-field
-   design and the reason it was not built.
+   design and the reason it was not built. Result: 1× transverse null
+   confirmed on every pre-registered band; 10× float tax ≥ +53 V with
+   thrust −14 % (bounds; unsettled at 800 ns, sheath at the box).
 6. Cathode selection. Spindt / field-emitter arrays: emitting area, gate
    power, collimation (single-gate angular spread is appreciable; double-gate
    collimation is only demonstrated at 20 keV), and downstream space-charge

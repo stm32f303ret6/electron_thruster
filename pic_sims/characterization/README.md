@@ -24,7 +24,7 @@ tests, and committed evidence under `reference_results/`.
 | `350V_400km/` | drive voltage 350 V (400 km-enabling envelope step) | `characterization.350V_400km` | PASS 2026-08-17 — φ 48.29 V (tail; 51.1 V endpoint still rising), F 40.48 nN vs 40.5 predicted |
 | `350V_400km_slender/` | voltage 350 V **and** slender geometry — the 2×2 factorial corner | `characterization.350V_400km_slender` | PASS 2026-08-17 — φ 14.00 V (predicted 11–17), F 43.33 nN (predicted 42–43): the laws compose |
 | `transverse_b_numerics/` | numerics mini-ladder for tier M2: test electrons on the 3D grid vs closed forms (gyration, E×B) | `characterization.transverse_b_numerics` | PASS 2026-09-01 — ω to 3 × 10⁻⁴, r_g and E×B drift exact |
-| `magnetized_transverse/` | field **perpendicular** to the thrust axis (tier M2, the flight geometry): Cartesian 3D deck, anchor body resolved, Bx = 0 / 30 / 300 µT | `characterization.magnetized_transverse` | pre-registered 2026-09-01, running |
+| `magnetized_transverse/` | field **perpendicular** to the thrust axis (tier M2, the flight geometry): Cartesian 3D deck, anchor body resolved, Bx = 0 / 30 / 300 µT | `characterization.magnetized_transverse` | 2026-09-01 — 1× null CONFIRMED (Δφ +0.3 V, ΔF −0.1 %); 10× tax φ ≥ 66 V, F −14 % (bounds: two 10× trust gates FAIL — unsettled at 800 ns, sheath at the box) |
 
 The `350V_400km_slender` spoke is the one deliberate exception to the
 one-axis rule: it moves voltage and geometry together. Both single-axis

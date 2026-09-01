@@ -1,0 +1,44 @@
+stage_id: characterization.magnetized_transverse
+electrical:
+  phi_body_init: 0.0
+beam:
+  i_beam: 0.000342
+  t_on: 1.5e-07
+  ke_inject_eV: 164.5
+  emit_radius: 0.0015
+  rms_velocity: 260000.0
+geometry:
+  r_probe: 0.005
+  z_bot: -0.005
+  z_top: 0.0005
+plasma:
+  n0: 1627000000000.0
+  Te_K: 1318.8
+  Ti_K: 936.2
+  ion_mass_me: 400.0
+reservoir:
+  enabled: true
+  frac: 0.7
+  every: 25
+domain:
+  half_x: 0.03
+  half_y: 0.03
+  zmargin_lo: 0.025
+  zmargin_hi: 0.035
+  edge_phi_max: 1.0
+numerics:
+  dx: 0.001
+  dt: 3.670876685492901e-11
+  ppc: 16
+  ppc_beam: 16
+run:
+  t_end: 8.0e-07
+  max_steps: 21780
+  diag_period_frac: 20
+  phi_ceiling: 150.0
+  choke_sustain: 5.0e-08
+compute:
+  gpu_arena_bytes: 4000000000
+scenario: transverse_10x
+field:
+  Bx_T: 0.0003

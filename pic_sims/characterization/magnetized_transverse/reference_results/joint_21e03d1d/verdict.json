@@ -1,0 +1,352 @@
+{
+  "stage_id": "characterization.magnetized_transverse",
+  "policy_id": "characterization.magnetized_transverse.v1",
+  "status": "FAIL",
+  "exit_code": 1,
+  "detail": "2 required gate(s) failed",
+  "gates": [
+    {
+      "id": "b0_beam_escapes",
+      "status": "PASS",
+      "required": true,
+      "metric": "b0_control__escape_fraction_pct",
+      "comparison": "at_least",
+      "value": 99.05988181818181,
+      "detail": "99.0599 >= 95"
+    },
+    {
+      "id": "b0_steady_current_balance",
+      "status": "PASS",
+      "required": true,
+      "metric": "b0_control__current_balance",
+      "comparison": "at_most",
+      "value": 0.024649921725493778,
+      "detail": "0.0246499 <= 0.05"
+    },
+    {
+      "id": "b0_momentum_sanity_bound",
+      "status": "PASS",
+      "required": true,
+      "metric": "b0_control__f_net_over_f_beam",
+      "comparison": "at_most",
+      "value": 0.009690091673348175,
+      "detail": "0.00969009 <= 1"
+    },
+    {
+      "id": "b0_sheath_and_plume_contained",
+      "status": "PASS",
+      "required": true,
+      "metric": "b0_control__edge_phi_max_V",
+      "comparison": "at_most",
+      "value": 0.3520119689168541,
+      "detail": "0.352012 <= 1"
+    },
+    {
+      "id": "b0_scrape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "b0_control__scrape_charge_consistency",
+      "comparison": "at_most",
+      "value": 9.328043917224385e-09,
+      "detail": "9.32804e-09 <= 0.02"
+    },
+    {
+      "id": "b0_beam_escape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "b0_control__scrape_charge_consistency_beam_escape",
+      "comparison": "at_most",
+      "value": 6.911160694374287e-09,
+      "detail": "6.91116e-09 <= 0.02"
+    },
+    {
+      "id": "b0_source_delivers_commanded_current",
+      "status": "PASS",
+      "required": true,
+      "metric": "b0_control__emitted_current_ratio",
+      "comparison": "abs_within",
+      "value": 1.0012739766081868,
+      "detail": "1.00127 |x - 1| <= 0.03"
+    },
+    {
+      "id": "b0_capacitance_calibration_sane",
+      "status": "PASS",
+      "required": true,
+      "metric": "b0_control__c_float_pF",
+      "comparison": "within_range",
+      "value": 0.6219228563563629,
+      "detail": "0.621923 in [0.35, 1.2]"
+    },
+    {
+      "id": "t1x_beam_escapes",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_1x__escape_fraction_pct",
+      "comparison": "at_least",
+      "value": 99.05919318181817,
+      "detail": "99.0592 >= 95"
+    },
+    {
+      "id": "t1x_steady_current_balance",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_1x__current_balance",
+      "comparison": "at_most",
+      "value": 0.02509322675819326,
+      "detail": "0.0250932 <= 0.05"
+    },
+    {
+      "id": "t1x_momentum_sanity_bound",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_1x__f_net_over_f_beam",
+      "comparison": "at_most",
+      "value": 0.009462577620510951,
+      "detail": "0.00946258 <= 1"
+    },
+    {
+      "id": "t1x_sheath_and_plume_contained",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_1x__edge_phi_max_V",
+      "comparison": "at_most",
+      "value": 0.35757960501152847,
+      "detail": "0.35758 <= 1"
+    },
+    {
+      "id": "t1x_scrape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_1x__scrape_charge_consistency",
+      "comparison": "at_most",
+      "value": 1.2577559156735706e-09,
+      "detail": "1.25776e-09 <= 0.02"
+    },
+    {
+      "id": "t1x_beam_escape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_1x__scrape_charge_consistency_beam_escape",
+      "comparison": "at_most",
+      "value": 9.454389403105355e-09,
+      "detail": "9.45439e-09 <= 0.02"
+    },
+    {
+      "id": "t1x_source_delivers_commanded_current",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_1x__emitted_current_ratio",
+      "comparison": "abs_within",
+      "value": 1.0012739766081868,
+      "detail": "1.00127 |x - 1| <= 0.03"
+    },
+    {
+      "id": "t1x_capacitance_calibration_sane",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_1x__c_float_pF",
+      "comparison": "within_range",
+      "value": 0.6219228563563629,
+      "detail": "0.621923 in [0.35, 1.2]"
+    },
+    {
+      "id": "t10x_beam_escapes",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_10x__escape_fraction_pct",
+      "comparison": "at_least",
+      "value": 98.92217272727271,
+      "detail": "98.9222 >= 95"
+    },
+    {
+      "id": "t10x_steady_current_balance",
+      "status": "FAIL",
+      "required": true,
+      "metric": "transverse_10x__current_balance",
+      "comparison": "at_most",
+      "value": 0.06798110816502766,
+      "detail": "0.0679811 <= 0.05"
+    },
+    {
+      "id": "t10x_momentum_sanity_bound",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_10x__f_net_over_f_beam",
+      "comparison": "at_most",
+      "value": 0.04746741238386537,
+      "detail": "0.0474674 <= 1"
+    },
+    {
+      "id": "t10x_sheath_and_plume_contained",
+      "status": "FAIL",
+      "required": true,
+      "metric": "transverse_10x__edge_phi_max_V",
+      "comparison": "at_most",
+      "value": 1.0359125964129978,
+      "detail": "1.03591 <= 1"
+    },
+    {
+      "id": "t10x_scrape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_10x__scrape_charge_consistency",
+      "comparison": "at_most",
+      "value": 3.849213054946505e-09,
+      "detail": "3.84921e-09 <= 0.02"
+    },
+    {
+      "id": "t10x_beam_escape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_10x__scrape_charge_consistency_beam_escape",
+      "comparison": "at_most",
+      "value": 2.0768520318640007e-09,
+      "detail": "2.07685e-09 <= 0.02"
+    },
+    {
+      "id": "t10x_source_delivers_commanded_current",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_10x__emitted_current_ratio",
+      "comparison": "abs_within",
+      "value": 1.0012739766081868,
+      "detail": "1.00127 |x - 1| <= 0.03"
+    },
+    {
+      "id": "t10x_capacitance_calibration_sane",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_10x__c_float_pF",
+      "comparison": "within_range",
+      "value": 0.6219228563563629,
+      "detail": "0.621923 in [0.35, 1.2]"
+    },
+    {
+      "id": "b0_closes_on_anchor_float",
+      "status": "PASS",
+      "required": false,
+      "metric": "b0_control__phi_body_V",
+      "comparison": "abs_within",
+      "value": 13.368732727272725,
+      "detail": "13.3687 |x - 17| <= 4"
+    },
+    {
+      "id": "b0_closes_on_anchor_thrust",
+      "status": "PASS",
+      "required": false,
+      "metric": "b0_control__f_beam_nN",
+      "comparison": "abs_within",
+      "value": 14.420444772727278,
+      "detail": "14.4204 |x - 13.65| <= 1"
+    },
+    {
+      "id": "b0_lorentz_term_vanishes",
+      "status": "PASS",
+      "required": false,
+      "metric": "b0_control__lorentz_correction_pct",
+      "comparison": "abs_within",
+      "value": 0.0,
+      "detail": "0 |x - 0| <= 0.1"
+    },
+    {
+      "id": "t1x_null_float",
+      "status": "PASS",
+      "required": false,
+      "metric": "dphi_1x_V",
+      "comparison": "abs_within",
+      "value": 0.29319568181818134,
+      "detail": "0.293196 |x - 0| <= 2"
+    },
+    {
+      "id": "t1x_null_thrust",
+      "status": "PASS",
+      "required": false,
+      "metric": "dthrust_1x_pct",
+      "comparison": "abs_within",
+      "value": -0.13916951905897923,
+      "detail": "-0.13917 |x - 0| <= 5"
+    },
+    {
+      "id": "t1x_null_escape",
+      "status": "PASS",
+      "required": false,
+      "metric": "descape_1x_pp",
+      "comparison": "abs_within",
+      "value": -0.000688636363634032,
+      "detail": "-0.000688636 |x - 0| <= 1"
+    },
+    {
+      "id": "t1x_lorentz_correction_negligible",
+      "status": "PASS",
+      "required": false,
+      "metric": "transverse_1x__lorentz_correction_pct",
+      "comparison": "abs_within",
+      "value": -0.036809978943597166,
+      "detail": "-0.03681 |x - 0| <= 0.2"
+    },
+    {
+      "id": "t10x_float_tax_in_band",
+      "status": "PASS",
+      "required": false,
+      "metric": "dphi_10x_V",
+      "comparison": "within_range",
+      "value": 53.14056545454545,
+      "detail": "53.1406 in [20, 60]"
+    },
+    {
+      "id": "t10x_thrust_tax_in_band",
+      "status": "PASS",
+      "required": false,
+      "metric": "dthrust_10x_pct",
+      "comparison": "within_range",
+      "value": -14.262566009304011,
+      "detail": "-14.2626 in [-25, -5]"
+    },
+    {
+      "id": "t10x_lorentz_correction_in_band",
+      "status": "PASS",
+      "required": false,
+      "metric": "transverse_10x__lorentz_correction_pct",
+      "comparison": "within_range",
+      "value": 3.585222341902994,
+      "detail": "3.58522 in [2, 8]"
+    },
+    {
+      "id": "t10x_lorentz_ledger_matches_reduced_diag",
+      "status": "PASS",
+      "required": false,
+      "metric": "transverse_10x__lorentz_reduced_consistency",
+      "comparison": "at_most",
+      "value": 0.008541237482289412,
+      "detail": "0.00854124 <= 0.25"
+    },
+    {
+      "id": "b0_benign_float",
+      "status": "PASS",
+      "required": false,
+      "metric": "b0_control__phi_body_V",
+      "comparison": "at_most",
+      "value": 13.368732727272725,
+      "detail": "13.3687 <= 50"
+    },
+    {
+      "id": "t1x_benign_float",
+      "status": "PASS",
+      "required": false,
+      "metric": "transverse_1x__phi_body_V",
+      "comparison": "at_most",
+      "value": 13.661928409090907,
+      "detail": "13.6619 <= 50"
+    },
+    {
+      "id": "t10x_benign_float",
+      "status": "FAIL",
+      "required": false,
+      "metric": "transverse_10x__phi_body_V",
+      "comparison": "at_most",
+      "value": 66.50929818181818,
+      "detail": "66.5093 <= 50"
+    }
+  ],
+  "analysis_id": "20260901T194231Z_9b3513be"
+}

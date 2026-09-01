@@ -11,7 +11,11 @@
 > with B ⊥ ẑ and a thrust ledger corrected for the in-box Lorentz term:
 > `pic_sims/characterization/magnetized_transverse/` (pre-registration in
 > its README) with `transverse_b_numerics/` as the validation mini-ladder
-> this note asked for. The text below is preserved as the design record.
+> this note asked for. Executed 2026-09-01: the 1× transverse null holds
+> on every pre-registered band (Δφ +0.29 V, ΔF −0.14 %); the 10× tax is
+> measured at Δφ +53 V and ΔF −14 % as bounds (unsettled at 800 ns,
+> sheath at the box — the two failed trust gates). The text below is
+> preserved as the design record.
 
 
 Extracted from the magnetized-axis plan (pre-registered 2026-08-08 as
