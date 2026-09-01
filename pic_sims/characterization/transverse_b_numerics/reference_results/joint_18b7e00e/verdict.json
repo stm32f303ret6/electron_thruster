@@ -1,0 +1,82 @@
+{
+  "stage_id": "characterization.transverse_b_numerics",
+  "policy_id": "characterization.transverse_b_numerics.v1",
+  "status": "PASS",
+  "exit_code": 0,
+  "detail": "all 8 required gate(s) passed",
+  "gates": [
+    {
+      "id": "gyro_1x_frequency_exact",
+      "status": "PASS",
+      "required": true,
+      "metric": "gyro_1x__omega_ratio",
+      "comparison": "abs_within",
+      "value": 0.9996786278895804,
+      "detail": "0.999679 |x - 1| <= 0.002"
+    },
+    {
+      "id": "gyro_1x_radius_exact",
+      "status": "PASS",
+      "required": true,
+      "metric": "gyro_1x__rg_ratio",
+      "comparison": "abs_within",
+      "value": 0.9999995776839989,
+      "detail": "1 |x - 1| <= 0.005"
+    },
+    {
+      "id": "gyro_1x_energy_conserved",
+      "status": "PASS",
+      "required": true,
+      "metric": "gyro_1x__ke_drift",
+      "comparison": "at_most",
+      "value": 9.318578357441855e-10,
+      "detail": "9.31858e-10 <= 1e-06"
+    },
+    {
+      "id": "gyro_10x_frequency_exact",
+      "status": "PASS",
+      "required": true,
+      "metric": "gyro_10x__omega_ratio",
+      "comparison": "abs_within",
+      "value": 0.9996778785707665,
+      "detail": "0.999678 |x - 1| <= 0.002"
+    },
+    {
+      "id": "gyro_10x_radius_exact",
+      "status": "PASS",
+      "required": true,
+      "metric": "gyro_10x__rg_ratio",
+      "comparison": "abs_within",
+      "value": 1.0000004664843514,
+      "detail": "1 |x - 1| <= 0.005"
+    },
+    {
+      "id": "gyro_10x_energy_conserved",
+      "status": "PASS",
+      "required": true,
+      "metric": "gyro_10x__ke_drift",
+      "comparison": "at_most",
+      "value": 1.677482290863561e-09,
+      "detail": "1.67748e-09 <= 1e-06"
+    },
+    {
+      "id": "exb_drift_exact",
+      "status": "PASS",
+      "required": true,
+      "metric": "exb_10x__vd_ratio",
+      "comparison": "abs_within",
+      "value": 1.0000009604467803,
+      "detail": "1 |x - 1| <= 0.01"
+    },
+    {
+      "id": "exb_no_axial_drift",
+      "status": "PASS",
+      "required": true,
+      "metric": "exb_10x__vz_over_vd",
+      "comparison": "abs_within",
+      "value": -1.4649553901180217e-06,
+      "detail": "-1.46496e-06 |x - 0| <= 0.02"
+    }
+  ],
+  "analysis_id": "20260901T174525Z_a5106fb0"
+}

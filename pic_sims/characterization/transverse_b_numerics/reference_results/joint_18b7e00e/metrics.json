@@ -1,0 +1,115 @@
+{
+  "analysis_id": "20260901T174525Z_a5106fb0",
+  "metrics": [
+    {
+      "id": "gyro_1x__omega_ratio",
+      "status": "OK",
+      "value": 0.9996786278895804,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "BeamRelevant trace vs closed form"
+    },
+    {
+      "id": "gyro_1x__rg_ratio",
+      "status": "OK",
+      "value": 0.9999995776839989,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "BeamRelevant trace vs closed form"
+    },
+    {
+      "id": "gyro_1x__ke_drift",
+      "status": "OK",
+      "value": 9.318578357441855e-10,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "BeamRelevant trace vs closed form"
+    },
+    {
+      "id": "gyro_1x__arc_deg",
+      "status": "OK",
+      "value": -2.418680161994376,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "BeamRelevant trace vs closed form"
+    },
+    {
+      "id": "gyro_10x__omega_ratio",
+      "status": "OK",
+      "value": 0.9996778785707665,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "BeamRelevant trace vs closed form"
+    },
+    {
+      "id": "gyro_10x__rg_ratio",
+      "status": "OK",
+      "value": 1.0000004664843514,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "BeamRelevant trace vs closed form"
+    },
+    {
+      "id": "gyro_10x__ke_drift",
+      "status": "OK",
+      "value": 1.677482290863561e-09,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "BeamRelevant trace vs closed form"
+    },
+    {
+      "id": "gyro_10x__arc_deg",
+      "status": "OK",
+      "value": -24.18678139374138,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "BeamRelevant trace vs closed form"
+    },
+    {
+      "id": "exb_10x__vd_ratio",
+      "status": "OK",
+      "value": 1.0000009604467803,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "BeamRelevant trace vs closed form"
+    },
+    {
+      "id": "exb_10x__vz_over_vd",
+      "status": "OK",
+      "value": -1.4649553901180217e-06,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "BeamRelevant trace vs closed form"
+    },
+    {
+      "id": "exb_10x__gyroperiods",
+      "status": "OK",
+      "value": 2.998117218633673,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "BeamRelevant trace vs closed form"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+stage_id: characterization.transverse_b_numerics
+grid:
+  dx: 0.001
+  nx: 64
+  ny: 64
+  nz: 72
+  zmin: -0.03
+numerics:
+  dt: 3.6711e-11
+compute:
+  gpu_arena_bytes: 1000000000
+scenario: gyro_1x
+case:
+  Bx_T: 3.0e-05
+  Ez_V_per_m: 0.0
+  ke_eV: 164.5
+  x0: 0.0
+  y0: 0.0
+  z0: -0.025
+  t_run: 8.0e-09
