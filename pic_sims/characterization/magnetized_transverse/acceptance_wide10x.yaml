@@ -1,0 +1,173 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for the WIDE/LONG 10x follow-up cohort of
+# characterization.magnetized_transverse (config_wide10x.yaml).
+# Pre-registered 2026-09-01, before the runs (README.md follow-up plan).
+#
+# Required gates: the same eight trust gates per scenario as the first
+# cohort's policy -- including the two the 800 ns / +-32 mm corner FAILED
+# (steady_current_balance, sheath_and_plume_contained), which are exactly
+# what this variant exists to satisfy.  The measurements (the wide
+# control's float, the settled 10x tax, the Lorentz correction) stay
+# REPORTED: read the value, not the flag.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: characterization.magnetized_transverse.wide10x.v1
+stage_id: characterization.magnetized_transverse
+evidence_kind: exploratory_measurement
+
+gates:
+  # ---- required: trust gates, both scenarios ----
+  - id: b0w_beam_escapes
+    required: true
+    metric: b0_control__escape_fraction_pct
+    comparison: at_least
+    minimum: 95.0
+  - id: b0w_steady_current_balance
+    required: true
+    metric: b0_control__current_balance
+    comparison: at_most
+    maximum: 0.05
+  - id: b0w_momentum_sanity_bound
+    required: true
+    metric: b0_control__f_net_over_f_beam
+    comparison: at_most
+    maximum: 1.0
+  - id: b0w_sheath_and_plume_contained
+    required: true
+    metric: b0_control__edge_phi_max_V
+    comparison: at_most
+    maximum: 1.0
+  - id: b0w_scrape_ledger_consistent_with_dumps
+    required: true
+    metric: b0_control__scrape_charge_consistency
+    comparison: at_most
+    maximum: 0.02
+  - id: b0w_beam_escape_ledger_consistent_with_dumps
+    required: true
+    metric: b0_control__scrape_charge_consistency_beam_escape
+    comparison: at_most
+    maximum: 0.02
+  - id: b0w_source_delivers_commanded_current
+    required: true
+    metric: b0_control__emitted_current_ratio
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.03
+  - id: b0w_capacitance_calibration_sane
+    required: true
+    metric: b0_control__c_float_pF
+    comparison: within_range
+    minimum: 0.35
+    maximum: 1.20
+
+  - id: t10xw_beam_escapes
+    required: true
+    metric: transverse_10x__escape_fraction_pct
+    comparison: at_least
+    minimum: 95.0
+  - id: t10xw_steady_current_balance
+    required: true
+    metric: transverse_10x__current_balance
+    comparison: at_most
+    maximum: 0.05
+  - id: t10xw_momentum_sanity_bound
+    required: true
+    metric: transverse_10x__f_net_over_f_beam
+    comparison: at_most
+    maximum: 1.0
+  - id: t10xw_sheath_and_plume_contained
+    required: true
+    metric: transverse_10x__edge_phi_max_V
+    comparison: at_most
+    maximum: 1.0
+  - id: t10xw_scrape_ledger_consistent_with_dumps
+    required: true
+    metric: transverse_10x__scrape_charge_consistency
+    comparison: at_most
+    maximum: 0.02
+  - id: t10xw_beam_escape_ledger_consistent_with_dumps
+    required: true
+    metric: transverse_10x__scrape_charge_consistency_beam_escape
+    comparison: at_most
+    maximum: 0.02
+  - id: t10xw_source_delivers_commanded_current
+    required: true
+    metric: transverse_10x__emitted_current_ratio
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.03
+  - id: t10xw_capacitance_calibration_sane
+    required: true
+    metric: transverse_10x__c_float_pF
+    comparison: within_range
+    minimum: 0.35
+    maximum: 1.20
+
+  # ---- reported: the pre-registered predictions ----
+  # The wide control against the small-box control (13.37 V): truncation
+  # released and 1.2 us more settling -> phi 9-15 V, thrust within the band.
+  - id: b0w_float_in_band
+    required: false
+    metric: b0_control__phi_body_V
+    comparison: within_range
+    minimum: 9.0
+    maximum: 15.0
+  - id: b0w_thrust_in_band
+    required: false
+    metric: b0_control__f_beam_nN
+    comparison: abs_within
+    target: 14.5
+    tolerance: 0.7
+  - id: b0w_lorentz_term_vanishes
+    required: false
+    metric: b0_control__lorentz_correction_pct
+    comparison: abs_within
+    target: 0.0
+    tolerance: 0.1
+  # The settled 10x corner: float 55-85 V, tail slope at the control's level,
+  # tax 10-25 %, Lorentz correction 2-8 %, ledger vs reduced diag <= 25 %.
+  - id: t10xw_float_in_band
+    required: false
+    metric: transverse_10x__phi_body_V
+    comparison: within_range
+    minimum: 55.0
+    maximum: 85.0
+  - id: t10xw_tail_settled
+    required: false
+    metric: transverse_10x__late_dphidt_V_per_ns
+    comparison: abs_within
+    target: 0.0
+    tolerance: 0.012
+  - id: t10xw_float_tax_in_band
+    required: false
+    metric: dphi_10x_V
+    comparison: within_range
+    minimum: 45.0
+    maximum: 70.0
+  - id: t10xw_thrust_tax_in_band
+    required: false
+    metric: dthrust_10x_pct
+    comparison: within_range
+    minimum: -25.0
+    maximum: -10.0
+  - id: t10xw_lorentz_correction_in_band
+    required: false
+    metric: transverse_10x__lorentz_correction_pct
+    comparison: within_range
+    minimum: 2.0
+    maximum: 8.0
+  - id: t10xw_lorentz_ledger_matches_reduced_diag
+    required: false
+    metric: transverse_10x__lorentz_reduced_consistency
+    comparison: at_most
+    maximum: 0.25
+  - id: b0w_benign_float
+    required: false
+    metric: b0_control__phi_body_V
+    comparison: at_most
+    maximum: 50.0
+  - id: t10xw_benign_float
+    required: false
+    metric: transverse_10x__phi_body_V
+    comparison: at_most
+    maximum: 50.0

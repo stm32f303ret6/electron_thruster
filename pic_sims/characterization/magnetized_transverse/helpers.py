@@ -49,6 +49,13 @@ _SCHEMA: dict[str, tuple[str, ...]] = {
             "choke_sustain"),
     "compute": ("gpu_arena_bytes",),
 }
+# Optional keys: absent -> a documented default that reproduces the committed
+# baseline byte-for-byte, so frozen config_used.yaml files stay loadable and
+# their case hashes stay valid.
+_OPTIONAL: dict[str, tuple[str, ...]] = {
+    "compute": ("max_grid_size",),   # AMReX box size; None -> the deck's 128
+}
+
 # The per-scenario axis.  A source study carries it inside ``scenarios``; a
 # frozen config carries it resolved under ``field`` next to ``scenario``.
 _SCENARIO_KEYS = ("name", "Bx_T")
@@ -69,7 +76,7 @@ def _reject_unknown(raw: Mapping[str, Any]) -> None:
         block = raw[section]
         if not isinstance(block, Mapping):
             raise ConfigError(f"config section '{section}' must be a mapping")
-        unknown = set(block) - set(keys)
+        unknown = set(block) - set(keys) - set(_OPTIONAL.get(section, ()))
         if unknown:
             raise ConfigError(f"unknown keys in '{section}': {sorted(unknown)}")
         missing = set(keys) - set(block)
@@ -198,6 +205,9 @@ class Config:
     choke_sustain: float
     # compute
     gpu_arena_bytes: int
+    # optional: AMReX max box size (None -> the deck's 128).  The wide-domain
+    # follow-up sets 64 so the 59M-particle load sorts in 8 boxes, not one.
+    max_grid_size: Optional[int] = None
     _scenarios: tuple[dict, ...] = ()  # full study table, when known
 
     # ---- plasma derivations (identical to the anchor's) ----
@@ -367,7 +377,12 @@ class Config:
                     "diag_period_frac": self.diag_period_frac,
                     "phi_ceiling": self.phi_ceiling,
                     "choke_sustain": self.choke_sustain},
-            "compute": {"gpu_arena_bytes": self.gpu_arena_bytes},
+            "compute": {
+                "gpu_arena_bytes": self.gpu_arena_bytes,
+                # omitted when unset, so baseline case hashes are unchanged
+                **({} if self.max_grid_size is None
+                   else {"max_grid_size": self.max_grid_size}),
+            },
         }
 
     def effective_config(self) -> dict:
@@ -424,6 +439,8 @@ class Config:
             raise ConfigError("run.t_end must exceed beam.t_on (gun never fires)")
         if self.phi_ceiling is not None and self.phi_ceiling <= 0:
             raise ConfigError("run.phi_ceiling must be positive or null")
+        if self.max_grid_size is not None and not (8 <= self.max_grid_size <= 1024):
+            raise ConfigError("compute.max_grid_size must be in [8, 1024] or null")
         if self.cfl >= 0.5:
             raise ConfigError(f"dt too large: CFL={self.cfl:.2f} (must be < 0.5)")
         if self.wpe * self.dt >= 0.2:
@@ -523,6 +540,8 @@ def load_config(path: Path | str, scenario: str | None = None) -> Config:
         phi_ceiling=(None if phi_ceiling_raw is None else float(phi_ceiling_raw)),
         choke_sustain=_f(run, "choke_sustain"),
         gpu_arena_bytes=_i(com, "gpu_arena_bytes"),
+        max_grid_size=(None if com.get("max_grid_size") is None
+                       else int(com["max_grid_size"])),
         _scenarios=scenarios,
     )
     if cfg.Bx_T is not None and not math.isfinite(cfg.Bx_T):

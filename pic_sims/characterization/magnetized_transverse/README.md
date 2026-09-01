@@ -216,6 +216,47 @@ amendment and ~6 GB of disk): the same scenario with t_end ≥ 2 µs and the
 box at ±60 mm — both change the frozen study, so they are a new
 pre-registered variant, not a rerun.
 
+## Follow-up plan: the wide/long 10× corner (pre-registered 2026-09-01, after the first cohort, before the wide runs)
+
+The first cohort's two FAILed gates say exactly what to change and nothing
+else: the 10× state was not settled at 800 ns (balance 6.8 %, tail still
++0.031 V/ns) and its 66 V sheath reached the ±32 mm box (edge |φ| 1.04 V).
+The variant study [`config_wide10x.yaml`](config_wide10x.yaml) therefore
+moves only the instrument, never the physics: box ±60 mm in x,y and
+z ∈ [−60, +68] mm (120 × 120 × 128 at the same 1.0 mm cells; the measured
+sheath falloff length at 66 V is ~12 mm, so the new boundary sits ~4 falloff
+lengths past the old one), t_end 2.0 µs (54 480 steps), 10 dumps,
+`max_grid_size: 64` (a new optional compute key; 59 M macroparticles sort in
+8 boxes) and an 8.5 GB arena. Two scenarios: the wide **B = 0 control**
+(attribution needs a control at the same box — the small-box deltas would
+otherwise mix the box effect the domain-truncation note predicts) and the
+wide **10×**. Policy [`acceptance_wide10x.yaml`](acceptance_wide10x.yaml)
+(`…wide10x.v1`): the same eight trust gates per scenario — including the two
+that failed, which is what this variant must now satisfy.
+
+Pre-registered predictions:
+
+- wide control: φ 9–15 V (truncation released moves the float down from
+  13.37 V; 1.2 µs more settling moves it up; both are ~±2 V), F_beam
+  14.5 ± 0.7 nN, escape ≥ 99 %, C_float 0.35–1.20 pF (toward the isolated
+  0.556 pF as the box recedes), Lorentz term zero.
+- wide 10×: settled float 55–85 V with the tail slope at the control's level
+  (|dφ/dt| ≤ 0.012 V/ns), Δφ (vs the wide control) +45 to +70 V, ΔF_thrust
+  −10 to −25 %, Lorentz correction +2 to +8 %, escape ≥ 95 %, benign-float
+  flag expected.
+
+Falsification: edge |φ| > 1 V even at ±60 mm → the 10× sheath is still
+box-limited and the corner stays a bound (next doubling is a new plan);
+φ > 150 V sustained → choke, FAILED; balance > 5 % at 2 µs → not settled on
+this clock and reported as such (the reduced-ion-mass caveat applies).
+
+Cost: ~6.5 h per scenario on the reference GPU (0.4 s/step × 54 480),
+~4 GB disk per run. `bash campaign_wide.sh` runs the chain.
+
+## Follow-up results
+
+Pending (the wide runs launch 2026-09-01, sequential overnight).
+
 ![cohort float](reference_results/joint_21e03d1d/figures/phi_overlay.png)
 ![cohort thrust](reference_results/joint_21e03d1d/figures/thrust_overlay.png)
 
