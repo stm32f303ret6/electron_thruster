@@ -1,0 +1,793 @@
+{
+  "analysis_id": "20260901T194231Z_9b3513be",
+  "metrics": [
+    {
+      "id": "b0_control__escape_fraction_pct",
+      "status": "OK",
+      "value": 99.05988181818181,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv pct_escape (cumulative beam fate), tail mean"
+    },
+    {
+      "id": "b0_control__f_beam_nN",
+      "status": "OK",
+      "value": 14.420444772727278,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv F_beam_N (escaped-beam z-momentum flux, the anchor readout)"
+    },
+    {
+      "id": "b0_control__f_thrust_nN",
+      "status": "OK",
+      "value": 14.420444772727278,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv F_thrust_N = F_beam - F_lorentz_z (momentum-conservation thrust on the body)"
+    },
+    {
+      "id": "b0_control__f_lorentz_z_nN",
+      "status": "OK",
+      "value": 0.0,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv F_lorentz_z_N (q v x B on all in-box particles, z)"
+    },
+    {
+      "id": "b0_control__f_lorentz_beam_z_nN",
+      "status": "OK",
+      "value": 0.0,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv F_lorentz_beam_z_N (beam-only Lorentz term)"
+    },
+    {
+      "id": "b0_control__lorentz_correction_pct",
+      "status": "OK",
+      "value": 0.0,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "(F_thrust / F_beam - 1) x 100: what the exit flux alone misses"
+    },
+    {
+      "id": "b0_control__phi_body_V",
+      "status": "OK",
+      "value": 13.368732727272725,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv phi_body, tail mean"
+    },
+    {
+      "id": "b0_control__current_balance",
+      "status": "OK",
+      "value": 0.024649921725493778,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "|I_escape - (I_amb_e - I_amb_i)| / I_escape, tail means"
+    },
+    {
+      "id": "b0_control__f_net_over_f_beam",
+      "status": "OK",
+      "value": 0.009690091673348175,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "|F_net| / |F_beam| momentum sanity bound"
+    },
+    {
+      "id": "b0_control__emitted_current_ratio",
+      "status": "OK",
+      "value": 1.0012739766081868,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv I_emit tail mean / beam.i_beam (source fidelity)"
+    },
+    {
+      "id": "b0_control__edge_phi_max_V",
+      "status": "OK",
+      "value": 0.3520119689168541,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "max |phi| three nodes inside the six open faces, last dump"
+    },
+    {
+      "id": "b0_control__phi_inject_axis_V",
+      "status": "OK",
+      "value": 8.728220762023593,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "phi at the source plane on axis, tail field dumps (REPORTED)"
+    },
+    {
+      "id": "b0_control__ke_predicted_eV",
+      "status": "OK",
+      "value": 155.7717792379764,
+      "unit": "eV",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "ke_inject_eV - phi(source plane): the exhaust energy the sheath returns (REPORTED)"
+    },
+    {
+      "id": "b0_control__scrape_charge_consistency",
+      "status": "OK",
+      "value": 9.328043917224385e-09,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "ambient-e EB charge: CSV ledger integral vs openPMD scrape total"
+    },
+    {
+      "id": "b0_control__scrape_charge_consistency_beam_escape",
+      "status": "OK",
+      "value": 6.911160694374287e-09,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "beam-escape charge: CSV ledger I_escape integral vs openPMD six-face scrape total"
+    },
+    {
+      "id": "b0_control__c_float_pF",
+      "status": "OK",
+      "value": 0.6219228563563629,
+      "unit": "pF",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "calibration.json C_float (Gauss law on the box faces at the 1 V init solve)"
+    },
+    {
+      "id": "b0_control__exhaust_ke_mean_eV",
+      "status": "OK",
+      "value": 156.74968863636366,
+      "unit": "eV",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv beam_escape_KE_mean (REPORTED, not gated)"
+    },
+    {
+      "id": "b0_control__late_dphidt_V_per_ns",
+      "status": "OK",
+      "value": 0.012008936753103158,
+      "unit": "V/ns",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "phi_body linear slope over the last 50 ns (REPORTED: finite-time equilibrium)"
+    },
+    {
+      "id": "transverse_1x__escape_fraction_pct",
+      "status": "OK",
+      "value": 99.05919318181817,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv pct_escape (cumulative beam fate), tail mean"
+    },
+    {
+      "id": "transverse_1x__f_beam_nN",
+      "status": "OK",
+      "value": 14.405678636363636,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv F_beam_N (escaped-beam z-momentum flux, the anchor readout)"
+    },
+    {
+      "id": "transverse_1x__f_thrust_nN",
+      "status": "OK",
+      "value": 14.400375909090908,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv F_thrust_N = F_beam - F_lorentz_z (momentum-conservation thrust on the body)"
+    },
+    {
+      "id": "transverse_1x__f_lorentz_z_nN",
+      "status": "OK",
+      "value": 0.0053020119545454545,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv F_lorentz_z_N (q v x B on all in-box particles, z)"
+    },
+    {
+      "id": "transverse_1x__f_lorentz_beam_z_nN",
+      "status": "OK",
+      "value": -0.005537507772727274,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv F_lorentz_beam_z_N (beam-only Lorentz term)"
+    },
+    {
+      "id": "transverse_1x__lorentz_correction_pct",
+      "status": "OK",
+      "value": -0.036809978943597166,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "(F_thrust / F_beam - 1) x 100: what the exit flux alone misses"
+    },
+    {
+      "id": "transverse_1x__phi_body_V",
+      "status": "OK",
+      "value": 13.661928409090907,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv phi_body, tail mean"
+    },
+    {
+      "id": "transverse_1x__current_balance",
+      "status": "OK",
+      "value": 0.02509322675819326,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "|I_escape - (I_amb_e - I_amb_i)| / I_escape, tail means"
+    },
+    {
+      "id": "transverse_1x__f_net_over_f_beam",
+      "status": "OK",
+      "value": 0.009462577620510951,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "|F_net| / |F_beam| momentum sanity bound"
+    },
+    {
+      "id": "transverse_1x__emitted_current_ratio",
+      "status": "OK",
+      "value": 1.0012739766081868,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv I_emit tail mean / beam.i_beam (source fidelity)"
+    },
+    {
+      "id": "transverse_1x__edge_phi_max_V",
+      "status": "OK",
+      "value": 0.35757960501152847,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "max |phi| three nodes inside the six open faces, last dump"
+    },
+    {
+      "id": "transverse_1x__phi_inject_axis_V",
+      "status": "OK",
+      "value": 8.919214702712305,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "phi at the source plane on axis, tail field dumps (REPORTED)"
+    },
+    {
+      "id": "transverse_1x__ke_predicted_eV",
+      "status": "OK",
+      "value": 155.5807852972877,
+      "unit": "eV",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "ke_inject_eV - phi(source plane): the exhaust energy the sheath returns (REPORTED)"
+    },
+    {
+      "id": "transverse_1x__scrape_charge_consistency",
+      "status": "OK",
+      "value": 1.2577559156735706e-09,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "ambient-e EB charge: CSV ledger integral vs openPMD scrape total"
+    },
+    {
+      "id": "transverse_1x__scrape_charge_consistency_beam_escape",
+      "status": "OK",
+      "value": 9.454389403105355e-09,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "beam-escape charge: CSV ledger I_escape integral vs openPMD six-face scrape total"
+    },
+    {
+      "id": "transverse_1x__c_float_pF",
+      "status": "OK",
+      "value": 0.6219228563563629,
+      "unit": "pF",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "calibration.json C_float (Gauss law on the box faces at the 1 V init solve)"
+    },
+    {
+      "id": "transverse_1x__exhaust_ke_mean_eV",
+      "status": "OK",
+      "value": 156.54994318181818,
+      "unit": "eV",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv beam_escape_KE_mean (REPORTED, not gated)"
+    },
+    {
+      "id": "transverse_1x__late_dphidt_V_per_ns",
+      "status": "OK",
+      "value": 0.012180721596028996,
+      "unit": "V/ns",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "phi_body linear slope over the last 50 ns (REPORTED: finite-time equilibrium)"
+    },
+    {
+      "id": "transverse_1x__lorentz_reduced_consistency",
+      "status": "OK",
+      "value": 0.007089049219155301,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "|<F_lorentz_z> reduced-diag samples - ledger| / |ledger|, tail (REPORTED)"
+    },
+    {
+      "id": "transverse_10x__escape_fraction_pct",
+      "status": "OK",
+      "value": 98.92217272727271,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv pct_escape (cumulative beam fate), tail mean"
+    },
+    {
+      "id": "transverse_10x__f_beam_nN",
+      "status": "OK",
+      "value": 11.935794545454545,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv F_beam_N (escaped-beam z-momentum flux, the anchor readout)"
+    },
+    {
+      "id": "transverse_10x__f_thrust_nN",
+      "status": "OK",
+      "value": 12.36371931818182,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv F_thrust_N = F_beam - F_lorentz_z (momentum-conservation thrust on the body)"
+    },
+    {
+      "id": "transverse_10x__f_lorentz_z_nN",
+      "status": "OK",
+      "value": -0.4279247772727272,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv F_lorentz_z_N (q v x B on all in-box particles, z)"
+    },
+    {
+      "id": "transverse_10x__f_lorentz_beam_z_nN",
+      "status": "OK",
+      "value": -0.6408779409090908,
+      "unit": "nN",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv F_lorentz_beam_z_N (beam-only Lorentz term)"
+    },
+    {
+      "id": "transverse_10x__lorentz_correction_pct",
+      "status": "OK",
+      "value": 3.585222341902994,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "(F_thrust / F_beam - 1) x 100: what the exit flux alone misses"
+    },
+    {
+      "id": "transverse_10x__phi_body_V",
+      "status": "OK",
+      "value": 66.50929818181818,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv phi_body, tail mean"
+    },
+    {
+      "id": "transverse_10x__current_balance",
+      "status": "OK",
+      "value": 0.06798110816502766,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "|I_escape - (I_amb_e - I_amb_i)| / I_escape, tail means"
+    },
+    {
+      "id": "transverse_10x__f_net_over_f_beam",
+      "status": "OK",
+      "value": 0.04746741238386537,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "|F_net| / |F_beam| momentum sanity bound"
+    },
+    {
+      "id": "transverse_10x__emitted_current_ratio",
+      "status": "OK",
+      "value": 1.0012739766081868,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv I_emit tail mean / beam.i_beam (source fidelity)"
+    },
+    {
+      "id": "transverse_10x__edge_phi_max_V",
+      "status": "OK",
+      "value": 1.0359125964129978,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "max |phi| three nodes inside the six open faces, last dump"
+    },
+    {
+      "id": "transverse_10x__phi_inject_axis_V",
+      "status": "OK",
+      "value": 46.04419260001181,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "phi at the source plane on axis, tail field dumps (REPORTED)"
+    },
+    {
+      "id": "transverse_10x__ke_predicted_eV",
+      "status": "OK",
+      "value": 118.45580739998819,
+      "unit": "eV",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "ke_inject_eV - phi(source plane): the exhaust energy the sheath returns (REPORTED)"
+    },
+    {
+      "id": "transverse_10x__scrape_charge_consistency",
+      "status": "OK",
+      "value": 3.849213054946505e-09,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "ambient-e EB charge: CSV ledger integral vs openPMD scrape total"
+    },
+    {
+      "id": "transverse_10x__scrape_charge_consistency_beam_escape",
+      "status": "OK",
+      "value": 2.0768520318640007e-09,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "beam-escape charge: CSV ledger I_escape integral vs openPMD six-face scrape total"
+    },
+    {
+      "id": "transverse_10x__c_float_pF",
+      "status": "OK",
+      "value": 0.6219228563563629,
+      "unit": "pF",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "calibration.json C_float (Gauss law on the box faces at the 1 V init solve)"
+    },
+    {
+      "id": "transverse_10x__exhaust_ke_mean_eV",
+      "status": "OK",
+      "value": 119.55583181818183,
+      "unit": "eV",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "contactor_log.csv beam_escape_KE_mean (REPORTED, not gated)"
+    },
+    {
+      "id": "transverse_10x__late_dphidt_V_per_ns",
+      "status": "OK",
+      "value": 0.031088313348380803,
+      "unit": "V/ns",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "phi_body linear slope over the last 50 ns (REPORTED: finite-time equilibrium)"
+    },
+    {
+      "id": "transverse_10x__lorentz_reduced_consistency",
+      "status": "OK",
+      "value": 0.008541237482289412,
+      "unit": "-",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": {
+        "start_iteration": 17500,
+        "end_iteration": 21780
+      },
+      "source": "|<F_lorentz_z> reduced-diag samples - ledger| / |ledger|, tail (REPORTED)"
+    },
+    {
+      "id": "dphi_1x_V",
+      "status": "OK",
+      "value": 0.29319568181818134,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "phi_body(transverse_1x) - phi_body(b0_control), tail means"
+    },
+    {
+      "id": "dthrust_1x_pct",
+      "status": "OK",
+      "value": -0.13916951905897923,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "(F_thrust(transverse_1x) / F_thrust(b0_control) - 1) x 100"
+    },
+    {
+      "id": "descape_1x_pp",
+      "status": "OK",
+      "value": -0.000688636363634032,
+      "unit": "pp",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "escape(transverse_1x) - escape(b0_control), percentage points"
+    },
+    {
+      "id": "dphi_10x_V",
+      "status": "OK",
+      "value": 53.14056545454545,
+      "unit": "V",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "phi_body(transverse_10x) - phi_body(b0_control), tail means"
+    },
+    {
+      "id": "dthrust_10x_pct",
+      "status": "OK",
+      "value": -14.262566009304011,
+      "unit": "%",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "(F_thrust(transverse_10x) / F_thrust(b0_control) - 1) x 100"
+    },
+    {
+      "id": "descape_10x_pp",
+      "status": "OK",
+      "value": -0.1377090909090981,
+      "unit": "pp",
+      "uncertainty": null,
+      "sample_count": null,
+      "window": null,
+      "source": "escape(transverse_10x) - escape(b0_control), percentage points"
+    }
+  ]
+}

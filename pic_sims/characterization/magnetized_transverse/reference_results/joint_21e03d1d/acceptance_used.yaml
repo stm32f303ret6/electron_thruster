@@ -1,0 +1,252 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for characterization.magnetized_transverse -- the
+# magnetic axis, tier M2 (B perpendicular to the thrust axis; 3D deck).
+#
+# Pre-registered 2026-09-01 BEFORE any run (README.md, plan section).
+# Required gates ask whether each run measures what it claims to measure
+# (the anchor's trust gates, re-identified for the 3D deck, plus the two
+# numerics checks this deck adds: source fidelity and the Gauss-law
+# capacitance).  The measurements themselves -- the control's closure on
+# the RZ anchor, the 1x null, the 10x collection tax and the Lorentz
+# correction -- are REPORTED gates: read the value, not the flag.
+# Changing any tolerance requires a new policy_id.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: characterization.magnetized_transverse.v1
+stage_id: characterization.magnetized_transverse
+evidence_kind: exploratory_measurement
+
+gates:
+  # ================= required: trust gates, every scenario =================
+
+  # --- b0_control ---
+  - id: b0_beam_escapes
+    required: true
+    metric: b0_control__escape_fraction_pct
+    comparison: at_least
+    minimum: 95.0
+  - id: b0_steady_current_balance
+    required: true
+    metric: b0_control__current_balance
+    comparison: at_most
+    maximum: 0.05
+  - id: b0_momentum_sanity_bound
+    required: true
+    metric: b0_control__f_net_over_f_beam
+    comparison: at_most
+    maximum: 1.0
+  - id: b0_sheath_and_plume_contained
+    required: true
+    metric: b0_control__edge_phi_max_V
+    comparison: at_most
+    maximum: 1.0
+  - id: b0_scrape_ledger_consistent_with_dumps
+    required: true
+    metric: b0_control__scrape_charge_consistency
+    comparison: at_most
+    maximum: 0.02
+  - id: b0_beam_escape_ledger_consistent_with_dumps
+    required: true
+    metric: b0_control__scrape_charge_consistency_beam_escape
+    comparison: at_most
+    maximum: 0.02
+  # The prescribed source must deliver the configured current (flux injection
+  # through a 1 mm-cell disk mask; a 3 % band covers the mask discretisation).
+  - id: b0_source_delivers_commanded_current
+    required: true
+    metric: b0_control__emitted_current_ratio
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.03
+  # Gauss-law capacitance of the 1 mm-resolved body in its box: the RZ anchor
+  # measured 0.645 pF at 0.15 mm; the isolated-sphere scale is 0.556 pF.
+  - id: b0_capacitance_calibration_sane
+    required: true
+    metric: b0_control__c_float_pF
+    comparison: within_range
+    minimum: 0.35
+    maximum: 1.20
+
+  # --- transverse_1x ---
+  - id: t1x_beam_escapes
+    required: true
+    metric: transverse_1x__escape_fraction_pct
+    comparison: at_least
+    minimum: 95.0
+  - id: t1x_steady_current_balance
+    required: true
+    metric: transverse_1x__current_balance
+    comparison: at_most
+    maximum: 0.05
+  - id: t1x_momentum_sanity_bound
+    required: true
+    metric: transverse_1x__f_net_over_f_beam
+    comparison: at_most
+    maximum: 1.0
+  - id: t1x_sheath_and_plume_contained
+    required: true
+    metric: transverse_1x__edge_phi_max_V
+    comparison: at_most
+    maximum: 1.0
+  - id: t1x_scrape_ledger_consistent_with_dumps
+    required: true
+    metric: transverse_1x__scrape_charge_consistency
+    comparison: at_most
+    maximum: 0.02
+  - id: t1x_beam_escape_ledger_consistent_with_dumps
+    required: true
+    metric: transverse_1x__scrape_charge_consistency_beam_escape
+    comparison: at_most
+    maximum: 0.02
+  - id: t1x_source_delivers_commanded_current
+    required: true
+    metric: transverse_1x__emitted_current_ratio
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.03
+  - id: t1x_capacitance_calibration_sane
+    required: true
+    metric: transverse_1x__c_float_pF
+    comparison: within_range
+    minimum: 0.35
+    maximum: 1.20
+
+  # --- transverse_10x ---
+  - id: t10x_beam_escapes
+    required: true
+    metric: transverse_10x__escape_fraction_pct
+    comparison: at_least
+    minimum: 95.0
+  - id: t10x_steady_current_balance
+    required: true
+    metric: transverse_10x__current_balance
+    comparison: at_most
+    maximum: 0.05
+  - id: t10x_momentum_sanity_bound
+    required: true
+    metric: transverse_10x__f_net_over_f_beam
+    comparison: at_most
+    maximum: 1.0
+  - id: t10x_sheath_and_plume_contained
+    required: true
+    metric: transverse_10x__edge_phi_max_V
+    comparison: at_most
+    maximum: 1.0
+  - id: t10x_scrape_ledger_consistent_with_dumps
+    required: true
+    metric: transverse_10x__scrape_charge_consistency
+    comparison: at_most
+    maximum: 0.02
+  - id: t10x_beam_escape_ledger_consistent_with_dumps
+    required: true
+    metric: transverse_10x__scrape_charge_consistency_beam_escape
+    comparison: at_most
+    maximum: 0.02
+  - id: t10x_source_delivers_commanded_current
+    required: true
+    metric: transverse_10x__emitted_current_ratio
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.03
+  - id: t10x_capacitance_calibration_sane
+    required: true
+    metric: transverse_10x__c_float_pF
+    comparison: within_range
+    minimum: 0.35
+    maximum: 1.20
+
+  # ============ reported, NOT required: the pre-registered predictions ============
+
+  # Closure of the 3D control on the RZ anchor (16.98 V, 13.65 nN, 98.44 %):
+  # the 1 mm solid-body deck must land on the anchor's operating point within
+  # the grid/body/box differences the README budgets.
+  - id: b0_closes_on_anchor_float
+    required: false
+    metric: b0_control__phi_body_V
+    comparison: abs_within
+    target: 17.0
+    tolerance: 4.0
+  - id: b0_closes_on_anchor_thrust
+    required: false
+    metric: b0_control__f_beam_nN
+    comparison: abs_within
+    target: 13.65
+    tolerance: 1.0
+  - id: b0_lorentz_term_vanishes
+    required: false
+    metric: b0_control__lorentz_correction_pct
+    comparison: abs_within
+    target: 0.0
+    tolerance: 0.1
+
+  # H-M2-null at 1x LEO: the anchor's operating point survives transverse B
+  # (the M1 bounds re-used: |dphi| <= 2 V, |dF|/F <= 5 %, |descape| <= 1 pp).
+  - id: t1x_null_float
+    required: false
+    metric: dphi_1x_V
+    comparison: abs_within
+    target: 0.0
+    tolerance: 2.0
+  - id: t1x_null_thrust
+    required: false
+    metric: dthrust_1x_pct
+    comparison: abs_within
+    target: 0.0
+    tolerance: 5.0
+  - id: t1x_null_escape
+    required: false
+    metric: descape_1x_pp
+    comparison: abs_within
+    target: 0.0
+    tolerance: 1.0
+  - id: t1x_lorentz_correction_negligible
+    required: false
+    metric: transverse_1x__lorentz_correction_pct
+    comparison: abs_within
+    target: 0.0
+    tolerance: 0.2
+
+  # H-M2-tax at 10x: a collection tax through the float, bracketed from the
+  # field-aligned M1 measurement (+33 V) and the transverse flux-tube
+  # geometry: dphi in [+20, +60] V, thrust down 5-25 % through the float,
+  # and a 2-8 % Lorentz correction the exit flux alone would miss.
+  - id: t10x_float_tax_in_band
+    required: false
+    metric: dphi_10x_V
+    comparison: within_range
+    minimum: 20.0
+    maximum: 60.0
+  - id: t10x_thrust_tax_in_band
+    required: false
+    metric: dthrust_10x_pct
+    comparison: within_range
+    minimum: -25.0
+    maximum: -5.0
+  - id: t10x_lorentz_correction_in_band
+    required: false
+    metric: transverse_10x__lorentz_correction_pct
+    comparison: within_range
+    minimum: 2.0
+    maximum: 8.0
+  - id: t10x_lorentz_ledger_matches_reduced_diag
+    required: false
+    metric: transverse_10x__lorentz_reduced_consistency
+    comparison: at_most
+    maximum: 0.25
+
+  # Benign-float reporters (the mission's 50 V limit), per scenario.
+  - id: b0_benign_float
+    required: false
+    metric: b0_control__phi_body_V
+    comparison: at_most
+    maximum: 50.0
+  - id: t1x_benign_float
+    required: false
+    metric: transverse_1x__phi_body_V
+    comparison: at_most
+    maximum: 50.0
+  - id: t10x_benign_float
+    required: false
+    metric: transverse_10x__phi_body_V
+    comparison: at_most
+    maximum: 50.0

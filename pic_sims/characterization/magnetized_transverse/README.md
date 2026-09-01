@@ -154,7 +154,70 @@ restores.
 
 ## Results
 
-Pending: the cohort runs after the numerics mini-ladder (2026-09-01).
+Reference cohort `joint_21e03d1d` (runs `20260901T174526Z_b0_control_d6f56019`,
+`20260901T182023Z_transverse_1x_6a65fe5a`, `20260901T190346Z_transverse_10x_8ab76d60`;
+analysis `20260901T194231Z_9b3513be`; commit `28d6c18`; ~38 min each on the
+reference GPU, strictly sequential, 2026-09-01). Verdict **FAIL (exit 1)**:
+22 of 24 required gates PASS, and the two failures are `transverse_10x`
+trust gates — they are the finding for that corner, stated below.
+
+| quantity | `b0_control` | `transverse_1x` | `transverse_10x` |
+|---|---:|---:|---:|
+| float φ [V] | 13.37 | 13.66 | 66.51 |
+| F_beam (exit flux) [nN] | 14.42 | 14.41 | 11.94 |
+| F_thrust = F_beam − F_L,z [nN] | 14.42 | 14.40 | 12.36 |
+| F_L,z (in-box Lorentz) [nN] | +0.000 | +0.005 | −0.428 |
+| Lorentz correction [%] | +0.00 | −0.04 | **+3.59** |
+| escape [%] | 99.06 | 99.06 | 98.92 |
+| exhaust KE [eV] (predicted) | 156.7 (155.8) | 156.5 (155.6) | 119.6 (118.5) |
+| F_net/F_beam | 0.010 | 0.009 | 0.048 |
+| current balance | 0.025 | 0.025 | **0.068 FAIL** |
+| edge \|φ\| [V] | 0.35 | 0.36 | **1.04 FAIL** |
+| late dφ/dt [V/ns] | 0.012 | 0.012 | 0.031 |
+| C_float [pF] | 0.622 | 0.622 | 0.622 |
+| I_emit/I_beam | 1.0013 | 1.0013 | 1.0013 |
+| ledger vs dumps | ≤ 9e-9 | ≤ 9e-9 | ≤ 4e-9 |
+
+1. **The control closes on the anchor** inside every pre-registered band:
+   φ 13.37 V (17 ± 4), F_beam 14.42 nN (13.65 ± 1.0), escape 99.1 %,
+   C 0.622 pF vs the anchor's RZ 0.645 pF. The +5 % thrust decomposes
+   exactly: exhaust KE is 9 eV above the anchor's (lower float, and the
+   source plane at lid + 2 mm has already dropped 4.7 V of sheath) and
+   escape is 0.7 pp higher — both stated in the plan's limitations.
+2. **H-M2-null at 1× LEO holds on every pre-registered bound**: Δφ =
+   +0.29 V (≤ 2), ΔF_thrust = −0.14 % (≤ 5 %), Δescape = 0.00 pp (≤ 1),
+   Lorentz correction −0.04 % (≤ 0.2 %). With the M1 field-aligned null,
+   the committed operating point survives the flight-strength field in
+   both orientations. This retires the flight-condition half of the
+   question the design note called the project's largest unexamined risk.
+3. **The 10× corner is a measured tax, reported as bounds.** φ reaches
+   66.5 V (tail mean; endpoint 69.2 V) and is still rising 0.031 V/ns at
+   800 ns, and the 66 V sheath reaches the grounded box (edge |φ| 1.04 V):
+   the two failed trust gates say the state is neither settled nor
+   box-converged, so 66.5 V is a floor on the settled float and −14.3 %
+   the corresponding thrust tax through KE = KE_lid − φ (exhaust 119.6 eV
+   vs the 118.5 predicted from the source-plane potential). Every
+   pre-registered prediction band nevertheless holds: Δφ +53.1 V in
+   [+20, +60]; ΔF −14.3 % in [−25, −5]; Lorentz correction +3.59 % in
+   [2, 8] (and the per-step ledger agrees with the ParticleMomentum
+   reduced diagnostic to 0.9 %). Against the field-aligned M1 10× point
+   (φ 48.6 V, F −11 %), the transverse tax is ~18 V deeper — the
+   direction the plan's flux-tube geometry argument predicted. The 50 V
+   benign-float reporter flags accordingly.
+4. **The Lorentz ledger behaves as momentum conservation demands**: zero
+   in the control, −0.04 % at 1×, and at 10× it restores the 3.6 % of
+   z-momentum the beam exchanges with the geomagnetic field over its 18°
+   of gyration inside the box — confirming quantitatively that the exit
+   flux alone under-reads the force on the body and that the correction,
+   not the far-field closure scale, is what B ⊥ ẑ changes at the craft.
+
+Follow-up that would settle the 10× corner (not run; needs a plan
+amendment and ~6 GB of disk): the same scenario with t_end ≥ 2 µs and the
+box at ±60 mm — both change the frozen study, so they are a new
+pre-registered variant, not a rerun.
+
+![cohort float](reference_results/joint_21e03d1d/figures/phi_overlay.png)
+![cohort thrust](reference_results/joint_21e03d1d/figures/thrust_overlay.png)
 
 ## Dependencies
 
