@@ -1,0 +1,61 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for characterization.transverse_b_numerics -- the
+# validation mini-ladder under the transverse-B measurement.  Pre-registered
+# 2026-09-01.  Every gate is a numerics claim the measurement rides on:
+# the Boris push in the applied field reproduces gyration at the 1x and 10x
+# field on the measurement grid/step, conserves energy, and drifts at E x B.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: characterization.transverse_b_numerics.v1
+stage_id: characterization.transverse_b_numerics
+evidence_kind: analytic_validation
+
+gates:
+  - id: gyro_1x_frequency_exact
+    required: true
+    metric: gyro_1x__omega_ratio
+    comparison: abs_within
+    target: 1.0
+    tolerance: 2.0e-3
+  - id: gyro_1x_radius_exact
+    required: true
+    metric: gyro_1x__rg_ratio
+    comparison: abs_within
+    target: 1.0
+    tolerance: 5.0e-3
+  - id: gyro_1x_energy_conserved
+    required: true
+    metric: gyro_1x__ke_drift
+    comparison: at_most
+    maximum: 1.0e-6
+
+  - id: gyro_10x_frequency_exact
+    required: true
+    metric: gyro_10x__omega_ratio
+    comparison: abs_within
+    target: 1.0
+    tolerance: 2.0e-3
+  - id: gyro_10x_radius_exact
+    required: true
+    metric: gyro_10x__rg_ratio
+    comparison: abs_within
+    target: 1.0
+    tolerance: 5.0e-3
+  - id: gyro_10x_energy_conserved
+    required: true
+    metric: gyro_10x__ke_drift
+    comparison: at_most
+    maximum: 1.0e-6
+
+  - id: exb_drift_exact
+    required: true
+    metric: exb_10x__vd_ratio
+    comparison: abs_within
+    target: 1.0
+    tolerance: 1.0e-2
+  - id: exb_no_axial_drift
+    required: true
+    metric: exb_10x__vz_over_vd
+    comparison: abs_within
+    target: 0.0
+    tolerance: 2.0e-2

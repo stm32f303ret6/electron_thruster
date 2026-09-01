@@ -129,6 +129,23 @@ STAGES: tuple[Stage, ...] = (
           Path("characterization/350V_400km_slender"),
           requires=("capstone.floating_body",),
           group="characterization"),
+    # Tier M2 of the magnetized axis (B perpendicular to the thrust axis, the
+    # flight geometry) -- a Cartesian 3D deck with the anchor body resolved.
+    # Pre-registered 2026-09-01.  transverse_b_numerics is the validation
+    # mini-ladder the measurement rides on (single test electrons on the
+    # measurement grid vs closed forms); run it first.  Both depend only on
+    # the anchor per the spoke rule; the numerics->measurement order is a
+    # documented convention (magnetized_transverse/README.md).
+    Stage("characterization.transverse_b_numerics",
+          Path("characterization/transverse_b_numerics"),
+          requires=("capstone.floating_body",),
+          scenarios=("gyro_1x", "gyro_10x", "exb_10x"),
+          group="characterization"),
+    Stage("characterization.magnetized_transverse",
+          Path("characterization/magnetized_transverse"),
+          requires=("capstone.floating_body",),
+          scenarios=("b0_control", "transverse_1x", "transverse_10x"),
+          group="characterization"),
     # The fixed-thrust throttle stages (geometry-specific controller work)
     # were moved out of the concept-feasibility ladder to
     # future_work/ucurve_pic_stages/ -- power consumption in the concept

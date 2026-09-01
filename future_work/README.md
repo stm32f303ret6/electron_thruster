@@ -112,9 +112,11 @@ than to a universal electron-gun limit.
 5. Magnetized axis. Tier M1 (field-aligned Bz, executed 2026-08-10) closed
    the near-field half: null at 1× LEO, an ~11 % thrust tax through the
    float at 10× (`../pic_sims/characterization/magnetized_1x/`,
-   `magnetized_10x/`). Far-field current closure under transverse B (tier
-   M2, the flight geometry) remains open;
-   [`M2_TRANSVERSE_B.md`](M2_TRANSVERSE_B.md) holds its design.
+   `magnetized_10x/`). Transverse B (tier M2, the flight geometry) is
+   executed 2026-09-01 as a 3D deck with the body resolved
+   (`../pic_sims/characterization/magnetized_transverse/`);
+   [`M2_TRANSVERSE_B.md`](M2_TRANSVERSE_B.md) keeps the earlier far-field
+   design and the reason it was not built.
 6. Cathode selection. Spindt / field-emitter arrays: emitting area, gate
    power, collimation (single-gate angular spread is appreciable; double-gate
    collimation is only demonstrated at 20 keV), and downstream space-charge

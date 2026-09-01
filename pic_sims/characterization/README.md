@@ -23,6 +23,8 @@ tests, and committed evidence under `reference_results/`.
 | `magnetized_10x/` | field-aligned Bz = 300 µT (10×) | `characterization.magnetized_10x` | PASS 2026-08-10 — collection tax: φ +33 V, F −11 % |
 | `350V_400km/` | drive voltage 350 V (400 km-enabling envelope step) | `characterization.350V_400km` | PASS 2026-08-17 — φ 48.29 V (tail; 51.1 V endpoint still rising), F 40.48 nN vs 40.5 predicted |
 | `350V_400km_slender/` | voltage 350 V **and** slender geometry — the 2×2 factorial corner | `characterization.350V_400km_slender` | PASS 2026-08-17 — φ 14.00 V (predicted 11–17), F 43.33 nN (predicted 42–43): the laws compose |
+| `transverse_b_numerics/` | numerics mini-ladder for tier M2: test electrons on the 3D grid vs closed forms (gyration, E×B) | `characterization.transverse_b_numerics` | pre-registered 2026-09-01, running |
+| `magnetized_transverse/` | field **perpendicular** to the thrust axis (tier M2, the flight geometry): Cartesian 3D deck, anchor body resolved, Bx = 0 / 30 / 300 µT | `characterization.magnetized_transverse` | pre-registered 2026-09-01, running |
 
 The `350V_400km_slender` spoke is the one deliberate exception to the
 one-axis rule: it moves voltage and geometry together. Both single-axis
@@ -52,5 +54,7 @@ pair ran strictly sequentially on one GPU); the run manifests under each
 spoke's `reference_results/` carry the exact decks. Pre-registered
 predictions and results live inside the spokes (each spoke README's plan
 and results sections; the pre-run plan files are preserved in git
-history). The open tier-M2 transverse-field design
-is at [`../../future_work/M2_TRANSVERSE_B.md`](../../future_work/M2_TRANSVERSE_B.md).
+history). Tier M2 (transverse field) is executed by the two 3D stages
+above; the design note that preceded them, and why its far-field
+control-volume instrument was not built, is at
+[`../../future_work/M2_TRANSVERSE_B.md`](../../future_work/M2_TRANSVERSE_B.md).
