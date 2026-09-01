@@ -1,0 +1,77 @@
+# ----------------------------------------------------------------------
+# characterization.magnetized_transverse -- WIDE/LONG follow-up study
+# (pre-registered variant, 2026-09-01; README.md "Follow-up plan")
+#
+# The first cohort (reference_results/joint_21e03d1d) measured the 10x
+# transverse corner as BOUNDS: phi 66.5 V still rising 0.031 V/ns at
+# 800 ns, sheath at the +-32 mm box (its two FAILed trust gates).  This
+# variant changes exactly what those two gates flagged, nothing else:
+#   - box +-60 mm in x,y and z in [-60, +68] mm (120x120x128 at the same
+#     1.0 mm cells; the 66 V sheath decays with an ~12 mm falloff length,
+#     so the boundary sits ~4 falloff lengths beyond the old one);
+#   - t_end 2.0 us (54 480 steps; the 800 ns rise extrapolates settled
+#     well before this on its own trajectory);
+#   - diag_period_frac 10 (disk), gpu_arena_bytes 8.5e9 and
+#     max_grid_size 64 (59M macroparticles sort in 8 boxes, not one).
+# Physics is IDENTICAL to the committed study: same plasma row, body,
+# source, schedule, reservoir, seed.  Two scenarios: the wide B = 0
+# control (attribution needs a control at the same box) and the wide 10x.
+# Gates: acceptance_wide10x.yaml (policy ...wide10x.v1).
+# ----------------------------------------------------------------------
+stage_id: characterization.magnetized_transverse
+
+electrical:
+  phi_body_init: 0.0
+
+beam:
+  i_beam: 0.342e-3
+  t_on: 150.0e-9
+  ke_inject_eV: 164.5
+  emit_radius: 1.5e-3
+  rms_velocity: 2.6e5
+
+geometry:
+  r_probe: 5.0e-3
+  z_bot: -5.0e-3
+  z_top: 0.5e-3
+
+plasma:
+  n0: 1.627e12
+  Te_K: 1318.8
+  Ti_K: 936.2
+  ion_mass_me: 400.0
+
+scenarios:
+  - name: b0_control
+    Bx_T: null
+  - name: transverse_10x
+    Bx_T: 3.0e-4
+
+reservoir:
+  enabled: true
+  frac: 0.7
+  every: 25
+
+domain:
+  half_x: 0.060            # [m] doubled (was 0.030)
+  half_y: 0.060
+  zmargin_lo: 55.0e-3      # [m] (was 25 mm)
+  zmargin_hi: 65.0e-3      # [m] (was 35 mm)
+  edge_phi_max: 1.0
+
+numerics:
+  dx: 1.0e-3
+  dt: null
+  ppc: 16
+  ppc_beam: 16
+
+run:
+  t_end: 2.0e-6            # [s] (was 800 ns)
+  max_steps: 60000
+  diag_period_frac: 10
+  phi_ceiling: 150.0
+  choke_sustain: 50.0e-9
+
+compute:
+  gpu_arena_bytes: 8500000000
+  max_grid_size: 64

@@ -603,7 +603,8 @@ def build_simulation(cfg: Config, geom: Geometry, run: lc.Run):
         upper_boundary_conditions=["dirichlet"] * 3,
         lower_boundary_conditions_particles=["absorbing"] * 3,
         upper_boundary_conditions_particles=["absorbing"] * 3,
-        warpx_max_grid_size=MAX_GRID_SIZE, warpx_blocking_factor=BLOCKING_FACTOR)
+        warpx_max_grid_size=(cfg.max_grid_size or MAX_GRID_SIZE),
+        warpx_blocking_factor=BLOCKING_FACTOR)
     solver = picmi.ElectrostaticSolver(
         grid=grid, method="Multigrid", required_precision=1e-6,
         maximum_iterations=500, warpx_self_fields_verbosity=0)

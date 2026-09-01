@@ -126,6 +126,25 @@ def test_reservoir_shell_clears_the_body():
     assert cfg.r_probe < xh and cfg.r_probe < yh
 
 
+def test_max_grid_size_is_optional_and_baseline_preserving(tmp_path):
+    """Absent -> not in the freeze (committed case hashes unchanged); set ->
+    carried, round-tripped, validated."""
+    base = load_config(CONFIG, scenario="b0_control")
+    assert base.max_grid_size is None
+    assert "max_grid_size" not in base.effective_config()["compute"]
+    raw = _raw(); raw["compute"]["max_grid_size"] = 64
+    cfg = load_config(_write(tmp_path, raw), scenario="b0_control")
+    assert cfg.max_grid_size == 64
+    frozen = cfg.effective_config()
+    assert frozen["compute"]["max_grid_size"] == 64
+    p = tmp_path / "frozen.yaml"
+    p.write_text(yaml.safe_dump(frozen, sort_keys=False))
+    assert load_config(p).max_grid_size == 64
+    raw = _raw(); raw["compute"]["max_grid_size"] = 4
+    with pytest.raises(ConfigError):
+        load_config(_write(tmp_path, raw), scenario="b0_control")
+
+
 def test_analytic_capacitance_scale():
     assert analytic_capacitance(5.0e-3) * 1e12 == pytest.approx(0.5563, rel=1e-3)
 
