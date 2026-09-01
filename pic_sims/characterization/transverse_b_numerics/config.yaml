@@ -1,0 +1,53 @@
+# ----------------------------------------------------------------------
+# characterization.transverse_b_numerics -- the validation mini-ladder for
+# the transverse-B measurement (../magnetized_transverse): single test
+# electrons on the SAME grid and time step, against closed forms.
+#
+# Source study: one test particle per scenario.  The grid and dt below are
+# the measurement deck's derived values (its tests and this stage's tests
+# both assert the equality); change one, change both.
+# ----------------------------------------------------------------------
+stage_id: characterization.transverse_b_numerics
+
+grid:                      # == magnetized_transverse (64 x 64 x 72 at 1.0 mm)
+  dx: 1.0e-3               # [m]
+  nx: 64
+  ny: 64
+  nz: 72
+  zmin: -0.030             # [m]  (z in [-30, 42] mm; x,y in +-32 mm)
+
+numerics:
+  dt: 3.6711e-11           # [s]  the measurement deck's CFL step (0.3*dx/(v_inject+4vth))
+
+scenarios:
+  # Gyration of an exhaust electron (the measurement's KE_lid) launched along
+  # +z from the lower box: r_g and omega_c against the exact values.
+  - name: gyro_1x
+    Bx_T: 3.0e-5           # [T] 1x LEO: r_g = 1.44 m, only a 2.4 deg arc fits the box
+    Ez_V_per_m: 0.0
+    ke_eV: 164.5
+    x0: 0.0
+    y0: 0.0
+    z0: -0.025
+    t_run: 8.0e-9          # [s] 61 mm of flight, still inside the box
+  - name: gyro_10x
+    Bx_T: 3.0e-4           # [T] 10x: r_g = 144 mm, a 25 deg arc
+    Ez_V_per_m: 0.0
+    ke_eV: 164.5
+    x0: 0.0
+    y0: 0.0
+    z0: -0.025
+    t_run: 8.0e-9
+  # E x B drift of an electron born at rest: v_d = Ez/Bx = 1.0e5 m/s over
+  # three gyroperiods (35.7 mm of drift along +y, cycloid amplitude 1.9 mm).
+  - name: exb_10x
+    Bx_T: 3.0e-4
+    Ez_V_per_m: 30.0       # [V/m] via Dirichlet potentials on the z faces (x,y periodic)
+    ke_eV: 0.0
+    x0: 0.0
+    y0: -0.025
+    z0: 0.006
+    t_run: 3.570e-7        # [s] 3.0 gyroperiods (T_c = 119.0 ns)
+
+compute:
+  gpu_arena_bytes: 1000000000

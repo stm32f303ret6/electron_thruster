@@ -1,5 +1,19 @@
 # Tier M2: transverse-B momentum coupling (3D similarity deck; design only)
 
+> **Status (2026-09-01).** Tier M2 is being executed, but not with the
+> instrument below. Momentum conservation for any box around the craft gives
+> `F_craft = −(net momentum flux out) + Σ q v×B` over the box; the second
+> term is the geomagnetic field's force on the beam and plasma inside the
+> box, grows with the box by construction, and is what a control-volume
+> ledger of size L reads as `L/r_g`. It is not force on the craft, which
+> feels only emission recoil, impacts, and sheath stress. The executed
+> instrument is therefore the anchor body, resolved, in a Cartesian 3D deck
+> with B ⊥ ẑ and a thrust ledger corrected for the in-box Lorentz term:
+> `pic_sims/characterization/magnetized_transverse/` (pre-registration in
+> its README) with `transverse_b_numerics/` as the validation mini-ladder
+> this note asked for. The text below is preserved as the design record.
+
+
 Extracted from the magnetized-axis plan (pre-registered 2026-08-08 as
 `MAGNETIZED_PLAN.md`, preserved in git history) when tier M1 was unified into
 the executed spokes (`pic_sims/characterization/magnetized_1x/`,

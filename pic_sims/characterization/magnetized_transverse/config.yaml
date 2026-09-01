@@ -1,0 +1,99 @@
+# ----------------------------------------------------------------------
+# characterization.magnetized_transverse -- physics/numerics config
+# (the anchor's chipsat body in Cartesian 3D with B PERPENDICULAR to the
+#  thrust axis: tier M2 of the magnetized axis, the flight geometry)
+#
+# This file is the SOURCE STUDY: the shared physics plus the scenario table
+# (one transverse field strength each).  simulation.py --scenario NAME
+# resolves ONE scenario per process; its frozen config_used.yaml carries only
+# that scenario's effective physics, and its run manifest records this
+# study's SHA-256 so the cohort analysis can reject mixed generations.
+#
+# What is carried VERBATIM from the anchor (capstone.floating_body): the
+# plasma row, the body radius and height, the beam current, the beam thermal
+# spread, the run schedule (gun on at 150 ns, 800 ns end), the reservoir
+# policy, the containment watchdog.  What changes, and why (README.md):
+#   - Cartesian 3D box instead of RZ (a transverse B breaks axisymmetry);
+#   - dx = 1.0 mm (lambda_D/2) instead of 0.15 mm: the box has 3e5 cells,
+#     not 1e8.  The sheath (tens of mm at phi ~ 17 V) stays resolved; the
+#     gun (0.4 mm walls, 0.5 mm spot) does not, so
+#   - the body is SOLID and the escaped beam is a prescribed source on the
+#     lid at the anchor's measured lid energy: KE_lid = KE_exhaust + phi =
+#     147.5 + 17.0 = 164.5 eV.  Nothing in the gun is re-modelled; the anchor
+#     already measured it.
+#
+# PyYAML 1.1: decimal point AND signed exponent; helpers.py coerces every
+# numeric leaf regardless.
+# ----------------------------------------------------------------------
+stage_id: characterization.magnetized_transverse
+
+electrical:
+  phi_body_init: 0.0       # [V] initial floating-body potential (pump start).
+
+beam:                      # the ESCAPED exhaust of the anchor, prescribed at the lid.
+  i_beam: 0.342e-3         # [A] the anchor's beam current (I/I_CL = 1.46 at 200 V).
+  t_on: 150.0e-9           # [s] gun switch-on (anchor schedule: supply 100, gun 150 ns).
+  ke_inject_eV: 164.5      # [eV] lid energy = anchor exhaust KE (147.52 eV, metrics.json
+                           #      exhaust_ke_mean_eV) + anchor float (16.98 V): the
+                           #      sheath then returns KE_inf = KE_lid - phi self-consistently.
+  emit_radius: 1.5e-3      # [m] source disk on the lid, inside the anchor's 2.0 mm
+                           #      exhaust hole (the beam that cleared the hole).
+  rms_velocity: 2.6e5      # [m/s] per-axis thermal spread (anchor value; ~2 deg half-angle
+                           #      at 164.5 eV, the transverse spread the gap preserves).
+
+geometry:                  # all lengths [m]; the anchor's squat can, solid.
+  r_probe: 5.0e-3          # can outer radius (Ø10 mm).
+  z_bot: -5.0e-3           # can bottom.
+  z_top: 0.5e-3            # lid top (5.5 mm tall).
+
+plasma:                    # capstone "PLASMA_MAX" row -- IDENTICAL to the anchor.
+  n0: 1.627e12             # [m^-3]
+  Te_K: 1318.8             # [K]  (kTe = 113.6 meV)
+  Ti_K: 936.2              # [K]
+  ion_mass_me: 400.0       # [-] reduced ion mass (NOT real O+; ladder-wide caveat).
+
+scenarios:                 # the axis: uniform external B along x (perpendicular to
+                           # the +z thrust axis).  null = the unmagnetized control.
+  - name: b0_control
+    Bx_T: null
+  - name: transverse_1x
+    Bx_T: 3.0e-5           # [T] 1x LEO (thermal-e r_g 26.8 mm, beam r_g 1.44 m)
+  - name: transverse_10x
+    Bx_T: 3.0e-4           # [T] 10x amplification (thermal-e r_g 2.7 mm, beam r_g 0.14 m)
+
+reservoir:                 # infinite-ionosphere recycle (anchor policy): every
+                           # body-collected ambient particle is re-injected as a fresh
+                           # Maxwellian into the outer shell of the box.
+  enabled: true
+  frac: 0.7                # inner box (never refilled) = 0.7 of each half-extent.
+  every: 25                # inject the banked weight every N steps.
+
+domain:
+  half_x: 0.030            # [m] half-width along B (the anchor's rmax).
+  half_y: 0.030            # [m] half-width across B (the gyration plane is y-z).
+  zmargin_lo: 25.0e-3      # [m] plasma margin below the can bottom (anchor value).
+  zmargin_hi: 35.0e-3      # [m] margin above the lid (anchor value; the +z plume must
+                           #      reach phi~0 so a z_hi crossing is a genuine escape).
+  edge_phi_max: 1.0        # [V] sheath-containment watchdog (warn); GATED in analysis.
+
+numerics:
+  dx: 1.0e-3               # [m] cubic cells; lambda_D/dx = 1.97 (anchor: 13.1).
+  dt: null                 # [s] null -> CFL-derived: 0.3*dx/(v_inject + 4*vth_e).
+  ppc: 16                  # ambient macroparticles per cell per species (anchor value).
+  ppc_beam: 16             # beam macroparticles per source cell per step (anchor value).
+
+run:
+  t_end: 800.0e-9          # [s] simulated end time (anchor value).
+  max_steps: 30000         # [-] hard step cap (800 ns needs ~21.7k steps at 36.8 ps).
+  diag_period_frac: 20     # openPMD field/particle/scrape dumps: ~this many per run.
+  phi_ceiling: 150.0       # [V] choke detector: sustained phi_body above this aborts the
+                           #      run as FAILED.  Raised from the anchor's 100 V so the
+                           #      10x collection tax is MEASURED rather than aborted; the
+                           #      beam cannot leave at all above ke_inject (164.5 V).
+  choke_sustain: 50.0e-9   # [s] how long above the ceiling before calling it.
+
+compute:
+  # AMReX pre-allocates ~3/4 of TOTAL GPU memory by default; cap the arena.
+  # 64x64x72 cells, ~9.4M ambient macroparticles: measured ~1.5 GB resident
+  # for a 14M-particle 3D benchmark on the 12 GiB card.
+  gpu_arena_bytes: 4000000000
