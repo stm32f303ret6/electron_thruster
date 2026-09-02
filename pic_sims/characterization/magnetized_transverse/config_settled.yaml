@@ -1,0 +1,69 @@
+# ----------------------------------------------------------------------
+# characterization.magnetized_transverse -- SETTLED-PAIR study
+# (pre-registered variant, 2026-09-02; README.md "Settled-pair plan")
+#
+# The wide 2 us pair measured the settling curve (control peaks ~1.9 us)
+# and the 10x choke.  This study makes the FLIGHT-relevant numbers
+# concrete: the wide box unchanged, t_end 6.0 us (>= 2-3 relaxation times
+# past the peak), scenarios b0_control and transverse_1x only (10x has no
+# equilibrium to settle to).  Settledness is a REQUIRED gate in
+# acceptance_settled.yaml (...settled.v1).  Physics identical to the
+# committed study: same plasma row, body, source, schedule, reservoir, seed.
+# ----------------------------------------------------------------------
+stage_id: characterization.magnetized_transverse
+
+electrical:
+  phi_body_init: 0.0
+
+beam:
+  i_beam: 0.342e-3
+  t_on: 150.0e-9
+  ke_inject_eV: 164.5
+  emit_radius: 1.5e-3
+  rms_velocity: 2.6e5
+
+geometry:
+  r_probe: 5.0e-3
+  z_bot: -5.0e-3
+  z_top: 0.5e-3
+
+plasma:
+  n0: 1.627e12
+  Te_K: 1318.8
+  Ti_K: 936.2
+  ion_mass_me: 400.0
+
+scenarios:
+  - name: b0_control
+    Bx_T: null
+  - name: transverse_1x
+    Bx_T: 3.0e-5
+
+reservoir:
+  enabled: true
+  frac: 0.7
+  every: 25
+
+domain:
+  half_x: 0.060            # [m] doubled (was 0.030)
+  half_y: 0.060
+  zmargin_lo: 55.0e-3      # [m] (was 25 mm)
+  zmargin_hi: 65.0e-3      # [m] (was 35 mm)
+  edge_phi_max: 1.0
+
+numerics:
+  dx: 1.0e-3
+  dt: null
+  ppc: 16
+  ppc_beam: 16
+
+run:
+  t_end: 6.0e-6            # [s] the settled clock (2 us pair: peak ~1.9 us)
+  max_steps: 170000
+  diag_period_frac: 10
+  phi_ceiling: 150.0
+  choke_sustain: 50.0e-9
+
+compute:
+  gpu_arena_bytes: 8500000000
+  max_grid_size: 64

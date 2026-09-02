@@ -253,9 +253,67 @@ this clock and reported as such (the reduced-ion-mass caveat applies).
 Cost: ~6.5 h per scenario on the reference GPU (0.4 s/step × 54 480),
 ~4 GB disk per run. `bash campaign_wide.sh` runs the chain.
 
-## Follow-up results
+## Follow-up results (2026-09-02)
 
-Pending (the wide runs launch 2026-09-01, sequential overnight).
+Record: [`reference_results/wide2us_20260902/`](reference_results/wide2us_20260902/).
+The pair ended on a falsification branch; verdict under `…wide10x.v1` is
+void (one member FAILED by design), and what it established supersedes the
+first cohort's absolute numbers:
+
+1. **The settling curve** (wide `b0_control`, COMPLETE): φ = 7.8 / 11.6 /
+   18.2 / 20.7 / 21.1 V at 0.4 / 0.8 / 1.2 / 1.6 / 2.0 µs — a peak near
+   1.9 µs, relaxing at −0.019 V/ns at the end. The committed 800 ns clock
+   reads ~55 % of the 2 µs float (the box change itself is only −1.8 V at
+   fixed clock). Thrust moves ~−2 % (F_beam 14.15 nN, exhaust 151 eV);
+   escape 99.45 %; the differential (1×-null) conclusions are unaffected —
+   both legs share the clock. This turns the repo-wide "800 ns is a
+   snapshot on the ion clock" caveat into a measured curve; the 400 mₑ
+   reduced ion makes even this clock ~8.6× faster than real O⁺ (G8).
+2. **The 10× corner chokes** (wide `transverse_10x`, FAILED by design):
+   with the boundary at its proper distance, φ climbs monotonically
+   through 102.6 V at 800 ns, crosses the 150 V ceiling at 1.156 µs, and
+   the run aborts at 1.23 µs (φ = 160 V, exhaust 51 eV, F_thrust 8.6 nN,
+   escape still 98.4 %). No benign equilibrium exists below 91 % of the
+   beam energy: the magnetized ionosphere at 10× transverse cannot return
+   0.342 mA to this Ø10 mm body. The first cohort's 66.5 V was
+   boundary-fed — its failed containment gate said so — and the
+   falsification branch pre-registered in the original plan is taken:
+   **transverse firing at 10× is infeasible for this body and current;
+   field-aligned firing (tier M1: φ 48.6 V, F −11 %) is the operating
+   mode in amplified-field environments.** The flight-strength (1×) null
+   is untouched by any of this.
+3. The wide control's float (20.5 V) fell **outside** its pre-registered
+   9–15 V band: the plan under-weighted the settling-time effect against
+   the box effect. Read the value, not the flag — and the settled pair
+   below replaces prediction with a gate.
+
+## Settled-pair plan (pre-registered 2026-09-02, before the runs)
+
+The flight-relevant numbers, made concrete on the model's clock: the wide
+box (±60 mm, z ∈ [−60, 68] mm) at **t_end = 6.0 µs** (163 440 steps; the
+2 µs curve peaks at 1.9 µs, so 6 µs is ≥ 2–3 relaxation times past the
+peak), scenarios `b0_control` and `transverse_1x`
+([`config_settled.yaml`](config_settled.yaml)). Policy
+[`acceptance_settled.yaml`](acceptance_settled.yaml) (`…settled.v1`): the
+eight trust gates per scenario **plus settledness as a required gate** —
+|late dφ/dt| ≤ 0.005 V/ns over the closing 50 ns — so "settled" is
+enforced, not asserted. 10× is deliberately absent: it has no equilibrium
+to settle to (above).
+
+Pre-registered predictions (reported gates): settled `b0_control` float
+14–21 V and F_beam 14.2 ± 0.8 nN; the settled 1× null on the same bounds
+as before (|Δφ| ≤ 2 V, |ΔF_thrust| ≤ 5 %, |Δescape| ≤ 1 pp, Lorentz
+correction ≤ 0.2 %); benign floats. Falsification: a required-settledness
+FAIL at 6 µs means the corner needs the real-ion clock (G8) and the 6 µs
+values stand as bounds; a broken 1× null at the settled point re-opens the
+flight question that the 800 ns cohort closed.
+
+Cost: ~20.5 h per scenario (0.45 s/step × 163 440), ~8 GB disk per run.
+`bash campaign_settled.sh` runs the chain.
+
+## Settled-pair results
+
+Pending (runs launch 2026-09-02, sequential).
 
 ![cohort float](reference_results/joint_21e03d1d/figures/phi_overlay.png)
 ![cohort thrust](reference_results/joint_21e03d1d/figures/thrust_overlay.png)
