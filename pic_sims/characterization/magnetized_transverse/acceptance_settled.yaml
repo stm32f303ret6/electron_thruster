@@ -1,0 +1,165 @@
+# ----------------------------------------------------------------------
+# Acceptance policy for the SETTLED 6 us pair of
+# characterization.magnetized_transverse (config_settled.yaml).
+# Pre-registered 2026-09-02, before the runs (README.md settled-pair plan).
+# The eight trust gates per scenario PLUS settledness as a REQUIRED gate;
+# the measurements (settled float, settled 1x null) stay REPORTED.
+# ----------------------------------------------------------------------
+schema_version: 1
+policy_id: characterization.magnetized_transverse.settled.v1
+stage_id: characterization.magnetized_transverse
+evidence_kind: exploratory_measurement
+
+gates:
+  # ---- required: trust + settledness, both scenarios ----
+  - id: b0s_beam_escapes
+    required: true
+    metric: b0_control__escape_fraction_pct
+    comparison: at_least
+    minimum: 95.0
+  - id: b0s_steady_current_balance
+    required: true
+    metric: b0_control__current_balance
+    comparison: at_most
+    maximum: 0.05
+  - id: b0s_momentum_sanity_bound
+    required: true
+    metric: b0_control__f_net_over_f_beam
+    comparison: at_most
+    maximum: 1.0
+  - id: b0s_sheath_and_plume_contained
+    required: true
+    metric: b0_control__edge_phi_max_V
+    comparison: at_most
+    maximum: 1.0
+  - id: b0s_scrape_ledger_consistent_with_dumps
+    required: true
+    metric: b0_control__scrape_charge_consistency
+    comparison: at_most
+    maximum: 0.02
+  - id: b0s_beam_escape_ledger_consistent_with_dumps
+    required: true
+    metric: b0_control__scrape_charge_consistency_beam_escape
+    comparison: at_most
+    maximum: 0.02
+  - id: b0s_source_delivers_commanded_current
+    required: true
+    metric: b0_control__emitted_current_ratio
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.03
+  - id: b0s_capacitance_calibration_sane
+    required: true
+    metric: b0_control__c_float_pF
+    comparison: within_range
+    minimum: 0.35
+    maximum: 1.20
+  - id: b0s_tail_settled
+    required: true
+    metric: b0_control__late_dphidt_V_per_ns
+    comparison: abs_within
+    target: 0.0
+    tolerance: 0.005
+
+  - id: t1xs_beam_escapes
+    required: true
+    metric: transverse_1x__escape_fraction_pct
+    comparison: at_least
+    minimum: 95.0
+  - id: t1xs_steady_current_balance
+    required: true
+    metric: transverse_1x__current_balance
+    comparison: at_most
+    maximum: 0.05
+  - id: t1xs_momentum_sanity_bound
+    required: true
+    metric: transverse_1x__f_net_over_f_beam
+    comparison: at_most
+    maximum: 1.0
+  - id: t1xs_sheath_and_plume_contained
+    required: true
+    metric: transverse_1x__edge_phi_max_V
+    comparison: at_most
+    maximum: 1.0
+  - id: t1xs_scrape_ledger_consistent_with_dumps
+    required: true
+    metric: transverse_1x__scrape_charge_consistency
+    comparison: at_most
+    maximum: 0.02
+  - id: t1xs_beam_escape_ledger_consistent_with_dumps
+    required: true
+    metric: transverse_1x__scrape_charge_consistency_beam_escape
+    comparison: at_most
+    maximum: 0.02
+  - id: t1xs_source_delivers_commanded_current
+    required: true
+    metric: transverse_1x__emitted_current_ratio
+    comparison: abs_within
+    target: 1.0
+    tolerance: 0.03
+  - id: t1xs_capacitance_calibration_sane
+    required: true
+    metric: transverse_1x__c_float_pF
+    comparison: within_range
+    minimum: 0.35
+    maximum: 1.20
+  - id: t1xs_tail_settled
+    required: true
+    metric: transverse_1x__late_dphidt_V_per_ns
+    comparison: abs_within
+    target: 0.0
+    tolerance: 0.005
+
+  # ---- reported: the pre-registered predictions ----
+  - id: b0s_float_in_band
+    required: false
+    metric: b0_control__phi_body_V
+    comparison: within_range
+    minimum: 14.0
+    maximum: 21.0
+  - id: b0s_thrust_in_band
+    required: false
+    metric: b0_control__f_beam_nN
+    comparison: abs_within
+    target: 14.2
+    tolerance: 0.8
+  - id: b0s_lorentz_term_vanishes
+    required: false
+    metric: b0_control__lorentz_correction_pct
+    comparison: abs_within
+    target: 0.0
+    tolerance: 0.1
+  - id: t1xs_null_float
+    required: false
+    metric: dphi_1x_V
+    comparison: abs_within
+    target: 0.0
+    tolerance: 2.0
+  - id: t1xs_null_thrust
+    required: false
+    metric: dthrust_1x_pct
+    comparison: abs_within
+    target: 0.0
+    tolerance: 5.0
+  - id: t1xs_null_escape
+    required: false
+    metric: descape_1x_pp
+    comparison: abs_within
+    target: 0.0
+    tolerance: 1.0
+  - id: t1xs_lorentz_correction_negligible
+    required: false
+    metric: transverse_1x__lorentz_correction_pct
+    comparison: abs_within
+    target: 0.0
+    tolerance: 0.2
+  - id: b0s_benign_float
+    required: false
+    metric: b0_control__phi_body_V
+    comparison: at_most
+    maximum: 50.0
+  - id: t1xs_benign_float
+    required: false
+    metric: transverse_1x__phi_body_V
+    comparison: at_most
+    maximum: 50.0
