@@ -62,11 +62,16 @@ run_scenario() {   # <stage dir> <scenario>  -> prints the COMPLETE run dir
     check_disk "$scn"
     log="$stage/logs/${scn}_$(stamp).log"
     echo "[campaign $(stamp)] launching $scn -> $log" >&2
-    ( cd "$stage" && $SIM simulation.py --scenario "$scn" ) > "$log" 2>&1 \
-        || { echo "[campaign $(stamp)] $scn exited non-zero, see $log" >&2; exit 4; }
-    rid=$(grep -m1 '^RUN_ID=' "$log" | cut -d= -f2)
-    if ! grep -q '"status": "COMPLETE"' "$stage/outputs/$rid/manifest.json"; then
-        echo "[campaign $(stamp)] $scn run $rid is not COMPLETE" >&2; exit 4
+    # The manifest, not the exit code, is the truth (ladder doctrine): a CUDA/
+    # HDF5 teardown crash after COMPLETE is recorded must not kill the chain.
+    rc=0
+    ( cd "$stage" && $SIM simulation.py --scenario "$scn" ) > "$log" 2>&1 || rc=$?
+    rid=$(grep -m1 '^RUN_ID=' "$log" | cut -d= -f2 || true)
+    if [[ -z "$rid" ]] || ! grep -q '"status": "COMPLETE"' "$stage/outputs/$rid/manifest.json" 2>/dev/null; then
+        echo "[campaign $(stamp)] $scn FAILED (exit $rc, run ${rid:-none} not COMPLETE), see $log" >&2; exit 4
+    fi
+    if (( rc != 0 )); then
+        echo "[campaign $(stamp)] $scn: manifest COMPLETE but process exited $rc (teardown crash; evidence intact)" >&2
     fi
     echo "[campaign $(stamp)] $scn COMPLETE: $rid" >&2
     echo "$stage/outputs/$rid"
