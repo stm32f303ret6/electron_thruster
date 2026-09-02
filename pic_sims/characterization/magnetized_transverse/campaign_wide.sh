@@ -58,11 +58,16 @@ run_scenario() {
     check_disk "$scn"
     log="$HERE/logs/wide_${scn}_$(stamp).log"
     echo "[wide $(stamp)] launching $scn -> $log" >&2
-    ( cd "$HERE" && $SIM simulation.py --config "$CFG" --scenario "$scn" ) > "$log" 2>&1 \
-        || { echo "[wide $(stamp)] $scn exited non-zero, see $log" >&2; exit 4; }
-    rid=$(grep -m1 '^RUN_ID=' "$log" | cut -d= -f2)
-    if ! grep -q '"status": "COMPLETE"' "$HERE/outputs/$rid/manifest.json"; then
-        echo "[wide $(stamp)] $scn run $rid is not COMPLETE" >&2; exit 4
+    # The manifest, not the exit code, is the truth (ladder doctrine): a CUDA/
+    # HDF5 teardown crash after COMPLETE is recorded must not kill the chain.
+    rc=0
+    ( cd "$HERE" && $SIM simulation.py --config "$CFG" --scenario "$scn" ) > "$log" 2>&1 || rc=$?
+    rid=$(grep -m1 '^RUN_ID=' "$log" | cut -d= -f2 || true)
+    if [[ -z "$rid" ]] || ! grep -q '"status": "COMPLETE"' "$HERE/outputs/$rid/manifest.json" 2>/dev/null; then
+        echo "[wide $(stamp)] $scn FAILED (exit $rc, run ${rid:-none} not COMPLETE), see $log" >&2; exit 4
+    fi
+    if (( rc != 0 )); then
+        echo "[wide $(stamp)] $scn: manifest COMPLETE but process exited $rc (teardown crash; evidence intact)" >&2
     fi
     echo "[wide $(stamp)] $scn COMPLETE: $rid" >&2
     echo "$HERE/outputs/$rid"
