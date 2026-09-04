@@ -1,0 +1,253 @@
+{
+  "stage_id": "characterization.magnetized_transverse",
+  "policy_id": "characterization.magnetized_transverse.settled.v1",
+  "status": "PASS",
+  "exit_code": 0,
+  "detail": "all 18 required gate(s) passed",
+  "gates": [
+    {
+      "id": "b0s_beam_escapes",
+      "status": "PASS",
+      "required": true,
+      "metric": "b0_control__escape_fraction_pct",
+      "comparison": "at_least",
+      "value": 99.82541620795106,
+      "detail": "99.8254 >= 95"
+    },
+    {
+      "id": "b0s_steady_current_balance",
+      "status": "PASS",
+      "required": true,
+      "metric": "b0_control__current_balance",
+      "comparison": "at_most",
+      "value": 0.0001034752250250936,
+      "detail": "0.000103475 <= 0.05"
+    },
+    {
+      "id": "b0s_momentum_sanity_bound",
+      "status": "PASS",
+      "required": true,
+      "metric": "b0_control__f_net_over_f_beam",
+      "comparison": "at_most",
+      "value": 0.01755814959148633,
+      "detail": "0.0175581 <= 1"
+    },
+    {
+      "id": "b0s_sheath_and_plume_contained",
+      "status": "PASS",
+      "required": true,
+      "metric": "b0_control__edge_phi_max_V",
+      "comparison": "at_most",
+      "value": 0.17641138121613342,
+      "detail": "0.176411 <= 1"
+    },
+    {
+      "id": "b0s_scrape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "b0_control__scrape_charge_consistency",
+      "comparison": "at_most",
+      "value": 2.3763485867601793e-09,
+      "detail": "2.37635e-09 <= 0.02"
+    },
+    {
+      "id": "b0s_beam_escape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "b0_control__scrape_charge_consistency_beam_escape",
+      "comparison": "at_most",
+      "value": 3.088925889061188e-09,
+      "detail": "3.08893e-09 <= 0.02"
+    },
+    {
+      "id": "b0s_source_delivers_commanded_current",
+      "status": "PASS",
+      "required": true,
+      "metric": "b0_control__emitted_current_ratio",
+      "comparison": "abs_within",
+      "value": 1.0001702416080978,
+      "detail": "1.00017 |x - 1| <= 0.03"
+    },
+    {
+      "id": "b0s_capacitance_calibration_sane",
+      "status": "PASS",
+      "required": true,
+      "metric": "b0_control__c_float_pF",
+      "comparison": "within_range",
+      "value": 0.5935640243689219,
+      "detail": "0.593564 in [0.35, 1.2]"
+    },
+    {
+      "id": "b0s_tail_settled",
+      "status": "PASS",
+      "required": true,
+      "metric": "b0_control__late_dphidt_V_per_ns",
+      "comparison": "abs_within",
+      "value": 0.0019216572300062853,
+      "detail": "0.00192166 |x - 0| <= 0.005"
+    },
+    {
+      "id": "t1xs_beam_escapes",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_1x__escape_fraction_pct",
+      "comparison": "at_least",
+      "value": 99.82428960244648,
+      "detail": "99.8243 >= 95"
+    },
+    {
+      "id": "t1xs_steady_current_balance",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_1x__current_balance",
+      "comparison": "at_most",
+      "value": 0.00017346444083483326,
+      "detail": "0.000173464 <= 0.05"
+    },
+    {
+      "id": "t1xs_momentum_sanity_bound",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_1x__f_net_over_f_beam",
+      "comparison": "at_most",
+      "value": 0.01804783978857243,
+      "detail": "0.0180478 <= 1"
+    },
+    {
+      "id": "t1xs_sheath_and_plume_contained",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_1x__edge_phi_max_V",
+      "comparison": "at_most",
+      "value": 0.17229160182289413,
+      "detail": "0.172292 <= 1"
+    },
+    {
+      "id": "t1xs_scrape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_1x__scrape_charge_consistency",
+      "comparison": "at_most",
+      "value": 2.359352980427608e-10,
+      "detail": "2.35935e-10 <= 0.02"
+    },
+    {
+      "id": "t1xs_beam_escape_ledger_consistent_with_dumps",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_1x__scrape_charge_consistency_beam_escape",
+      "comparison": "at_most",
+      "value": 5.156528624427372e-10,
+      "detail": "5.15653e-10 <= 0.02"
+    },
+    {
+      "id": "t1xs_source_delivers_commanded_current",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_1x__emitted_current_ratio",
+      "comparison": "abs_within",
+      "value": 1.0001702416080978,
+      "detail": "1.00017 |x - 1| <= 0.03"
+    },
+    {
+      "id": "t1xs_capacitance_calibration_sane",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_1x__c_float_pF",
+      "comparison": "within_range",
+      "value": 0.593564024368922,
+      "detail": "0.593564 in [0.35, 1.2]"
+    },
+    {
+      "id": "t1xs_tail_settled",
+      "status": "PASS",
+      "required": true,
+      "metric": "transverse_1x__late_dphidt_V_per_ns",
+      "comparison": "abs_within",
+      "value": 0.0019503608413986382,
+      "detail": "0.00195036 |x - 0| <= 0.005"
+    },
+    {
+      "id": "b0s_float_in_band",
+      "status": "FAIL",
+      "required": false,
+      "metric": "b0_control__phi_body_V",
+      "comparison": "within_range",
+      "value": 26.755216024464833,
+      "detail": "26.7552 in [14, 21]"
+    },
+    {
+      "id": "b0s_thrust_in_band",
+      "status": "PASS",
+      "required": false,
+      "metric": "b0_control__f_beam_nN",
+      "comparison": "abs_within",
+      "value": 13.913847645259938,
+      "detail": "13.9138 |x - 14.2| <= 0.8"
+    },
+    {
+      "id": "b0s_lorentz_term_vanishes",
+      "status": "PASS",
+      "required": false,
+      "metric": "b0_control__lorentz_correction_pct",
+      "comparison": "abs_within",
+      "value": 0.0,
+      "detail": "0 |x - 0| <= 0.1"
+    },
+    {
+      "id": "t1xs_null_float",
+      "status": "FAIL",
+      "required": false,
+      "metric": "dphi_1x_V",
+      "comparison": "abs_within",
+      "value": 2.5950918654434254,
+      "detail": "2.59509 |x - 0| <= 2"
+    },
+    {
+      "id": "t1xs_null_thrust",
+      "status": "PASS",
+      "required": false,
+      "metric": "dthrust_1x_pct",
+      "comparison": "abs_within",
+      "value": -0.7544946455538382,
+      "detail": "-0.754495 |x - 0| <= 5"
+    },
+    {
+      "id": "t1xs_null_escape",
+      "status": "PASS",
+      "required": false,
+      "metric": "descape_1x_pp",
+      "comparison": "abs_within",
+      "value": -0.0011266055045808798,
+      "detail": "-0.00112661 |x - 0| <= 1"
+    },
+    {
+      "id": "t1xs_lorentz_correction_negligible",
+      "status": "PASS",
+      "required": false,
+      "metric": "transverse_1x__lorentz_correction_pct",
+      "comparison": "abs_within",
+      "value": 0.02585786400599588,
+      "detail": "0.0258579 |x - 0| <= 0.2"
+    },
+    {
+      "id": "b0s_benign_float",
+      "status": "PASS",
+      "required": false,
+      "metric": "b0_control__phi_body_V",
+      "comparison": "at_most",
+      "value": 26.755216024464833,
+      "detail": "26.7552 <= 50"
+    },
+    {
+      "id": "t1xs_benign_float",
+      "status": "PASS",
+      "required": false,
+      "metric": "transverse_1x__phi_body_V",
+      "comparison": "at_most",
+      "value": 29.350307889908258,
+      "detail": "29.3503 <= 50"
+    }
+  ],
+  "analysis_id": "20260904T012209Z_2ea5449d"
+}

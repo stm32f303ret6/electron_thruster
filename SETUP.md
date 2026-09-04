@@ -220,7 +220,7 @@ capstone/                     THE DEVICE (ladder terminus)
   magnetized_1x        characterization.magnetized_1x  Bz 30 uT (1x LEO)     ~6.4 h
   magnetized_10x       characterization.magnetized_10x Bz 300 uT (10x)       ~6.4 h
   transverse_b_numerics characterization.transverse_b_numerics  3D test electrons     minutes
-  magnetized_transverse characterization.magnetized_transverse  3D, Bx 0/30/300 uT    ~0.7 h per scenario
+  magnetized_transverse characterization.magnetized_transverse  3D, Bx 0/30/300 uT    0.7 h (800 ns) to ~20 h (settled 6 us) per scenario
 ```
 
 A full cold ladder is roughly 20 GPU-hours, dominated by the three capstone

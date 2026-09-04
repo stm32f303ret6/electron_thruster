@@ -1,0 +1,88 @@
+{
+  "20260902T084534Z_b0_control_232cd445": {
+    "schema_version": 1,
+    "run_id": "20260902T084534Z_b0_control_232cd445",
+    "stage_id": "characterization.magnetized_transverse",
+    "scenario": "b0_control",
+    "status": "COMPLETE",
+    "created_at_utc": "2026-09-02T08:45:34Z",
+    "completed_at_utc": "2026-09-03T04:03:29Z",
+    "case_sha256": "232cd445aa2b3db8196ad0aa037318772f61373199e9180f60a3802bc89a1753",
+    "study_sha256": "c1b28dc641fcf7eb372231710c122386967148627586662afb8be392221e238c",
+    "git_commit": "334154546b1605342316825b809a002df5a66dd8",
+    "git_dirty": false,
+    "python_version": "3.12.13",
+    "warpx_version": "26.5",
+    "mpi_ranks": 1,
+    "omp_threads": null,
+    "random_seed": 42,
+    "expected_final_iteration": 163440,
+    "observed_final_iteration": 163440,
+    "artifacts": [
+      {
+        "path": "diags/fields/*.h5",
+        "bytes": 1476829816,
+        "files": 11
+      },
+      {
+        "path": "diags/contactor_log.csv",
+        "bytes": 387478,
+        "files": 1
+      },
+      {
+        "path": "diags/calibration.json",
+        "bytes": 271,
+        "files": 1
+      },
+      {
+        "path": "diags/reducedfiles/*.txt",
+        "bytes": 1205482,
+        "files": 2
+      }
+    ],
+    "error": null
+  },
+  "20260903T040431Z_transverse_1x_487c410e": {
+    "schema_version": 1,
+    "run_id": "20260903T040431Z_transverse_1x_487c410e",
+    "stage_id": "characterization.magnetized_transverse",
+    "scenario": "transverse_1x",
+    "status": "COMPLETE",
+    "created_at_utc": "2026-09-03T04:04:31Z",
+    "completed_at_utc": "2026-09-04T01:21:59Z",
+    "case_sha256": "487c410eb6b6c49ab88f3f160dddf431a1afd8d17d1f2f248823fcfd360d9eb4",
+    "study_sha256": "c1b28dc641fcf7eb372231710c122386967148627586662afb8be392221e238c",
+    "git_commit": "334154546b1605342316825b809a002df5a66dd8",
+    "git_dirty": false,
+    "python_version": "3.12.13",
+    "warpx_version": "26.5",
+    "mpi_ranks": 1,
+    "omp_threads": null,
+    "random_seed": 42,
+    "expected_final_iteration": 163440,
+    "observed_final_iteration": 163440,
+    "artifacts": [
+      {
+        "path": "diags/fields/*.h5",
+        "bytes": 1476829816,
+        "files": 11
+      },
+      {
+        "path": "diags/contactor_log.csv",
+        "bytes": 392756,
+        "files": 1
+      },
+      {
+        "path": "diags/calibration.json",
+        "bytes": 271,
+        "files": 1
+      },
+      {
+        "path": "diags/reducedfiles/*.txt",
+        "bytes": 1203706,
+        "files": 2
+      }
+    ],
+    "error": null
+  }
+}
