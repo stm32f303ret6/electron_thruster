@@ -247,7 +247,7 @@ a `geometry.cathode_standoff` parameter that decouples the cathode from
 
 ## What this run opens
 
-- the geometry-split collection law in `model/minimal_model.py`, letting the model sweep aspect ratio
+- the geometry-split collection law in `model/mission_model.py`, letting the model sweep aspect ratio
 - slender-body mission rows (rod/plate designs at 400–500 km) move from flagged to measured
 - the $r \lesssim \lambda_D$ end of the axis connects to bare-tether collection (Sanmartín 1993), bridging the device to flown physics
 

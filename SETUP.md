@@ -286,8 +286,8 @@ cd orbit_sims && python3 run_station_keeping.py 400km_station_keeping_chipsat
 
 # minimal model: calibrate from committed reference_results, sweep every mission
 conda activate warpx-cpu-mpich-dev
-python model/minimal_model.py --calibrate
-python model/minimal_model.py --all          # -> model/results/
+python model/mission_model.py --calibrate --closed-form   # constants, residuals, phi<<V law
+python model/mission_model.py --all                       # -> model/results/
 
 # paper figures (read committed calibration + summaries; no hand-typed numbers)
 cd paper/figs && python make_frontier.py && python make_missions.py && python make_fpplane.py

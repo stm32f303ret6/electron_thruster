@@ -170,7 +170,7 @@ Findings:
    (I_esc, φ) pair joins the fit: all six committed equilibria, two slices of
    the (V, I) plane, escape fractions from 57 to 99 %, fit
    `I_esc = βA·j_the·(1+χ)^α` with α_all = 0.922, βA = 2.27 cm², residuals
-   ≤ 9.3 % (`model/minimal_model.py --calibrate`).
+   ≤ 9.3 % (`model/mission_model.py --calibrate`).
 5. Flight-rule consequence (recorded in `model/MODEL.md` §2): the untaxed
    closed form `V_opt = ((2α+1)/α)·φ` under-shoots the measured optimum
    (V/φ = 5.9 at the valley) and is demoted to a hard lower bound. The

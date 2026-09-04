@@ -149,7 +149,7 @@ STAGES: tuple[Stage, ...] = (
     # The fixed-thrust throttle stages (geometry-specific controller work)
     # were moved out of the concept-feasibility ladder to
     # future_work/ucurve_pic_stages/ -- power consumption in the concept
-    # argument is now the analytical model (model/feasibility_model.py).
+    # argument is now the analytical model (model/mission_model.py --closed-form).
 )
 
 # Fast lookups used by the runner and the tests.

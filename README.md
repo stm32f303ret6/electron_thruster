@@ -130,9 +130,9 @@ $$
 
 | run | $\varphi$ | $f_{\mathrm{esc}}$ | $\eta$ | $v_e$ (m/s) |
 |---|---|---|---|---|
-| 200 V anchor | 17.0 V | 98.4 % | **0.73** | $5.4 \times 10^6$ |
-| slender ($L/r = 6$), 350 V | 14.0 V | 99.1 % | **0.77** | $9.7 \times 10^6$ |
-| squat, 100–350 V | 5.4–48.3 V | 96–99 % | 0.67–0.74 | $5.2$–$9.8 \times 10^6$ |
+| 200 V anchor | 17.0 V | 98.4 % | **0.73** | $7.2 \times 10^6$ |
+| slender ($L/r = 6$), 350 V | 14.0 V | 99.1 % | **0.77** | $9.8 \times 10^6$ |
+| squat, 100–350 V | 5.4–48.3 V | 96–99 % | 0.68–0.74 | $5.2$–$9.2 \times 10^6$ |
 
 Divergence factor: 0.97 (measured thrust slope vs ideal).
 
@@ -151,8 +151,8 @@ Flight thruster efficiencies include their full beam-production cost; this $\eta
 
 ## Does it cancel drag?
 
-At 500–600 km, the thruster covers mean and max drag inside the tested envelope (≤ 350 V), consuming 7–31 mW.
-At 400 km, the mean demand is covered but year-round and peak demands remain open: 400 km is a research target.
+At 500–600 km the thruster holds the orbit all year for a mean beam power of 8–39 mW, and more than 99 % of the time it does so inside the tested 100–350 V envelope.
+At 400 km it holds the orbit for 140–240 mW mean, but the drag peaks need 500–700 V, above anything simulated so far, so 400 km stays a research target.
 
 Against real 2024 drag (NRLMSISE-00, real F10.7/Ap, solar-cycle-25 maximum) for the anchor body:
 
@@ -176,19 +176,21 @@ Running the thruster at one fixed voltage all year:
 
 ### Voltage-following mode
 
-In flight the voltage can follow the drag. For every point along the orbit, the model (`model/MODEL.md` §4) finds the lowest voltage that cancels that point's drag and computes what it costs:
+In flight the voltage can follow the drag. For every 5-minute point along the orbit, the model (`model/MODEL.md` §3 and §4b) picks the supply voltage that cancels that point's drag for the least beam power, with the floating potential solved from the plasma the orbit sees at that moment:
 
-| altitude | minimum voltage | mean power | inside the tested envelope (≤ 350 V)? |
-|---|---|---|---|
-| 600 km | 100 V | 6.8 mW | yes |
-| 550 km | 104 V | 13.4 mW | yes |
-| 500 km | 146 V | 31.3 mW | yes |
-| 400 km lateral | 247 V | 116 mW | yes, see 400 km note below |
-| 400 km axial | 304 V | 196 mW | yes, inside the extended 350 V envelope |
+| altitude | mean power | median | worst 5 min | points needing more than 350 V | float, median / 99th percentile |
+|---|---|---|---|---|---|
+| 600 km | 8.3 mW | 6.0 mW | 55 mW | 0.02 % | 18 / 61 V |
+| 550 km | 17 mW | 13 mW | 100 mW | 0.1 % | 23 / 81 V |
+| 500 km | 39 mW | 32 mW | 190 mW | 0.8 % | 28 / 110 V |
+| 400 km lateral | 139 mW | 123 mW | 611 mW | 11 % | 39 / 162 V |
+| 400 km axial | 239 mW | 212 mW | 1.08 W | 40 % | 56 / 219 V |
+
+No voltage and no float value is a design limit in this model. The float costs drive voltage through KE = κ(V − φ), so a high float on a thin night-side plasma means more supply voltage and more power at that point, and every point of the 2024 year has an operating point. What 350 V marks is the end of the simulated envelope: above it the gun laws are extrapolated, and above a float of about 100 V no committed run has found an equilibrium. The float raises the year mean only 20–25 % above the φ-free law, because neutral and plasma density fall together at night, so the demand drops where collection is weakest; the most expensive 5 minutes of the year at 600 km is a dayside drag peak. Two parts of these numbers are extrapolations, flagged per row in the model output: the collection law below about 0.7× the simulated plasma density, which covers most night-side points (the one run off that density found the law conservative), and the calibration on 800 ns floats (limitation 1 below).
 
 ### Power demand
 
-Power is the thruster's interface to the spacecraft: tens of mW at 500–600 km, ~100–200 mW at 400 km.
+Power is the thruster's interface to the spacecraft: tens of mW at 500–600 km, 140–240 mW at 400 km.
 Where that power comes from is mission design, not part of the thruster, same as the cathode technology.
 For context, typical small-spacecraft power:
 
@@ -202,14 +204,13 @@ Demand and supply both grow with area, so the ratio stays workable at CubeSat si
 
 The axial-pose demand is now inside the measured envelope, at both tested geometries.
 
-1. The compact body delivered 40.48 nN against the 32.9 nN mean demand (~81 % duty), but floats on the 50 V charging limit (48.3 V gated, still rising at run end).
-2. The slender body, the shape a real mission vehicle takes anyway, delivered 43.33 nN at a 14.0 V float: the same demand covered at ~76 % duty with 3.6× margin on the charging limit.
+1. The compact body delivered 40.48 nN against the 32.9 nN mean demand (~81 % duty) at a 48.3 V float, a 14 % float tax on the 350 V drive (gated at 800 ns, still rising at run end).
+2. The slender body, the shape a real mission vehicle takes anyway, delivered 43.33 nN at a 14.0 V float, a 4 % tax: the same demand covered at ~76 % duty with 34 V less of the drive spent on collection.
 
 What stays open at 400 km:
 
-- Year-round duty is still 113 % for the compact shape (the model re-run at the 350 V cap; thin night-side plasma caps benign collection, the constraint the slender skin relieves).
-- Drag maxima (92.4 nN) sit above any single operating point.
-- ~150–200 mW mean power is mission design.
+- The drag peaks (92.4 nN) need 500–700 V by the gun laws, above the 350 V that has been simulated. On the model's capability at 350 V the axial-pose impulse budget closes at 91 % duty, so the peaks are covered on average, with little margin, and not instant by instant.
+- 140–240 mW mean power is mission design.
 - The lateral-pose thrust-axis question is untouched.
 
 ### Orbit dependence
@@ -276,7 +277,7 @@ Each spoke links to its simulation directory:
 |---|---|---|---|---|---|---|
 | [`high_thrust`](pic_sims/characterization/high_thrust) | 300 V | 36.3 V | **30.13 nN** | 98.99 % | 210.1 | |
 | [`low_power`](pic_sims/characterization/low_power) | 100 V | 5.4 V | 3.42 nN | 96.12 % | 77.2 | |
-| [`350V_400km`](pic_sims/characterization/350V_400km) | 350 V | 48.3 V | **40.48 nN** | 99.11 % | 239.0 | on the 50 V charging limit |
+| [`350V_400km`](pic_sims/characterization/350V_400km) | 350 V | 48.3 V | **40.48 nN** | 99.11 % | 239.0 | 14 % float tax at 800 ns, still rising |
 | [`350V_400km_slender`](pic_sims/characterization/350V_400km_slender) | 350 V + slender body | 14.0 V | **43.33 nN** | 99.14 % | 272.7 | voltage × geometry compose |
 | [`slender_body`](pic_sims/characterization/slender_body) | L/r = 6 body | 4.4 V | 14.22 nN | 98.42 % | 159.7 | |
 | [`thin_plasma`](pic_sims/characterization/thin_plasma) | density n₀/3 | 42.5 V | 12.39 nN | 99.13 % | 122.0 | settled at 2.4 µs; law conservative along density |
@@ -301,8 +302,8 @@ the emission reaction once the beam curls).
 | 10× flight | 300 µT ⊥ | no equilibrium | — | 98 % until abort | chokes through the 150 V ceiling |
 
 Three results. The flight-orientation field leaves the operating point
-alone: thrust and escape unchanged, a 2.6 V float tax against the 50 V
-limit. At 10× the return circuit cannot close and the device must fire
+alone: thrust and escape unchanged, a 2.6 V float tax, about 1 % of the
+200 V drive. At 10× the return circuit cannot close and the device must fire
 along the field, the mode the axial spokes validate. And the 6 µs runs
 measure the settling the 800 ns campaign truncates: the float reaches
 about half its settled value at 800 ns while thrust moves under 2 %.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Scale analysis: is the feasibility condition a function of SIZE or of SHAPE?
 
-Reads only committed evidence -- the calibration in `minimal_model.py` (fitted
+Reads only committed evidence -- the calibration in `mission_model.py` (fitted
 to `reference_results/`) and the mission CSVs in `model/results/` -- and asks
 what changes when the same device is built at CubeSat scale instead of
 chipsat scale.
@@ -24,7 +24,7 @@ from pathlib import Path
 
 import numpy as np
 
-import minimal_model as M
+import mission_model as M
 
 REPO = Path(__file__).resolve().parent.parent
 
@@ -180,19 +180,20 @@ def main() -> int:
     w("thin and grows with φ, so enhancement is an area ratio rather than an")
     w("orbital-motion fan. Using that (Child-sheath) model instead gives an")
     w("estimate, not a calibration, since no run sits in this regime:\n")
-    w("| body | altitude | boost | φ estimate |")
-    w("|---|---|---|---|")
+    w(f"| body | altitude | boost | φ estimate | float tax at {DRIVE_V:.0f} V |")
+    w("|---|---|---|---|---|")
     for nm, ar, sk, r_eff in BODIES[2:]:
         for alt in (500, 550, 600):
             Ith = sk * j_the * 1e3
             I = (fd[alt][0] * ar * 1e9) / (cal.cF * math.sqrt(KE))
             phi, _chi = thick_sheath_phi(I / Ith, r_eff, lamD, kTe)
-            flag = "" if phi <= 50 else " ⚠ past benign gate"
-            w(f"| {nm} | {alt} km | {I/Ith:.1f}× | {phi:.0f} V{flag} |")
-    w("\nBenign at 550–600 km, tightening at 500 km, past the benign gate for the")
-    w("largest bodies at 500 km. Unmeasured, but the direction is favourable,")
-    w("and a large-body PIC run is inexpensive: lower χ settles faster than")
-    w("anything already run.\n")
+            w(f"| {nm} | {alt} km | {I/Ith:.1f}× | {phi:.0f} V | {phi/DRIVE_V:.0%} |")
+    w("\nThe float is a tax on the drive, not a gate (no float value is a design")
+    w("limit): a 12 V float at a 100 V drive costs 12 % of the supply voltage, a")
+    w("47 V float costs 47 %, and the minimum-power operating point moves to a")
+    w("higher drive (SCALING_LAWS §2: optimum near V = 2φ). Unmeasured, but the")
+    w("direction is favourable, and a large-body PIC run is inexpensive: lower χ")
+    w("settles faster than anything already run.\n")
 
     w("## Conclusion\n")
     w("The measured device is a Ø10 mm can, but the result is not about a")

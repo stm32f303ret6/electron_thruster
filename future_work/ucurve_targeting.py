@@ -2,7 +2,7 @@
 """
 ucurve_targeting.py -- commanded currents for the fixed-thrust throttle stages
 
-Solves the calibrated laws of minimal_model.py at FIXED thrust demand
+Solves the calibrated laws of mission_model.py at FIXED thrust demand
 (the 200 V anchor's measured 13.65 nN) for the throttle-curve voltages
 below the committed frontier: 125 V (predicted specific-power valley),
 92.4 V (left arm), 78 V (floor).  The output table is the pre-registration
@@ -36,7 +36,7 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from minimal_model import Calibration, K_PER_EV, R_EMIT, i_cl_mA  # noqa: E402
+from mission_model import Calibration, K_PER_EV, R_EMIT, i_cl_mA  # noqa: E402
 
 F_DEMAND_NN = 13.65          # the 200 V anchor's measured thrust (metrics.json)
 VOLTAGES_V = (125.0, 92.4, 78.0)

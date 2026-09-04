@@ -105,25 +105,27 @@ thin and grows with φ, so enhancement is an area ratio rather than an
 orbital-motion fan. Using that (Child-sheath) model instead gives an
 estimate, not a calibration, since no run sits in this regime:
 
-| body | altitude | boost | φ estimate |
-|---|---|---|---|
-| 1U cube, face-on | 500 km | 37.9× | 38 V |
-| 1U cube, face-on | 550 km | 19.2× | 22 V |
-| 1U cube, face-on | 600 km | 10.0× | 12 V |
-| 3U end-on (10x10x30 cm) | 500 km | 16.3× | 47 V |
-| 3U end-on (10x10x30 cm) | 550 km | 8.2× | 25 V |
-| 3U end-on (10x10x30 cm) | 600 km | 4.3× | 12 V |
-| 6U end-on (10x20x30 cm) | 500 km | 19.0× | 69 V ⚠ past benign gate |
-| 6U end-on (10x20x30 cm) | 550 km | 9.6× | 37 V |
-| 6U end-on (10x20x30 cm) | 600 km | 5.0× | 18 V |
-| 12U end-on (20x20x30 cm) | 500 km | 25.3× | 108 V ⚠ past benign gate |
-| 12U end-on (20x20x30 cm) | 550 km | 12.8× | 59 V ⚠ past benign gate |
-| 12U end-on (20x20x30 cm) | 600 km | 6.7× | 31 V |
+| body | altitude | boost | φ estimate | float tax at 100 V |
+|---|---|---|---|---|
+| 1U cube, face-on | 500 km | 37.9× | 38 V | 38% |
+| 1U cube, face-on | 550 km | 19.2× | 22 V | 22% |
+| 1U cube, face-on | 600 km | 10.0× | 12 V | 12% |
+| 3U end-on (10x10x30 cm) | 500 km | 16.3× | 47 V | 47% |
+| 3U end-on (10x10x30 cm) | 550 km | 8.2× | 25 V | 25% |
+| 3U end-on (10x10x30 cm) | 600 km | 4.3× | 12 V | 12% |
+| 6U end-on (10x20x30 cm) | 500 km | 19.0× | 69 V | 69% |
+| 6U end-on (10x20x30 cm) | 550 km | 9.6× | 37 V | 37% |
+| 6U end-on (10x20x30 cm) | 600 km | 5.0× | 18 V | 18% |
+| 12U end-on (20x20x30 cm) | 500 km | 25.3× | 108 V | 108% |
+| 12U end-on (20x20x30 cm) | 550 km | 12.8× | 59 V | 59% |
+| 12U end-on (20x20x30 cm) | 600 km | 6.7× | 31 V | 31% |
 
-Benign at 550–600 km, tightening at 500 km, past the benign gate for the
-largest bodies at 500 km. Unmeasured, but the direction is favourable,
-and a large-body PIC run is inexpensive: lower χ settles faster than
-anything already run.
+The float is a tax on the drive, not a gate (no float value is a design
+limit): a 12 V float at a 100 V drive costs 12 % of the supply voltage, a
+47 V float costs 47 %, and the minimum-power operating point moves to a
+higher drive (SCALING_LAWS §2: optimum near V = 2φ). Unmeasured, but the
+direction is favourable, and a large-body PIC run is inexpensive: lower χ
+settles faster than anything already run.
 
 ## Conclusion
 
