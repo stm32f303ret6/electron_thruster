@@ -311,9 +311,48 @@ flight question that the 800 ns cohort closed.
 Cost: ~20.5 h per scenario (0.45 s/step × 163 440), ~8 GB disk per run.
 `bash campaign_settled.sh` runs the chain.
 
-## Settled-pair results
+## Settled-pair results (2026-09-04)
 
-Pending (runs launch 2026-09-02, sequential).
+Reference cohort `joint_211b8936` (runs `20260902T084534Z_b0_control_232cd445`,
+`20260903T040431Z_transverse_1x_487c410e`; analysis `20260904T012209Z_2ea5449d`;
+~20 h each). Verdict **PASS — all 18 required gates**, settledness included
+(late dφ/dt 0.0019 / 0.0020 V/ns against the 0.005 requirement; current
+balance < 10⁻⁴; containment 0.18 V in the ±60 mm box).
+
+| quantity | `b0_control` (settled) | `transverse_1x` (settled) |
+|---|---:|---:|
+| float φ [V] | 26.76 | 29.35 |
+| F_thrust [nN] | 13.91 | 13.81 |
+| escape [%] | 99.83 | 99.82 |
+| exhaust KE [eV] (predicted) | 146.3 (145.3) | 144.4 (143.4) |
+| Lorentz correction [%] | 0.00 | +0.03 |
+| late dφ/dt [V/ns] | 0.0019 | 0.0020 |
+| C_float [pF] | 0.594 | 0.594 |
+
+1. **The settled operating point** (model ion clock): the float's full
+   trajectory is 11.6 V at 800 ns → 21.1 V at 2 µs → flat at **26.8 V**
+   from ~5 µs. The committed 800 ns campaign reads ~43 % of the settled
+   float — and it does not matter for performance: settled F_beam is
+   13.91 nN and exhaust 146.3 eV, within 2 % of the committed anchor
+   (13.65 nN, 147.5 eV), because the float tax is compressed twice on its
+   way into the thrust (source-plane fraction, then the square root).
+2. **The settled flight-field result, the campaign's last open question**:
+   thrust and escape stay null (ΔF −0.75 % ≤ 5 %, Δescape 0.00 pp ≤ 1),
+   the Lorentz term stays negligible (+0.03 %), and the float shows a
+   small, real magnetized-collection tax: **Δφ = +2.60 V**, just outside
+   the pre-registered ±2 V band (its reported gate flags accordingly).
+   At 800 ns the same comparison read +0.29 V: the effect is resolvable
+   only at the settled equilibrium, where the thermal-electron gyroradius
+   (26.8 mm) sits inside the developed sheath. Both floats are far inside
+   the 50 V benign limit. Reading: the flight-orientation null holds for
+   every mission-relevant quantity; "unchanged" for the float is refined
+   to "+2.6 V (+10 %) at the settled point".
+3. Standing caveats: the 400 mₑ reduced ion (real O⁺ settles ~8.6× slower
+   — G8), one grid/ppc/seed, and the b0 float band (14–21 V) again read
+   low — the second time this campaign under-predicted settling, both
+   flags kept as recorded.
+
+![settled cohort float](reference_results/joint_211b8936/figures/phi_overlay.png)
 
 ![cohort float](reference_results/joint_21e03d1d/figures/phi_overlay.png)
 ![cohort thrust](reference_results/joint_21e03d1d/figures/thrust_overlay.png)

@@ -11,11 +11,14 @@
 > with B ⊥ ẑ and a thrust ledger corrected for the in-box Lorentz term:
 > `pic_sims/characterization/magnetized_transverse/` (pre-registration in
 > its README) with `transverse_b_numerics/` as the validation mini-ladder
-> this note asked for. Executed 2026-09-01: the 1× transverse null holds
-> on every pre-registered band (Δφ +0.29 V, ΔF −0.14 %); the 10× tax is
-> measured at Δφ +53 V and ΔF −14 % as bounds (unsettled at 800 ns,
-> sheath at the box — the two failed trust gates). The text below is
-> preserved as the design record.
+> this note asked for. Closed 2026-09-04. At flight strength the
+> operating point survives, at the 800 ns snapshot and at the settled
+> 6 µs equilibrium alike (settled: Δφ +2.6 V, ΔF −0.75 %, escape
+> unchanged, 18/18 gates). At 10× the return circuit does not close:
+> the float climbs through the 150 V ceiling with no equilibrium below
+> 91 % of the beam energy, so amplified fields force field-aligned
+> firing, the mode tier M1 validated. The text below is preserved as
+> the design record.
 
 
 Extracted from the magnetized-axis plan (pre-registered 2026-08-08 as

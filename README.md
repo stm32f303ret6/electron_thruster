@@ -285,6 +285,30 @@ Each spoke links to its simulation directory:
 
 Details: [`pic_sims/characterization/README.md`](pic_sims/characterization/README.md).
 
+### PIC simulations: the transverse field (3D)
+
+The RZ decks can only hold an axial field, so the flight orientation, B
+perpendicular to the beam, got its own Cartesian 3D deck: the same body
+resolved at 1 mm cells in a ±60 mm box, the escaped beam prescribed at the
+lid with the anchor's measured energy, and a thrust ledger that adds the
+Lorentz force on every particle in flight (the exit flux alone under-reads
+the emission reaction once the beam curls).
+
+| run | B | settled $\varphi$ | $F$ | $f_{\mathrm{esc}}$ | outcome |
+|---|---|---|---|---|---|
+| control (3D, 6 µs) | 0 | 26.8 V | 13.91 nN | 99.8 % | closes on the anchor within 2 % |
+| flight strength | 30 µT ⊥ | 29.4 V | 13.81 nN | 99.8 % | null: ΔF −0.8 %, Δφ +2.6 V |
+| 10× flight | 300 µT ⊥ | no equilibrium | — | 98 % until abort | chokes through the 150 V ceiling |
+
+Three results. The flight-orientation field leaves the operating point
+alone: thrust and escape unchanged, a 2.6 V float tax against the 50 V
+limit. At 10× the return circuit cannot close and the device must fire
+along the field, the mode the axial spokes validate. And the 6 µs runs
+measure the settling the 800 ns campaign truncates: the float reaches
+about half its settled value at 800 ns while thrust moves under 2 %.
+Pre-registrations, gates and evidence:
+[`pic_sims/characterization/magnetized_transverse/`](pic_sims/characterization/magnetized_transverse/).
+
 ### Numerical convergence (200 V anchor)
 
 | axis | change | effect |
@@ -305,10 +329,9 @@ This is a research repository with a working physics model, not a product.
 
 Ordered by how much they could change the answer.
 
-1. Transverse magnetic field never simulated. In LEO the geomagnetic field is roughly perpendicular to the thrust axis.
-   The beam gyroradius (~1.4 m) is ~50× larger than the simulation domain (30 mm), so the committed runs cannot see where the exhaust momentum ends up once the beam gyrates.
-   This could move the thrust in either direction.
-   See `future_work/M2_TRANSVERSE_B.md`.
+1. Ion clock. Ions are 400 mₑ and every committed float is an 800 ns snapshot.
+   The 3D field campaign settled its floats at 6 µs on that clock, at about twice the 800 ns reading, with thrust moving under 2 %.
+   Real O⁺ settles roughly 9× slower; no run has reached that.
 2. Only one plasma density measured. Every committed run uses the same dayside row; the density axis of the collection law is theory-only.
 3. CubeSat collection is a regime change. Committed runs sit at r/λ_D ≈ 2.5 (orbit-motion-limited); a CubeSat is tens of Debye lengths across, where OML does not apply.
 4. No attitude control in this repository, yet the mission cases assume a held pose.
