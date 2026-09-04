@@ -123,14 +123,14 @@ potential is whatever makes that balance close.
   |---|---|---|
   | 1 (linear OML) | sphere OML theory; this repo's anchor inversion (one point) | ~31 V |
   | **0.82 ± 0.06** | intermediate candidate between the OML sphere (α = 1) and cylinder (α = 0.5) limits — a can is neither — **pre-registered with a ±0.06 band** | **~36 V** |
-  | 0.5 (square root) | OML-cylinder / thin-sheath square-root theory | ~90 V — would fail the 50 V gate and approach the 100 V choke |
+  | 0.5 (square root) | OML-cylinder / thin-sheath square-root theory | ~90 V — a 30 % float tax on the 300 V drive, approaching the 100 V choke |
 
   The 300 V run discriminates. The fixed-thrust throttle stages
   (`future_work/UCURVE_PLAN.md`, resolved 2026-08-08; stages now under
   `future_work/ucurve_pic_stages/`)
   extended the measured (I_esc, φ) price list to a second slice: all six
   committed equilibria fit `(1+χ)^α` with α_all = 0.922 and residuals
-  ≤ 9.3 % (`model/minimal_model.py --calibrate`). One caveat
+  ≤ 9.3 % (`model/mission_model.py --calibrate`). One caveat
   travels with the comparison: at high χ the sheath equilibrates on the ion
   timescale, so an 800 ns plateau must be checked against its own late slope
   before any α is declared the winner (the late-dφ/dt line every capstone
@@ -147,7 +147,8 @@ potential is whatever makes that balance close.
      tail-averaged. The pre-registered late-slope caveat applies in full: the
      true equilibrium is plausibly a few volts above the point prediction
      (upper half of the ±0.06 band, i.e. α slightly below 0.82), and its
-     extrapolated top edge brushes the 50 V benign gate. A longer-tail 300 V
+     extrapolated top edge reaches about 50 V, a 17 % tax on the 300 V
+     drive. A longer-tail 300 V
      run is the instrument if that band must be closed; not scheduled.
   4. The 100 V run measured φ = 5.4 V (tail) extrapolating to ~6.0 V settled,
      on the ~6 V prediction. Consistent, but at low χ the candidate laws
@@ -215,7 +216,7 @@ The feasible current is bounded by the emitter, ambient return-current
 availability, acceptable spacecraft potential, and successful beam escape.
 The concept acknowledges these bounds without optimizing against them. The
 law is validated to 4–6 % against the three gated frontier anchors
-(`model/feasibility_model.py`, `model/results/FEASIBILITY_POWER.md`); the
+(`model/mission_model.py --closed-form`, `model/results/CLOSED_FORM.md`); the
 residual is the charging tax `V/(V−φ)` = 1.06–1.14, supplied by the §4
 collection law when a tighter number is wanted.
 
@@ -286,8 +287,10 @@ Plasma-dependent (does not transfer):
   `I_esc/(β·I_the)` with `I_the ∝ A·n_e·√Te`, which sets the float via §4.
   The float stiffness goes as `1/(n_e·√Te)`: at the night minimum
   (n_e ≈ 30× below the measured row) the same beam current pushes φ tens of
-  volts higher, toward the 50 V design limit and the 100 V choke, and the
-  φ-correction to thrust stops being small. The collection-limited night
+  volts higher. That is a tax on the drive, not a limit: no float value is a
+  design limit, and the 50 V figure in the early gates was a placeholder
+  chosen before the first run. But above ~100 V no committed run has found
+  an equilibrium, and the φ-correction to thrust stops being small. The collection-limited night
   corner is a qualitatively different regime, and nothing in the ladder has
   measured it.
 
@@ -312,7 +315,7 @@ of limited value, then relaunched 2026-08-08 and continued to 2.4 µs, the
 campaign's first settled float. Verdict: φ = 42.5 V settled; α = 0.5
 refuted independently on the density axis; every fixed α ≤ 1 overshoots
 (secant α_eff = 1.26, i.e. the fitted law is conservative along
-density); the 50 V benign gate passes. Full record and plan details:
+density); the float is a 21 % tax on the 200 V drive. Full record and plan details:
 `pic_sims/characterization/thin_plasma/README.md`.
 
 ## 8b. Geometry scaling, measured (2026-08-06)
@@ -413,7 +416,8 @@ The regime caveat. Every committed run is at `r/λ_D ≈ 2.5`. CubeSat radii
 are 25–60 λ_D, where OML does not apply: the sheath is thin and grows with φ,
 so enhancement is an area ratio `(r_s/r)²` with `r_s − r ~ λ_D(2χ)^{3/4}`.
 That model, an estimate and not a calibration, puts a 3U at ~12 V (600 km),
-~25 V (550 km), ~47 V (500 km): benign in the corridor, tightening below it.
+~25 V (550 km), ~47 V (500 km): a 12–47 % tax on a 100 V drive, so the
+minimum-power voltage moves up at 500 km.
 The areal power balance above does not depend on this; only the floats do.
 
 ## 9. From scaling laws to a model: the plan, and what buys confidence

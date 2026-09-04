@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Frontier + collection-law discrimination figure.
 
-Data comes from the committed calibration (model/minimal_model.py reads the
+Data comes from the committed calibration (model/mission_model.py reads the
 promoted reference_results metrics), so this figure regenerates from the repo
 with no hand-typed numbers.
 """
@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "model"))
-from minimal_model import Calibration, R_EMIT, i_cl_mA, j_the, K_PER_EV
+from mission_model import Calibration, R_EMIT, i_cl_mA, j_the, K_PER_EV
 
 cal = Calibration()
 A = cal.anchors
@@ -77,19 +77,17 @@ ax[1].plot(V_m, phi_m, "o", c="tab:blue", ms=7, zorder=5, label="measured")
 # settled-value extrapolation band at 300 V (late-slope decay, SCALING_LAWS 4)
 ax[1].errorbar([300], [45], yerr=[[3], [3]], fmt="s", ms=4, c="tab:orange",
                capsize=3, zorder=4, label="300 V settled (extrap.)")
-ax[1].axhline(50, c="tab:red", lw=0.8, ls="-.")
-ax[1].text(102, 51.5, "benign-float design limit", fontsize=6.5, c="tab:red")
-ax[1].set_ylim(0, 100)
+ax[1].set_ylim(0, 115)
 ax[1].set_xlabel("supply voltage V [V]")
 ax[1].set_ylabel(r"floating potential $\varphi$ [V]")
-ax[1].legend(fontsize=7, loc="upper left")
+ax[1].legend(fontsize=6.5 if PAPER else 7, loc="upper left")
 
 ax[2].plot(Vg, FP_m[1] * np.sqrt(V_m[1] / Vg), "-", c="0.6", lw=1,
            label=r"$F/P \propto 1/\sqrt{V}$ (anchor 200 V)")
 ax[2].plot(V_m, FP_m, "o", c="tab:blue", ms=7, label="measured")
 ax[2].set_xlabel("supply voltage V [V]")
 ax[2].set_ylabel(r"thrust per watt [$\mu$N/W]")
-ax[2].legend(fontsize=8 if not PAPER else 6.5)
+ax[2].legend(fontsize=8 if not PAPER else 6.5, loc="lower left")
 
 for a, lab in zip(ax, "abc"):
     a.grid(alpha=0.25, lw=0.4)

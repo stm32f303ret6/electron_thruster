@@ -39,7 +39,7 @@ P [mW] = F · sqrt(V) / c_eff              c_eff = c_F · sqrt(kappa) = 2.934
 ```
 
 Validated to 4–6 % against the three PIC frontier anchors (100/200/300 V).
-See [`model/feasibility_model.py`](../model/feasibility_model.py) and
+See [`model/mission_model.py`](../model/mission_model.py) (`--closed-form`) and
 [`model/MODEL.md`](../model/MODEL.md).
 
 The measured overhead factor against the ideal bound (P_real / P_ideal ≈

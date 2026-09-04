@@ -90,7 +90,7 @@ Reference point (200 V anchor, 13.65 nN): ideal bound 57 mW, measured
 1. Same evidence contract as the main campaign: frozen configs, hashes,
    pre-registered predictions, versioned gates.
 2. The ideal model is the pre-registration engine: every design change gets
-   a predicted recovery from `model/feasibility_model.py` before the run;
+   a predicted recovery from `model/mission_model.py --closed-form` before the run;
    the PIC result gates it.
 3. Few-percent effects only via matched A/B pairs (same grid/seed/window).
 4. The objective function is system power (beam + gate + converter), never

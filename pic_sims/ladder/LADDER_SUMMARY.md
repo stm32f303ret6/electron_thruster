@@ -254,7 +254,7 @@ geometry-specific cost of off-design low-voltage operation inside the can:
 escape collapses from beam self-scrape (93.8 → 80.0 → 57.4 %), a loss the
 isolated-gun geometry does not show (step 3, scenario C: 99.99 %
 transmission at the same 92.4 V command). Power consumption in the concept
-argument is now the analytical model (`model/feasibility_model.py`,
+argument is now the analytical model (`model/mission_model.py --closed-form`,
 validated to 4–6 % against the frontier stages above). These stages are
 valid, PASSed evidence, but controller-optimization work for a specific
 cathode/gap/aperture, so they live in `future_work/ucurve_pic_stages/` with
