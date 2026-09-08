@@ -4,8 +4,12 @@
 Schematic (not data-encoded). Nine ladder stages climb a staircase from the
 vacuum electron gun to the full floating thruster (the 200 V anchor). Eight
 characterization spokes fan out from that anchor; each moves one physics axis
-and keeps everything else verbatim. Numbers are the headline result of each
-stage / spoke as reported in README.md and pic_sims/ladder/LADDER_SUMMARY.md.
+and keeps everything else verbatim: eight on the RZ deck, three from the
+tier M2 transverse-field campaign (the same body in a Cartesian 3D deck with
+B perpendicular to the beam, the flight orientation the RZ decks cannot hold).
+Numbers are the headline result of each stage / spoke as reported in
+README.md, pic_sims/ladder/LADDER_SUMMARY.md and
+pic_sims/characterization/magnetized_transverse/README.md.
 
     python3 paper/figs/make_ladder.py
     -> paper/imgs/ladder_characterization.png
@@ -40,21 +44,27 @@ LADDER = [
 ]
 ANCHOR = ("full thruster chipsat", "200 V  ·  13.65 nN")
 
-# (label, axis changed, headline result) -- drawn left to right across the fan
+# (label, axis changed, headline result) -- left column bottom to top, then right column
+# bottom to top. The last three are the tier M2 transverse-field campaign (Cartesian 3D deck,
+# pic_sims/characterization/magnetized_transverse/, scenario names as in its config).
 SPOKES = [
-    ("low_power",          "100 V",              "3.42 nN,  φ = 5.4 V"),
-    ("high_thrust",        "300 V",              "30.13 nN,  φ = 36.3 V"),
-    ("350V_400km",         "350 V",              "40.48 nN,  φ = 48.3 V (on 50 V limit)"),
-    ("350V_400km_slender", "350 V, slender",    "43.33 nN,  φ = 14.0 V"),
-    ("slender_body",       "slender body",       "14.22 nN,  φ = 4.4 V"),
-    ("thin_plasma",        "n₀ / 3",       "12.39 nN,  φ = 42.5 V"),
-    ("magnetized_1x",      "B = 30 µT", "13.64 nN — null, anchor unchanged"),
-    ("magnetized_10x",     "B = 300 µT",         "−11 % thrust,  φ +33 V"),
+    ("low_power",          "100 V",                   "3.42 nN,  φ = 5.4 V"),
+    ("high_thrust",        "300 V",                   "30.13 nN,  φ = 36.3 V"),
+    ("350V_400km",         "350 V",                   "40.48 nN,  φ = 48.3 V (on 50 V limit)"),
+    ("350V_400km_slender", "350 V, slender",          "43.33 nN,  φ = 14.0 V"),
+    ("slender_body",       "slender body",            "14.22 nN,  φ = 4.4 V"),
+    ("thin_plasma",        "n₀ / 3",                  "12.39 nN,  φ = 42.5 V"),
+    ("magnetized_1x",      "B = 30 µT ∥",             "13.64 nN — null, anchor unchanged"),
+    ("magnetized_10x",     "B = 300 µT ∥",            "−11 % thrust,  φ +33 V"),
+    ("b0_control",         "B = 0, 3D deck, 6 µs",    "φ 26.8 V,  13.91 nN: closes on the anchor within 2 %"),
+    ("transverse_1x",      "B = 30 µT ⊥, 3D",         "null: ΔF −0.8 %,  Δφ +2.6 V"),
+    ("transverse_10x",     "B = 300 µT ⊥, 3D",        "no equilibrium: chokes through the 150 V ceiling"),
 ]
+N_LEFT = 5   # spokes in the left column; the rest go right
 
-fig, ax = plt.subplots(figsize=(14.0, 8.6))
+fig, ax = plt.subplots(figsize=(14.0, 9.4))
 ax.set_xlim(-0.8, 17.6)
-ax.set_ylim(-0.4, 11.2)
+ax.set_ylim(-0.4, 12.2)
 ax.axis("off")
 
 # ---------------------------------------------------------------- staircase
@@ -91,11 +101,11 @@ ax.text(ax_x, ax_y + 0.10 + box_h * 0.27, ANCHOR[1], ha="center", va="center", f
 
 # ---------------------------------------------------------------- spokes (two columns)
 hub = (ax_x, ax_y + 0.10 + box_h + 0.05)
-ROW_DY, Y_BASE = 1.05, hub[1] + 0.55
+ROW_DY, Y_BASE = 0.86, hub[1] + 0.50
 COL_DX = 2.9   # dot offset from the hub, left column negative / right column positive
 for k, (name, axis, result) in enumerate(SPOKES):
-    col, row = divmod(k, 4)             # first four spokes left, last four right
-    side = -1 if col == 0 else 1
+    side = -1 if k < N_LEFT else 1
+    row = k if k < N_LEFT else k - N_LEFT
     dx, dy = side * COL_DX, Y_BASE + row * ROW_DY
     ax.plot([hub[0], hub[0] + dx], [hub[1], dy], color=GREEN, lw=1.6, zorder=1)
     ax.plot(hub[0] + dx, dy, "o", ms=4.5, color=GREEN, zorder=2)
@@ -106,8 +116,8 @@ for k, (name, axis, result) in enumerate(SPOKES):
     ax.text(tx, dy - 0.08, axis, ha=ha, va="top", fontsize=10.5, color=INK)
 
 # ---------------------------------------------------------------- legend / key
-kx, ky = -0.6, 10.9
-for label, colour in [("characterization (8 spokes)", GREEN),
+kx, ky = -0.6, 11.9
+for label, colour in [("characterization (11 spokes: 8 RZ, 3 transverse 3D)", GREEN),
                       ("capstone", AMBER),
                       ("current collection", RED),
                       ("electron gun", BLUE)]:

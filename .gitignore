@@ -11,3 +11,14 @@ Backtrace.*
 **/results/
 suite_results/
 *.log
+
+# Claude Code / AI assistant files stay local
+.claude/
+**/.claude/
+.claude-plugin/
+**/.claude-plugin/
+CLAUDE.md
+**/CLAUDE.md
+CLAUDE.local.md
+**/CLAUDE.local.md
+.mcp.json
