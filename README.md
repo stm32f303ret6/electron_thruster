@@ -2,12 +2,14 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22115924.svg)](https://doi.org/10.5281/zenodo.22115924)
 
-An electron thruster for LEO drag compensation, with the ionosphere as the return circuit, validated with full PIC simulations and orbit-drag models.
+The idea is an electron thruster for LEO station-keeping on small spacecraft.
+It emits electrons from a cathode and lets the ionosphere return the current to the spacecraft body.
 
-The thruster accelerates electrons out of the spacecraft; the escaping beam produces the thrust.
-The ionosphere returns the same current to the spacecraft surface, so the circuit closes with zero net mass flow: no tank, no feed system, no neutralizer.
+I validated the concept with full PIC simulations (WarpX) across a 9-stage ladder and 10 characterization spokes.
+The simulations demonstrate feasibility: compensating drag at 500–600 km altitudes (possibly 400 km too), consuming milliwatts and producing nanonewtons of thrust, refueling from the ionosphere.
 
-Small spacecraft can then carry a cheap, simple propulsion system that cancels drag. Station-keeping is in principle indefinite because there is no on-board propellant.
+The power tradeoff is ~200× worse than an ion thruster because electrons are much lighter, but at nanonewton scale the difference is 1 mW for an ion thruster vs 10–100 mW for this one.
+The device is simple and cheap — a cathode, an aperture, and a high-voltage supply — and it would enable station-keeping missions for CubeSats without carrying onboard propellant.
 
 ![200 V baseline simulation](paper/imgs/dashboard_200v.gif)
 
