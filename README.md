@@ -2,14 +2,14 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22115924.svg)](https://doi.org/10.5281/zenodo.22115924)
 
-The idea is an electron thruster for LEO station-keeping on small spacecraft.
+The idea is an electron thruster for LEO station keeping on small spacecraft.
 It emits electrons from a cathode and lets the ionosphere return the current to the spacecraft body.
 
-I validated the concept with full PIC simulations (WarpX) across a 9-stage ladder and 10 characterization spokes.
+I validated the concept with full PIC simulations (WarpX) across a 9 stage ladder and 10 characterizations.
 The simulations demonstrate feasibility: compensating drag at 500–600 km altitudes (possibly 400 km too), consuming milliwatts and producing nanonewtons of thrust, refueling from the ionosphere.
 
-The power tradeoff is ~200× worse than an ion thruster because electrons are much lighter, but at nanonewton scale the difference is 1 mW for an ion thruster vs 10–100 mW for this one.
-The device is simple and cheap — a cathode, an aperture, and a high-voltage supply — and it would enable station-keeping missions for CubeSats without carrying onboard propellant.
+The power tradeoff is ~200× worse than an ion thruster because electrons are much lighter, but at nanonewton scale the difference is 1 mW for an ion thruster vs 10–100 mW for this electron thruster.
+The device is simple and cheap: a cathode, an aperture, and a high-voltage supply, and it would enable station keeping missions for cubesats without carrying onboard propellant.
 
 ![200 V baseline simulation](paper/imgs/dashboard_200v.gif)
 
@@ -170,8 +170,8 @@ Running the thruster at one fixed voltage all year:
 
 | altitude | drag mean | drag max | 13.65 nN (200 V) covers | 30.13 nN (300 V) covers |
 |---|---|---|---|---|
-| 400 km axial | 32.9 nN | 92.4 nN | — | — |
-| 400 km lateral | 21.6 nN | 60.7 nN | — | mean |
+| 400 km axial | 32.9 nN | 92.4 nN | - | - |
+| 400 km lateral | 21.6 nN | 60.7 nN | - | mean |
 | 500 km axial | 7.6 nN | 28.4 nN | mean | **mean and max** |
 | 550 km axial | 3.8 nN | 16.3 nN | mean (max barely missed) | **mean and max** |
 | 600 km axial | 2.0 nN | 9.6 nN | **mean and max** | **mean and max** |
@@ -197,10 +197,10 @@ Where that power comes from is mission design, not part of the thruster, same as
 For context, typical small-spacecraft power:
 
 - this geometry (femtosat class): ~10–30 mW from body-mounted solar cells, depending on coverage
-- 1U CubeSat: ~1–2 W
-- 3U CubeSat: ~5–10 W with body-mounted panels, more with deployables
+- 1U cubesat: ~1–2 W
+- 3U cubesat: ~5–10 W with body-mounted panels, more with deployables
 
-Demand and supply both grow with area, so the ratio stays workable at CubeSat size: a 3U needs ~0.9 W at 600 km against a typical 5–10 W budget.
+Demand and supply both grow with area, so the ratio stays workable at cubesat size: a 3U needs ~0.9 W at 600 km against a typical 5–10 W budget.
 
 ### 400 km note
 
@@ -221,11 +221,11 @@ Closure depends on the orbit. The tested case (solar-maximum 2024, one inclinati
 
 Where full station-keeping does not close, partial compensation still extends mission life.
 
-## Does it scale to CubeSats?
+## Does it scale to cubesats?
 
 The feasibility condition is close to scale-free: drag grows with the ram area, collection grows with the skin area, and they cancel.
 Bigger bodies need proportionally more current and power.
-`paper/SCALING_LAWS.md` §8 estimates a 3U CubeSat at:
+`paper/SCALING_LAWS.md` §8 estimates a 3U cubesat at:
 
 | altitude | power |
 |---|---|
@@ -301,7 +301,7 @@ the emission reaction once the beam curls).
 |---|---|---|---|---|---|
 | control (3D, 6 µs) | 0 | 26.8 V | 13.91 nN | 99.8 % | closes on the anchor within 2 % |
 | flight strength | 30 µT ⊥ | 29.4 V | 13.81 nN | 99.8 % | null: ΔF −0.8 %, Δφ +2.6 V |
-| 10× flight | 300 µT ⊥ | no equilibrium | — | 98 % until abort | chokes through the 150 V ceiling |
+| 10× flight | 300 µT ⊥ | no equilibrium | - | 98 % until abort | chokes through the 150 V ceiling |
 
 Three results. The flight-orientation field leaves the operating point
 alone: thrust and escape unchanged, a 2.6 V float tax, about 1 % of the
@@ -316,8 +316,8 @@ Pre-registrations, gates and evidence:
 
 | axis | change | effect |
 |---|---|---|
-| particle count | ppc 16 → 32 | ≤ 0.05 % — **closed** |
-| grid | dx 0.15 → 0.10 mm | F +4.0 %, KE +7.4 %, φ −1.8 % — **leading uncertainty, conservative in sign** |
+| particle count | ppc 16 → 32 | ≤ 0.05 % - **closed** |
+| grid | dx 0.15 → 0.10 mm | F +4.0 %, KE +7.4 %, φ −1.8 % - **leading uncertainty, conservative in sign** |
 
 ### Orbit simulations
 
@@ -336,7 +336,7 @@ Ordered by how much they could change the answer.
    The 3D field campaign settled its floats at 6 µs on that clock, at about twice the 800 ns reading, with thrust moving under 2 %.
    Real O⁺ settles roughly 9× slower; no run has reached that.
 2. Only one plasma density measured. Every committed run uses the same dayside row; the density axis of the collection law is theory-only.
-3. CubeSat collection is a regime change. Committed runs sit at r/λ_D ≈ 2.5 (orbit-motion-limited); a CubeSat is tens of Debye lengths across, where OML does not apply.
+3. cubesat collection is a regime change. Committed runs sit at r/λ_D ≈ 2.5 (orbit-motion-limited); a cubesat is tens of Debye lengths across, where OML does not apply.
 4. No attitude control in this repository, yet the mission cases assume a held pose.
 
 ## Repository map
@@ -353,7 +353,7 @@ Ordered by how much they could change the answer.
 
 ## Author
 
-Ricardo Sebastian Casimiro — [ORCID 0009-0008-5188-1326](https://orcid.org/0009-0008-5188-1326)
+Ricardo Sebastian Casimiro - [ORCID 0009-0008-5188-1326](https://orcid.org/0009-0008-5188-1326)
 
 ## License
 
