@@ -1,6 +1,6 @@
 # Electron thruster
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22115924.svg)](https://doi.org/10.5281/zenodo.22115924)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22115923.svg)](https://doi.org/10.5281/zenodo.22115923)
 
 The idea is an electron thruster for LEO station keeping on small spacecraft.
 It emits electrons from a cathode and lets the ionosphere return the current to the spacecraft body.
@@ -368,8 +368,8 @@ If you use this work, please cite:
   author    = {Casimiro, Ricardo Sebastian},
   title     = {Electron thruster for LEO drag compensation},
   year      = {2026},
-  doi       = {10.5281/zenodo.22115924},
-  url       = {https://https://github.com/stm32f303ret6/electron_thruster},
+  doi       = {10.5281/zenodo.22115923},
+  url       = {https://github.com/stm32f303ret6/electron_thruster},
 }
 ```
 
