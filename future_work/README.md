@@ -40,7 +40,7 @@ P [mW] = F · sqrt(V) / c_eff              c_eff = c_F · sqrt(kappa) = 2.934
 
 Validated to 4–6 % against the three PIC frontier anchors (100/200/300 V).
 See [`model/mission_model.py`](../model/mission_model.py) (`--closed-form`) and
-[`model/MODEL.md`](../model/MODEL.md).
+[`model/README.md`](../model/README.md).
 
 The measured overhead factor against the ideal bound (P_real / P_ideal ≈
 1.4–1.5 at the off-design points) decomposes into exactly two things,
@@ -108,7 +108,7 @@ than to a universal electron-gun limit.
    calibrated laws at fixed demand.
 4. The U-curve as a control surface. A tax-aware servo needs the
    escape-vs-perveance surface those three points bracket
-   ([`MODEL.md` §3](../model/MODEL.md)).
+   (U-curve table in [`model/results/CLOSED_FORM.md`](../model/results/CLOSED_FORM.md)).
 5. Magnetized axis. Tier M1 (field-aligned Bz, executed 2026-08-10) closed
    the near-field half: null at 1× LEO, an ~11 % thrust tax through the
    float at 10× (`../pic_sims/characterization/magnetized_1x/`,

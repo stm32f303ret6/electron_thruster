@@ -228,7 +228,7 @@ confirms F/P ∝ 1/√V: 0.283 / 0.200 / 0.159 µN/W at 100 / 200 / 300 V.
 ### 12. Slender body: the geometry axis (PASS, promoted)
 
 The test: the capstone deck with the can lengthened to Ø10 × 30.5 mm
-(L/r = 6, skin 3.24×) at the anchor's identical drive, current, plasma row,
+(L/r = 6, skin 3.48×) at the anchor's identical drive, current, plasma row,
 grid and seed. The only change is where the return current is collected.
 Required a code change first (`geometry.cathode_standoff`, commit `a7f4106`)
 so the can grows without stretching the gun gap.
@@ -242,7 +242,9 @@ Pre-registered hypotheses (`../characterization/slender_body/README.md`, plan se
 2. B, cylinder-limit lateral: predicted tens of volts.
 
 Measured φ = 4.38 V. Hypothesis A confirmed, B refuted by ~10×. The
-fitted exponent survives a 3.24× area change. Thrust rose to 14.22 nN
+fitted exponent survives a 3.48× area change (written 3.24× at
+registration, an arithmetic slip; with the correct ratio the float sits 2 %
+above the area-only point). Thrust rose to 14.22 nN
 (from 13.65) because a lower float keeps more of the drive.
 
 ---

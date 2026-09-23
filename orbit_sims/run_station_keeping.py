@@ -23,6 +23,11 @@ Te(t) and Ti(t) do not depend on the vehicle that flew through them. Only
 by inspection and frozen into the PIC stage's config.
 
 Output: validation_cases/<case>/results/{station_keeping.csv, config_used.yaml}
+
+With `mission.thruster: off` the same runner flies the case WITHOUT the
+thruster: the orbit decays until the decay floor (re-entry) or the end of the
+mission, and the output is free_fall.csv (no IRI columns) -- the baseline the
+station-keeping result is compared against.
 """
 
 import argparse
@@ -96,26 +101,29 @@ def main(argv=None):
 
     out_dir = case_dir / "results"
     os.makedirs(out_dir, exist_ok=True)
-    csv_path = out_dir / "station_keeping.csv"
+    free_fall = cfg.mission.thruster == "off"
+    csv_path = out_dir / ("free_fall.csv" if free_fall else "station_keeping.csv")
 
     spice.load_standard_kernels()
     mu = spice.get_body_gravitational_parameter("Earth")
 
     print("=" * 78)
-    print(f"orbit_sims station keeping — {args.case}")
+    print(f"orbit_sims {'free fall (thruster off)' if free_fall else 'station keeping'}"
+          f" — {args.case}")
     print(f"  TudatPy {tudatpy.__version__} via {env_mod.TUDAT_NAMESPACE}")
     print(f"  spacecraft: {craft.describe()}")
     print(f"  output -> {out_dir}/")
     print("=" * 78)
 
-    print("  " + env_mod.assert_models_available())
     start_dt = _dt.datetime.fromisoformat(cfg.mission.start_utc)
     start_epoch = float(tr.epoch_from_date_time_components(
         start_dt.year, start_dt.month, start_dt.day,
         start_dt.hour, start_dt.minute, float(start_dt.second)))
     end_dt = tr.date_time_from_epoch(
         start_epoch + cfg.mission.duration_days * 86400.0).to_python_datetime()
-    print("  " + env_mod.assert_iri_coverage(start_dt, end_dt))
+    if not free_fall:
+        print("  " + env_mod.assert_models_available())
+        print("  " + env_mod.assert_iri_coverage(start_dt, end_dt))
 
     cfg.dump(out_dir / "config_used.yaml")
     bodies = env_mod.build_bodies(cfg, craft)
@@ -133,6 +141,15 @@ def main(argv=None):
 
     print("-" * 78)
     print(f"Done: {n_rows} rows in {wall:.1f}s -> {csv_path}")
+    if free_fall:
+        days = (stats.last_epoch - start_epoch) / 86400.0
+        end = tr.date_time_from_epoch(stats.last_epoch).to_python_datetime()
+        if stats.floor_reached:
+            print(f"  RE-ENTERED: reached {cfg.orbit.decay_floor_km:g} km after {days:.1f} days "
+                  f"({days/365.25:.2f} yr), {end.isoformat()} UTC")
+        else:
+            print(f"  SURVIVED the {days:.1f}-day run; final altitude {stats.alt_last:.1f} km")
+        return 0
     alt_min, alt_mean, alt_max = stats.triple("alt")
     drag_min, drag_mean, drag_max = stats.triple("drag")
     ne_min, ne_mean, ne_max = stats.triple("ne")

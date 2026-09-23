@@ -10,18 +10,21 @@ passed** under policy `capstone.exploratory_axes.v1`.
 
 The stage plan (now the plan section of `../../README.md`; the pre-run
 `SLENDER_BODY_PLAN.md` is preserved in git history) recorded two competing
-hypotheses **before the run**, for where the float settles when total skin area grows 3.24×
-(3.4 → 11.0 cm²) at fixed escaped current:
+hypotheses **before the run**, for where the float settles when total skin area grows 3.48×
+(3.17 → 11.0 cm²; the plan wrote 3.24× from a 3.4 cm² anchor skin, an
+arithmetic slip corrected 2026-09-23) at fixed escaped current:
 
 | hypothesis | predicted φ | outcome |
 |---|---|---|
-| **A — area-only scaling** (the can's fitted α holds; enhancement demand drops 3.24×) | **≈ 4–5 V** | **CONFIRMED** |
+| **A — area-only scaling** (the can's fitted α holds; enhancement demand drops 3.48×) | **≈ 4–5 V** | **CONFIRMED** |
 | B — cylinder-limit lateral (wall collects at α ≈ 0.5) | tens of volts, possibly above the 50 V benign gate | refuted |
 
 Measured **φ = 4.378 V** tail-averaged (4.789 V at run end). The area
-arithmetic predicts 4.66 V at α = 0.893 (tail fit) and 4.14 V at α = 0.82
-(settled fit); the measurement sits between them. Hypothesis B is refuted by
-an order of magnitude.
+arithmetic with the correct 3.48× ratio predicts 4.30 V at α = 0.893 (tail
+fit) and 3.79 V at α = 0.82 (settled fit); the measurement sits 0.08 V (2 %)
+above the upper point, so collection grows slightly slower than skin area.
+(With the 3.24× slip the bracket read 4.14–4.66 V and the measurement fell
+inside it.) Hypothesis B is refuted by an order of magnitude.
 
 **Settle caveat (as pre-registered).** φ is still rising at run end:
 +3.7 / +4.7 / +7.3 / +4.4 mV/ns over the 400–600, 600–700, 700–750, 750–800 ns
@@ -36,7 +39,7 @@ commanded current (0.342 mA), identical plasma row, seed, and grid:
 
 | | squat can (anchor) | slender can | |
 |---|---|---|---|
-| outer skin | 3.17 cm² | 11.0 cm² | 3.24× |
+| outer skin | 3.17 cm² | 11.0 cm² | 3.48× |
 | ram silhouette (what drag charges for) | Ø10 mm cap | Ø10 mm cap | **unchanged** |
 | φ_body | 16–17.7 V | **4.38 V** | 3.9× lower |
 | escape fraction | 98.5 % | 98.42 % | unchanged |

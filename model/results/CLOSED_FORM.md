@@ -7,7 +7,7 @@ limit of the thrust law, with the two constants fitted in `Calibration`:
 P [mW]   = F [nN] * sqrt(V [V]) / c_eff        c_eff = c_F * sqrt(kappa) = 2.9339
 I_max    = 1.46 * 8.2982e-05 * V^1.5 mA   (planar Child-Langmuir scale x measured ratio)
 F_max    = 3.5545e-04 * V^2 nN                      V_min(F) = sqrt(F / 3.5545e-04)
-F/P      = 2.934 / sqrt(V)  uN/W               (293 uN/W at 100 V, 207 at 200 V, 169 at 300 V)
+F/P      = 2.934 / sqrt(V)  uN/W               (0.293 uN/W at 100 V, 0.207 at 200 V, 0.169 at 300 V)
 ```
 
 Its only approximation is neglecting the float; the error is the float tax

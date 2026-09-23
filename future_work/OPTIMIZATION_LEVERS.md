@@ -58,7 +58,7 @@ Reference point (200 V anchor, 13.65 nN): ideal bound 57 mW, measured
    supply pays `eV`. φ is set by the collection side (skin area, ambient
    density), not by emitter design.
 2. Optimization. More collecting skin. Already measured: the slender run
-   (3.24× skin) dropped φ from 16.98 to 4.38 V at identical drive and raised
+   (3.48× skin) dropped φ from 16.98 to 4.38 V at identical drive and raised
    thrust to 14.22 nN. No new campaign needed. This is a design-level trade
    of bare collector vs solar-cell area (clad dielectric does not collect).
 

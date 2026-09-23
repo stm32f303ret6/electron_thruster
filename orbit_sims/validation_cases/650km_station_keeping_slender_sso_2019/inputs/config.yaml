@@ -1,0 +1,24 @@
+# 650 km station keeping — slender body (axial), sun-synchronous, LTAN 10:30, 2019
+#
+# Same body as 650km_station_keeping_slender (r = 5 mm, h = 30 mm,
+# 3.1 g, axial); only the orbit and/or the solar epoch differ.
+#
+# Inclination is the J2 sun-synchronous value for this altitude; RAAN puts
+# the ascending node at 10:30 local time at the start epoch.
+
+mission:
+  start_utc: "2019-01-01T12:00:00"  # solar-cycle 24/25 minimum
+  duration_days: 365.0
+
+orbit:
+  initial_altitude_km: 650.0
+  inclination_deg: 97.99
+  raan_deg: 258.93
+
+spacecraft:
+  mass_kg: 0.0031
+  cylinder_radius_m: 0.005
+  cylinder_height_m: 0.030
+  cd: 2.2
+  rotation: axial
+  sigma_t: 0.9

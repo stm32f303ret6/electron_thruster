@@ -10,7 +10,7 @@ below; the plan text is preserved unchanged above them).
 ## Why this stage exists
 
 The model's 400 km axial row demands V_min = 304 V, just above the tested
-300 V ceiling (`model/MODEL.md` §4). Every committed run below 350 V leaves
+300 V ceiling (`model/README.md` §1, emission ceiling). Every committed run below 350 V leaves
 the 400 km row an extrapolation. One voltage step turns it into an
 interpolation, or refutes it.
 

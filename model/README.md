@@ -1,16 +1,20 @@
-# MODEL: the electron thruster concept feasibility model
+# Model: the electron thruster concept feasibility model
 
-One model lives in this directory, `mission_model.py`. It is the per-row
+The model lives in `mission_model.py`. It is the per-row
 mission model (self-consistent floating potential, collection law, emission
 ceiling, envelope flags) and, as its φ ≪ V limit, the one-equation power law
-the paper's theory section states (§1 below, `--closed-form`). Until
+the paper's theory section states (§1 below, `--closed-form`). Two
+companions read it: `scale_analysis.py` (does feasibility depend on size or
+on shape; CubeSats, §6) and `altitude_hold.py` (the real, capability-capped
+thruster against free fall with none, §4b). Until
 2026-09-04 the two lived in separate files (`feasibility_model.py` for the
 one-equation law, `minimal_model.py` for the per-row model); they were merged
 because nothing but prose read the first and its name suggested the second
 was the lesser one.
 
-The §9 contract: these models never feed an acceptance gate. PIC stages
-stay self-contained; fitted constants stay home; physics forms travel.
+The contract of `paper/SCALING_LAWS.md` §9: these models never feed an
+acceptance gate. PIC stages stay self-contained; fitted constants stay
+home; physics forms travel.
 
 ---
 
@@ -60,8 +64,8 @@ At fixed thrust, P ∝ √V: lower voltage needs more current (slower,
 more numerous electrons) and costs less power. The power-optimal operating
 point is the lowest voltage where the emission ceiling can supply the
 required current. The thrust-to-power ratio `F/P = c_eff / √V` improves
-monotonically as V decreases: 293 µN/W at 100 V, 207 µN/W at 200 V,
-169 µN/W at 300 V.
+monotonically as V decreases: 0.293 µN/W at 100 V, 0.207 µN/W at 200 V,
+0.169 µN/W at 300 V.
 
 ### What this law does not say
 
@@ -121,6 +125,18 @@ I_esc = β·A · j_the(n, Te) · (1 + χ)^α        χ = eφ/kTe
 Fit over the three anchors: α = 0.8931, βA = 2.51 cm², residuals
 within ±0.9 V on φ.
 
+Body geometry. The anchors are the squat can (L/r ≈ 1.1). The slender can
+(L/r = 6) re-fits only the prefactor at the shared α, from its two committed
+runs (`characterization.slender_body` at 200 V, `350V_400km_slender` at
+350 V): βA = 7.86 cm², 3.14× the squat's, against a 3.48× geometric skin
+ratio (3.4× from the 200 V pair, 3.0× from the 350 V pair: collection grows
+slightly slower than area); φ residuals +0.46 V and −1.31 V. The thrust law
+holds on both slender runs to within 1.6 % (conservative). Each orbit case
+picks its body from the L/r of its `config_used.yaml` cylinder (squat
+0.8–1.4, slender 5–7); a shape no committed run has measured is refused,
+not extrapolated. The measured-χ envelope flag is per body too (squat
+47–319, slender 39–123).
+
 Operating point: for each orbit row, the model chooses the supply voltage
 that minimizes beam power V·I while delivering the row's drag, with φ
 solved self-consistently from the collection law, the beam keeping energy
@@ -141,11 +157,54 @@ ran away; the old summary's "φ max 2.5–2.8 kV", "feasible 36–93 %" and its
 
 ---
 
-## 4. Mission sweep (`mission_model.py --all`, 2026-09-04)
+## 4. Mission sweep (`mission_model.py --all`, 2026-09-23)
 
-Per-row minimum-power operating points from the 2024 orbit CSVs, supply
-voltage unconstrained, no float gate (`results/MISSION_SUMMARY.md`). The
-closed-form column is §1's law at the mean drag, for comparison.
+Per-row minimum-power operating points from every station-keeping CSV,
+supply voltage unconstrained, no float gate (`results/MISSION_SUMMARY.md`,
+`results/mission_summary.json`). The closed-form column is §1's law at the
+mean drag, for comparison.
+
+The mission body is the slender can (Ø10 × 30 mm, 3.1 g, axial), flown at
+400–700 km on three orbit families (near-equatorial 0.5°, ISS 51.6°,
+sun-synchronous 10:30), near solar maximum (2024) and minimum (2019). Ranges
+span the three orbit families.
+
+| altitude, 2024 | P mean / median / p99 / max (mW) | closed-form P at mean drag (mW) | V median / p99 (V) | rows V > 350 V | φ median / p99 (V) | duty @ 350 V |
+|---|---|---|---|---|---|---|
+| 400 km | 272–292 / 242–258 / 769–793 / 1010–1495 | 231–269 | 349 / 537–863 | 44–47 % | 18–50 / 109–276 | 99–102 % |
+| 500 km | 46–48 / 37–38 / 151–165 / 235–316 | 37–43 | 161–168 / 294–472 | 0–2.5 % | 9–31 / 57–152 | 25–27 % |
+| 550 km | 20–21 / 15–16 / 74–81 / 120–169 | 16–18 | 114–124 / 217–364 | 0–1.1 % | 7–23 / 41–116 | 13–16 % |
+| 600 km | 9.6–9.9 / 6.9–7.2 / 37–41 / 61–96 | 7.7–8.8 | 100 / 168–281 | 0–0.4 % | 6–16 / 29–89 | 8–10 % |
+| 650 km | 4.8–5.0 / 3.4–3.6 / 18–22 / 33–53 | 4.1–4.7 | 100 / 130–217 | 0–0.2 % | 4–11 / 18–69 | 4–6 % |
+| 700 km | 2.5–2.7 / 1.8–1.9 / 9.3–11 / 18–30 | 2.3–2.6 | 100 / 100–168 | 0–0.09 % | 3–7 / 14–54 | 3–4 % |
+
+| altitude, 2019 | P mean / median / p99 / max (mW) | closed-form P at mean drag (mW) | V median / p99 (V) | rows V > 350 V | φ median / p99 (V) | duty @ 350 V |
+|---|---|---|---|---|---|---|
+| 400 km | 21 / 18–19 / 50–55 / 64–116 | 13–18 | 135–168 / 433–666 | 2.5–12 % | 12–53 / 139–217 | 16–22 % |
+| 500 km | 2.0–2.1 / 1.6–1.7 / 5.2–5.5 / 7–12 | 1.7–2.0 | 100 / 147–307 | 0–0.4 % | 3–13 / 47–98 | 3–5 % |
+| 550 km | 0.77–0.82 / 0.62–0.71 / 2.0–2.2 / 2.9–5.3 | 0.71–0.80 | 100 / 100–247 | 0–0.08 % | 2–7 / 29–79 | 1–3 % |
+| 600 km | 0.36–0.37 / 0.28–0.34 / 0.89–0.97 / 1.3–2.3 | 0.34–0.36 | 100 / 100–208 | 0–0.02 % | 1–4 / 17–68 | 1–2 % |
+| 650 km | 0.19–0.21 / 0.15–0.19 / 0.44–0.55 / 0.57–1.2 | 0.18–0.20 | 100 / 100–191 | 0–0.005 % | 1–3 / 13–63 | 1 % |
+| 700 km | 0.11–0.14 / 0.10–0.12 / 0.25–0.38 / 0.32–0.76 | 0.11–0.13 | 100 / 100–183 | 0–0.003 % | 0–2 / 11–59 | 0–1 % |
+
+Every row of both years closes at some voltage. Solar activity moves the
+demand 15–25×, inclination ~10 % (inclined circular orbits fly 10–15 km
+higher on average over the oblate Earth). The high-latitude orbits see
+thinner plasma and float higher, which costs supply voltage at those rows,
+not closure. Neutral and plasma density fall together at night, so the
+demand drops where collection is weakest. Extrapolated parts, flagged per
+row: the collection law below ~0.7× the PIC density (most night-side rows;
+the one off-density run found the law conservative), the gun laws above
+350 V, and the calibration on 800 ns floats.
+
+Demand is 2.5–48 mW at 500–700 km near solar maximum and 0.1–2 mW near
+minimum. Where that power comes from is mission design, outside this model,
+like the cathode technology. For scale only: body-mounted solar cells on the
+slender can harvest about 37 mW orbit-averaged (30 % efficiency, a third of
+the skin, 25 % illumination duty).
+
+The earlier mission body, the squat Ø10 × 5 mm can on the equatorial 2024
+orbit (and its lateral pose), is still swept for continuity:
 
 | altitude | P mean / median / p99 / max (mW) | closed-form P at mean drag (mW) | V median / p99 (V) | rows V > 350 V | φ median / p99 (V) | duty @ 350 V | no solution |
 |---|---|---|---|---|---|---|---|
@@ -155,30 +214,45 @@ closed-form column is §1's law at the mean drag, for comparison.
 | 400 km lateral | 139 / 123 / 361 / 611 | 116 | 269 / 514 | 11.1 % | 38.7 / 162 | 60 % | 0 % |
 | 400 km axial | 239 / 212 / 622 / 1079 | 196 | 334 / 695 | 40.0 % | 55.7 / 219 | 91 % | 0 % |
 
-Every row closes at some voltage. The float tax raises the year-mean beam
-power 20–25 % above the closed-form law at 500–600 km. The worst 5-minute
-row at 600 km is a dayside drag peak (55 mW), not a night pass: neutral and
-plasma density fall together at night, so the demand drops where
-collection is weakest. Extrapolated parts, flagged per row: the collection
-law below ~0.7× the PIC density (99 % of 600 km rows; the one off-density
-run found the law conservative), the gun laws above 350 V (400 km only),
-and the calibration on 800 ns floats.
+The slender body pays ~29 % more drag (its long side wall) but floats ~3×
+lower, so its power is only ~20 % higher. The squat can's broadside pose has
+less drag but points the thrust axis across the flow; for the slender body
+axial is both the low-drag pose and the thrust-aligned one.
 
-Demand is tens of mW at 500–600 km and 140–240 mW at 400 km. Where that
-power comes from is mission design, outside this model, like the cathode
-technology. For scale only: body-mounted solar cells on the anchor body
-would harvest roughly 10–30 mW depending on cell coverage (30 %
-efficiency, 25 % illumination duty).
+Note on 400 km. Near solar minimum it is held for ~21 mW. Near solar
+maximum it is not held inside the simulated envelope: the peaks need
+500–700 V by the gun laws and the 350 V capability falls short even on
+average (99–102 % duty). At the PIC level the 350 V pair (2026-08-17) covers
+the squat-can orbit's 32.9 nN mean: the squat can delivered 40.48 nN paying a
+14 % float tax (48.3 V gated at 800 ns, endpoint rising); the slender body
+delivered 43.33 nN at a 14.0 V float, a 4 % tax (§8b of
+`paper/SCALING_LAWS.md`).
 
-Note on 400 km. The 350 V pair (2026-08-17) put the axial-pose demand
-inside the measured envelope at both tested geometries. The squat can
-delivered 40.48 nN (~81 % duty) paying a 14 % float tax (48.3 V
-gated at 800 ns, endpoint rising); the slender body delivered 43.33 nN at a
-14.0 V float, the same demand at ~76 % duty for a 4 % float tax
-(§8b of `paper/SCALING_LAWS.md`, now confirmed at this drive). The lateral pose
-is inside the envelope but points the tested thrust axis across the flow;
-drag maxima and night-side rows stay open, so 400 km is a research
-target, not a closed case.
+## 4b. Altitude hold and free fall (`altitude_hold.py`)
+
+The sweep assumes an ideal thruster, thrust equal to drag at every row.
+`altitude_hold.py` replays each slender station-keeping year with thrust
+capped at the thruster's per-row capability, (a) at 350 V and (b) within the
+37 mW body-mounted example supply, fires at full capability whenever the
+craft is below its target, and integrates the shortfall into an altitude
+deficit, `da/dt = 2a(F_thrust − F_drag)/(mv)`. It sets that against the
+free-fall runs (`orbit_sims`, `mission.thruster: off`): the same orbits with
+no thruster, to re-entry or 5 years (`results/ALTITUDE_HOLD.md`,
+`results/altitude_hold.json`).
+
+| altitude | free fall 3 g, 2024 | free fall 3 g, 2019 | free fall 3U 4 kg, 2024 | max dip @ 350 V, 2024 | max dip @ 37 mW, 2024 |
+|---|---|---|---|---|---|
+| 400 km | 41–46 d | 171–241 d | 1.0–1.1 yr | not held | not held |
+| 500 km | 179–204 d | 3.3–3.5 yr | > 5 yr (−36 to −44 km) | 0–9 m | not held (needs 46–48 mW) |
+| 550 km | 300–329 d | 4.3–4.5 yr | > 5 yr (−15 to −18 km) | 0–4 m | 0.7–1.2 km |
+| 600 km | 1.8–2.2 yr | > 5 yr | > 5 yr (−7 to −8 km) | 0–2 m | 3–34 m |
+| 650 km | > 5 yr | > 5 yr | > 5 yr | ≤ 1 m | ≤ 1 m |
+| 700 km | > 5 yr | > 5 yr | > 5 yr | ≤ 1 m | ≤ 1 m |
+
+Near solar minimum every case, 400 km included, holds within 35 m on either
+cap. The deficit is a post-process on the held trajectory (no density
+feedback), valid for dips far below the ~60 km scale height; cases whose
+deficit grows past 5 km are reported as not held.
 
 ## 5. Capability, duty cycle, closure: definitions
 
@@ -193,7 +267,7 @@ target, not a closed case.
    mean, median, 99th percentile and maximum. Supplying it is mission
    design, not part of this model.
 4. No solution: a row whose drag no voltage up to the cap can deliver.
-   Without a cap, none occur in the 2024 sweep.
+   Without a cap, none occur in either year.
 
 ## 6. Caveats that travel with every number
 
@@ -202,9 +276,12 @@ Ladder-wide (inherited from the PIC evidence):
 - reduced ion mass (400 mₑ)
 - electrostatic (no B, no ram drift; field-aligned Bz since probed under the
   exploratory policy: null at 1× LEO, ~11 % thrust tax at 10× via the float,
-  `pic_sims/characterization/magnetized_1x/`+`magnetized_10x/`;
-  transverse B still open, `future_work/M2_TRANSVERSE_B.md`)
-- single grid/PPC/seed (convergence pass in progress)
+  `pic_sims/characterization/magnetized_1x/`+`magnetized_10x/`; transverse B
+  closed 2026-09-04 in a 3D deck: null at flight strength (ΔF −0.75 %,
+  Δφ +2.6 V), no equilibrium at 10×,
+  `pic_sims/characterization/magnetized_transverse/`)
+- single seed; convergence at the 200 V anchor: PPC closed (≤ 0.05 %), grid
+  the leading uncertainty (dx 0.15 → 0.10 mm: F +4.0 %, conservative in sign)
 - finite-time equilibrium on the ion clock
 
 Model-specific:
@@ -215,10 +292,15 @@ Model-specific:
 - supply power is beam power V·I; emitter heating and converter losses are
   system engineering, not modeled
 
-Scale invariance. Drag charges for the ram silhouette and any
-body-mounted power supply pays from the skin, so vehicle size cancels. The
-feasibility condition depends on the shape ratio A_skin/A_ram and the
-altitude, not on how big the craft is. See `model/scale_analysis.py` and
+Scale invariance. Drag charges for the drag area S_ref (the ram face plus
+free-molecular friction on the walls parallel to the flow, +37 % on an
+end-on body at L/r = 6) and any body-mounted power supply pays from the
+skin, so vehicle size cancels. The feasibility condition depends on the
+shape ratio A_skin/S_ref and the altitude, not on how big the craft is: a 3U
+flown end-on shares the slender can's margins (1.1× / 2.2× / 4.2× against
+body-mounted cells at 500 / 550 / 600 km near solar maximum) and needs
+~4–5 / 2 / 1 W there. Mass never enters the demand, only the sink rate while
+thrust falls short. See `model/scale_analysis.py` and
 `model/results/SCALE_ANALYSIS.md`.
 
 ## 7. Usage
@@ -228,6 +310,10 @@ python model/mission_model.py --calibrate          # constants + residuals
 python model/mission_model.py --closed-form        # phi << V law + validation tables -> results/CLOSED_FORM.md
 python model/mission_model.py --all                # sweep every mission CSV -> results/
 python model/mission_model.py --all --vmax 350     # the same with a supply cap
+python model/scale_analysis.py                     # size vs shape, CubeSats -> results/SCALE_ANALYSIS.md
+python model/altitude_hold.py --jobs 8             # real thruster vs free fall -> results/ALTITUDE_HOLD.md
 ```
 
+`scale_analysis.py` imports `orbit_sims/spacecraft.py` for the wall-friction
+law; `altitude_hold.py` reads the orbit CSVs and runs for ~20 min on 15 cores.
 Requires only numpy. Outputs to `model/results/` by default (`--out DIR`).

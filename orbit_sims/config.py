@@ -24,6 +24,8 @@ from types import SimpleNamespace
 import yamlcfg
 from spacecraft import VALID_ROTATIONS
 
+THRUSTER_MODES = ("cancel", "off")
+
 DEFAULTS = {
     "mission": {
         # 2024 is a fully observed past year, so NRLMSISE-00 uses real historical
@@ -34,6 +36,13 @@ DEFAULTS = {
         "arc_days": 30.0,             # propagate in monthly arcs (bounded memory)
         "output_step_s": 300.0,       # CSV cadence
         "integration_step_s": 60.0,   # fixed RKF7(8) step
+        # "cancel": an idealised thruster cancels drag, altitude is held, and
+        #           station_keeping.csv carries the demand plus IRI plasma.
+        # "off":    no thruster; the orbit decays until orbit.decay_floor_km or
+        #           the end of the mission, written to free_fall.csv without
+        #           IRI (a lifetime needs no plasma, and multi-year runs outrun
+        #           IRI's solar index).
+        "thruster": "cancel",
     },
     "orbit": {
         "initial_altitude_km": 400.0,
@@ -105,6 +114,9 @@ class Config:
                 "integration_step_s (the CSV grid is a decimation of the fine grid)")
         if self.mission.duration_days <= 0.0:
             raise SystemExit("mission.duration_days must be positive")
+        if self.mission.thruster not in THRUSTER_MODES:
+            raise SystemExit(
+                f"mission.thruster must be one of {THRUSTER_MODES}, got {self.mission.thruster!r}")
         if self.mission.arc_days <= 0.0:
             raise SystemExit("mission.arc_days must be positive")
         if self.orbit.decay_floor_km < 120.0:

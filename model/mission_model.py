@@ -28,6 +28,8 @@ LAWS (paper/SCALING_LAWS.md sections in brackets)
   emission [3] : I_CL = K_CL * V^1.5 (planar scale), real ceiling = r_emit*I_CL
   float    [4] : I_esc = betaA * j_the(n,Te) * (1 + chi)^alpha,  chi = e*phi/kTe
                  j_the = e * n * sqrt(kTe / 2*pi*m_e)   [A/m^2, one-sided flux]
+                 betaA per body [8b]: squat anchors, or the slender can re-fitted
+                 at the shared alpha; the orbit case's L/r picks which
   closed   [2] : P = F*sqrt(V)/c_eff with c_eff = c_F*sqrt(kappa): the phi << V
                  limit of the thrust law, the one-equation form the paper's
                  theory section states.  --closed-form validates it against the
@@ -106,6 +108,28 @@ ANCHORS = [
                  / "20260804T154756Z_b854dcbe" / "metrics.json",
          phi_settled_V=45.0),
 ]
+
+# Slender can (L/r = 6): the two committed runs of the geometry axis.  The
+# collection exponent alpha is shared with the squat anchors (SCALING_LAWS
+# §8b: it survived the shape change); only the prefactor betaA is re-fitted
+# here.  Settled values are the midpoints of each README's quoted band.
+SLENDER_RUNS = [
+    dict(stage="characterization.slender_body",
+         config=CHARACTERIZATION / "slender_body" / "config.yaml",
+         metrics=CHARACTERIZATION / "slender_body" / "reference_results"
+                 / "20260806T011847Z_5670e54c" / "metrics.json",
+         phi_settled_V=5.5),   # 5-6 V band
+    dict(stage="characterization.350V_400km_slender",
+         config=CHARACTERIZATION / "350V_400km_slender" / "config.yaml",
+         metrics=CHARACTERIZATION / "350V_400km_slender" / "reference_results"
+                 / "20260817T133815Z_79f4ca11" / "metrics.json",
+         phi_settled_V=15.5),  # 14-17 V band
+]
+
+# Collection bodies by L/r.  An orbit case uses the calibration of the
+# PIC-measured body its cylinder matches (squat measured at 1.1, slender at
+# 6.1); a shape no committed run has measured is refused, not extrapolated.
+BODY_LR = {"squat": (0.8, 1.4), "slender": (5.0, 7.0)}
 
 # Emission geometry (frozen in every capstone config: r_spot 0.5 mm, gap 4.7 mm)
 EMIT_GAP_M = 4.7e-3
@@ -200,6 +224,7 @@ class Calibration:
         self.alpha, b = np.polyfit(x, y, 1)
         self.alpha = float(self.alpha)
         self.betaA = float(math.exp(b) / j0)          # [m^2] effective area
+        self.betaA_body = {"squat": self.betaA}
         self.fit_resid_pct = 100.0 * (np.exp(np.polyval([self.alpha, b], x)) - Iesc) / Iesc
         # phi predicted back at each anchor (for the residuals table)
         self.phi_resid = []
@@ -209,11 +234,27 @@ class Calibration:
         # chi range actually measured (envelope on the chi axis)
         self.chi_lo, self.chi_hi = float(chi.min()), float(chi.max())
 
+        # Slender prefactor: least squares in log at the shared alpha
+        self.slender = [_load_anchor(a) for a in SLENDER_RUNS]
+        for s in self.slender:
+            if (s["n0"], s["Te_K"]) != (self.n0, self.Te0_K):
+                raise ValueError(f"{s['stage']}: plasma row differs from the anchors'")
+        ln_b = [math.log(s["esc"] * s["I_mA"] * 1e-3 / j0)
+                - self.alpha * math.log1p(s[phi_key] / self.kTe0_eV) for s in self.slender]
+        self.betaA_body["slender"] = float(math.exp(np.mean(ln_b)))
+        chi_sl = [s[phi_key] / self.kTe0_eV for s in self.slender]
+        self.chi_range = {"squat": (self.chi_lo, self.chi_hi),
+                          "slender": (float(min(chi_sl)), float(max(chi_sl)))}
+        self.phi_resid_slender = [
+            float(self.phi_of_Iesc(s["esc"] * s["I_mA"] * 1e-3, self.n0, self.Te0_K,
+                                   body="slender")) - s[phi_key]
+            for s in self.slender]
+
     # ---- law evaluations -------------------------------------------------
-    def phi_of_Iesc(self, Iesc_A, n_m3, Te_K):
+    def phi_of_Iesc(self, Iesc_A, n_m3, Te_K, body: str = "squat"):
         """Invert the collection law for the float [V]. Vector-safe."""
         kTe_eV = np.asarray(Te_K, dtype=float) / K_PER_EV
-        ratio = np.asarray(Iesc_A, dtype=float) / (self.betaA * j_the(n_m3, Te_K))
+        ratio = np.asarray(Iesc_A, dtype=float) / (self.betaA_body[body] * j_the(n_m3, Te_K))
         chi = np.maximum(ratio, 1e-12)**(1.0 / self.alpha) - 1.0
         return np.maximum(chi, 0.0) * kTe_eV
 
@@ -234,6 +275,9 @@ class Calibration:
                      f"esc={100*a['esc']:.2f} %  KE={a['KE_eV']:.1f} eV")
             L.append(f"    <- {a['provenance']}")
         phi_used = "settled-extrapolated" if self.use_settled_phi else "tail-averaged (policy)"
+        bA_sl = self.betaA_body["slender"]
+        sl_V = " / ".join(f"{s['V']:.0f}" for s in self.slender)
+        sl_res = ", ".join(f"{r:+.2f} V" for r in self.phi_resid_slender)
         L += ["",
               f"  thrust slope   c_F      = {self.cF:.4f} nN/(mA*sqrt(eV))  "
               f"(per-anchor {', '.join(f'{c:.4f}' for c in self.cF_each)}; ideal 3.372)",
@@ -246,11 +290,14 @@ class Calibration:
               f"{', '.join(f'{r:+.1f} %' for r in self.fit_resid_pct)}",
               f"    phi residuals (model - measured): "
               f"{', '.join(f'{r:+.2f} V' for r in self.phi_resid)}",
+              f"    slender betaA = {bA_sl*1e4:.3f} cm^2 = {bA_sl/self.betaA:.2f}x squat "
+              f"(geometric skin ratio 3.48x); phi residuals at {sl_V} V: {sl_res}",
               f"  emission scale I_CL = {i_cl_mA(1.0)*1e0:.4g} mA * V^1.5;  "
               f"at 100/200/300 V: "
               f"{i_cl_mA(100):.3f} / {i_cl_mA(200):.3f} / {i_cl_mA(300):.3f} mA "
               f"(quoted 0.083 / 0.235 / 0.431); ceiling = {R_EMIT} * I_CL",
-              f"  measured chi range: {self.chi_lo:.0f} - {self.chi_hi:.0f}",
+              f"  measured chi range: {self.chi_lo:.0f} - {self.chi_hi:.0f} (squat), "
+              f"{self.chi_range['slender'][0]:.0f} - {self.chi_range['slender'][1]:.0f} (slender)",
               f"  plasma anchor row: n = {self.n0:.3e} m^-3, Te = {self.Te0_K:.1f} K "
               f"(collection-side envelope band {DENSITY_BAND[0]}-{DENSITY_BAND[1]}x on n*sqrt(Te))",
               ]
@@ -260,7 +307,7 @@ class Calibration:
 # ----------------------------------------------------------------------
 # Per-row operating point: minimum power that delivers the demand
 # ----------------------------------------------------------------------
-def _self_consistent(cal: Calibration, F_nN, V, n_m3, Te_K, esc,
+def _self_consistent(cal: Calibration, F_nN, V, n_m3, Te_K, esc, body: str = "squat",
                      iters: int = 80, damp: float = 0.5):
     """(phi, I, converged) at one supply voltage V for every row.
 
@@ -276,7 +323,7 @@ def _self_consistent(cal: Calibration, F_nN, V, n_m3, Te_K, esc,
     for _ in range(iters):
         dV = np.maximum(V - phi, 1e-3)
         I = F / (cal.cF * np.sqrt(cal.kappa * dV))
-        phi_new = np.minimum(cal.phi_of_Iesc(esc * I * 1e-3, n_m3, Te_K), 1e6)
+        phi_new = np.minimum(cal.phi_of_Iesc(esc * I * 1e-3, n_m3, Te_K, body=body), 1e6)
         step = phi_new - phi
         phi = phi + damp * step
     converged = np.abs(step) <= 1e-3 * np.maximum(1.0, np.abs(phi))
@@ -284,7 +331,7 @@ def _self_consistent(cal: Calibration, F_nN, V, n_m3, Te_K, esc,
 
 
 def operating_point(cal: Calibration, F_req_nN, n_m3, Te_K,
-                    vmax: float | None = None):
+                    vmax: float | None = None, body: str = "squat"):
     """Per row: the supply voltage that minimizes P = V*I while delivering
     F_req with a self-consistent float, V - phi >= KE_MIN_V, and
     I <= R_EMIT*I_CL(V).  V is searched on a geometric grid from V_FLOOR_V
@@ -310,7 +357,7 @@ def operating_point(cal: Calibration, F_req_nN, n_m3, Te_K,
     for V in grid:
         esc = float(cal.esc_of_V(V))
         cap = R_EMIT * float(i_cl_mA(V))
-        phi, I, conv = _self_consistent(cal, F, V, n, Te, esc)
+        phi, I, conv = _self_consistent(cal, F, V, n, Te, esc, body=body)
         ok = conv & ((V - phi) >= KE_MIN_V) & (I <= cap)
         P = V * I
         upd = ok & (P < best["P"])
@@ -326,13 +373,14 @@ def operating_point(cal: Calibration, F_req_nN, n_m3, Te_K,
     F_out = np.where(no_solution, np.nan, cal.thrust_nN(I, V, phi))
     P_mW = np.where(no_solution, np.nan, best["P"])
     chi = phi / (Te / K_PER_EV)
+    chi_lo, chi_hi = cal.chi_range[body]
     nsq = n * np.sqrt(Te) / (cal.n0 * math.sqrt(cal.Te0_K))
 
     flags = dict(
         no_solution=no_solution,
         extrap_voltage=(V > V_TESTED_MAX_V) & ~no_solution,
         extrap_phi=(phi > PHI_SIM_MAX_V) & ~no_solution,
-        extrap_chi=((chi < cal.chi_lo) | (chi > cal.chi_hi)) & ~no_solution,
+        extrap_chi=((chi < chi_lo) | (chi > chi_hi)) & ~no_solution,
         extrap_density=(nsq < DENSITY_BAND[0]) | (nsq > DENSITY_BAND[1]),
     )
     flags["in_envelope"] = ~(no_solution | flags["extrap_voltage"]
@@ -343,7 +391,7 @@ def operating_point(cal: Calibration, F_req_nN, n_m3, Te_K,
 
 
 def capability_nN(cal: Calibration, n_m3, Te_K, V: float = V_TESTED_MAX_V,
-                  n_pts: int = 48):
+                  n_pts: int = 48, body: str = "squat"):
     """Maximum deliverable thrust per row at supply voltage V, and its power.
 
     Thrust at fixed V rises with current until the float it induces eats the
@@ -358,7 +406,7 @@ def capability_nN(cal: Calibration, n_m3, Te_K, V: float = V_TESTED_MAX_V,
     best_F = np.zeros_like(n); best_P = np.zeros_like(n)
     for frac in np.geomspace(0.02, 1.0, n_pts):
         I = I_cap * frac
-        phi = cal.phi_of_Iesc(esc * I * 1e-3, n, Te)
+        phi = cal.phi_of_Iesc(esc * I * 1e-3, n, Te, body=body)
         F = np.where(V - phi >= KE_MIN_V, cal.thrust_nN(I, V, phi), 0.0)
         upd = F > best_F
         best_F[upd] = F[upd]; best_P[upd] = I * V
@@ -449,7 +497,7 @@ def closed_form_report(cal: Calibration) -> str:
          f"P [mW]   = F [nN] * sqrt(V [V]) / c_eff        c_eff = c_F * sqrt(kappa) = {ce:.4f}",
          f"I_max    = {R_EMIT} * {float(i_cl_mA(1.0)):.4e} * V^1.5 mA   (planar Child-Langmuir scale x measured ratio)",
          f"F_max    = {A:.4e} * V^2 nN                      V_min(F) = sqrt(F / {A:.4e})",
-         f"F/P      = {ce:.3f} / sqrt(V)  uN/W               ({1e3*ce/10:.0f} uN/W at 100 V, {1e3*ce/math.sqrt(200):.0f} at 200 V, {1e3*ce/math.sqrt(300):.0f} at 300 V)",
+         f"F/P      = {ce:.3f} / sqrt(V)  uN/W               ({ce/10:.3f} uN/W at 100 V, {ce/math.sqrt(200):.3f} at 200 V, {ce/math.sqrt(300):.3f} at 300 V)",
          "```",
          "",
          "Its only approximation is neglecting the float; the error is the float tax",
@@ -486,10 +534,23 @@ def _pct(x, q):
     return float(np.percentile(x, q)) if len(x) else float("nan")
 
 
+def case_body(csv_path: Path) -> str:
+    """The PIC-measured body whose L/r matches the orbit case's cylinder."""
+    cfg_path = csv_path.parent / "config_used.yaml"
+    cfg = cfg_path.read_text()
+    r = _scalar(r"^\s*cylinder_radius_m:\s*([0-9.eE+-]+)", cfg, cfg_path)
+    h = _scalar(r"^\s*cylinder_height_m:\s*([0-9.eE+-]+)", cfg, cfg_path)
+    for body, (lo, hi) in BODY_LR.items():
+        if lo <= h / r <= hi:
+            return body
+    raise ValueError(f"{cfg_path}: L/r = {h / r:.2f} matches no PIC-measured body {BODY_LR}")
+
+
 def sweep_mission(cal: Calibration, csv_path: Path, out_dir: Path,
                   vmax: float | None = None,
                   vcap: float = V_TESTED_MAX_V) -> dict:
     name = csv_path.parent.parent.name
+    body = case_body(csv_path)
     cols = dict(t=[], n=[], Te=[], F=[])
     with open(csv_path) as f:
         for row in csv.DictReader(f):
@@ -499,9 +560,9 @@ def sweep_mission(cal: Calibration, csv_path: Path, out_dir: Path,
             cols["F"].append(float(row["drag_N"]) * 1e9)
     n = np.array(cols["n"]); Te = np.array(cols["Te"]); F = np.array(cols["F"])
 
-    op = operating_point(cal, F, n, Te, vmax=vmax)
+    op = operating_point(cal, F, n, Te, vmax=vmax, body=body)
     fl = op["flags"]
-    F_cap, P_cap = capability_nN(cal, n, Te, V=vcap)
+    F_cap, P_cap = capability_nN(cal, n, Te, V=vcap, body=body)
     sol = ~fl["no_solution"]
 
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -529,7 +590,7 @@ def sweep_mission(cal: Calibration, csv_path: Path, out_dir: Path,
     P = op["P_mW"][sol]; V = op["V"][sol]; phi = op["phi_V"][sol]
     meas = sol & ~fl["extrap_density"]
     s = dict(
-        mission=name, rows=len(F), vmax_V=vmax, capability_V=vcap,
+        mission=name, body=body, rows=len(F), vmax_V=vmax, capability_V=vcap,
         drag_mean_nN=float(F.mean()), drag_max_nN=float(F.max()),
         P_closed_form_mean_drag_mW=float(power_closed_form_mW(
             cal, F.mean(), max(float(min_voltage_closed_form(cal, F.mean())), V_FLOOR_V))),
@@ -642,7 +703,7 @@ def main(argv=None):
 
     (args.out / "MISSION_SUMMARY.md").write_text(
         "# Mission sweep: mission_model.py output\n\n"
-        "Generated by `model/mission_model.py --all`. See `model/MODEL.md` for\n"
+        "Generated by `model/mission_model.py --all`. See `model/README.md` for\n"
         "laws, calibration provenance, and envelope semantics.\n\n"
         + summary_markdown(cal, sums) + "\n\nPer-row output files:\n\n"
         + "".join(f"- `{s['out_csv']}`\n" for s in sums))

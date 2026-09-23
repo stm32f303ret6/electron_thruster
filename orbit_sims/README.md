@@ -46,9 +46,42 @@ Output lands in `validation_cases/<case>/results/`:
 `--days N` overrides the duration in both the live config and the raw dict,
 so `config_used.yaml` records what actually ran rather than what the file said.
 
+### Free fall (`mission.thruster: off`)
+
+The same runner flies a case with no thruster: the drag-cancelling
+acceleration is left out, the orbit decays, and the run stops at
+`orbit.decay_floor_km` (re-entry) or the end of the mission. The output is
+`free_fall.csv` (same columns minus the three IRI ones: a lifetime needs no
+plasma, and multi-year runs would outrun IRI's solar index), and the summary
+prints the re-entry date or the final altitude. This is the baseline the
+station-keeping result is compared against. Unlike the thrust demand, the
+decay rate depends on mass through the ballistic coefficient m / (Cd·S_ref).
+
+The `*_free_fall_*` cases run 5 years at a 120 s step (the lifetime is set by
+the atmosphere model, not by integrator error; 60 s and 120 s re-enter the
+3.1 g slender can from 400 km at the same minute) with hourly output.
+
+### Case families
+
+Names read `<altitude>km_<mode>_<body>[_<orbit>][_2019]`; no orbit suffix
+means near-equatorial (0.5°), no year suffix means 2024 (near solar
+maximum), `_2019` is the solar-minimum year.
+
+| family | body | orbits | years | altitudes |
+|---|---|---|---|---|
+| `*_station_keeping_slender*` (the mission body) | slender can, r 5 mm × h 30 mm, 3.1 g, axial | eq, `_iss` (51.6°), `_sso` (J2 sun-synchronous inclination, ascending node 10:30 local time at the start epoch) | 2024, 2019 | 400, 500, 550, 600, 650, 700 km |
+| `*_free_fall_slender*` | the same, thruster off | eq, iss, sso | 2024, 2019 | 400–700 km |
+| `*_free_fall_3u*` | the slender can ×10 (r 5 cm × h 30 cm, 4 kg), thruster off | eq, iss, sso | 2024, 2019 | 400–700 km |
+| `*_station_keeping_chipsat` / `*_lateral_*_chipsat` (earlier) | squat can, r = h = 5 mm, axial / broadside | eq | 2024 | 400–600 km |
+
+On an inclined orbit the ellipsoidal altitude swings ±10–20 km with latitude
+(a circular radius over an oblate Earth) and averages 10–15 km above the
+nominal value; the nominal altitude is the semi-major axis minus the
+equatorial radius, the usual convention.
+
 ## Physics summary
 
-1. Drag cancel ⇒ `drag_N` ≡ thruster demand. A custom acceleration of
+1. Drag cancel (`mission.thruster: cancel`) ⇒ `drag_N` ≡ thruster demand. A custom acceleration of
    magnitude `|a_drag|` is applied along the wind-free airspeed direction
    (`v − ω × r`). The exported drag comes from the independently saved
    aerodynamic acceleration norm, not from the cancelling acceleration, so the
@@ -107,6 +140,7 @@ silently doing nothing.
 | `mission.arc_days` | 30.0 | propagation arc length (memory bound) |
 | `mission.output_step_s` | 300.0 | CSV cadence; must be an integer multiple of the integration step |
 | `mission.integration_step_s` | 60.0 | fixed RKF7(8) step |
+| `mission.thruster` | `cancel` | `cancel` holds altitude (drag = thrust demand); `off` flies the orbit with no thruster until re-entry, see below |
 | `orbit.initial_altitude_km` | 400.0 | |
 | `orbit.inclination_deg` | 0.5 | near-equatorial |
 | `orbit.eccentricity` / `raan_deg` / `argp_deg` / `true_anomaly_deg` | 0.0 | |

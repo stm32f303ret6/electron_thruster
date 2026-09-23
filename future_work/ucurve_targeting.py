@@ -19,12 +19,12 @@ the shortfall itself is the measurement.  This script therefore predicts
 the H1 ("frontier optimism") branch exactly and quantifies, per stage, how
 far outside the validated perveance envelope the commanded current sits.
 
-Model contract (MODEL.md section 9) applies: nothing here feeds an
+Model contract (paper/SCALING_LAWS.md section 9) applies: nothing here feeds an
 acceptance gate.  The commanded current is a config input like any other;
 the gates that certify the runs live in each stage's acceptance.yaml.
 
 USAGE
-  python model/ucurve_targeting.py            # table on stdout
+  python future_work/ucurve_targeting.py      # table on stdout
 """
 
 from __future__ import annotations
@@ -35,7 +35,7 @@ from pathlib import Path
 
 import numpy as np
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "model"))
 from mission_model import Calibration, K_PER_EV, R_EMIT, i_cl_mA  # noqa: E402
 
 F_DEMAND_NN = 13.65          # the 200 V anchor's measured thrust (metrics.json)

@@ -191,17 +191,24 @@ regime; the first is why it deserves to.
 
 ## 7. Mission coupling: the throttle strategy
 
-From the committed 2024 orbit sweep (Ø10 mm anchor body, real F10.7/Ap):
+From the committed orbit sweeps (the mission body: the slender Ø10 × 30 mm
+can, 3.1 g, flown axial; near-equatorial, ISS and sun-synchronous orbits;
+real F10.7/Ap; ranges span the three orbit families):
 
-| altitude / pose | drag mean | drag max |
-|---|---|---|
-| 400 km axial | 32.9 nN | 92.4 nN |
-| 400 km lateral | 21.6 nN | 60.7 nN |
-| 500 km axial | 7.6 nN | 28.4 nN |
-| 550 km axial | 3.8 nN | 16.3 nN |
-| 600 km axial | 2.0 nN | 9.6 nN |
+| altitude | drag mean, 2024 (solar max) | drag max, 2024 | drag mean, 2019 (solar min) |
+|---|---|---|---|
+| 400 km | 38–42 nN | 119–128 nN | 3.8–4.8 nN |
+| 500 km | 8.6–9.8 nN | 34–37 nN | 0.49–0.59 nN |
+| 550 km | 4.3–5.0 nN | 18–21 nN | 0.21–0.24 nN |
+| 600 km | 2.3–2.6 nN | 10–12 nN | 0.10–0.11 nN |
+| 650 km | 1.2–1.4 nN | 6–7 nN | 0.05–0.06 nN |
+| 700 km | 0.66–0.77 nN | 4.0–4.4 nN | 0.03–0.04 nN |
 
-Demand swings ~10× over an orbit (diurnal) and ~15× across 400–600 km.
+Demand swings ~10× over an orbit (diurnal), ~50× across 400–700 km, and
+15–25× between solar maximum and minimum; inclination moves it ~10 %. The
+squat Ø10 × 5 mm body of the earlier equatorial 2024 sweep has ~29 % less
+drag (no long side wall): 32.9 / 7.6 / 3.8 / 2.0 nN mean at 400 / 500 /
+550 / 600 km (`model/results/MISSION_SUMMARY.md`).
 
 The throttle principle, the analytical lower bound. The concept argument
 uses the ideal law only: at fixed thrust,
@@ -333,15 +340,23 @@ identical drive, commanded current, plasma row, grid and seed:
 
 | hypothesis | predicted φ | measured |
 |---|---|---|
-| **A — area-only** (fitted α holds; demand drops 3.24×) | 4–5 V | **4.38 V** |
+| **A — area-only** (fitted α holds; demand drops 3.48×) | 4–5 V | **4.38 V** |
 | B — cylinder-limit lateral (α → 0.5 on the wall) | tens of V | refuted ~10× |
 
-Area arithmetic brackets it: 4.66 V at α = 0.893, 4.14 V at α = 0.82.
-The fitted exponent survives a 3.24× skin-area change and an aspect-ratio
-change from L/r = 0.6 to 6.
+The skin grows 3.17 → 11.0 cm², a 3.48× change. (The pre-registration wrote
+3.24×, an arithmetic slip; its bracket, 4.14–4.66 V, was computed with it.)
+With the correct ratio the area arithmetic gives 4.30 V at α = 0.893 and
+3.79 V at α = 0.82: the measurement sits 0.08 V (2 %) above the area-only
+point, and still ~10× below hypothesis B. Collection grows slightly slower
+than skin area. Fitting the collection prefactor to both slender runs at the
+shared α gives an effective area 3.14× the squat can's (3.4× from the 200 V
+pair, 3.0× from the 350 V pair), against 3.48× geometric; `model/mission_model.py`
+uses that measured value for slender mission cases. The fitted exponent
+survives a 3.48× skin-area change and an aspect-ratio change from L/r = 0.6 to 6.
 
 The scaling rule that follows: at fixed demand, φ falls as skin area rises,
-as `(1+χ) ∝ A^(−1/α)`. A 3.24× area buys a 3.83× drop in enhancement demand.
+as `(1+χ) ∝ A^(−1/α)`. The 3.48× area bought a 3.8× measured drop in
+enhancement demand (the law at α = 0.893 gives 4.0×).
 And because `KE = κ(V − φ)`, a lower float returns thrust: 13.65 → 14.22 nN
 at the same current and the same drag bill. Growing the collector is a thrust
 bonus, not a penalty. This is why the concept scales along the rod, not into
@@ -362,49 +377,67 @@ bite, and radii approaching λ_D, which converge on bare-tether collection
 
 ## 8c. Scale invariance: the corridor carries to CubeSats
 
-The measured bodies are Ø10 mm. The mission table is a 100 g craft. Neither is
-a useful spacecraft, so what decides whether any of this matters is whether
-the feasibility condition contains a size.
+The measured bodies are Ø10 mm, and the mission body is the 3.1 g slender
+can. Neither is a CubeSat, so what decides whether the result carries to one
+is whether the feasibility condition contains a size.
 
 It does not. The argument is two lines of area bookkeeping.
 
-1. Demand is areal. Drag goes as the ram silhouette `A_ram`. Holding
-   altitude needs `F = F_drag`, so `I = F/(c_F·√KE) ∝ A_ram` and
-   `P = I·V ∝ A_ram`. Power per unit ram area is a function of altitude and
-   drive voltage only.
+1. Demand is areal. Drag goes as the drag area `S_ref`: the ram face plus
+   free-molecular friction on the walls parallel to the flow
+   (`S_ref = A_ram + (C_d,side/C_d)·A_parallel`, C_d,side/C_d ≈ 0.031 at
+   500 km; the orbit sims' bookkeeping). Holding altitude needs
+   `F = F_drag`, so `I = F/(c_F·√KE) ∝ S_ref` and `P = I·V ∝ S_ref`. Power
+   per unit drag area is a function of altitude and drive voltage only.
 2. Supply is areal. Any body-mounted power source scales with the skin
    `A_skin`; body-mounted solar cells are the worked example here, and power
    available per unit skin area is a property of the source, not the size.
 
-Divide: the closure margin is `(supply/m² · A_skin) / (demand/m² · A_ram)`.
-Size cancels, and what remains is the shape ratio `A_skin/A_ram` and the
+Divide: the closure margin is `(supply/m² · A_skin) / (demand/m² · S_ref)`.
+Size cancels, and what remains is the shape ratio `A_skin/S_ref` and the
 altitude. Station-keeping thrust equals drag regardless of mass, so vehicle
-mass never enters either.
+mass never enters either. The wall term is small on the squat can (+7 %) but
+not on long end-on bodies (+37 % at L/r = 6); the ram face alone would
+understate a 3U's demand by ~29 %.
 
-Computed from the committed mission CSVs (`model/scale_analysis.py`):
+Computed from the committed mission CSVs near solar maximum (2024,
+`model/scale_analysis.py`, `model/results/SCALE_ANALYSIS.md`):
 
-| power demand per m² of ram silhouette | 400 km | 500 km | 550 km | 600 km |
+| power demand per m² of S_ref | 400 km | 500 km | 550 km | 600 km |
 |---|---|---|---|---|
-| at 100 V | 1451 W | 335 W | 170 W | 88 W |
+| at 100 V | 1367 W | 315 W | 160 W | 83 W |
 
-| body | skin/ram | 500 km | 550 km | 600 km |
+| body | skin/S_ref | 500 km | 550 km | 600 km |
 |---|---|---|---|---|
-| Ø10 mm can, squat (measured) | 4 | 0.4× | 0.8× | 1.6× |
-| 1U cube, face-on | 6 | 0.6× | 1.2× | 2.3× |
-| **Ø10 mm can, slender (measured)** | **14** | **1.4×** | **2.8×** | **5.4×** |
-| **3U CubeSat, end-on** | **14** | **1.4×** | **2.8×** | **5.4×** |
-| 6U CubeSat, end-on | 12 | 1.2× | 2.4× | 4.6× |
+| Ø10 mm can, squat (measured) | 3.8 | 0.4× | 0.8× | 1.5× |
+| 1U cube, face-on | 5.3 | 0.6× | 1.1× | 2.2× |
+| **Ø10 mm can, slender (measured)** | **10.2** | **1.1×** | **2.2×** | **4.2×** |
+| **3U CubeSat, end-on (10×10×30 cm)** | **10.2** | **1.1×** | **2.2×** | **4.2×** |
+| 6U CubeSat, end-on (10×20×30 cm) | 8.6 | 0.9× | 1.8× | 3.5× |
+| 12U CubeSat, end-on (20×20×30 cm) | 6.7 | 0.7× | 1.4× | 2.8× |
 
-The slender can and the 3U CubeSat return identical margins (computed
-against the example solar supply). The 400 km demand is scale-free too: it
-exceeds the example supply at every size. In absolute terms a 3U end-on needs
-8.8 mA / 0.88 W at 600 km, 17 mA / 1.7 W at 550 km, 34 mA / 3.4 W at
-500 km.
+The slender can and the 3U CubeSat return the same margins (computed against
+the example solar supply). The 400 km demand near solar maximum exceeds the
+example supply at every size. In absolute terms a 3U end-on needs
+11 mA / 1.1 W at 600 km, 22 mA / 2.2 W at 550 km and 43 mA / 4.3 W at
+500 km near solar maximum. Near solar minimum (2019) drag is 15–25× lower:
+scaled from the slender mission cases (a Ø10 cm × 30 cm cylinder is the
+slender can ×10, so ×100 in every area and power), a 3U-size body needs
+~0.2 W at 500 km, ~80 mW at 550 km, ~40 mW at 600 km and ~13 mW at 700 km.
+
+Mass is the one quantity that is not scale-free. It never enters the demand;
+it sets how fast a craft sinks while thrust falls short of drag
+(`da/dt = 2aF/(mv)`). At 3U density (1.33 g/cm³) the ballistic coefficient
+grows with size: at 500 km the 3.1 g slender can sinks ~0.5 km/day with the
+thruster off, a 4 kg 3U ~50 m/day. The free-fall runs make the same point
+(`model/results/ALTITUDE_HOLD.md`): near solar maximum the slender can
+re-enters from 500 km in 179–204 days, while a 4 kg 3U-size cylinder loses
+36–44 km in five years.
 
 Two things get easier with size:
 
 1. The enhancement demanded over bare thermal collection falls as skin
-   grows. A 3U needs 4.3× the thermal flux at 600 km where the Ø10 mm anchor
+   grows. A 3U needs 5.6× the thermal flux at 600 km where the Ø10 mm anchor
    needs 15×, and the anchor frontier runs at χ ≈ 150–320. Since bare
    thermal collection is the step validated to ±1 % and the enhancement
    exponent is the fitted quantity, larger bodies depend on less
@@ -415,9 +448,10 @@ Two things get easier with size:
 The regime caveat. Every committed run is at `r/λ_D ≈ 2.5`. CubeSat radii
 are 25–60 λ_D, where OML does not apply: the sheath is thin and grows with φ,
 so enhancement is an area ratio `(r_s/r)²` with `r_s − r ~ λ_D(2χ)^{3/4}`.
-That model, an estimate and not a calibration, puts a 3U at ~12 V (600 km),
-~25 V (550 km), ~47 V (500 km): a 12–47 % tax on a 100 V drive, so the
-minimum-power voltage moves up at 500 km.
+That model, an estimate and not a calibration, puts a 3U at ~16 V (600 km),
+~32 V (550 km), ~59 V (500 km) near solar maximum: a 16–59 % tax on a 100 V
+drive, so the minimum-power voltage moves up at 500 km, and with that tax
+the 500 km margin above falls below one (~0.7×). 550–600 km close with it.
 The areal power balance above does not depend on this; only the floats do.
 
 ## 9. From scaling laws to a model: the plan, and what buys confidence

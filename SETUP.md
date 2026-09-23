@@ -282,14 +282,21 @@ log unbuffered so progress is readable live. Watch with
 ```bash
 # orbit demand side  (see orbit_sims/README.md for IRI data setup)
 conda activate tudat-sk
-cd orbit_sims && python3 run_station_keeping.py 400km_station_keeping_chipsat
+cd orbit_sims && python3 run_station_keeping.py 500km_station_keeping_slender_sso      # ~13 min
+python3 run_station_keeping.py 500km_free_fall_slender_sso                              # thruster off
+python3 run_station_keeping.py --list          # every case; the CSVs are gitignored, regenerate
+                                               # the ones you need (xargs -P N to batch them)
 
-# minimal model: calibrate from committed reference_results, sweep every mission
+# model: calibrate from committed reference_results, sweep every mission
 conda activate warpx-cpu-mpich-dev
 python model/mission_model.py --calibrate --closed-form   # constants, residuals, phi<<V law
 python model/mission_model.py --all                       # -> model/results/
+python model/scale_analysis.py                            # CubeSat scaling -> results/SCALE_ANALYSIS.md
+python model/altitude_hold.py --jobs 8                    # real thruster vs free fall (needs the
+                                                          # free-fall CSVs) -> results/ALTITUDE_HOLD.md
 
-# paper figures (read committed calibration + summaries; no hand-typed numbers)
+# paper figures (read committed calibration + summaries; no hand-typed numbers;
+# make_missions.py also reads the sun-synchronous 2024 free-fall CSVs)
 cd paper/figs && python make_frontier.py && python make_missions.py && python make_fpplane.py
 
 # paper

@@ -1,0 +1,27 @@
+# 600 km FREE FALL (thruster off) — 3U-size cylinder (r = 5 cm, h = 30 cm, 4 kg; the slender can x10), axial,
+# ISS inclination (51.6 deg), 2019 (solar-cycle 24/25 minimum).
+#
+# The no-thruster baseline for the matching station-keeping case: the
+# orbit decays until re-entry (120 km floor) or the 5-year cap. Unlike
+# the thrust demand, the decay rate DOES depend on mass (ballistic
+# coefficient m / (Cd S_ref)).
+
+mission:
+  start_utc: "2019-01-01T12:00:00"
+  duration_days: 1826.0
+  output_step_s: 3600.0
+  integration_step_s: 120.0   # a multi-year decay is set by the atmosphere model
+                              # (tens of %), not by RKF7(8) step error; 2x faster
+  thruster: "off"
+
+orbit:
+  initial_altitude_km: 600.0
+  inclination_deg: 51.6
+
+spacecraft:
+  mass_kg: 4.0
+  cylinder_radius_m: 0.05
+  cylinder_height_m: 0.3
+  cd: 2.2
+  rotation: axial
+  sigma_t: 0.9

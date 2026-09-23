@@ -1,0 +1,22 @@
+# 550 km station keeping — chipsat (lateral / broadside)
+#
+# Same spacecraft and altitude as 550km_station_keeping_chipsat but held
+# BROADSIDE to the ram, as 400km_lateral_station_keeping_chipsat does at
+# 400 km. For this squat r = h can broadside is the LOW-drag pose (S_ref
+# 8.34e-5 -> 5.49e-5 m^2), so this measures the orientation lever at 550 km.
+
+mission:
+  start_utc: "2024-01-01T12:00:00"
+  duration_days: 365.0
+
+orbit:
+  initial_altitude_km: 550.0
+  inclination_deg: 0.5
+
+spacecraft:
+  mass_kg: 0.1
+  cylinder_radius_m: 0.005
+  cylinder_height_m: 0.005
+  cd: 2.2
+  rotation: lateral
+  sigma_t: 0.9

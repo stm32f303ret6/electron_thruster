@@ -16,6 +16,10 @@ the 300 s CSV grid, and enriched with IRI-2020 (n_e, Te, Ti) at every exported
 pose. 300 s resolves the diurnal ionospheric swing with ~19 samples per orbit,
 which is what makes day-vs-night design points readable straight off the CSV.
 
+With mission.thruster = "off" the cancelling thrust is left out and the orbit
+decays freely: the same loop writes free_fall.csv (no IRI columns) and stops at
+the decay floor, which is then the re-entry marker.
+
 Depends on: tudatpy, numpy, environment.
 """
 
@@ -53,6 +57,11 @@ CSV_COLUMNS = [
     "drag_N",                    # = thruster demand, because drag is cancelled
 ]
 
+FREE_FALL_COLUMNS = [
+    "timestamp_utc", "altitude_km", "latitude_deg", "longitude_deg",
+    "drag_N",                    # instantaneous drag; nothing cancels it
+]
+
 
 def build_accelerations(cfg, bodies, craft):
     acc = propagation_setup.acceleration
@@ -81,8 +90,9 @@ def build_accelerations(cfg, bodies, craft):
                   acc.aerodynamic()],
         "Sun": [acc.point_mass_gravity(), acc.radiation_pressure()],
         "Moon": [acc.point_mass_gravity()],
-        "Vehicle": [acc.custom_acceleration(drag_cancel)],
     }
+    if cfg.mission.thruster == "cancel":
+        accs["Vehicle"] = [acc.custom_acceleration(drag_cancel)]
     return propagation_setup.create_acceleration_models(
         bodies, {"Vehicle": accs}, ["Vehicle"], ["Earth"])
 
@@ -165,6 +175,21 @@ def _append_csv(path, row_dts, block, write_header):
             ])
 
 
+def _append_free_fall_csv(path, row_dts, block, write_header):
+    mode = "w" if write_header else "a"
+    with open(path, mode, newline="") as fh:
+        w = csv.writer(fh)
+        if write_header:
+            w.writerow(FREE_FALL_COLUMNS)
+        for dt, row in zip(row_dts, block):
+            w.writerow([
+                dt.replace(tzinfo=_dt.timezone.utc).isoformat(),
+                f"{row[0]:.4f}",                       # altitude_km
+                f"{row[1]:.6f}", f"{row[2]:.6f}",      # lat, lon
+                f"{row[3]:.6e}",                       # drag_N
+            ])
+
+
 class RunningStats:
     """Streaming min/max/mean across arcs, so a year never sits in memory."""
 
@@ -177,10 +202,15 @@ class RunningStats:
         self._max = {f: -np.inf for f in self.FIELDS}
         self.alt_first = None
         self.alt_last = None
+        self.last_epoch = None
+        self.floor_reached = False
 
     def update(self, alt, drag, ne, te, ti):
+        """ne/te/ti are None in free fall (no IRI); those fields stay empty."""
         self.n += len(alt)
         for f, arr in zip(self.FIELDS, (alt, drag, ne, te, ti)):
+            if arr is None:
+                continue
             self._sum[f] += float(arr.sum())
             self._min[f] = min(self._min[f], float(arr.min()))
             self._max[f] = max(self._max[f], float(arr.max()))
@@ -243,25 +273,33 @@ def run(cfg, craft, bodies, acceleration_models, mu, start_epoch, csv_path):
         drag_N = craft.mass_kg * drag_acc
 
         row_dts = [tr.date_time_from_epoch(float(e)).to_python_datetime() for e in epochs]
-        ne, te, ti = env_mod.evaluate_iri(row_dts, lat_deg, lon_deg, alt_km)
-
-        block = np.column_stack([alt_km, lat_deg, lon_deg, ne, te, ti, drag_N])
-        _append_csv(csv_path, row_dts, block, write_header=not wrote_header)
+        if m.thruster == "cancel":
+            ne, te, ti = env_mod.evaluate_iri(row_dts, lat_deg, lon_deg, alt_km)
+            block = np.column_stack([alt_km, lat_deg, lon_deg, ne, te, ti, drag_N])
+            _append_csv(csv_path, row_dts, block, write_header=not wrote_header)
+            plasma = (f" | n_e {ne.min():.2e}-{ne.max():.2e} m^-3"
+                      f" | Te {te.min():.0f}-{te.max():.0f} K")
+        else:
+            ne = te = ti = None
+            block = np.column_stack([alt_km, lat_deg, lon_deg, drag_N])
+            _append_free_fall_csv(csv_path, row_dts, block, write_header=not wrote_header)
+            plasma = ""
         wrote_header = True
         n_rows += len(idx)
         last_epoch_written = float(epochs[-1])
         stats.update(alt_km, drag_N, ne, te, ti)
+        stats.last_epoch = last_epoch_written
 
         elapsed_days = (epochs - start_epoch) / 86400.0
         print(f"  arc {arc_i+1}/{n_arcs}: t={elapsed_days[0]:.1f}->{elapsed_days[-1]:.1f} d"
               f" | {len(idx)} rows | alt {alt_km.min():.1f}-{alt_km.max():.1f} km"
               f" | drag {drag_N.min()*1e9:.1f}-{drag_N.max()*1e9:.1f} nN"
-              f" | n_e {ne.min():.2e}-{ne.max():.2e} m^-3"
-              f" | Te {te.min():.0f}-{te.max():.0f} K"
-              f" | {(_wall.time()-t_arc):.1f}s", flush=True)
+              f"{plasma} | {(_wall.time()-t_arc):.1f}s", flush=True)
 
         if arc_final_epoch < arc_end - m.integration_step_s:
             print("  ! propagation terminated early (altitude floor reached)", flush=True)
+            stats.floor_reached = True
+            stats.last_epoch = float(arc_final_epoch)
             break
         arc_start = arc_final_epoch
 

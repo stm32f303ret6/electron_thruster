@@ -1,0 +1,28 @@
+# 550 km station keeping — slender body (axial)
+#
+# The slender_body PIC geometry (r = 5 mm, h = 30 mm, L/r = 6) flown axial:
+# the thrust axis points along the velocity vector and, for h > 1.571*r,
+# axial is also the LOW-drag pose (S_ref 1.08e-4 m^2 vs 3.05e-4 broadside).
+# Its skin/ram ratio (14) matches a 3U CubeSat flown end-on, so this is the
+# case the CubeSat scaling argument rests on.
+#
+# Mass is 3U density (4 kg / 3000 cm^3 = 1.33 g/cm^3) times 2.36 cm^3. It does
+# not change drag_N (altitude is held, so drag = rho v^2/2 Cd S_ref with no
+# mass in it; a 100 g vs 3 g check agreed to 0.08 %); it sets the ballistic
+# coefficient, i.e. how fast the craft sinks when thrust falls short.
+
+mission:
+  start_utc: "2024-01-01T12:00:00"
+  duration_days: 365.0
+
+orbit:
+  initial_altitude_km: 550.0
+  inclination_deg: 0.5
+
+spacecraft:
+  mass_kg: 0.0031
+  cylinder_radius_m: 0.005
+  cylinder_height_m: 0.030
+  cd: 2.2
+  rotation: axial
+  sigma_t: 0.9

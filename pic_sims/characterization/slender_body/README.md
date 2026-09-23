@@ -124,16 +124,23 @@ are the measurement):
 
 ### Hypothesis A confirmed, B refuted by ~10×
 
-The measured float falls in the alpha-holds bracket:
+The measured float sits at the alpha-holds bracket. The bracket as first
+written (4.14–4.66 V) used a 3.24× skin ratio, an arithmetic slip: the skins
+are 3.17 and 11.0 cm², a 3.48× change. With the correct ratio:
 
 | bound | $\alpha$ used | predicted $\varphi$ |
 |---|---|---|
-| upper | 0.893 | 4.66 V |
+| upper | 0.893 | 4.30 V |
 | **measured** | — | **4.38 V** |
-| lower | 0.82 | 4.14 V |
+| lower | 0.82 | 3.79 V |
 
-The anchor's collection exponent survived a 3.24× area change and an
-aspect-ratio jump from $L/r \approx 1.1$ to 6.
+The measurement is 0.08 V (2 %) above the area-only point and ~10× below
+hypothesis B, so collection grows slightly slower than skin area. Fitted to
+both slender runs (this one and `../350V_400km_slender/`), the effective
+collecting area is 3.14× the anchor's; `model/mission_model.py` uses that
+measured value for slender mission cases. The anchor's collection exponent
+survived a 3.48× area change and an aspect-ratio jump from
+$L/r \approx 1.1$ to 6.
 
 Settle caveat: $\varphi$ was still rising at run end (~4–7 mV/ns), so the
 settled value is quoted as a ~5–6 V band. The 10× hypothesis gap leaves the
@@ -170,7 +177,8 @@ $$\text{at fixed demand:} \quad (1 + \chi) \propto A_{\mathrm{skin}}^{-1/\alpha}
 
 The chain:
 
-1. 3.24× more skin → 3.83× less enhancement needed
+1. 3.48× more skin → 3.8× less enhancement needed (measured; the area law at
+   $\alpha = 0.893$ gives 4.0×)
 2. lower float potential
 3. more beam energy ($\mathrm{KE} = \kappa(V - \varphi)$)
 4. more thrust (13.65 → 14.22 nN)
@@ -181,14 +189,16 @@ side.
 ## Confidence for scaling to 3U CubeSat
 
 1. The size-cancellation argument (high confidence). Pure geometry:
-   $A_{\mathrm{skin}}/A_{\mathrm{ram}}$ depends only on $L/r$, not absolute
-   size. A 3U CubeSat end-on has the same ratio (~14) as the slender
-   cylinder. The drag-vs-supply margin is identical. This is algebra; it
-   cannot be wrong.
+   $A_{\mathrm{skin}}/S_{\mathrm{ref}}$ depends only on shape, not absolute
+   size, where the drag area $S_{\mathrm{ref}}$ is the ram face plus
+   free-molecular friction on the side walls. A 3U CubeSat end-on has the
+   same ratio as the slender cylinder (~10 with the wall friction counted,
+   ~14 on the ram face alone). The drag-vs-supply margin is identical. This
+   is algebra; it cannot be wrong.
 2. The collection exponent (strong confidence at this scale). $\alpha$ held
-   at 0.82–0.89 across a 3.24× area change and $L/r$ from 1.1 to 6. The two
+   at 0.82–0.89 across a 3.48× area change and $L/r$ from 1.1 to 6. The two
    hypotheses differed by 10×, so this is not a marginal call. The measured
-   float (4.38 V) landed in the alpha-holds bracket.
+   float (4.38 V) landed 2 % above the area-only point.
 3. The collection regime at CubeSat scale (moderate confidence). The anchor
    and slender cylinder both sit at $r/\lambda_D \approx 2.5$ (thick
    sheath, OML collection). A 3U CubeSat has $r \sim 25\text{–}60\,\lambda_D$,

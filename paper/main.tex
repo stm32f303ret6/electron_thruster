@@ -3,7 +3,7 @@
 % Build: pdflatex main.tex  (twice for refs)
 % Lineage: format follows the author's 2024 concept paper (two-column, short
 % numbered sections); content follows the chipsat2 characterization campaign
-% (README.md, paper/SCALING_LAWS.md, model/MODEL.md). Every number is a committed
+% (README.md, paper/SCALING_LAWS.md, model/README.md). Every number is a committed
 % measurement unless labelled an estimate.
 % =============================================================================
 \documentclass[11pt,twocolumn]{article}
@@ -36,7 +36,7 @@
 \maketitle
 \begin{abstract}
 \noindent
-Small spacecraft below 600\,km lose their orbit to atmospheric drag within months to a few years, and most of them carry no propulsion at all. This paper describes a thruster with no tank, no feed system and no neutralizer. A cathode held a few hundred volts below the spacecraft body emits electrons through a single aperture. The escaping beam produces thrust and leaves the body positively charged, so the body collects electrons from the ionospheric plasma until collection equals emission. The circuit closes through the ionosphere with zero net mass flow. Particle-in-cell simulations (WarpX) of a 10\,mm conducting body in a dayside ionospheric plasma measure the complete operating envelope over 100--350\,V: 3.4 to 43\,nN of thrust from 12 to 278\,mW of beam power, with 96--99\,\% of the beam escaping, a floating potential of 4--48\,V, and an energy efficiency of 0.68--0.77. Two measured constants describe every run to within 3\,\%. Against a year of real 2024 drag from orbit propagation, with the supply voltage following the drag and the floating potential solved from the plasma along the orbit, the device holds 500--600\,km for a mean beam power of 8--39\,mW and stays inside the tested 100--350\,V envelope more than 99\,\% of the time; at 400\,km it needs 140--240\,mW, and the drag peaks call for 500--700\,V, beyond the simulated envelope. Because both drag and electron collection scale with area, the feasibility condition is independent of vehicle size, and a 3U CubeSat needs 0.9--3.4\,W for the same altitudes. A bench experiment confirms the electrode topology on hardware. A three-dimensional follow-up campaign puts the geomagnetic field perpendicular to the beam, the orientation the mission flies in: at flight strength the operating point survives (thrust within 0.8\,\%, escape unchanged, a 2.6\,V float shift at the settled equilibrium), while at ten times flight strength the return circuit cannot close and the device must fire along the field. Open items are the choice of flight emitter and the CubeSat sheath regime.
+Chip-scale spacecraft lose their orbit to atmospheric drag fastest of all: a 3\,g body 10\,mm across and 30\,mm long re-enters from 400\,km in 41--46 days and from 550\,km within a year near solar maximum, and no flown propulsion system is small enough to carry. This paper describes a thruster with no tank, no feed system and no neutralizer. A cathode held a few hundred volts below the spacecraft body emits electrons through a single aperture. The escaping beam produces thrust and leaves the body positively charged, so the body collects electrons from the ionospheric plasma until collection equals emission. The circuit closes through the ionosphere with zero net mass flow. Particle-in-cell simulations (WarpX) of a 10\,mm conducting body in a dayside ionospheric plasma measure the complete operating envelope over 100--350\,V: 3.4 to 43\,nN of thrust from 12 to 278\,mW of beam power, with 96--99\,\% of the beam escaping, a floating potential of 4--48\,V, and an energy efficiency of 0.68--0.77. Two measured constants describe every run to within 3\,\%. Year-long orbit propagations at 400--700\,km on near-equatorial, ISS and sun-synchronous orbits, near solar maximum (2024) and minimum (2019), with the supply voltage following the drag and the floating potential solved from the plasma along the orbit, show the 3\,g body holding 500--700\,km for a mean beam power of 2.5--48\,mW at solar maximum and 0.1--2\,mW at minimum, inside the tested 100--350\,V envelope at least 97\,\% of the time and never more than 10\,m below its target altitude; at 400\,km it needs 21\,mW at solar minimum, while near maximum the demand exceeds the simulated envelope. Because both drag and electron collection scale with area, the feasibility condition depends on shape, not size: a 3U CubeSat of the same shape needs about 1\,W at 600\,km near solar maximum and tens of milliwatts near minimum, an estimate in a sheath regime not yet simulated. A bench experiment confirms the electrode topology on hardware. A three-dimensional follow-up campaign puts the geomagnetic field perpendicular to the beam, the orientation the mission flies in: at flight strength the operating point survives (thrust within 0.8\,\%, escape unchanged, a 2.6\,V float shift at the settled equilibrium), while at ten times flight strength the return circuit cannot close and the device must fire along the field. Open items are the choice of flight emitter and the CubeSat sheath regime.
 \end{abstract}
 \end{center}
 \vspace{1cm}
@@ -44,13 +44,13 @@ Small spacecraft below 600\,km lose their orbit to atmospheric drag within month
 
 \section{Introduction}
 
-Small spacecraft below 600\,km lose their orbits to atmospheric drag within months to a few years. A 3U CubeSat at 400\,km falls below 100\,km in roughly 139 days. Most carry no propulsion at all.
+Small spacecraft below 600\,km lose their orbits to atmospheric drag within months to a few years, and the smallest lose them fastest: drag grows with area and inertia with volume. Near solar maximum a 3\,g chip-scale body, 10\,mm across and 30\,mm long, re-enters from 400\,km in 41--46 days and from 550\,km in 300--329 days, while a 4\,kg body of the same shape at CubeSat size lasts about a year from 400\,km (Sec.~\ref{sec:mission}). Most carry no propulsion at all.
 
 The thrust to hold altitude is nanonewtons to a few micronewtons, well within the range of flight-proven micropropulsion. Colloid thrusters on LISA Pathfinder resolved 0.1\,\textmu N \cite{anderson18}; NanoFEEP flew on a 1U CubeSat at 0.2--0.3\,W \cite{bock18}. Every one of these systems spends a stored propellant through tanks, valves, feed lines or precision emitter heads. The propellant imposes a total-impulse limit, and the hardware adds mass and cost that are rarely justified on a CubeSat.
 
-This paper describes a thruster with none of that hardware. A cathode held below the spacecraft potential emits electrons through an aperture. The escaping beam produces thrust and leaves the body positively charged, so the body collects ambient electrons from the ionospheric plasma until collection balances emission. The circuit closes through the ionosphere with no propellant and no net mass flow. An electron beam carries about 200 times less momentum per watt than an ion beam, but LEO drag on a small spacecraft is nanonewtons, and at that scale the beam costs tens of milliwatts. The whole device is a cathode, an aperture and a high-voltage supply. It carries no propellant, no tank and no feed system, and at 400--600\,km it produces enough thrust for station keeping or extending mission life.
+This paper describes a thruster with none of that hardware. A cathode held below the spacecraft potential emits electrons through an aperture. The escaping beam produces thrust and leaves the body positively charged, so the body collects ambient electrons from the ionospheric plasma until collection balances emission. The circuit closes through the ionosphere with no propellant and no net mass flow. An electron beam carries about 200 times less momentum per watt than an ion beam, but LEO drag on a small spacecraft is nanonewtons, and at that scale the beam costs tens of milliwatts. The whole device is a cathode, an aperture and a high-voltage supply. It carries no propellant, no tank and no feed system. On a chip-scale spacecraft, where nothing flown fits, it holds 500--700\,km on milliwatts that the body's own solar cells can supply; the same device on a CubeSat needs watts.
 
-The following sections describe the operating principle, test each claim through a ladder of particle-in-cell simulations that build from a vacuum electron gun to the full device in ionospheric plasma, and assess the result against a year of real 2024 drag at 400--600\,km.
+The following sections describe the operating principle, test each claim through a ladder of particle-in-cell simulations that build from a vacuum electron gun to the full device in ionospheric plasma, and assess the result against a year of real drag at 400--700\,km on three orbit families, at both ends of the solar cycle, and against the lifetime of the same spacecraft without the thruster.
 
 \section{Concept}
 \label{sec:concept}
@@ -134,7 +134,7 @@ where $\alpha = 1$ for a sphere and $0.5$ for a long cylinder in orbital-motion-
 \end{figure}
 
 \subsection{Scale}
-Drag is proportional to the ram area; collection and body-mounted power are proportional to the skin area. Thrust demand, beam current and power all scale with ram area, so power per unit ram area depends only on altitude and voltage. Vehicle size drops out and what remains is the shape ratio $A_{\mathrm{skin}}/A_{\mathrm{ram}}$. A 10\,mm can and a 3U CubeSat with the same shape ratio have the same feasibility margin.
+Drag is proportional to the drag area $S_{\mathrm{ref}}$: the ram face plus free-molecular friction on the walls parallel to the flow, whose coefficient is about 3\,\% of the ram one per unit area but which adds 37\,\% on an end-on body with $L/r = 6$. Collection and body-mounted power are proportional to the skin area. Thrust demand, beam current and power all scale with $S_{\mathrm{ref}}$, so power per unit drag area depends only on altitude and voltage. Vehicle size drops out and what remains is the shape ratio $A_{\mathrm{skin}}/S_{\mathrm{ref}}$. A 10\,mm can and a 3U CubeSat with the same shape have the same feasibility margin. Mass does not enter the demand, since holding altitude takes thrust equal to the drag force; it sets only how fast a craft sinks while thrust falls short, and at equal density a 3U sinks ten times more slowly than the 10\,mm can for the same shortfall.
 
 \subsection{Control}
 $I$ and $\varphi$ are plain electrical measurements, so Eqs.~\eqref{eq:thrust}--\eqref{eq:ke} let the spacecraft compute its own thrust in flight. Density, temperature and day/night all collapse into where the body floats, so a two-line servo on the measured float is the whole control law. A microcontroller is sufficient.
@@ -297,7 +297,7 @@ The 300\,V run also selects the collection exponent. Three values of $\alpha$ in
 
 \subsubsection{Shape, density and field}
 
-\paragraph{Shape.} Does elongation hurt current collection? Stretching the can to $L/r = 6$ triples the skin at the same ram area. Two hypotheses were recorded before the run: area-only scaling predicted 4--5\,V, and the long-cylinder limit predicted tens of volts. The float dropped to 4.4\,V and the thrust rose 4\,\%, confirming area-only scaling. The collection exponent held across a $3.2\times$ area change. A 3U CubeSat flying end-on has the same shape ratio, so the measured exponent applies directly (Sec.~\ref{sec:scale}).
+\paragraph{Shape.} Does elongation hurt current collection? Stretching the can to $L/r = 6$ multiplies the skin by 3.5 at the same ram area. Two hypotheses were recorded before the run: area-only scaling predicted 4--5\,V, and the long-cylinder limit predicted tens of volts. The float dropped to 4.4\,V and the thrust rose 4\,\%, confirming area-only scaling. The pre-registered bracket used a $3.2\times$ area ratio in error; with the correct $3.5\times$ it is 3.8--4.3\,V, 2\,\% below the measurement, so collection grows slightly slower than area. Fitted to both slender runs (200 and 350\,V) at the shared exponent, the slender body collects like 3.1 times the compact body's effective area; the mission model uses that measured value. A 3U CubeSat flying end-on has nearly the same shape ratio (Sec.~\ref{sec:scale}).
 
 \paragraph{Density.} Does thin night-side plasma break the device? At one third density the run was extended to 2.4\,\textmu s (three times the RC time) and the float settled at 42.5\,V. Every fixed-exponent prediction from Eq.~\eqref{eq:oml} overshot, from 53\,V at $\alpha = 1$ to 68\,V at $\alpha = 0.82$. The fitted law overestimates the float in thin plasma, so night-side predictions from Sec.~\ref{sec:mission} are conservative.
 
@@ -308,74 +308,60 @@ The 300\,V run also selects the collection exponent. Three values of $\alpha$ in
 \label{sec:mission}
 
 \subsection{Method}
-Drag demand comes from TudatPy \cite{tudat} propagation over 2024 (solar-cycle maximum) with NRLMSISE-00 density driven by measured F10.7 and Ap, and IRI-2020 plasma along the orbit. The test body is the simulated 10\,mm $\times$ 5\,mm cylinder at 100\,g with $C_d = 2.2$, on a circular near-equatorial orbit ($i = 0.5^\circ$) at 400\,km (axial and lateral pose), 500, 550 and 600\,km. Drag is cancelled exactly, so the drag at each timestep is the thrust demand. Table~\ref{tab:cases} summarizes the demand and the plasma each case sees. The PIC plasma row of Table~\ref{tab:setup} sits near the dayside top of the 400\,km range; night-side densities are 5--40 times lower, which is where collection is weakest.
+Drag demand comes from TudatPy \cite{tudat} propagation with NRLMSISE-00 density driven by measured F10.7 and Ap, and IRI-2020 plasma along the orbit. The test body is the slender can of the shape runs (10\,mm diameter, 30\,mm long, $L/r = 6$), flown axial: the thrust axis points along the velocity, which for $L > \tfrac{\pi}{2}r$ is also the low-drag pose. Its drag area $S_{\mathrm{ref}}$ is the ram cap plus free-molecular friction on the side wall, with $C_d = 2.2$. Its mass, 3.1\,g, is the density of a 4\,kg 3U; mass does not enter the thrust demand. Circular orbits at 400--700\,km on three families (near-equatorial, $i = 0.5^\circ$; ISS, $51.6^\circ$; sun-synchronous with a 10:30 ascending node) are flown for a year near solar maximum (2024) and minimum (2019). In station keeping the drag is cancelled exactly, so the drag at each 5-minute point is the thrust demand. In free fall the thruster is off and the orbit decays to re-entry (120\,km) or a 5-year cap. The mission model uses the slender body's own collection prefactor (Sec.~\ref{sec:char}). The PIC plasma row of Table~\ref{tab:setup} sits near the dayside top of the 400\,km range; night-side and high-latitude densities are 5--40 times lower, which is where collection is weakest.
 
-\begin{table}[t]\centering\small
-\caption{Mission cases: 2024 drag on the 10\,mm body and the IRI-2020 plasma along the orbit (5th--95th percentile of 5-min samples over the year).}
+\begin{table}[t]\centering\small\setlength{\tabcolsep}{3.5pt}
+\caption{Mean drag on the 3\,g slender body and its lifetime with the thruster off. Ranges span the three orbit families; the 3U column is the same shape scaled $\times10$ (4\,kg).}
 \label{tab:cases}
 \begin{tabular}{@{}lrrrrr@{}}
 \toprule
-altitude & pose & \multicolumn{2}{c}{drag [nN]} & $n_e$ [$10^{11}$\,m$^{-3}$] & $kT_e$ [meV] \\
-& & mean & max & & \\
+altitude & \multicolumn{2}{c}{drag [nN]} & \multicolumn{2}{c}{free fall, 3\,g} & 3U \\
+& 2024 & 2019 & 2024 & 2019 & 2024 \\
 \midrule
-400\,km & axial   & 32.9 & 92.4 & 2.7--21 & 87--193 \\
-400\,km & lateral & 21.6 & 60.7 & 2.7--21 & 87--193 \\
-500\,km & axial   & 7.6  & 28.4 & 1.4--16 & 91--221 \\
-550\,km & axial   & 3.8  & 16.3 & 1.0--11 & 93--233 \\
-600\,km & axial   & 2.0  & 9.6  & 0.7--7.1 & 97--244 \\
+400\,km & 38--42 & 3.8--4.8 & 41--46\,d & 171--241\,d & 1.0--1.1\,yr \\
+500\,km & 8.6--9.8 & 0.5--0.6 & 179--204\,d & 3.3--3.5\,yr & $>5$\,yr \\
+550\,km & 4.3--5.0 & 0.2 & 300--329\,d & 4.3--4.5\,yr & $>5$\,yr \\
+600\,km & 2.3--2.6 & 0.1 & 1.8--2.2\,yr & $>5$\,yr & $>5$\,yr \\
+650\,km & 1.2--1.4 & 0.05 & $>5$\,yr & $>5$\,yr & $>5$\,yr \\
+700\,km & 0.7--0.8 & 0.03 & $>5$\,yr & $>5$\,yr & $>5$\,yr \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Coverage}
+\subsection{Station keeping against free fall}
 
-\begin{figure}[t]\centering
-\includegraphics[width=\linewidth]{imgs/drag_coverage.png}
-\caption{Measured thrust at 200 and 300\,V against mean and maximum 2024 drag on the 10\,mm body, by altitude.}
-\label{fig:drag}
-\end{figure}
+\begin{figure*}[t]\centering
+\includegraphics[width=0.95\textwidth]{figs/missions.pdf}
+\caption{(a) The 3\,g slender body on the sun-synchronous orbit in 2024. Solid: thruster off, daily-mean altitude until re-entry. Dashed: the same orbits held by the thruster, with the year-mean beam power; at 400\,km the demand exceeds the simulated envelope. (b) Year-mean beam power to hold altitude; line = median of the three orbit families, band = their range. The ring marks 400\,km near solar maximum, where the peaks need more than 350\,V. A 3U-size body of the same shape needs 100 times these powers.}
+\label{fig:missions}
+\end{figure*}
 
-\begin{table}[t]\centering\small
-\caption{Fixed-voltage coverage of 2024 drag on the 10\,mm body.}
-\label{tab:fixed}
-\begin{tabular}{@{}lrrcc@{}}
-\toprule
-altitude & mean & max & 200\,V & 300\,V \\
-         & nN & nN & 13.65\,nN & 30.13\,nN \\
-\midrule
-400\,km axial   & 32.9 & 92.4 & --   & --   \\
-400\,km lateral & 21.6 & 60.7 & --   & mean \\
-500\,km         & 7.6  & 28.4 & mean & mean, max \\
-550\,km         & 3.8  & 16.3 & mean & mean, max \\
-600\,km         & 2.0  & 9.6  & mean, max & mean, max \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[t]\centering\scriptsize\setlength{\tabcolsep}{4pt}
-\caption{Voltage-following mode: for each 5-minute point of the 2024 orbit, the supply voltage that cancels that point's drag for the least beam power, with the floating potential solved from the IRI-2020 plasma at that point. Points above 350\,V use the gun laws beyond the simulated envelope.}
+\begin{table*}[t]\centering\footnotesize
+\caption{Voltage-following station keeping of the slender body: for each 5-minute point, the supply voltage that cancels that point's drag for the least beam power, with the floating potential solved from the IRI-2020 plasma at that point. Ranges span the three orbit families. Max dip: largest altitude deficit when the same year is replayed with thrust capped at the measured 350\,V capability.}
 \label{tab:follow}
-\begin{tabular}{@{}lrrrr@{}}
+\begin{tabular}{@{}lrrrrrr@{}}
 \toprule
-altitude & mean $P$ & worst 5\,min & $V>350$\,V & $\varphi$ median\,/\,99th \\
+& \multicolumn{5}{c}{2024 (solar maximum)} & 2019 \\
+altitude & mean $P$ & worst 5\,min & $V{>}350$\,V & $\varphi$ med / 99th & max dip & mean $P$ \\
 \midrule
-600\,km         & 8.3\,mW & 55\,mW  & 0.02\,\% & 18\,/\,61\,V \\
-550\,km         & 17\,mW  & 100\,mW & 0.1\,\%  & 23\,/\,81\,V \\
-500\,km         & 39\,mW  & 190\,mW & 0.8\,\%  & 28\,/\,110\,V \\
-400\,km lateral & 139\,mW & 611\,mW & 11\,\%   & 39\,/\,162\,V \\
-400\,km axial   & 239\,mW & 1.08\,W & 40\,\%   & 56\,/\,219\,V \\
+400\,km & 272--292\,mW & 1.0--1.5\,W & 44--47\,\% & 18--50 / 109--276\,V & not held & 21\,mW \\
+500\,km & 46--48\,mW & 235--316\,mW & 0--2.5\,\% & 9--31 / 57--152\,V & 9\,m & 2.0\,mW \\
+550\,km & 20--21\,mW & 120--169\,mW & 0--1.1\,\% & 7--23 / 41--116\,V & 4\,m & 0.8\,mW \\
+600\,km & 9.6--9.9\,mW & 61--96\,mW & 0--0.4\,\% & 6--16 / 29--89\,V & 2\,m & 0.4\,mW \\
+650\,km & 4.8--5.0\,mW & 33--53\,mW & 0--0.2\,\% & 4--11 / 18--69\,V & 1\,m & 0.2\,mW \\
+700\,km & 2.5--2.7\,mW & 18--30\,mW & 0--0.1\,\% & 3--7 / 14--54\,V & 1\,m & 0.1\,mW \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-At 500--600\,km the thruster covers mean and maximum drag at a fixed 300\,V (Fig.~\ref{fig:drag}, Table~\ref{tab:fixed}). In voltage-following mode it holds the orbit all year for a mean beam power of 8--39\,mW, and more than 99\,\% of the orbit points sit inside the tested 100--350\,V envelope (Table~\ref{tab:follow}). The float raises the year mean 20--25\,\% above the $\varphi$-free law of Sec.~\ref{sec:theory}, because neutral density and plasma density fall together on the night side: the demand drops where collection is weakest, and the most expensive 5\,min of the year at 600\,km is a dayside drag peak at 55\,mW. No voltage or float value is a design limit in this model; a high float on a thin plasma costs supply voltage and power at that point through Eq.~\eqref{eq:ke}, and every point of the 2024 year has an operating point. At 400\,km the compact body delivers 40.48\,nN at 350\,V against a 32.9\,nN mean and pays 14\,\% of the drive to the float; the slender body delivers 43.33\,nN at a 4\,\% tax, covering the mean at about 76\,\% duty. The drag maxima (92\,nN) need 500--700\,V by the gun laws, above anything simulated, and the year costs 140--240\,mW, so 400\,km is a research target, not a closed case. Where full station-keeping does not close, partial compensation still extends mission life. Two parts of Table~\ref{tab:follow} are extrapolations, flagged per point in the model output: the collection law below about a third of the simulated density, where the one off-density run found it conservative, and the calibration on 800\,ns floats (Sec.~\ref{sec:limits}).
+Without the thruster the 3\,g body re-enters from 400\,km in 41--46 days and from 550\,km within a year near solar maximum (Table~\ref{tab:cases}, Fig.~\ref{fig:missions}a). With it, the voltage-following model holds 500--700\,km all year for 2.5--48\,mW of mean beam power at solar maximum and 0.1--2\,mW at minimum, with at least 97.5\,\% of the orbit points inside the tested 100--350\,V envelope (Table~\ref{tab:follow}, Fig.~\ref{fig:missions}b). Replaying each year with thrust capped at the measured capability at 350\,V, firing at full capability whenever the craft is below its target and integrating any shortfall into an altitude deficit ($\dot a = 2aF/mv$), the orbit never drops more than 10\,m below its target at 500--700\,km. Solar activity moves the demand 15--25 times; inclination moves it about 10\,\%, partly because an inclined circular orbit flies 10--15\,km higher on average over the oblate Earth. The high-latitude orbits see thinner plasma and float higher, which costs supply voltage at those points, not closure: no voltage or float value is a design limit in this model, and every point of both years has an operating point. At 400\,km the solar-maximum peaks (119--128\,nN) exceed what 350\,V delivers even on average, so that case is not held inside the simulated envelope; at solar minimum 400\,km is held for 21\,mW. Two parts of Table~\ref{tab:follow} are extrapolations, flagged per point in the model output: the collection law below about a third of the simulated density, where the one off-density run found it conservative, and the calibration on 800\,ns floats (Sec.~\ref{sec:limits}).
 
 \subsection{Power}
-Power is the thruster's only interface to the spacecraft: tens of milliwatts at 500--600\,km, 100--200\,mW at 400\,km. The 10\,mm body harvests roughly 10--30\,mW from body-mounted cells. A 1U CubeSat has 1--2\,W and a 3U 5--10\,W. Supply and demand both grow with area, so the ratio holds with size.
+Power is the thruster's only interface to the spacecraft. Body-mounted cells on the slender can supply about 37\,mW orbit-averaged (30\,\% cells on a third of the skin, 25\,\% illumination; an example, not part of the thruster). Replayed within that budget, the orbit holds at 550--700\,km near solar maximum, with dips up to 1.2\,km at 550\,km, and at every altitude near solar minimum; at 500\,km near maximum the 46--48\,mW demand exceeds it. Supply and demand both grow with area, so the ratio holds with size.
 
 \subsection{Scaling to CubeSats}
 \label{sec:scale}
-By the argument of Sec.~\ref{sec:theory}, a 3U CubeSat flying end-on has the same shape ratio as the slender can and the same feasibility margin. In absolute terms it needs 8.8\,mA and 0.9\,W at 600\,km, 1.7\,W at 550\,km and 3.4\,W at 500\,km. Larger bodies also need less collection enhancement over the thermal flux (4 times for a 3U at 600\,km against 15 times for the 10\,mm body), so they rest on less extrapolation, not more. These numbers are estimates from the fitted collection law, and CubeSat radii sit at 25--60 Debye lengths where that law has not been measured (Sec.~\ref{sec:limits}).
+By the argument of Sec.~\ref{sec:theory}, a 3U CubeSat flying end-on ($10\times10\times30$\,cm) has nearly the shape ratio of the slender can and the same feasibility margin: against body-mounted cells it closes 1.1, 2.2 and 4.2 times over at 500, 550 and 600\,km near solar maximum. In absolute terms it needs about 4--5\,W at 500\,km, 2\,W at 550\,km, 1\,W at 600\,km and 0.3\,W at 700\,km near solar maximum, and 0.2\,W, 80\,mW, 40\,mW and 13\,mW near minimum. That puts a 3U in the watt class where electrospray and FEEP already fly (Sec.~\ref{sec:compare}), and above 500\,km its free-fall lifetime already exceeds five years (Table~\ref{tab:cases}); for a CubeSat the device is a propellantless option for altitude control, while for a chip-scale body it decides whether the mission survives. Mass does not change these powers: a 4\,kg 3U sinks about 50\,m/day at 500\,km with the thruster off, against 0.5\,km/day for the 3\,g can, so it tolerates shortfalls far better. Larger bodies also need less collection enhancement over the thermal flux (5.6 times for a 3U at 600\,km against 15 times for the compact body), so they rest on less extrapolation, not more. These numbers are estimates from the fitted collection law, and CubeSat radii sit at 25--60 Debye lengths where that law has not been measured; a thin-sheath estimate puts the 3U float near 60\,V at 500\,km near solar maximum, which would drop that margin below one (Sec.~\ref{sec:limits}).
 
 \section{Comparison with micropropulsion}
 \label{sec:compare}
@@ -397,7 +383,7 @@ FEEP & Enpulsion IFM Nano \cite{krejci19} & 10--500\,\textmu N & 8--40\,W & 2000
 \end{tabular}
 \end{table*}
 
-Table~\ref{tab:compare} compares the device with flown systems in the nanonewton-to-micronewton range. The thrust per watt is about 200 times below an ion thruster, which is Eq.~\eqref{eq:thrust} and cannot be engineered away. At micronewtons the power penalty reaches watts and electrospray or FEEP wins. The difference from every flown system is the hardware column: no tank, no feed system, no neutralizer, no total-impulse limit. Nothing in the table produces thrust below 100\,nN.
+Table~\ref{tab:compare} compares the device with flown systems in the nanonewton-to-micronewton range. The thrust per watt is about 200 times below an ion thruster, which is Eq.~\eqref{eq:thrust} and cannot be engineered away. At micronewtons the power penalty reaches watts and electrospray or FEEP wins. The difference from every flown system is the hardware column: no tank, no feed system, no neutralizer, no total-impulse limit. Nothing in the table produces thrust below 100\,nN or fits a gram-scale spacecraft, and that is where the device holds altitude on milliwatts.
 
 Related concepts share the return-circuit idea. Bare electrodynamic tethers \cite{san93,kat95} and Janhunen's electric sail and plasma brake \cite{jan04,jan10} all use continuous electron emission with the ambient plasma closing the circuit, but produce thrust by Lorentz force or ion deflection on kilometre-scale tethers. Atmosphere-breathing electric propulsion \cite{zhe20} collects ambient gas but keeps an ionization stage, an acceleration stage and a neutralizer. A recent review of propellantless propulsion \cite{kez25} does not list a standalone ionospheric electron-exchange thruster.
 
@@ -413,11 +399,12 @@ Ordered by how much each could change the answer.
   \item \textbf{Prescribed beam.} Beam current is a fixed input, not self-consistently emitted from a modelled cathode. The choice of flight emitter is outside the scope of this paper.
   \item \textbf{CubeSat sheath regime.} Runs sit at $r/\lambda_D \approx 2.5$; CubeSats are 25--60\,$\lambda_D$ across, where orbital-motion-limited collection no longer applies. A single large-body run would settle this.
   \item \textbf{Stationary plasma, held attitude.} No ram flow is modelled, and the mission cases assume a fixed pose without an attitude-control model.
+  \item \textbf{Orbit model.} Orbits are circular. Free-fall runs starting in 2024 use forecast solar indices after mid-2025; the 2019 runs are observed throughout. The altitude-hold replay ignores the denser air a dipping craft meets, which is negligible for the metre-scale dips reported and is flagged where a case does not hold.
 \end{enumerate}
 All powers are beam power $VI$; converter and cathode overheads belong to the flight design.
 
 \section{Conclusion}
-A cathode, a high-voltage supply and the spacecraft's own skin make a thruster that needs no propellant. PIC simulations measure its operating envelope at 3--43\,nN from 12--278\,mW, with two constants describing every run to within 3\,\%, a floating potential fixed by a measured collection law, and a return current that costs 1--9\,\% of the beam thrust. Against a year of real drag, with the float included, the device holds 500--600\,km for 8--39\,mW of beam power and covers the 400\,km mean demand with a slender body at 140--240\,mW. The feasibility condition depends on shape and altitude but not on size, so a 3U CubeSat inherits it at 0.9--3.4\,W. The device is cheap to test: it needs no hardware beyond a supply and an electron gun of the kind that already flies as a neutralizer, and it can be retrofitted to an existing ion or Hall thruster after its propellant is spent. The transverse geomagnetic field, once the largest open question, is now measured: at flight strength it leaves the operating point unchanged, and at ten times flight strength it forces field-aligned firing. The flight emitter is the next work.
+A cathode, a high-voltage supply and the spacecraft's own skin make a thruster that needs no propellant. PIC simulations measure its operating envelope at 3--43\,nN from 12--278\,mW, with two constants describing every run to within 3\,\%, a floating potential fixed by a measured collection law, and a return current that costs 1--9\,\% of the beam thrust. Against a year of real drag on three orbit families at both ends of the solar cycle, with the float included, a 3\,g slender body that re-enters within a year from 550\,km without the thruster holds 500--700\,km with it for 2.5--48\,mW of beam power near solar maximum and 0.1--2\,mW near minimum, within its own body-mounted solar supply from 550\,km up. The feasibility condition depends on shape and altitude but not on size, so a 3U CubeSat inherits it at about 1\,W at 600\,km near solar maximum and tens of milliwatts near minimum. The device is cheap to test: it needs no hardware beyond a supply and an electron gun of the kind that already flies as a neutralizer, and it can be retrofitted to an existing ion or Hall thruster after its propellant is spent. The transverse geomagnetic field, once the largest open question, is now measured: at flight strength it leaves the operating point unchanged, and at ten times flight strength it forces field-aligned firing. The flight emitter is the next work.
 
 \paragraph{Data.} All simulation inputs, run manifests, gate policies, the orbit propagations and the model are committed in the project repository, archived at \href{https://doi.org/10.5281/zenodo.22115924}{DOI:10.5281/zenodo.22115924}.
 
