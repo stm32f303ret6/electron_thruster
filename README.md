@@ -103,7 +103,7 @@ Where:
 
 | symbol | what it is | controlled by |
 |---|---|---|
-| $\kappa$ | gun energy transmission | gun loading ($I/I_{\mathrm{CL}}$) |
+| $\kappa$ | exhaust energy over the drop, $\mathrm{KE}/e(V-\varphi)$ | where the simulated beam is launched (below); a real cathode gives $\kappa \approx 1$ |
 | $\varphi$ | float potential | collecting area, body shape, plasma density |
 | $\varphi/V$ | the float tax | fraction of supply voltage lost to current return |
 | $f_{\mathrm{esc}}$ | beam fraction that clears the body | exit-aperture geometry |
@@ -143,7 +143,7 @@ Divergence factor: 0.97 (measured thrust slope vs ideal).
 These numbers characterize the simulated design, not the concept.
 Each traces to a design parameter (see the theory table above); moving the parameter moves the number.
 
-For example, $\kappa = 0.81$ is the space-charge depression of a single-aperture gun at $I/I_{\mathrm{CL}} = 1.46$; distributed emission (grid, array) reduces that depression and pushes $\kappa$ toward 1.
+For example, $\kappa = 0.81$ is not gun physics but where the simulated beam is born. It is launched 2 cells (0.3 mm) above the cathode, where a vacuum field solve puts the potential 19 % of V above the cathode, so every electron misses that part of the drop. In every run at this loading the missing energy is 17–18 % of V, whatever the float, plasma density or field; the beam's own space charge lowers it slightly, and at 3–10× the loading (the U-curve runs) it shrinks to 12 %, the opposite of a space-charge depression. A real cathode emits at cathode potential and would give $\mathrm{KE} \approx e(V-\varphi)$: about 11 % more thrust at the same current and $\eta \approx 0.90$ instead of 0.73. The committed numbers keep the measured 0.81 and are conservative by that margin; a PIC confirmation is planned ([`future_work/CATHODE_LAUNCH_PLAN.md`](future_work/CATHODE_LAUNCH_PLAN.md)).
 Similarly, the slender body already shows $\varphi$ dropping from 17 V to 4.4 V by changing geometry alone.
 
 Outside the measured envelope (other gun loadings, geometries, plasmas), new runs are needed; `model/README.md` is the only sanctioned extrapolation and labels its outputs estimates.
@@ -254,7 +254,7 @@ Each stage links to its simulation directory:
 | # | stage | validates | result |
 |---|---|---|---|
 | 1 | [`emitter.negative_cathode`](pic_sims/ladder/electron_gun/1_negative_cathode) | negative cathode emits and accelerates electrons toward a grounded body | 35 µV error on 100 V |
-| 2 | [`emitter.holed_anode`](pic_sims/ladder/electron_gun/2_electron_gun) | aperture controls transmission | κ = 0.97, 0.90, 1.00 as predicted |
+| 2 | [`emitter.holed_anode`](pic_sims/ladder/electron_gun/2_electron_gun) | aperture controls transmission | transmitted fraction 0.97, 0.90, 1.00 as predicted |
 | 3 | [`emitter.voltage_bracket`](pic_sims/ladder/electron_gun/3_voltage_bracket) | transmission is voltage-independent | 0.006 pp spread over 200–300 V |
 | 4 | [`collector.thermal`](pic_sims/ladder/current_collection/1_thermal) | PIC thermal current vs theory | within 1 % |
 | 5 | [`collector.biased_3v`](pic_sims/ladder/current_collection/2_biased_3v) | OML collection at +3 V bias | 0.85 of ceiling (Laframboise) |

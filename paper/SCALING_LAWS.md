@@ -36,7 +36,10 @@ Two measured corrections:
    plus net-vs-beam momentum bookkeeping.
 2. Energy ledger. The beam is born two cells above the cathode face, so it
    never sees the whole gap: `KE ≈ 0.81·(V − φ)` (measured 147.5 eV against
-   V − φ = 183.0 V).
+   V − φ = 183.0 V). A vacuum field solve puts the launch plane 19 % of V
+   above the cathode, and the measured deficit is 17–18 % of V in every run
+   at this loading, whatever φ: it scales with V, not V − φ, and a real
+   cathode would give κ ≈ 1 (`future_work/CATHODE_LAUNCH_PLAN.md`).
 
 The body floats at `+φ` and the cathode rides at `φ − V`, so the accelerating
 potential that matters is always V − φ. The float robs the beam.

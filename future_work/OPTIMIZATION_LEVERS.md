@@ -15,7 +15,7 @@ Reference point (200 V anchor, 13.65 nN): ideal bound 57 mW, measured
 | # | lever | measured tax | max recovery | measurable vs ±4–7 % grid band? | campaign cost | priority |
 |---|---|---|---|---|---|---|
 | 1 | emission ceiling `I_max ∝ V^1.5/d²` | envelope, not a tax | **~40 % power** (V_min ↓), reopens 400–500 km | yes (order-1 effect) | 3–5 runs × ~8 GPU-h | **highest — moves mission verdicts** |
-| 2 | energy fraction κ = 0.81 | ~10 % | ~10 % | marginal — needs matched A/B | 2–3 runs × ~8 GPU-h | medium |
+| 2 | energy fraction κ = 0.81 (launch artifact) | ~10 % | ~10 % | correction, not a lever — matched A/B | 2 runs (`CATHODE_LAUNCH_PLAN.md`) | medium |
 | 3 | float tax V/(V−φ) = 1.06–1.14 | 6–14 % | 6–14 % | already measured (slender run) | 0 (done) | design trade, no new runs |
 | 4 | plume divergence c_F = 0.97·c_ideal | ~3 % | ~3 % | **no — below the noise band** | — | lowest as power lever |
 | 5 | off-design escape (low-V interception) | 1.5–2× off-optimum only | avoids, not recovers | yes | baseline exists (`ucurve_pic_stages/`) | folded into #1/#2 |
@@ -41,16 +41,23 @@ Reference point (200 V anchor, 13.65 nN): ideal bound 57 mW, measured
    that halves `V·I` while adding comparable gate overhead optimized the
    wrong ledger. See the cathode-selection item in [`README.md`](README.md).
 
-## 2. Energy fraction κ = 0.81: the gap lever
+## 2. Energy fraction κ = 0.81: a launch-plane artifact, not a gun lever
 
-1. Mechanism. Space-charge depression at the injection plane; electrons exit
-   with 81 % of `e(V−φ)`. Thrust ∝ √KE, so the power tax is `1/√κ ≈ 1.10`.
-2. Optimization. Cathode–aperture gap and extraction optics (shorter gap,
-   shaped extraction field). Ideal limit κ → 1 recovers ~10 % power.
-3. Campaign. Gap-sweep variants of the capstone deck. A ~10 % effect sits at
-   the edge of the ±4–7 % grid band, so absolute comparisons are unreliable.
-   Use matched A/B pairs (same grid, seed, dt, analysis window, only the gap
-   changed) so systematics cancel. 2–3 runs.
+1. Mechanism (corrected 2026-09-23; this entry first read it as
+   space-charge depression). The simulated beam is launched 2 cells (0.3 mm)
+   above the cathode (`capstone/2_chipsat_thruster/helpers.py`, `z_emit`),
+   where a vacuum field solve puts the potential 19 % of V above the
+   cathode; electrons miss that part of the drop and exit with 81 % of
+   `e(V−φ)`. The deficit is 17–18 % of V in every committed run at
+   I/I_CL = 1.46, independent of φ, density and field, and it shrinks at
+   higher loading (11.6 % in the U-curve floor run), the opposite of a
+   space-charge depression. Thrust ∝ √KE, so the power tax is `1/√κ ≈ 1.10`.
+2. Optimization. None needed at the gun: a real cathode emits at cathode
+   potential and gives κ ≈ 1. The ~10 % power (~13 % in the mission model)
+   is a simulation correction, not a design change.
+3. Campaign. The matched pair in [`CATHODE_LAUNCH_PLAN.md`](CATHODE_LAUNCH_PLAN.md):
+   the capstone deck with today's launch vs an energy-corrected launch,
+   same grid, seed, dt and window, so systematics cancel.
 
 ## 3. Float tax V/(V−φ): not a gun property
 

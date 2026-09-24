@@ -50,9 +50,11 @@ neither of which belongs in the concept argument:
    away from the minimum-power operating point, so part of the excess is
    simply operating off the optimum the ideal law would pick.
 2. Real inefficiencies: beam interception / self-scrape inside the can
-   (plume divergence against the aperture), the 0.81 energy fraction, the
-   float tax, and emission-type overheads (gate power etc.). All of these are
-   geometry- and cathode-specific.
+   (plume divergence against the aperture), the float tax, and
+   emission-type overheads (gate power etc.). All of these are geometry- and
+   cathode-specific. The 0.81 energy fraction was listed here too, but it is
+   a launch-plane artifact of the simulation, not a device loss ("Open
+   items" below, [`CATHODE_LAUNCH_PLAN.md`](CATHODE_LAUNCH_PLAN.md)).
 
 The theoretical lower bound plus its measured 4–7 % closure in the
 high-escape regime is therefore sufficient for the concept paper. The
@@ -188,8 +190,20 @@ campaigns:
    force is mass-independent), but a physical mass should be chosen,
    ΔV-authority statements re-derived, and the ~100× drop in attitude inertia
    disclosed. It makes the unaddressed attitude-control problem harder, not
-   easier.
+   easier. Partly addressed 2026-09-23: the mission body is now the slender
+   can at 3.1 g (3U density, 1.33 g/cm³), and mass enters the free-fall and
+   sink-rate results through the ballistic coefficient; the legacy squat-can
+   cases keep 0.1 kg, and the attitude-inertia point stands.
 5. Full-return null fixture. A configuration where every beam electron
    returns to the craft, so the measured thrust must read ~0. This is the
    falsification test of the momentum diagnostic itself, and turns the
    momentum-cancellation objection (README FAQ) into a figure.
+6. A 1U CubeSat at 400–500 km (2026-09-23, plan only): station keeping,
+   free fall, and lifetime under a power-limited thruster in the orbit loop.
+   [`1U_LOW_ORBIT_PLAN.md`](1U_LOW_ORBIT_PLAN.md), awaiting the author's
+   considerations before any run.
+7. κ = 0.81 is a launch-plane artifact (2026-09-23): the simulated beam is
+   born 0.3 mm above the cathode, 19 % of V up, so a real cathode would give
+   ~11 % more thrust per ampere. Docs corrected; the PIC confirmation (a
+   matched pair run to settled floats) and the mission recalibration are
+   planned in [`CATHODE_LAUNCH_PLAN.md`](CATHODE_LAUNCH_PLAN.md).
