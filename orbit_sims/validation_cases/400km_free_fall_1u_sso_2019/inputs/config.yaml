@@ -1,0 +1,26 @@
+# 400 km FREE FALL (thruster off) — 1U CubeSat, face-on, sun-synchronous
+# (LTAN 10:30), 2019 (solar-cycle 24/25 minimum).
+#
+# orbit_sims flies cylinders: the 1U is the cylinder with the same 100 cm^2
+# ram face (r = 5.64 cm), 10 cm long, flown axial. Its drag area is within
+# 1 % of the 10 x 10 x 10 cm cube's. Mass 1.33 kg, the classic 1U.
+
+mission:
+  start_utc: "2019-01-01T12:00:00"
+  duration_days: 1826.0
+  output_step_s: 3600.0
+  integration_step_s: 120.0
+  thruster: "off"
+
+orbit:
+  initial_altitude_km: 400.0
+  inclination_deg: 97.03
+  raan_deg: 258.93
+
+spacecraft:
+  mass_kg: 1.33
+  cylinder_radius_m: 0.0564
+  cylinder_height_m: 0.10
+  cd: 2.2
+  rotation: axial
+  sigma_t: 0.9

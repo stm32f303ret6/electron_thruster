@@ -13,7 +13,7 @@ The device is simple and cheap: a cathode, an aperture, and a high-voltage suppl
 
 ![200 V baseline simulation](paper/imgs/dashboard_200v.gif)
 
-[Full paper](paper/main.tex)
+[Paper: 3-page concept paper](paper/main.tex) ([PDF](paper/main.pdf)). The long version, with the full ladder, characterization and CubeSat scaling, is in git history at commit `6af0807`; this README carries the same material.
 
 ## Motivation
 
