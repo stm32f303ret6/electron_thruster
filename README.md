@@ -373,11 +373,15 @@ If you use this work, please cite:
 @software{casimiro2026electron,
   author    = {Casimiro, Ricardo Sebastian},
   title     = {Electron thruster for LEO drag compensation},
+  version   = {1.2},
   year      = {2026},
-  doi       = {10.5281/zenodo.22115923},
+  doi       = {10.5281/zenodo.22955751},
   url       = {https://github.com/stm32f303ret6/electron_thruster},
 }
 ```
+
+This DOI is for version 1.2 (25 September 2026).
+To cite all versions, use the concept DOI [10.5281/zenodo.22115923](https://doi.org/10.5281/zenodo.22115923), which always resolves to the latest release.
 
 ## Acknowledgements
 
