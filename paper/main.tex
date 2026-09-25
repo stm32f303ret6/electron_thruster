@@ -9,10 +9,13 @@
 \documentclass[11pt,twocolumn]{article}
 \usepackage[a4paper,margin=1.5cm,columnsep=0.2in]{geometry}
 \usepackage{times}
-\usepackage{amsmath,amssymb,graphicx,booktabs,xcolor,url}
+\usepackage{amsmath,amssymb,graphicx,booktabs,array,xcolor,url}
 \usepackage[hidelinks]{hyperref}
 \usepackage{caption}
 \usepackage{orcidlink}
+\usepackage{dblfloatfix}
+\usepackage{needspace}
+\renewcommand{\dbltopfraction}{0.9}\renewcommand{\topfraction}{0.9}\renewcommand{\dblfloatpagefraction}{0.8}\renewcommand{\textfraction}{0.05}
 \captionsetup{font=small,labelfont=bf}
 \setlength{\parskip}{2pt}
 \setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
@@ -27,15 +30,14 @@
 \date{}
 
 \begin{document}
+\raggedbottom
 
 \twocolumn[
-\begin{center}
 \maketitle
 \begin{abstract}
 \noindent
-Atmospheric drag can limit the orbital lifetime of small spacecraft, while their size and power budgets constrain propulsion hardware. This paper investigates an electron thruster that uses the ionosphere to supply its return current, eliminating the need for stored propellant. A cathode biased below the spacecraft body emits an electron beam through an aperture; the body charges positively and collects ambient electrons to replenish the emitted charge. Particle-in-cell simulations (WarpX) of conducting bodies 10\,mm in diameter predict 3.4-43\,nN of beam thrust at 100-350\,V, with beam-supply powers of 12-278\,mW and escape fractions of 96-99\,\%. A model calibrated to these simulations and coupled to year-long orbital and ionospheric calculations estimates the power required for drag compensation. For a body 10\,mm in diameter and 30\,mm long in sun-synchronous orbits at 500-600\,km, the estimated mean beam-supply demand is 10-46\,mW near solar maximum and 0.4-2\,mW near solar minimum. These mission estimates extrapolate the collection model beyond the simulated plasma conditions and exclude emitter and power-conversion overheads. The results support further investigation of electron propulsion for small spacecraft; extension to larger bodies requires validation of current-collection scaling and emitter integration.
+Atmospheric drag can limit the orbital lifetime of small spacecraft, while their size and power budgets constrain propulsion hardware. This paper presents an electron propulsion concept that uses the ionosphere to supply its return current, eliminating the need for stored propellant. A cathode biased below the spacecraft body emits an electron beam through an aperture; the body charges positively and collects ambient electrons to replenish the emitted charge. Particle-in-cell simulations (WarpX) of conducting bodies 10\,mm in diameter predict 3.4-43\,nN of beam thrust at the tested supply voltages of 100-350\,V, with beam-supply powers of 12-278\,mW and escape fractions of 96-99\,\%. A model calibrated to these simulations and coupled to year-long orbital and ionospheric calculations estimates the power required for drag compensation. For a body 10\,mm in diameter and 30\,mm long in sun-synchronous orbits at 500-600\,km, the estimated mean beam-supply demand is 10-46\,mW near solar maximum and 0.4-2\,mW near solar minimum. The architecture combines electron emission with ambient current collection in the spacecraft's own structure, offering a compact propulsion approach for missions with nanonewton thrust requirements.
 \end{abstract}
-\end{center}
 \vspace{0.4cm}
 ]
 
@@ -45,7 +47,7 @@ Conventional gridded ion thrusters require stored propellant, a feed system and 
 
 The tradeoff is thrust per watt. For a directed exhaust, $F/P = 2\eta/v_e$, where $\eta$ is the electrical-to-jet efficiency and $v_e$ is the exhaust speed. Electrons accelerated through a few hundred volts reach high exhaust speeds, giving little momentum per unit energy. The simulated 200\,V operating point delivers about 0.2\,\textmu N/W, making electron propulsion power-intensive at millinewton thrust levels.
 
-At the nanonewton drag levels examined here, the beam-supply demand is milliwatts. A cathode, an aperture, a high-voltage supply and the spacecraft's conducting skin provide propulsion without stored propellant. The aim is to reduce the hardware needed for station keeping on small spacecraft; emitter and converter overheads remain part of the flight design.
+At the nanonewton drag levels examined here, the beam-supply demand is milliwatts. A cathode, an aperture, a high-voltage supply and the spacecraft's conducting skin provide propulsion without stored propellant. The aim is to reduce the mass, volume and integration complexity of station-keeping hardware on small spacecraft.
 
 \section{Concept}
 
@@ -55,7 +57,9 @@ At the nanonewton drag levels examined here, the beam-supply demand is milliwatt
 \label{fig:concept}
 \end{figure*}
 
-A cathode held at $-V$ with respect to the spacecraft body emits electrons and accelerates them out through an aperture (Fig.~\ref{fig:concept}). Each escaping electron leaves the body one charge more positive, so the body's conducting skin collects ambient electrons from the plasma, and the supply returns them to the cathode. The body settles at the floating potential $\varphi$ where collection equals emission. The beam is not recaptured: its electrons carry 100-300\,eV, while $\varphi$ is a few to a few tens of volts and the ambient electrons carry 0.1\,eV. The collected electrons arrive from all directions and cancel 0.4-1.4\,\% of the beam thrust at 200-350\,V.
+A cathode held at $-V$ with respect to the spacecraft body emits electrons and accelerates them out through an aperture (Fig.~\ref{fig:concept}). The escaping beam carries directed momentum and produces reaction thrust. Each escaping electron leaves the body one charge more positive, so the body's conducting skin collects ambient electrons from the plasma, and the supply returns them to the cathode. The body approaches the floating potential $\varphi$, measured relative to the ambient plasma, where net collection balances beam escape.
+
+The current loop relies on an energy asymmetry: accelerated beam electrons can escape the positive body's potential well, while low-energy ambient electrons are attracted to it. Ambient electrons arrive over the collecting surface rather than as a directed counter-beam. Thus the same spacecraft structure acts as both the accelerating electrode and the return-current collector.
 
 \section{Theory}
 
@@ -64,7 +68,7 @@ A cathode held at $-V$ with respect to the spacecraft body emits electrons and a
 \setlength{\belowdisplayskip}{5pt}
 \setlength{\abovedisplayshortskip}{0pt}
 \setlength{\belowdisplayshortskip}{3pt}
-The concept is a plain electrostatic accelerator.
+The propulsion mechanism couples the momentum carried by the emitted beam to the current collected from the surrounding plasma.
 
 Thrust is the momentum flux of the escaping beam:
 \begin{equation}
@@ -86,81 +90,132 @@ Jet power divided by electrical beam-supply power is
      = \kappa\,\frac{V-\varphi}{V}\,\fesc.
 \label{eq:efficiency}
 \end{equation}
-Here $P = VI$; emitter and converter overheads are excluded.
+Throughout, $P = VI$ denotes power delivered by the supply between body and cathode. Total spacecraft power also depends on emitter technology and converter efficiency.
 
-The energy fraction $\kappa$ reflects the simulated launch position; emission at cathode potential ideally gives $\kappa \approx 1$. The float potential $\varphi$ depends on collecting area, body shape and plasma density. The ``float tax'' $\varphi/V$ is the fraction of supply voltage lost to current return. The escape fraction $\fesc$ is the beam fraction that clears the body, controlled by the exit-aperture geometry.
+The energy fraction $\kappa$ relates exhaust energy to the available potential drop; ideal emission at cathode potential gives $\kappa \approx 1$. The floating potential $\varphi$ depends on collecting area, body shape and plasma conditions. The ratio $\varphi/V$ is the fraction of supply voltage spent overcoming the body's positive potential. The escape fraction $\fesc$ is the beam fraction that clears the body, controlled by the exit-aperture geometry.
 
-\noindent\textbf{Control.} Electrical measurements of current and floating potential can provide a calibrated thrust estimate. Feedback on the float can account for plasma density, temperature and day/night changes without an explicit ionosphere model.
+\noindent\textbf{Control.} The electrical operating point provides two useful control signals:
+\begin{enumerate}\setlength{\itemsep}{1pt}\setlength{\parskip}{0pt}
+  \item \textbf{Thrust estimation.} Measured current, supply voltage and body potential relative to the plasma give a thrust estimate through Eqs.~\ref{eq:thrust}--\ref{eq:energy}, with calibrated escape and divergence corrections. An in-flight thrust stand is unnecessary.
+  \item \textbf{Feedback.} A microcontroller can adjust the supply voltage to track the thrust command using the measured current and floating potential. Density, temperature and day/night changes enter through these signals, without an explicit ionosphere model or lookup table.
+\end{enumerate}
+This is a proposed control principle; flight implementation requires current and plasma-potential sensing and calibration of the thrust estimate.
 \par\endgroup
 
-\section{Simulated capability}
+\section{Particle-in-cell simulations}
 
-The device is simulated with WarpX \cite{warpx22,amrex19} in RZ electrostatic mode: a closed 10\,mm can with a cathode disk inside and an aperture in the lid, in a dayside 400\,km plasma ($n_e = 1.63\times10^{12}$\,m$^{-3}$, $kT_e = 114$\,meV, ions at $400\,m_e$), 0.15\,mm cells, 800\,ns runs. The body potential is not prescribed: each step it moves by the net charge that left and landed over the body's self-capacitance. A ladder of nine stages builds from a vacuum electron gun to the full device, checking each piece against theory (thermal collection within 1\,\%); all pass, and every run passes fixed gates on escape, current balance and momentum. Table~\ref{tab:envelope} gives the operating envelope. Two constants describe it: $F = 3.27\,I\sqrt{\mathrm{KE}}$ (with $F$ in nN, $I$ in mA and KE in eV; the slope includes interception and divergence) and $\kappa = 0.81$. Stretching the can to 30\,mm ($L/r = 6$) multiplies its skin by 3.5 at the same frontal area: the float drops fourfold and thrust rises. A 3D run with the geomagnetic field across the beam at flight strength changes the thrust by under 1\,\%.
+The device is simulated with WarpX \cite{warpx22,amrex19} in axisymmetric (RZ) electrostatic mode. The slender body is the main case for the simulation results and station-keeping analysis; the compact body provides the verification-ladder reference and a geometry comparison. Both demonstrate the same propulsion mechanism. Figure~\ref{fig:geometry} shows their shared internal gun geometry, and Table~\ref{tab:setup} gives the simulation parameters.
 
-$\kappa = 0.81$ is a property of the simulation, not the device: the beam is launched 0.3\,mm above the cathode, where the potential is already 19\,\% of $V$ above it, and the measured deficit is 17-18\,\% of $V$ in every run. A real cathode emits at cathode potential ($\kappa \approx 1$), so every thrust and power figure here is conservative by about 11\,\%; a confirmation run is under way.
+The acceleration gap is 4.7\,mm in both configurations. Extending the spacecraft body from 5.5 to 30.5\,mm increases the return-current collecting area without enlarging the acceleration region or frontal area. The compact body is the smallest complete electrode-and-collector geometry tested here; a minimum size has not been established. These dimensions characterize the electrodes and collecting structure; supply and emitter packaging depend on the flight implementation.
+
+\begin{figure*}[t]\centering
+\includegraphics[width=0.92\textwidth]{imgs/device_geometry.pdf}
+\caption{Simulated conducting bodies at the same scale: (a) the compact reference, 5.5\,mm long; (b) the slender main case, 30.5\,mm long, used for the station-keeping calibration. Both are 10\,mm in diameter, with a 4\,mm aperture, a 3\,mm cathode disk and a 4.7\,mm cathode-to-lid gap. The additional length provides collecting surface around the same acceleration region. Red denotes the collecting body and blue the cathode and escaping beam. The supply holds the cathode at $-V$ relative to the body.}
+\label{fig:geometry}
+\end{figure*}
+
+\begin{table}[t]\centering\small\setlength{\tabcolsep}{3pt}
+\caption{Parameters of the RZ simulations. Voltage and current are sampled operating points, not limits of the propulsion concept.}
+\label{tab:setup}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.49\columnwidth}>{\raggedright\arraybackslash}p{0.47\columnwidth}@{}}
+\toprule
+Parameter & Value \\
+\midrule
+Body diameter & 10\,mm \\
+Body length, slender; compact & 30.5\,mm; 5.5\,mm \\
+Wall, lid, floor thickness & 0.4\,mm \\
+Cathode; emitting-spot radius & 1.5\,mm; 0.5\,mm \\
+Aperture radius; gun gap & 2.0\,mm; 4.7\,mm \\
+Launch offset above cathode & 0.30\,mm (two cells) \\
+Supply voltages sampled & 100, 200, 300, 350\,V \\
+Prescribed beam current & 0.121--0.793\,mA \\
+Ambient electron density & $1.627\times10^{12}$\,m$^{-3}$ \\
+Electron; ion temperature & 1319\,K; 936\,K \\
+Reduced ion mass & $400\,m_e$ \\
+Cell size & $\Delta r=\Delta z=0.15$\,mm \\
+Grid, slender; compact & $200\times608$; $200\times440$ \\
+Ambient macroparticles per cell and species & 16 \\
+Supply on; beam on & 100\,ns; 150\,ns \\
+Run duration & 800\,ns \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The body potential evolves self-consistently from the net charge emitted and collected, divided by the body's self-capacitance. Open boundaries and ambient-particle replenishment represent the surrounding ionosphere. A nine-stage verification sequence builds from a vacuum electron gun to the full device, checking emission, collection and floating-body coupling against theory and fixed criteria on escape, current balance and momentum; thermal collection agrees with theory within 1\,\%.
+
+Figure~\ref{fig:dashboard} shows the slender-body simulation at 200\,V: the beam density at the final time, beam fates, thrust and beam-supply power. Table~\ref{tab:envelope} summarizes the sampled operating points. The fitted thrust relation is $F = 3.27\,I\sqrt{\mathrm{KE}}$ (with $F$ in nN, emitted $I$ in mA and KE in eV; the slope includes interception and divergence), with an energy calibration $\kappa \approx 0.81$. Increasing the body length multiplies its collecting area by 3.5: at 200\,V, the floating potential falls from 17.0 to 4.4\,V and thrust rises from 13.65 to 14.22\,nN. Collected-particle momentum offsets 0.4-1.4\,\% of beam thrust in the 200-350\,V cases. A separate 3D comparison with the geomagnetic field across the beam at flight strength changes thrust by under 1\,\%.
+
+\begin{figure*}[t]\centering
+\includegraphics[width=0.92\textwidth]{imgs/dashboard_slender_200v.png}
+\caption{PIC results for the 200\,V slender-body case, using the run shown in the repository animation. (a) Beam electron density at 800\,ns, mirrored about the symmetry axis. (b) Cumulative fractions escaped and returned to the spacecraft; the remainder is still in the domain. (c) Escaping axial momentum flux, giving approximately 14.2\,nN of reaction thrust. (d) Beam-supply power $VI=68.4$\,mW during prescribed emission at 0.342\,mA. The density is a final snapshot; the other panels show the run history.}
+\label{fig:dashboard}
+\end{figure*}
+
+The fitted $\kappa$ reflects the numerical launch position: electrons are introduced 0.3\,mm above the cathode, missing part of the accelerating potential drop. A vacuum field calculation places this plane about 19\,\% of $V$ above cathode potential; the simulated exhaust-energy deficit is 17-18\,\% of $V$ in the cases of Table~\ref{tab:envelope}. Emission at cathode potential is therefore expected to increase $\kappa$ toward the ideal limit of one. Direct PIC confirmation is still required. All reported performance and mission estimates retain the existing calibration.
 
 \begin{table}[t]\centering\small\setlength{\tabcolsep}{4pt}
-\caption{Measured operating envelope. $\eta = \mathrm{KE}\,\fesc/eV$. Grid uncertainty: $F \pm 4$\,\%, $\varphi \pm 2$\,\%.}
+\caption{Simulated operating points for the slender main case and compact reference. $\eta = \mathrm{KE}\,\fesc/(eV)$. Grid sensitivity: $F \pm 4$\,\%, $\varphi \pm 2$\,\%.}
 \label{tab:envelope}
 \begin{tabular}{@{}lrrrrrrr@{}}
 \toprule
 body & $V$ & $I$ & $\varphi$ & $F$ & $P$ & $\fesc$ & $\eta$ \\
 & V & mA & V & nN & mW & \% & \\
 \midrule
+slender & 200 & 0.342 & 4.4  & 14.22 & 68.4 & 98.4 & 0.79 \\
+$10\times30.5$\,mm & 350 & 0.793 & 14.0 & 43.33 & 278  & 99.1 & 0.77 \\
+\midrule
 compact & 100 & 0.121 & 5.4  & 3.42  & 12.1 & 96.1 & 0.74 \\
 $10\times5.5$\,mm & 200 & 0.342 & 17.0 & 13.65 & 68.4 & 98.4 & 0.73 \\
 & 300 & 0.630 & 36.3 & 30.13 & 189  & 99.0 & 0.69 \\
 & 350 & 0.793 & 48.3 & 40.48 & 278  & 99.1 & 0.68 \\
-\midrule
-slender & 200 & 0.342 & 4.4  & 14.22 & 68.4 & 98.4 & 0.79 \\
-$10\times30$\,mm & 350 & 0.793 & 14.0 & 43.33 & 278  & 99.1 & 0.77 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \section{Station keeping}
 
+The station-keeping calculations use the slender body, with its collection prefactor fitted to the 200 and 350\,V slender PIC cases. The mission geometry approximates the 30.5\,mm simulated body as a 10\,mm diameter, 30\,mm long cylinder of mass 3.1\,g, flown with its axis along the velocity so that the thrust axis and low-drag pose coincide.
+
 \begin{table*}[t]\centering\small
-\caption{Station keeping on a sun-synchronous orbit (10:30 ascending node). Each cell is 2024 (near solar maximum) / 2019 (near minimum). Drag is the year-mean thrust demand; lifetime is the free fall with the thruster off, to 120\,km or the 5-year cap; power is the year-mean beam power to hold the altitude. The 1U drag is exact (drag scales with drag area, $\times103$); its power is an estimate scaled the same way. $^\dagger$47\,\% of the points need more than 350\,V: at the edge of the simulated envelope.}
+\caption{Modeled orbital decay and station keeping on a sun-synchronous orbit (10:30 ascending node), for a year near solar maximum (2024, dense upper atmosphere) and a year near solar minimum (2019, thin upper atmosphere). Lifetime is how long the orbit takes to decay from the listed altitude to 120\,km with the thruster off; $>5$\,yr means it had not decayed that far within the five-year propagation. Drag is the year-mean drag force, which is the thrust the thruster must supply to hold the listed altitude; power is the year-mean beam-supply power that delivers it. The 1U drag follows from the assumed drag-area ratio ($\times103$); its power is estimated using the same scaling. $^\dagger$47\,\% of the points require extrapolation above the highest simulated supply voltage, 350\,V.}
 \label{tab:mission}
 \begin{tabular}{@{}lrrrrrr@{}}
 \toprule
 & \multicolumn{3}{c}{3\,g slender can ($10\times30$\,mm)} & \multicolumn{3}{c}{1U CubeSat (1.33\,kg), estimate} \\
 \cmidrule(lr){2-4}\cmidrule(lr){5-7}
-altitude & drag [nN] & lifetime, off & power [mW] & drag [\textmu N] & lifetime, off & power [W] \\
+altitude & \shortstack{lifetime,\\thruster off} & drag [nN] & \shortstack{power to\\hold [mW]} & \shortstack{lifetime,\\thruster off} & drag [\textmu N] & \shortstack{power to\\hold [W]} \\
 \midrule
-400\,km & 38 / 3.8 & 46\,d / 241\,d & 278$^\dagger$ / 21 & 3.9 / 0.39 & 167\,d / 2.4\,yr & 29$^\dagger$ / 2.2 \\
-500\,km & 8.6 / 0.49 & 204\,d / 3.5\,yr & 46 / 2.0 & 0.89 / 0.050 & 2.1\,yr / $>5$\,yr & 4.8 / 0.20 \\
-550\,km & 4.3 / 0.21 & 329\,d / 4.5\,yr & 20 / 0.78 & 0.45 / 0.021 & $>5$\,yr / $>5$\,yr & 2.1 / 0.080 \\
-600\,km & 2.3 / 0.10 & 2.2\,yr / $>5$\,yr & 9.6 / 0.37 & 0.23 / 0.010 & $>5$\,yr / $>5$\,yr & 0.98 / 0.039 \\
-650\,km & 1.2 / 0.057 & $>5$\,yr / $>5$\,yr & 4.8 / 0.21 & 0.12 / 0.006 & $>5$\,yr / $>5$\,yr & 0.49 / 0.022 \\
-700\,km & 0.66 / 0.037 & $>5$\,yr / $>5$\,yr & 2.5 / 0.14 & 0.068 / 0.004 & $>5$\,yr / $>5$\,yr & 0.26 / 0.014 \\
+\multicolumn{7}{@{}l}{\emph{2024, near solar maximum}} \\
+400\,km & 46\,d & 38 & 278$^\dagger$ & 167\,d & 3.9 & 29$^\dagger$ \\
+500\,km & 204\,d & 8.6 & 46 & 2.1\,yr & 0.89 & 4.8 \\
+550\,km & 329\,d & 4.3 & 20 & $>5$\,yr & 0.45 & 2.1 \\
+600\,km & 2.2\,yr & 2.3 & 9.6 & $>5$\,yr & 0.23 & 0.98 \\
+650\,km & $>5$\,yr & 1.2 & 4.8 & $>5$\,yr & 0.12 & 0.49 \\
+700\,km & $>5$\,yr & 0.66 & 2.5 & $>5$\,yr & 0.068 & 0.26 \\
+\addlinespace
+\multicolumn{7}{@{}l}{\emph{2019, near solar minimum}} \\
+400\,km & 241\,d & 3.8 & 21 & 2.4\,yr & 0.39 & 2.2 \\
+500\,km & 3.5\,yr & 0.49 & 2.0 & $>5$\,yr & 0.050 & 0.20 \\
+550\,km & 4.5\,yr & 0.21 & 0.78 & $>5$\,yr & 0.021 & 0.080 \\
+600\,km & $>5$\,yr & 0.10 & 0.37 & $>5$\,yr & 0.010 & 0.039 \\
+650\,km & $>5$\,yr & 0.057 & 0.21 & $>5$\,yr & 0.006 & 0.022 \\
+700\,km & $>5$\,yr & 0.037 & 0.14 & $>5$\,yr & 0.004 & 0.014 \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
-Drag and the plasma along the orbit come from a year-long TudatPy propagation \cite{tudat} with NRLMSISE-00 density \cite{msis} driven by measured solar and geomagnetic indices and IRI-2020 plasma \cite{iri} along the orbit, near solar maximum (2024) and minimum (2019). The test body is the slender can of Table~\ref{tab:envelope}, 3.1\,g, flown with its axis along the velocity, so the thrust axis and the low-drag pose coincide. With the thruster on, drag is cancelled exactly and the drag at each 5-minute point is the thrust demand; the supply voltage follows it at the least beam power, with the float estimated from the local plasma using the simulation-calibrated collection model. With the thruster off, the orbit decays freely.
+Drag and the plasma along the orbit come from a year-long TudatPy propagation \cite{tudat} with NRLMSISE-00 density \cite{msis} driven by measured solar and geomagnetic indices and IRI-2020 plasma \cite{iri} along the orbit, near solar maximum (2024) and minimum (2019). With the thruster on, ideal drag cancellation defines the thrust demand at each 5-minute point; the supply voltage follows it at the least beam power, with the floating potential estimated from the local plasma using the simulation-calibrated collection model. With the thruster off, the orbit decays freely. These estimates extend the calibration to voltages and plasma conditions beyond the PIC samples; 350\,V marks the highest tested voltage, not a physical limit of the concept.
 
-Table~\ref{tab:mission} gives the result. Without the thruster the 3\,g body re-enters from 400\,km in 46 days and from 550\,km in 11 months near solar maximum. With it, 500-700\,km is held all year: the mean demand of 0.7-9\,nN sits inside the measured envelope, for 2.5-46\,mW near maximum and under 2\,mW near minimum. At 400\,km near maximum the 38\,nN mean is below the 43\,nN measured at 350\,V, but the thin night-side plasma pushes half the points past 350\,V; near minimum 400\,km is held for 21\,mW. The ISS and equatorial orbits differ from the sun-synchronous one by about 10\,\%.
+Table~\ref{tab:mission} gives the model results. Without the thruster the 3\,g body re-enters from 400\,km in 46 days and from 550\,km in 11 months near solar maximum. At 500-700\,km, the mean thrust demand is 0.7-9\,nN, with mean beam-supply demand of 2.5-46\,mW near maximum and at most 2\,mW near minimum. At 400\,km near maximum the 38\,nN mean is below the 43\,nN simulated at 350\,V, but the thin night-side plasma pushes nearly half the points above the tested voltage range; near minimum the mean demand is 21\,mW. The ISS and equatorial orbits differ from the sun-synchronous one by about 10\,\%.
 
-The demand is not steady. It swings about $1.7\times$ over each orbit (day and night) and up to $2.5$-$2.8\times$ on storm days (11 May and 7-11 October 2024). Holding altitude is an impulse budget, so the peaks cost a small dip, not the orbit: replayed with thrust capped at the measured 350\,V capability, the orbit never drops more than 10\,m below its target at 500-700\,km.
+Over each orbit the demand changes by $1.6$-$2.0\times$ between the sunlit and eclipsed halves at 500-700\,km, and on the geomagnetic-storm days of 11 May, 12 August, 7-8 and 10-11 October 2024 the daily mean reaches $2.2$-$3.5\times$ the annual mean, the larger factors at the higher altitudes. A separate altitude-hold calculation caps the drive at 350\,V to test operation within the sampled voltage range. Temporary thrust deficits produce altitude dips of less than 10\,m at 500-700\,km over the modeled year.
 
-Drag, current and beam power all scale with the drag area, so the concept does not depend on size. A 1U CubeSat has 103 times the can's drag area and needs 103 times its thrust and, to first order, its power: about 1\,W at 600\,km near solar maximum and tens of milliwatts near minimum. A 1U lives longer in free fall because its mass grows faster than its area: 167 days from 400\,km near solar maximum, against 46 for the can.
-
-\section{Limitations}
-\begin{enumerate}\setlength{\itemsep}{1pt}
-  \item \textbf{Settling.} Ions are $400\,m_e$ and floats are 800\,ns snapshots; a 3D campaign settled its floats at 6\,\textmu s at about twice the 800\,ns value, with thrust moving by a few percent.
-  \item \textbf{Prescribed beam.} Beam current is an input, launched above the cathode ($\kappa$ above); the flight emitter is not chosen.
-  \item \textbf{CubeSat regime.} The simulated body is 2.5 Debye lengths across; a 1U is about 25, where the collection model has not been validated.
-  \item \textbf{Attitude and plasma flow.} A held pose is assumed and the plasma is stationary (no ram flow).
-\end{enumerate}
-All powers are beam power $VI$; converter and cathode overheads belong to the flight design.
+For comparable exhaust energy and collection performance, the required current and beam power scale with the drag area. The modeled 1U CubeSat has 103 times the can's drag area and therefore needs 103 times its thrust. Applying the same factor to power gives a first-order estimate of about 1\,W at 600\,km near solar maximum and tens of milliwatts near minimum. Collection at this larger scale requires separate validation. The 1U lives longer in free fall because of its larger mass-to-drag-area ratio: 167 days from 400\,km near solar maximum, against 46 for the can.
 
 \section{Conclusion}
-A cathode, a high-voltage supply and the spacecraft's own skin make a thruster that needs no propellant. Simulations measure 3.4-43\,nN from 12-278\,mW, enough to hold a 3\,g chip-scale spacecraft at 500-700\,km for milliwatts where it would otherwise re-enter within a year, and the same physics scales with area to CubeSats at around a watt. The next steps are a settled, cathode-launched confirmation run and a large-body run in the CubeSat regime.
+A cathode, a high-voltage supply and the spacecraft's conducting skin form an electron propulsion system that replenishes emitted charge from the ionosphere. The simulated geometries produce 3.4-43\,nN at beam-supply powers of 12-278\,mW. The compact-to-slender comparison shows how collecting area can increase around an unchanged acceleration region. Mission calculations for the slender body indicate station keeping for a 3\,g spacecraft at 500-700\,km with milliwatt mean beam-supply demand. The contribution is a compact propulsion architecture in which the spacecraft structure closes the current loop. Cathode-potential emission, long-time settling and collection at larger spacecraft scales remain the principal simulation questions for extending the quantitative results.
 
-\paragraph{Data.} Simulation inputs, run manifests, gate policies, orbit propagations and the model are in the project repository, archived at \href{https://doi.org/10.5281/zenodo.22115924}{DOI:10.5281/zenodo.22115924}.
-
+\needspace{6\baselineskip}
 \paragraph{Acknowledgements.} This research used the open-source \href{https://blast-warpx.github.io}{particle-in-cell code WarpX}. Primary WarpX contributors are with LBNL, LLNL, CEA-LIDYL, SLAC, DESY, CERN, Helion Energy, TAE Technologies, and Realta Fusion. The author acknowledges all WarpX contributors. Orbit propagation used TudatPy.
 
 \begin{thebibliography}{99}\footnotesize\setlength{\itemsep}{0pt}

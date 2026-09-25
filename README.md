@@ -6,14 +6,14 @@ The idea is an electron thruster for LEO station keeping on small spacecraft.
 It emits electrons from a cathode and lets the ionosphere return the current to the spacecraft body.
 
 I validated the concept with full PIC simulations (WarpX) across a 9 stage ladder and 10 characterizations.
-The simulations demonstrate feasibility for chip-scale spacecraft: a 3 g body that re-enters within weeks to a year without propulsion holds 500–700 km with this thruster on 2.5–48 mW near solar maximum and 0.1–2 mW near solar minimum, producing nanonewtons of thrust and refueling from the ionosphere.
+The simulations and coupled mission model demonstrate feasibility for chip-scale spacecraft: a 3 g slender body that re-enters within weeks to a year without propulsion holds 500–700 km with this thruster on 2.5–48 mW near solar maximum and 0.1–2 mW near solar minimum, producing nanonewtons of thrust and refueling from the ionosphere.
 
 The power tradeoff is ~200× worse than an ion thruster because electrons are much lighter, but at nanonewton scale the difference is 1 mW for an ion thruster vs 10–100 mW for this electron thruster.
 The device is simple and cheap: a cathode, an aperture, and a high-voltage supply. It would enable station keeping for chip-scale spacecraft, where no other thruster fits, and it scales to cubesats at about a watt.
 
-![200 V baseline simulation](paper/imgs/dashboard_200v.gif)
+![200 V slender-body simulation: electron density, beam fates, thrust and beam-supply power](paper/imgs/dashboard_200v.gif)
 
-[Paper: 3-page concept paper](paper/main.tex) ([PDF](paper/main.pdf)). The long version, with the full ladder, characterization and CubeSat scaling, is in git history at commit `6af0807`; this README carries the same material.
+[Paper: concept and simulation results](paper/main.tex) ([PDF](paper/main.pdf)). The long version, with the full ladder, characterization and CubeSat scaling, is in git history at commit `6af0807`; this README carries the same material.
 
 ## Motivation
 
@@ -60,7 +60,7 @@ That positive potential attracts electrons from the ambient ionospheric plasma o
 Collection grows until it exactly balances the emitted beam current, at which point the body floats at a steady potential φ.
 
 No wire, no neutralizer, no propellant exchange: the ionosphere closes the circuit.
-The only cost is the float potential φ, which takes a fraction of the supply voltage from the beam (the "float tax" $\varphi/V$).
+The floating potential φ reduces the voltage available to the escaping beam by the fraction $\varphi/V$.
 
 ### Why doesn't the beam come back?
 
@@ -80,46 +80,54 @@ There is also a physics ceiling. At current balance the arriving electrons carry
 
 ## Theory
 
-The concept is a plain electrostatic accelerator.
+The propulsion mechanism couples the momentum carried by the emitted beam to the current collected from the surrounding plasma.
 
-Thrust: momentum flux of the escaping beam:
-$$
-F = \frac{I \sqrt{2 m_e \, \mathrm{KE}}}{e}
-$$
-
-Energy each electron actually leaves with:
+Thrust is the momentum flux of the escaping beam:
 
 $$
-\mathrm{KE} = \kappa \, (V - \varphi)
+F = \frac{I_{\mathrm{esc}} \sqrt{2 m_e \, \mathrm{KE}}}{e}
 $$
 
-Jet power / electrical power:
+Here $I_{\mathrm{esc}} = f_{\mathrm{esc}} I$ is the escaping part of the emitted current; the expression assumes collimated exhaust and KE in joules.
+
+Energy each electron leaves with:
+
+$$
+\mathrm{KE} = \kappa \, e \, (V - \varphi)
+$$
+
+Jet power / beam-supply power:
 
 $$
 \eta = \kappa \, \frac{V - \varphi}{V} \cdot f_{\mathrm{esc}}
 $$
 
+Beam-supply power is $P = VI$, with $V$ measured between body and cathode. Total spacecraft power also depends on emitter technology and converter efficiency.
+
 Where:
 
 | symbol | what it is | controlled by |
 |---|---|---|
-| $\kappa$ | exhaust energy over the drop, $\mathrm{KE}/e(V-\varphi)$ | where the simulated beam is launched (below); a real cathode gives $\kappa \approx 1$ |
+| $\kappa$ | exhaust energy over the drop, $\mathrm{KE}/[e(V-\varphi)]$ | where the simulated beam is launched (below); ideal emission at cathode potential gives $\kappa \approx 1$ |
 | $\varphi$ | float potential | collecting area, body shape, plasma density |
-| $\varphi/V$ | the float tax | fraction of supply voltage lost to current return |
+| $\varphi/V$ | fractional voltage loss from the floating potential | fraction of supply voltage spent overcoming the body's positive potential |
 | $f_{\mathrm{esc}}$ | beam fraction that clears the body | exit-aperture geometry |
 
 ### Control
 
-1. The device measures its own thrust. $I$ and $\varphi$ are plain electrical measurements any microcontroller can take in flight.
-   No thrust stand needed.
-2. The control law is a two-line servo on the measured float. No ionosphere model, no lookup table.
-   Density, temperature, day/night all collapse into where the body floats (`future_work/README.md`, the adaptive controller).
+1. The device can estimate its thrust from electrical measurements: current, supply voltage and body potential relative to the plasma, with calibrated escape and divergence corrections.
+   No in-flight thrust stand is needed.
+2. Feedback adjusts voltage to track the thrust command using measured current and floating potential. No explicit ionosphere model or lookup table is needed.
+   Density, temperature and day/night changes enter through those signals ([adaptive controller](future_work/README.md#the-adaptive-controller-distilled-from-the-2026-08-08-control-review)).
 
-An STM32 is enough to control this thruster.
+This control principle is suitable for a microcontroller such as an STM32; flight implementation still requires current and plasma-potential sensing and calibration of the thrust estimate.
 
 ## Measured numbers
 
 The simulations put numbers to the symbols for one design family: Ø10 mm body, gun at $I/I_{\mathrm{CL}} = 1.46$, one dayside plasma row.
+
+The slender body (Ø10 × 30.5 mm in PIC) is the main case for the displayed simulation results and station-keeping analysis. The compact body (Ø10 × 5.5 mm) is the verification-ladder reference and geometry comparison. Both demonstrate the same propulsion mechanism, with the same 4.7 mm acceleration gap. The extra body length adds return-current collecting surface around that unchanged acceleration region. The compact body is the smallest complete electrode-and-collector geometry tested here; a minimum size has not been established, and flight packaging also includes the supply and emitter hardware.
+
 Two constants describe every run across 100–350 V to ~1 %:
 
 $$
@@ -127,7 +135,7 @@ F\,[\mathrm{nN}] = 3.2675 \cdot I\,[\mathrm{mA}] \cdot \sqrt{\mathrm{KE}\,[\math
 $$
 
 $$
-\mathrm{KE} = 0.8063 \, (V - \varphi)
+\mathrm{KE}\,[\mathrm{eV}] = 0.8063 \, (V - \varphi)\,[\mathrm{V}]
 $$
 
 | run | $\varphi$ | $f_{\mathrm{esc}}$ | $\eta$ | $v_e$ (m/s) |
@@ -143,13 +151,12 @@ Divergence factor: 0.97 (measured thrust slope vs ideal).
 These numbers characterize the simulated design, not the concept.
 Each traces to a design parameter (see the theory table above); moving the parameter moves the number.
 
-For example, $\kappa = 0.81$ is not gun physics but where the simulated beam is born. It is launched 2 cells (0.3 mm) above the cathode, where a vacuum field solve puts the potential 19 % of V above the cathode, so every electron misses that part of the drop. In every run at this loading the missing energy is 17–18 % of V, whatever the float, plasma density or field; the beam's own space charge lowers it slightly, and at 3–10× the loading (the U-curve runs) it shrinks to 12 %, the opposite of a space-charge depression. A real cathode emits at cathode potential and would give $\mathrm{KE} \approx e(V-\varphi)$: about 11 % more thrust at the same current and $\eta \approx 0.90$ instead of 0.73. The committed numbers keep the measured 0.81 and are conservative by that margin; a PIC confirmation is planned ([`future_work/CATHODE_LAUNCH_PLAN.md`](future_work/CATHODE_LAUNCH_PLAN.md)).
+For example, the fitted $\kappa \approx 0.81$ reflects where the simulated beam is born. It is launched 2 cells (0.3 mm) above the cathode, where a vacuum field solve puts the potential 19 % of V above the cathode, so every electron misses that part of the drop. In every run at this loading the missing energy is 17–18 % of V, whatever the float, plasma density or field; the beam's own space charge lowers it slightly, and at higher loading (the U-curve runs) the deficit shrinks to 12 %. Emission at cathode potential is expected to increase $\kappa$ toward the ideal limit of one. At the 200 V baseline, that limit would imply about 11 % more thrust at fixed current and floating potential, and $\eta \approx 0.90$ instead of 0.73. This is an expected improvement requiring direct PIC confirmation, not a correction applied to the results. All performance and mission estimates retain the existing calibration ([confirmation plan](future_work/CATHODE_LAUNCH_PLAN.md)).
 Similarly, the slender body already shows $\varphi$ dropping from 17 V to 4.4 V by changing geometry alone.
 
 Outside the measured envelope (other gun loadings, geometries, plasmas), new runs are needed; `model/README.md` is the only sanctioned extrapolation and labels its outputs estimates.
 
-The cathode is excluded: beam current is prescribed.
-Flight thruster efficiencies include their full beam-production cost; this $\eta$ does not.
+The simulations prescribe beam current; $\eta$ characterizes conversion of beam-supply power into jet power.
 
 ## Does it cancel drag?
 
@@ -159,7 +166,7 @@ With it, the same body holds 500–700 km all year on 2.5–48 mW near solar max
 
 Mission body and orbits:
 
-- test body: the slender can of the PIC shape runs, Ø10 mm × 30 mm, 3.1 g (3U density), Cd = 2.2, flown axial: the thrust axis points along the velocity, which for a body this long is also the low-drag pose
+- test body: a Ø10 mm × 30 mm approximation of the 30.5 mm slender PIC body, with collection prefactor fitted to the 200 and 350 V slender runs; 3.1 g (3U density), Cd = 2.2, flown axial: the thrust axis points along the velocity, which for a body this long is also the low-drag pose
 - drag area: the ram cap plus free-molecular friction on the side wall (+37 %)
 - orbits: circular at 400–700 km, near-equatorial (0.5°), ISS (51.6°) and sun-synchronous (10:30 node)
 - solar activity: a year near solar maximum (2024) and a year near minimum (2019), NRLMSISE-00 with real F10.7/Ap, IRI-2020 plasma along the orbit
@@ -211,8 +218,8 @@ As a worked example, body-mounted cells on the slender can (30 % efficient, a th
 Near solar minimum 400 km is held for about 21 mW. Near solar maximum it is not held inside the simulated envelope: the drag peaks (119–128 nN) need 500–700 V by the gun laws, and even on average the capability at 350 V falls short (99–102 % duty).
 At the PIC level the 350 V pair covers the mean demand of the earlier squat-can orbit:
 
-1. The compact body delivered 40.48 nN at a 48.3 V float, a 14 % float tax on the 350 V drive (gated at 800 ns, still rising at run end).
-2. The slender body delivered 43.33 nN at a 14.0 V float, a 4 % tax, with 34 V less of the drive spent on collection.
+1. The compact body delivered 40.48 nN at a 48.3 V floating potential, using 14 % of the 350 V drive to overcome that potential (gated at 800 ns, still rising at run end).
+2. The slender body delivered 43.33 nN at a 14.0 V floating potential, a 4 % voltage loss, with 34 V more of the drive available to the escaping beam.
 
 ## Does it scale to cubesats?
 
@@ -277,7 +284,7 @@ Each spoke links to its simulation directory:
 |---|---|---|---|---|---|---|
 | [`high_thrust`](pic_sims/characterization/high_thrust) | 300 V | 36.3 V | **30.13 nN** | 98.99 % | 210.1 | |
 | [`low_power`](pic_sims/characterization/low_power) | 100 V | 5.4 V | 3.42 nN | 96.12 % | 77.2 | |
-| [`350V_400km`](pic_sims/characterization/350V_400km) | 350 V | 48.3 V | **40.48 nN** | 99.11 % | 239.0 | 14 % float tax at 800 ns, still rising |
+| [`350V_400km`](pic_sims/characterization/350V_400km) | 350 V | 48.3 V | **40.48 nN** | 99.11 % | 239.0 | 14 % voltage loss from body potential at 800 ns, still rising |
 | [`350V_400km_slender`](pic_sims/characterization/350V_400km_slender) | 350 V + slender body | 14.0 V | **43.33 nN** | 99.14 % | 272.7 | voltage × geometry compose |
 | [`slender_body`](pic_sims/characterization/slender_body) | L/r = 6 body | 4.4 V | 14.22 nN | 98.42 % | 159.7 | |
 | [`thin_plasma`](pic_sims/characterization/thin_plasma) | density n₀/3 | 42.5 V | 12.39 nN | 99.13 % | 122.0 | settled at 2.4 µs; law conservative along density |
@@ -302,7 +309,7 @@ the emission reaction once the beam curls).
 | 10× flight | 300 µT ⊥ | no equilibrium | - | 98 % until abort | chokes through the 150 V ceiling |
 
 Three results. The flight-orientation field leaves the operating point
-alone: thrust and escape unchanged, a 2.6 V float tax, about 1 % of the
+alone: thrust and escape nearly unchanged, a 2.6 V increase in floating potential, about 1 % of the
 200 V drive. At 10× the return circuit cannot close and the device must fire
 along the field, the mode the axial spokes validate. And the 6 µs runs
 measure the settling the 800 ns campaign truncates: the float reaches

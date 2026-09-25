@@ -56,6 +56,8 @@ def _draw_can(ax, geom):
     both(geom.z_floorb, geom.zfloort, 0.0, geom.r_cath)
     both(geom.z_floorb, geom.zfloort, geom.r_cath_out, geom.r_p)
     both(geom.zlidb, geom.z_top, geom.r_slit, geom.r_p)
+    if geom.standoff is not None:
+        both(geom.z_bot, geom.z_bot + geom.tfloor, 0.0, geom.r_p)
 
 
 def main(argv=None) -> int:
@@ -81,7 +83,10 @@ def main(argv=None) -> int:
     steps_l = np.atleast_1d(ledger["step"]).astype(float)
     t_l_ns = np.atleast_1d(ledger["t"]) * 1e9
     thrust_nN = np.atleast_1d(ledger["F_beam_N"]) * 1e9
-    power_mW = np.abs(np.atleast_1d(ledger["V_cathode"])) * cfg.i_beam * 1e3
+    supply_V = np.abs(np.atleast_1d(ledger["phi_body"])
+                      - np.atleast_1d(ledger["V_cathode"]))
+    power_mW = np.where(np.atleast_1d(ledger["t"]) > cfg.t_on,
+                        supply_V * cfg.i_beam * 1e3, 0.0)
     pct_escape = np.atleast_1d(ledger["pct_escape"])
     pct_return = (np.atleast_1d(ledger["pct_body"])
                   + np.atleast_1d(ledger["pct_cathode"]))
@@ -106,7 +111,7 @@ def main(argv=None) -> int:
 
     writer = FFMpegWriter(fps=fps, bitrate=4000)
     writer.setup(fig, str(out), dpi=150)
-    fig.text(0.5, 0.55, "Chipsat Thruster (200 V baseline)",
+    fig.text(0.5, 0.55, args.title,
              fontsize=22, fontweight="bold", ha="center", va="center",
              color="#333333")
     fig.text(0.5, 0.40,
@@ -157,11 +162,11 @@ def main(argv=None) -> int:
     line_p, = ax_p.plot([], [], color="tab:red", lw=1.5, label="Power")
     ax_p.set_xlim(0, t_end_ns)
     ax_p.set_ylim(0, power_max)
-    ax_p.set_ylabel("Power [mW]", color="tab:red")
+    ax_p.set_ylabel("Beam-supply power VI [mW]", color="tab:red")
     ax_p.set_xlabel("time [ns]")
     ax_p.tick_params(axis="y", labelcolor="tab:red")
     ax_p.grid(alpha=0.3)
-    ax_p.set_title("Power consumption")
+    ax_p.set_title("Beam-supply power")
 
     sup = fig.suptitle("")
 

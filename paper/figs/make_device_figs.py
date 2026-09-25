@@ -270,10 +270,14 @@ def dashboard(run: Path, out: Path):
     led = load_ledger(ev.diags_dir)
     t = np.atleast_1d(led["t"]) * 1e9
     F = np.atleast_1d(led["F_beam_N"]) * 1e9
-    P = np.abs(np.atleast_1d(led["V_cathode"])) * cfg.i_beam * 1e3
+    # The supply spans body and cathode; the cathode-to-plasma potential
+    # instead measures the available accelerating drop. No beam before t_on.
+    phi = np.atleast_1d(led["phi_body"])
+    supply_V = np.abs(phi - np.atleast_1d(led["V_cathode"]))
+    P = np.where(np.atleast_1d(led["t"]) > cfg.t_on,
+                 supply_V * cfg.i_beam * 1e3, 0.0)
     esc = np.atleast_1d(led["pct_escape"])
     ret = np.atleast_1d(led["pct_body"]) + np.atleast_1d(led["pct_cathode"])
-    phi = np.atleast_1d(led["phi_body"])
 
     fig, ax = plt.subplots(2, 2, figsize=(7.0, 4.6))
     (aD, aF), (aT, aP) = ax
@@ -289,8 +293,15 @@ def dashboard(run: Path, out: Path):
             a, b = sorted((s * r0, s * r1))
             aD.add_patch(Rectangle((z0 * 1e3, a * 1e3), (z1 - z0) * 1e3, (b - a) * 1e3,
                                    fc="0.75", ec="none", zorder=6))
+    aD.add_patch(Rectangle((g.z_floorb * 1e3, -g.r_cath * 1e3),
+                           (g.zfloort - g.z_floorb) * 1e3, 2 * g.r_cath * 1e3,
+                           fc="0.75", ec="none", zorder=6))
+    if g.standoff is not None:
+        aD.add_patch(Rectangle((g.z_bot * 1e3, -g.r_p * 1e3),
+                               g.tfloor * 1e3, 2 * g.r_p * 1e3,
+                               fc="0.75", ec="none", zorder=6))
     aD.set_title(f"(a) beam electron density, $t$ = {t[-1]:.0f} ns", loc="left")
-    aD.set_xlabel("z [mm]"); aD.set_ylabel("r [mm]")
+    aD.set_xlabel("z [mm]"); aD.set_ylabel("r [mm], mirrored")
 
     aF.plot(t, esc, c="tab:green", lw=1.2, label="escaped")
     aF.plot(t, ret, c="tab:red", lw=1.0, label="returned to body")
@@ -303,7 +314,7 @@ def dashboard(run: Path, out: Path):
 
     aP.plot(t, P, c="tab:red", lw=1.2)
     aP.set_ylim(0, 90); aP.set_ylabel("beam power $VI$ [mW]")
-    aP.set_title("(d) power consumption", loc="left")
+    aP.set_title("(d) beam-supply power", loc="left")
 
     for a in (aF, aT, aP):
         a.set_xlim(0, t[-1]); a.set_xlabel("time [ns]"); a.grid(alpha=0.3, lw=0.4)
